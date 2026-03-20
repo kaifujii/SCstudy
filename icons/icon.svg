@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="80" fill="#1e429f"/>
+  <path d="M256 80 L400 140 L400 260 C400 340 336 400 256 430 C176 400 112 340 112 260 L112 140 Z" fill="#6875f5" opacity="0.8"/>
+  <path d="M256 120 L370 170 L370 260 C370 325 320 375 256 400 C192 375 142 325 142 260 L142 170 Z" fill="white" opacity="0.15"/>
+  <text x="256" y="295" text-anchor="middle" font-family="-apple-system, sans-serif" font-size="120" font-weight="900" fill="white">SC</text>
+</svg>
