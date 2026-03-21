@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sc-tango-v1';
+const CACHE_NAME = 'sc-tango-v2';
 const ASSETS = [
   './',
   './index.html',
