@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <path d="M256 72 L408 136 L408 268 C408 352 340 412 256 440 C172 412 104 352 104 268 L104 136 Z"
+        fill="rgba(255,255,255,0.08)"
+        stroke="rgba(255,255,255,0.55)"
+        stroke-width="14"
+        stroke-linejoin="round"/>
+  <text x="256" y="310"
+        text-anchor="middle"
+        font-family="-apple-system, BlinkMacSystemFont, sans-serif"
+        font-size="142"
+        font-weight="900"
+        fill="white"
+        opacity="0.82">SC</text>
+</svg>

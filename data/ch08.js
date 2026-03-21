@@ -18,7 +18,7 @@ const CH08_CARDS = [
     chapterName: "第8章 物理・ネットワーク",
     term: "無線 LAN のセキュリティ規格",
     hint: "WEP・WPA・WPA2・WPA3 の違い",
-    answer: ["❌ WEP：RC4（40〜104bit）、解読可能・廃止", "△ WPA：TKIP（RC4ベース）、暫定規格", "✓ WPA2（IEEE 802.11i）：AES-CCMP（128bit）、現在も使用", "✓✓ WPA3：SAE（Dragonfly）で辞書攻撃耐性、192bit（Enterprise）", "IEEE 802.1X 認証と組み合わせると最強"]
+    answer: ["× WEP：RC4（40〜104bit）、解読可能・廃止", "△ WPA：TKIP（RC4ベース）、暫定規格", "○ WPA2（IEEE 802.11i）：AES-CCMP（128bit）、現在も使用", "◎ WPA3：SAE（Dragonfly）で辞書攻撃耐性、192bit（Enterprise）", "IEEE 802.1X 認証と組み合わせると最強"]
   },
   {
     chapter: "8",
