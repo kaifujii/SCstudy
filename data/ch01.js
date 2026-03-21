@@ -546,14 +546,85 @@ const CH01_CARDS = [
   </div>
 </div>
 <div class="ds-section">
-  <div class="ds-section-title">🔑 認証フローの概要</div>
-  <div class="ds-compare col2">
-    <div class="ds-compare-head"><div>ステップ</div><div>内容</div></div>
-    <div class="ds-compare-row"><div>① AS_REQ<br>（認証要求）</div><div>クライアントがKDC（AS）にユーザ名＋暗号化タイムスタンプを送信</div></div>
-    <div class="ds-compare-row"><div>② AS_REP<br>（TGT発行）</div><div>KDCがTGT（Ticket Granting Ticket）を発行。krbtgtの秘密鍵で暗号化</div></div>
-    <div class="ds-compare-row"><div>③ TGS_REQ<br>（ST要求）</div><div>クライアントがTGTを提示してKDC（TGS）にサービスチケットを要求</div></div>
-    <div class="ds-compare-row"><div>④ TGS_REP<br>（ST発行）</div><div>KDCがST（Service Ticket）を発行。サービスの秘密鍵で暗号化</div></div>
-    <div class="ds-compare-row"><div>⑤ AP_REQ<br>（サービス利用）</div><div>クライアントがSTをサービスサーバに提示してアクセス</div></div>
+  <div class="ds-section-title">🔑 Kerberos 認証フロー（シーケンス図）</div>
+  <div class="ds-diagram-card">
+    <div class="ds-actors">
+      <div class="ds-actor">
+        <div class="ds-actor-icon" style="background:#dbeafe">💻</div>
+        <div class="ds-actor-name" style="color:#1e429f">クライアント</div>
+        <div class="ds-actor-sub">PC・端末</div>
+      </div>
+      <div class="ds-actor">
+        <div class="ds-actor-icon" style="background:#ede9fe">🏛️</div>
+        <div class="ds-actor-name" style="color:#5b21b6">KDC<br>（AS＋TGS）</div>
+        <div class="ds-actor-sub">認証センター</div>
+      </div>
+      <div class="ds-actor">
+        <div class="ds-actor-icon" style="background:#d1fae5">🖥️</div>
+        <div class="ds-actor-name" style="color:#065f46">サービス<br>サーバ</div>
+        <div class="ds-actor-sub">ファイルサーバ等</div>
+      </div>
+    </div>
+    <div class="ds-svg-wrap">
+      <svg viewBox="0 0 560 470" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,'Hiragino Kaku Gothic ProN',sans-serif">
+        <defs>
+          <marker id="ab" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#3b82f6"/></marker>
+          <marker id="ap" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#8b5cf6"/></marker>
+          <marker id="ag" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#10b981"/></marker>
+        </defs>
+        <!-- ライフライン -->
+        <line x1="88"  y1="2" x2="88"  y2="470" stroke="#bfdbfe" stroke-width="2" stroke-dasharray="6,5"/>
+        <line x1="280" y1="2" x2="280" y2="470" stroke="#ddd6fe" stroke-width="2" stroke-dasharray="6,5"/>
+        <line x1="472" y1="2" x2="472" y2="470" stroke="#a7f3d0" stroke-width="2" stroke-dasharray="6,5"/>
+        <!-- 活性バー -->
+        <rect x="83"  y="26" width="10" height="415" rx="3" fill="#bfdbfe" opacity="0.7"/>
+        <rect x="275" y="26" width="10" height="415" rx="3" fill="#ddd6fe" opacity="0.7"/>
+        <rect x="467" y="285" width="10" height="155" rx="3" fill="#a7f3d0" opacity="0.7"/>
+        <!-- KDCの役割ラベル -->
+        <text x="280" y="68" text-anchor="middle" font-size="8" font-weight="700" fill="#7c3aed" opacity="0.7">▼ AS フェーズ</text>
+        <text x="280" y="194" text-anchor="middle" font-size="8" font-weight="700" fill="#7c3aed" opacity="0.7">▼ TGS フェーズ</text>
+        <!-- Step 1: Client→KDC AS_REQ -->
+        <circle cx="88" cy="80" r="11" fill="#1e429f"/>
+        <text x="88" y="85" text-anchor="middle" font-size="11" font-weight="800" fill="white">1</text>
+        <line x1="99" y1="80" x2="267" y2="80" stroke="#3b82f6" stroke-width="2.5" marker-end="url(#ab)"/>
+        <text x="183" y="71" text-anchor="middle" font-size="11" font-weight="700" fill="#1d4ed8">AS_REQ（認証要求）</text>
+        <text x="183" y="96" text-anchor="middle" font-size="9" fill="#6b7280">ユーザ名＋暗号化タイムスタンプ</text>
+        <!-- Step 2: KDC→Client AS_REP (TGT) -->
+        <circle cx="280" cy="143" r="11" fill="#7c3aed"/>
+        <text x="280" y="148" text-anchor="middle" font-size="11" font-weight="800" fill="white">2</text>
+        <line x1="269" y1="143" x2="101" y2="143" stroke="#8b5cf6" stroke-width="2.5" marker-end="url(#ap)"/>
+        <text x="183" y="134" text-anchor="middle" font-size="11" font-weight="700" fill="#6d28d9">AS_REP（TGT 発行）</text>
+        <text x="183" y="159" text-anchor="middle" font-size="9" fill="#6b7280">krbtgt 秘密鍵で暗号化</text>
+        <!-- Step 3: Client→KDC TGS_REQ -->
+        <circle cx="88" cy="206" r="11" fill="#1e429f"/>
+        <text x="88" y="211" text-anchor="middle" font-size="11" font-weight="800" fill="white">3</text>
+        <line x1="99" y1="206" x2="267" y2="206" stroke="#3b82f6" stroke-width="2.5" marker-end="url(#ab)"/>
+        <text x="183" y="197" text-anchor="middle" font-size="11" font-weight="700" fill="#1d4ed8">TGS_REQ（ST 要求）</text>
+        <text x="183" y="222" text-anchor="middle" font-size="9" fill="#6b7280">TGT ＋ サービス要求</text>
+        <!-- Step 4: KDC→Client TGS_REP (ST) -->
+        <circle cx="280" cy="269" r="11" fill="#7c3aed"/>
+        <text x="280" y="274" text-anchor="middle" font-size="11" font-weight="800" fill="white">4</text>
+        <line x1="269" y1="269" x2="101" y2="269" stroke="#8b5cf6" stroke-width="2.5" marker-end="url(#ap)"/>
+        <text x="183" y="260" text-anchor="middle" font-size="11" font-weight="700" fill="#6d28d9">TGS_REP（ST 発行）</text>
+        <text x="183" y="285" text-anchor="middle" font-size="9" fill="#6b7280">サービス秘密鍵で暗号化</text>
+        <!-- Step 5: Client→Service AP_REQ -->
+        <circle cx="88" cy="332" r="11" fill="#1e429f"/>
+        <text x="88" y="337" text-anchor="middle" font-size="11" font-weight="800" fill="white">5</text>
+        <line x1="99" y1="332" x2="459" y2="332" stroke="#3b82f6" stroke-width="2.5" marker-end="url(#ab)"/>
+        <text x="280" y="323" text-anchor="middle" font-size="11" font-weight="700" fill="#1d4ed8">AP_REQ（ST を提示）</text>
+        <text x="280" y="348" text-anchor="middle" font-size="9" fill="#6b7280">KDCを経由しない</text>
+        <!-- Step 6 成功エリア -->
+        <rect x="60" y="363" width="430" height="100" rx="12" fill="#f0fdf4" stroke="#6ee7b7" stroke-width="1.5"/>
+        <text x="472" y="381" text-anchor="middle" font-size="9" font-weight="700" fill="#059669">ST を復号して検証</text>
+        <circle cx="472" cy="399" r="11" fill="#059669"/>
+        <text x="472" y="404" text-anchor="middle" font-size="11" font-weight="800" fill="white">6</text>
+        <line x1="461" y1="399" x2="101" y2="399" stroke="#10b981" stroke-width="2.5" marker-end="url(#ag)"/>
+        <text x="280" y="390" text-anchor="middle" font-size="11" font-weight="800" fill="#065f46">AP_REP（認証成功）</text>
+        <text x="88"  y="423" text-anchor="middle" font-size="10" font-weight="800" fill="#059669">✓ サービス利用開始</text>
+        <text x="340" y="423" text-anchor="middle" font-size="9" fill="#6b7280">パスワードは一度もネットワークを流れない</text>
+        <text x="280" y="450" text-anchor="middle" font-size="9" font-weight="700" fill="#dc2626">⚠️ TGT は KDC だけが復号可能 / ST はサービスだけが復号可能</text>
+      </svg>
+    </div>
   </div>
 </div>
 <div class="ds-section">
@@ -616,24 +687,100 @@ const CH01_CARDS = [
   </div>
 </div>
 <div class="ds-section">
-  <div class="ds-section-title">👥 4つの登場人物</div>
-  <div class="ds-compare col2">
-    <div class="ds-compare-head"><div>役割</div><div>内容・具体例</div></div>
-    <div class="ds-compare-row"><div>Resource Owner<br>（リソース所有者）</div><div>リソースの所有者 = ユーザ自身<br>「Google のプロフィール情報を持っている人」</div></div>
-    <div class="ds-compare-row"><div>Client<br>（クライアント）</div><div>アクセスを求めるアプリ<br>「Googleアカウントでログイン」を使うサービス</div></div>
-    <div class="ds-compare-row"><div>Authorization Server<br>（認可サーバ）</div><div>アクセストークンを発行するサーバ<br>例：Google の認証サーバ</div></div>
-    <div class="ds-compare-row"><div>Resource Server<br>（リソースサーバ）</div><div>保護されたリソースを持つサーバ<br>例：Google のプロフィールAPIサーバ</div></div>
-  </div>
-</div>
-<div class="ds-section">
-  <div class="ds-section-title">🔄 Authorization Code フローの概要</div>
-  <div class="ds-compare col2">
-    <div class="ds-compare-head"><div>ステップ</div><div>内容</div></div>
-    <div class="ds-compare-row"><div>① 認可リクエスト</div><div>ClientがAuthServerへ認可リクエスト（scope・redirect_uri付き）</div></div>
-    <div class="ds-compare-row"><div>② ユーザ認証・同意</div><div>ユーザがAuthServerでログイン＆アクセス同意</div></div>
-    <div class="ds-compare-row"><div>③ 認可コード発行</div><div>AuthServerがClientへ認可コードをリダイレクトで送信</div></div>
-    <div class="ds-compare-row"><div>④ トークン交換</div><div>ClientがAuthServerに認可コード＋client_secretを送りトークン取得（バックチャネル）</div></div>
-    <div class="ds-compare-row"><div>⑤ API呼び出し</div><div>ClientがAccess Tokenを使いResource ServerのAPIを呼び出す</div></div>
+  <div class="ds-section-title">🔄 Authorization Code フロー（シーケンス図）</div>
+  <div class="ds-diagram-card">
+    <div class="ds-actors col4">
+      <div class="ds-actor">
+        <div class="ds-actor-icon" style="background:#dbeafe">🧑</div>
+        <div class="ds-actor-name" style="color:#1e429f">ユーザ</div>
+        <div class="ds-actor-sub">Resource Owner</div>
+      </div>
+      <div class="ds-actor">
+        <div class="ds-actor-icon" style="background:#ede9fe">📱</div>
+        <div class="ds-actor-name" style="color:#5b21b6">クライアント<br>App</div>
+        <div class="ds-actor-sub">Client</div>
+      </div>
+      <div class="ds-actor">
+        <div class="ds-actor-icon" style="background:#fef3c7">🔑</div>
+        <div class="ds-actor-name" style="color:#92400e">認可サーバ</div>
+        <div class="ds-actor-sub">Auth Server</div>
+      </div>
+      <div class="ds-actor">
+        <div class="ds-actor-icon" style="background:#d1fae5">🗄️</div>
+        <div class="ds-actor-name" style="color:#065f46">リソース<br>サーバ</div>
+        <div class="ds-actor-sub">Resource Server</div>
+      </div>
+    </div>
+    <div class="ds-svg-wrap">
+      <svg viewBox="0 0 640 530" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,'Hiragino Kaku Gothic ProN',sans-serif">
+        <defs>
+          <marker id="ab" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#3b82f6"/></marker>
+          <marker id="ap" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#8b5cf6"/></marker>
+          <marker id="ag" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#d97706"/></marker>
+          <marker id="ao" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#10b981"/></marker>
+        </defs>
+        <!-- ライフライン: User=75, Client=225, Auth=415, Resource=575 -->
+        <line x1="75"  y1="2" x2="75"  y2="530" stroke="#bfdbfe" stroke-width="2" stroke-dasharray="6,5"/>
+        <line x1="225" y1="2" x2="225" y2="530" stroke="#ddd6fe" stroke-width="2" stroke-dasharray="6,5"/>
+        <line x1="415" y1="2" x2="415" y2="530" stroke="#fde68a" stroke-width="2" stroke-dasharray="6,5"/>
+        <line x1="575" y1="2" x2="575" y2="530" stroke="#a7f3d0" stroke-width="2" stroke-dasharray="6,5"/>
+        <!-- 活性バー -->
+        <rect x="70"  y="26" width="10" height="485" rx="3" fill="#bfdbfe" opacity="0.7"/>
+        <rect x="220" y="26" width="10" height="485" rx="3" fill="#ddd6fe" opacity="0.7"/>
+        <rect x="410" y="90"  width="10" height="350" rx="3" fill="#fde68a" opacity="0.7"/>
+        <rect x="570" y="460" width="10" height="55"  rx="3" fill="#a7f3d0" opacity="0.7"/>
+        <!-- Step 1: User→Client -->
+        <circle cx="75" cy="50" r="11" fill="#1e429f"/>
+        <text x="75" y="55" text-anchor="middle" font-size="11" font-weight="800" fill="white">1</text>
+        <line x1="86" y1="50" x2="211" y2="50" stroke="#3b82f6" stroke-width="2.5" marker-end="url(#ab)"/>
+        <text x="150" y="41" text-anchor="middle" font-size="10" font-weight="700" fill="#1d4ed8">ログイン要求</text>
+        <text x="150" y="66" text-anchor="middle" font-size="8" fill="#6b7280">「Googleでログイン」ボタン</text>
+        <!-- Step 2: Client→Auth -->
+        <circle cx="225" cy="113" r="11" fill="#7c3aed"/>
+        <text x="225" y="118" text-anchor="middle" font-size="11" font-weight="800" fill="white">2</text>
+        <line x1="236" y1="113" x2="401" y2="113" stroke="#8b5cf6" stroke-width="2" marker-end="url(#ap)"/>
+        <text x="318" y="104" text-anchor="middle" font-size="10" font-weight="700" fill="#6d28d9">認可リクエスト</text>
+        <text x="318" y="129" text-anchor="middle" font-size="8" fill="#6b7280">scope・redirect_uri 付き</text>
+        <!-- Step 3: Auth→User -->
+        <circle cx="415" cy="176" r="11" fill="#d97706"/>
+        <text x="415" y="181" text-anchor="middle" font-size="11" font-weight="800" fill="white">3</text>
+        <line x1="404" y1="176" x2="86" y2="176" stroke="#d97706" stroke-width="2" marker-end="url(#ag)"/>
+        <text x="240" y="167" text-anchor="middle" font-size="10" font-weight="700" fill="#92400e">ログイン・同意画面</text>
+        <text x="240" y="192" text-anchor="middle" font-size="8" fill="#6b7280">ブラウザにリダイレクト</text>
+        <!-- Step 4: User→Auth -->
+        <circle cx="75" cy="239" r="11" fill="#1e429f"/>
+        <text x="75" y="244" text-anchor="middle" font-size="11" font-weight="800" fill="white">4</text>
+        <line x1="86" y1="239" x2="401" y2="239" stroke="#3b82f6" stroke-width="2" marker-end="url(#ab)"/>
+        <text x="240" y="230" text-anchor="middle" font-size="10" font-weight="700" fill="#1d4ed8">認証・アクセス同意</text>
+        <text x="240" y="255" text-anchor="middle" font-size="8" fill="#6b7280">ユーザがPW入力＋権限に同意</text>
+        <!-- Step 5: Auth→Client -->
+        <circle cx="415" cy="302" r="11" fill="#d97706"/>
+        <text x="415" y="307" text-anchor="middle" font-size="11" font-weight="800" fill="white">5</text>
+        <line x1="404" y1="302" x2="236" y2="302" stroke="#d97706" stroke-width="2.5" marker-end="url(#ag)"/>
+        <text x="318" y="293" text-anchor="middle" font-size="10" font-weight="700" fill="#92400e">認可コード発行</text>
+        <text x="318" y="318" text-anchor="middle" font-size="8" fill="#6b7280">redirect_uri へリダイレクト</text>
+        <!-- Step 6: Client→Auth (back channel, dashed) -->
+        <circle cx="225" cy="365" r="11" fill="#7c3aed"/>
+        <text x="225" y="370" text-anchor="middle" font-size="11" font-weight="800" fill="white">6</text>
+        <line x1="236" y1="365" x2="401" y2="365" stroke="#8b5cf6" stroke-width="2" stroke-dasharray="6,3" marker-end="url(#ap)"/>
+        <text x="318" y="356" text-anchor="middle" font-size="10" font-weight="700" fill="#6d28d9">トークンリクエスト</text>
+        <text x="318" y="381" text-anchor="middle" font-size="8" fill="#6b7280">認可コード＋client_secret（バックチャネル）</text>
+        <!-- Step 7: Auth→Client -->
+        <circle cx="415" cy="418" r="11" fill="#d97706"/>
+        <text x="415" y="423" text-anchor="middle" font-size="11" font-weight="800" fill="white">7</text>
+        <line x1="404" y1="418" x2="236" y2="418" stroke="#d97706" stroke-width="2.5" marker-end="url(#ag)"/>
+        <text x="318" y="409" text-anchor="middle" font-size="10" font-weight="700" fill="#92400e">アクセストークン発行</text>
+        <text x="318" y="434" text-anchor="middle" font-size="8" fill="#6b7280">＋リフレッシュトークン</text>
+        <!-- Step 8: Client→Resource -->
+        <rect x="55" y="452" width="535" height="72" rx="12" fill="#f0fdf4" stroke="#6ee7b7" stroke-width="1.5"/>
+        <circle cx="225" cy="472" r="11" fill="#7c3aed"/>
+        <text x="225" y="477" text-anchor="middle" font-size="11" font-weight="800" fill="white">8</text>
+        <line x1="236" y1="472" x2="561" y2="472" stroke="#10b981" stroke-width="2.5" marker-end="url(#ao)"/>
+        <text x="400" y="463" text-anchor="middle" font-size="10" font-weight="700" fill="#065f46">API 呼び出し（Bearer Token）</text>
+        <text x="400" y="508" text-anchor="middle" font-size="9" font-weight="700" fill="#065f46">← リソース返却</text>
+        <text x="180" y="508" text-anchor="middle" font-size="8" fill="#6b7280">⚠️ step6の破線がバックチャネル（安全の核心）</text>
+      </svg>
+    </div>
   </div>
 </div>
 <div class="ds-section">
@@ -729,15 +876,95 @@ const CH01_CARDS = [
   </div>
 </div>
 <div class="ds-section">
-  <div class="ds-section-title">🔄 SP-Initiated SSO フローの概要</div>
-  <div class="ds-compare col2">
-    <div class="ds-compare-head"><div>ステップ</div><div>内容</div></div>
-    <div class="ds-compare-row"><div>① リソースアクセス</div><div>ブラウザがSPのリソースにアクセス</div></div>
-    <div class="ds-compare-row"><div>② リダイレクト</div><div>SPがブラウザをIdPへリダイレクト（SAMLリクエスト付き）</div></div>
-    <div class="ds-compare-row"><div>③ 認証</div><div>IdPでユーザが認証（ログイン画面）</div></div>
-    <div class="ds-compare-row"><div>④ アサーション発行</div><div>IdPが署名付きSAMLレスポンス（アサーション）を生成</div></div>
-    <div class="ds-compare-row"><div>⑤ POSTバインディング</div><div>ブラウザ経由でSAMLレスポンスをSPへ自動POST</div></div>
-    <div class="ds-compare-row"><div>⑥ アクセス許可</div><div>SPがアサーションの署名を検証してアクセスを許可</div></div>
+  <div class="ds-section-title">🔄 SP-Initiated SSO フロー（シーケンス図）</div>
+  <div class="ds-diagram-card">
+    <div class="ds-actors">
+      <div class="ds-actor">
+        <div class="ds-actor-icon" style="background:#dbeafe">🌐</div>
+        <div class="ds-actor-name" style="color:#1e429f">ブラウザ</div>
+        <div class="ds-actor-sub">ユーザ操作</div>
+      </div>
+      <div class="ds-actor">
+        <div class="ds-actor-icon" style="background:#ede9fe">🏢</div>
+        <div class="ds-actor-name" style="color:#5b21b6">SP<br>（サービス）</div>
+        <div class="ds-actor-sub">Service Provider</div>
+      </div>
+      <div class="ds-actor">
+        <div class="ds-actor-icon" style="background:#fef3c7">🔑</div>
+        <div class="ds-actor-name" style="color:#92400e">IdP<br>（認証）</div>
+        <div class="ds-actor-sub">Identity Provider</div>
+      </div>
+    </div>
+    <div class="ds-svg-wrap">
+      <svg viewBox="0 0 560 540" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,'Hiragino Kaku Gothic ProN',sans-serif">
+        <defs>
+          <marker id="ab" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#3b82f6"/></marker>
+          <marker id="ap" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#8b5cf6"/></marker>
+          <marker id="ag" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#d97706"/></marker>
+        </defs>
+        <!-- ライフライン -->
+        <line x1="88"  y1="2" x2="88"  y2="540" stroke="#bfdbfe" stroke-width="2" stroke-dasharray="6,5"/>
+        <line x1="280" y1="2" x2="280" y2="540" stroke="#ddd6fe" stroke-width="2" stroke-dasharray="6,5"/>
+        <line x1="472" y1="2" x2="472" y2="540" stroke="#fde68a" stroke-width="2" stroke-dasharray="6,5"/>
+        <!-- 活性バー -->
+        <rect x="83"  y="26" width="10" height="505" rx="3" fill="#bfdbfe" opacity="0.7"/>
+        <rect x="275" y="26" width="10" height="505" rx="3" fill="#ddd6fe" opacity="0.7"/>
+        <rect x="467" y="160" width="10" height="370" rx="3" fill="#fde68a" opacity="0.7"/>
+        <!-- Step 1: Browser→SP -->
+        <circle cx="88" cy="50" r="11" fill="#1e429f"/>
+        <text x="88" y="55" text-anchor="middle" font-size="11" font-weight="800" fill="white">1</text>
+        <line x1="99" y1="50" x2="267" y2="50" stroke="#3b82f6" stroke-width="2.5" marker-end="url(#ab)"/>
+        <text x="183" y="41" text-anchor="middle" font-size="11" font-weight="700" fill="#1d4ed8">リソースへアクセス</text>
+        <text x="183" y="66" text-anchor="middle" font-size="9" fill="#6b7280">未認証のためアクセス不可</text>
+        <!-- Step 2: SP→Browser -->
+        <circle cx="280" cy="113" r="11" fill="#7c3aed"/>
+        <text x="280" y="118" text-anchor="middle" font-size="11" font-weight="800" fill="white">2</text>
+        <line x1="269" y1="113" x2="101" y2="113" stroke="#8b5cf6" stroke-width="2" marker-end="url(#ap)"/>
+        <text x="183" y="104" text-anchor="middle" font-size="11" font-weight="700" fill="#6d28d9">302 リダイレクト</text>
+        <text x="183" y="129" text-anchor="middle" font-size="9" fill="#6b7280">SAMLリクエスト（Base64）を付与</text>
+        <!-- Step 3: Browser→IdP (long arrow over SP) -->
+        <circle cx="88" cy="176" r="11" fill="#1e429f"/>
+        <text x="88" y="181" text-anchor="middle" font-size="11" font-weight="800" fill="white">3</text>
+        <line x1="99" y1="176" x2="459" y2="176" stroke="#3b82f6" stroke-width="2" marker-end="url(#ab)"/>
+        <text x="280" y="167" text-anchor="middle" font-size="11" font-weight="700" fill="#1d4ed8">SAMLリクエスト転送</text>
+        <text x="280" y="192" text-anchor="middle" font-size="9" fill="#6b7280">ブラウザがIdPへ直接送信</text>
+        <!-- Step 4: IdP→Browser (long) -->
+        <circle cx="472" cy="239" r="11" fill="#d97706"/>
+        <text x="472" y="244" text-anchor="middle" font-size="11" font-weight="800" fill="white">4</text>
+        <line x1="461" y1="239" x2="101" y2="239" stroke="#d97706" stroke-width="2" marker-end="url(#ag)"/>
+        <text x="280" y="230" text-anchor="middle" font-size="11" font-weight="700" fill="#92400e">ログイン画面を表示</text>
+        <text x="280" y="255" text-anchor="middle" font-size="9" fill="#6b7280">IdPのログインページ</text>
+        <!-- Step 5: Browser→IdP (long) -->
+        <circle cx="88" cy="302" r="11" fill="#1e429f"/>
+        <text x="88" y="307" text-anchor="middle" font-size="11" font-weight="800" fill="white">5</text>
+        <line x1="99" y1="302" x2="459" y2="302" stroke="#3b82f6" stroke-width="2" marker-end="url(#ab)"/>
+        <text x="280" y="293" text-anchor="middle" font-size="11" font-weight="700" fill="#1d4ed8">認証情報を入力・送信</text>
+        <!-- IdP内部処理 -->
+        <rect x="380" y="315" width="180" height="42" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5"/>
+        <text x="470" y="330" text-anchor="middle" font-size="9" font-weight="700" fill="#92400e">🔐 IdP 内部処理</text>
+        <text x="470" y="346" text-anchor="middle" font-size="9" fill="#92400e">アサーション生成・署名</text>
+        <!-- Step 6: IdP→Browser (long) -->
+        <circle cx="472" cy="378" r="11" fill="#d97706"/>
+        <text x="472" y="383" text-anchor="middle" font-size="11" font-weight="800" fill="white">6</text>
+        <line x1="461" y1="378" x2="101" y2="378" stroke="#d97706" stroke-width="2.5" marker-end="url(#ag)"/>
+        <text x="280" y="369" text-anchor="middle" font-size="11" font-weight="700" fill="#92400e">SAMLレスポンス（HTTP POST）</text>
+        <text x="280" y="394" text-anchor="middle" font-size="9" fill="#6b7280">署名付きアサーションをブラウザへ</text>
+        <!-- Step 7: Browser→SP -->
+        <circle cx="88" cy="441" r="11" fill="#1e429f"/>
+        <text x="88" y="446" text-anchor="middle" font-size="11" font-weight="800" fill="white">7</text>
+        <line x1="99" y1="441" x2="267" y2="441" stroke="#3b82f6" stroke-width="2.5" marker-end="url(#ab)"/>
+        <text x="183" y="432" text-anchor="middle" font-size="11" font-weight="700" fill="#1d4ed8">SAMLレスポンス自動POST</text>
+        <text x="183" y="457" text-anchor="middle" font-size="9" fill="#6b7280">HTMLフォームで自動送信</text>
+        <!-- Step 8 成功エリア -->
+        <rect x="60" y="468" width="430" height="66" rx="12" fill="#f0fdf4" stroke="#6ee7b7" stroke-width="1.5"/>
+        <text x="280" y="484" text-anchor="middle" font-size="9" font-weight="700" fill="#059669">SPがアサーションの署名を検証</text>
+        <circle cx="280" cy="502" r="11" fill="#059669"/>
+        <text x="280" y="507" text-anchor="middle" font-size="11" font-weight="800" fill="white">8</text>
+        <line x1="269" y1="502" x2="101" y2="502" stroke="#10b981" stroke-width="2.5" marker-end="url(#ao)"/>
+        <text x="183" y="493" text-anchor="middle" font-size="10" font-weight="800" fill="#065f46">アクセス許可</text>
+        <text x="88" y="525" text-anchor="middle" font-size="9" font-weight="800" fill="#059669">✓ SSO 完了</text>
+      </svg>
+    </div>
   </div>
 </div>
 <div class="ds-section">
