@@ -376,13 +376,91 @@ const CH01_CARDS = [
   </div>
 </div>
 <div class="ds-section">
-  <div class="ds-section-title">🔑 FIDO2 の仕組み（認証フロー概要）</div>
-  <div class="ds-compare col2">
-    <div class="ds-compare-head"><div>ステップ</div><div>内容</div></div>
-    <div class="ds-compare-row"><div>① チャレンジ受信</div><div>サーバ（RP）がランダムなチャレンジをブラウザへ送信</div></div>
-    <div class="ds-compare-row"><div>② 生体認証</div><div>ユーザが指紋・顔認証等で認証器をアンロック</div></div>
-    <div class="ds-compare-row"><div>③ 署名生成</div><div>認証器が秘密鍵でチャレンジに署名（秘密鍵は外に出ない）</div></div>
-    <div class="ds-compare-row"><div>④ 署名送信・検証</div><div>署名をサーバへ送信。サーバは登録済み公開鍵で検証</div></div>
+  <div class="ds-section-title">🔑 FIDO2 認証フロー（シーケンス図）</div>
+  <div class="ds-diagram-card">
+    <div class="ds-actors">
+      <div class="ds-actor">
+        <div class="ds-actor-icon" style="background:#dbeafe">🧑</div>
+        <div class="ds-actor-name" style="color:#1e429f">ユーザ</div>
+        <div class="ds-actor-sub">操作者</div>
+      </div>
+      <div class="ds-actor">
+        <div class="ds-actor-icon" style="background:#ede9fe">💻</div>
+        <div class="ds-actor-name" style="color:#5b21b6">ブラウザ<br>/ 認証器</div>
+        <div class="ds-actor-sub">CTAP/WebAuthn</div>
+      </div>
+      <div class="ds-actor">
+        <div class="ds-actor-icon" style="background:#d1fae5">🔐</div>
+        <div class="ds-actor-name" style="color:#065f46">RPサーバ</div>
+        <div class="ds-actor-sub">Relying Party</div>
+      </div>
+    </div>
+    <div class="ds-svg-wrap">
+      <svg viewBox="0 0 560 490" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,'Hiragino Kaku Gothic ProN',sans-serif">
+        <defs>
+          <marker id="ab" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#3b82f6"/></marker>
+          <marker id="ap" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#8b5cf6"/></marker>
+          <marker id="ag" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#10b981"/></marker>
+        </defs>
+        <!-- ライフライン -->
+        <line x1="88"  y1="2" x2="88"  y2="490" stroke="#bfdbfe" stroke-width="2" stroke-dasharray="6,5"/>
+        <line x1="280" y1="2" x2="280" y2="490" stroke="#ddd6fe" stroke-width="2" stroke-dasharray="6,5"/>
+        <line x1="472" y1="2" x2="472" y2="490" stroke="#a7f3d0" stroke-width="2" stroke-dasharray="6,5"/>
+        <!-- 活性バー -->
+        <rect x="83"  y="26" width="10" height="455" rx="3" fill="#bfdbfe" opacity="0.7"/>
+        <rect x="275" y="26" width="10" height="455" rx="3" fill="#ddd6fe" opacity="0.7"/>
+        <rect x="467" y="160" width="10" height="325" rx="3" fill="#a7f3d0" opacity="0.7"/>
+        <!-- Step 1 -->
+        <circle cx="88" cy="50" r="11" fill="#1e429f"/>
+        <text x="88" y="55" text-anchor="middle" font-size="11" font-weight="800" fill="white">1</text>
+        <line x1="99" y1="50" x2="267" y2="50" stroke="#3b82f6" stroke-width="2.5" marker-end="url(#ab)"/>
+        <text x="183" y="41" text-anchor="middle" font-size="11" font-weight="700" fill="#1d4ed8">ログインボタン押下</text>
+        <text x="183" y="66" text-anchor="middle" font-size="9" fill="#6b7280">ユーザがサービスにアクセス</text>
+        <!-- Step 2 -->
+        <circle cx="280" cy="113" r="11" fill="#7c3aed"/>
+        <text x="280" y="118" text-anchor="middle" font-size="11" font-weight="800" fill="white">2</text>
+        <line x1="291" y1="113" x2="459" y2="113" stroke="#8b5cf6" stroke-width="2" marker-end="url(#ap)"/>
+        <text x="376" y="104" text-anchor="middle" font-size="11" font-weight="700" fill="#6d28d9">認証リクエスト</text>
+        <text x="376" y="129" text-anchor="middle" font-size="9" fill="#6b7280">WebAuthn API 呼び出し</text>
+        <!-- Step 3 -->
+        <circle cx="472" cy="176" r="11" fill="#059669"/>
+        <text x="472" y="181" text-anchor="middle" font-size="11" font-weight="800" fill="white">3</text>
+        <line x1="461" y1="176" x2="293" y2="176" stroke="#10b981" stroke-width="2" marker-end="url(#ag)"/>
+        <text x="376" y="167" text-anchor="middle" font-size="11" font-weight="700" fill="#065f46">チャレンジ（nonce）送信</text>
+        <text x="376" y="192" text-anchor="middle" font-size="9" fill="#6b7280">ランダム値でリプレイ攻撃を防止</text>
+        <!-- Step 4 -->
+        <circle cx="280" cy="239" r="11" fill="#7c3aed"/>
+        <text x="280" y="244" text-anchor="middle" font-size="11" font-weight="800" fill="white">4</text>
+        <line x1="269" y1="239" x2="101" y2="239" stroke="#8b5cf6" stroke-width="2" marker-end="url(#ap)"/>
+        <text x="183" y="230" text-anchor="middle" font-size="11" font-weight="700" fill="#6d28d9">生体認証を要求</text>
+        <text x="183" y="255" text-anchor="middle" font-size="9" fill="#6b7280">指紋・FaceID・PINなど</text>
+        <!-- Step 5 -->
+        <circle cx="88" cy="302" r="11" fill="#1e429f"/>
+        <text x="88" y="307" text-anchor="middle" font-size="11" font-weight="800" fill="white">5</text>
+        <line x1="99" y1="302" x2="267" y2="302" stroke="#3b82f6" stroke-width="2" marker-end="url(#ab)"/>
+        <text x="183" y="293" text-anchor="middle" font-size="11" font-weight="700" fill="#1d4ed8">生体認証承認</text>
+        <text x="183" y="318" text-anchor="middle" font-size="9" fill="#6b7280">認証器がアンロック</text>
+        <!-- 内部処理ボックス -->
+        <rect x="188" y="323" width="184" height="42" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5"/>
+        <text x="280" y="338" text-anchor="middle" font-size="9" font-weight="700" fill="#92400e">🔐 認証器内部処理</text>
+        <text x="280" y="354" text-anchor="middle" font-size="9" fill="#92400e">秘密鍵でチャレンジに署名（鍵は外に出ない）</text>
+        <!-- Step 6 -->
+        <circle cx="280" cy="385" r="11" fill="#7c3aed"/>
+        <text x="280" y="390" text-anchor="middle" font-size="11" font-weight="800" fill="white">6</text>
+        <line x1="291" y1="385" x2="459" y2="385" stroke="#8b5cf6" stroke-width="2.5" marker-end="url(#ap)"/>
+        <text x="376" y="376" text-anchor="middle" font-size="11" font-weight="700" fill="#6d28d9">署名済みアサーション送信</text>
+        <text x="376" y="401" text-anchor="middle" font-size="9" fill="#6b7280">credential.id ＋ 署名</text>
+        <!-- Step 7 成功エリア -->
+        <rect x="60" y="413" width="430" height="72" rx="12" fill="#f0fdf4" stroke="#6ee7b7" stroke-width="1.5"/>
+        <text x="472" y="430" text-anchor="middle" font-size="9" font-weight="700" fill="#059669">登録済み公開鍵で署名を検証</text>
+        <circle cx="472" cy="448" r="11" fill="#059669"/>
+        <text x="472" y="453" text-anchor="middle" font-size="11" font-weight="800" fill="white">7</text>
+        <line x1="461" y1="448" x2="101" y2="448" stroke="#10b981" stroke-width="2.5" marker-end="url(#ag)"/>
+        <text x="280" y="439" text-anchor="middle" font-size="11" font-weight="800" fill="#065f46">認証成功・セッション確立</text>
+        <text x="88"  y="472" text-anchor="middle" font-size="10" font-weight="800" fill="#059669">✓ ログイン完了</text>
+        <text x="340" y="472" text-anchor="middle" font-size="9" font-weight="700" fill="#dc2626">⚠️ パスワードはネットワークを流れない</text>
+      </svg>
+    </div>
   </div>
 </div>
 <div class="ds-section">
