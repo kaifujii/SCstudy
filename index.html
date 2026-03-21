@@ -15,29 +15,27 @@
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700;9..40,800&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 /* ================================================================
-   DESIGN SYSTEM — Monochrome Professional
-   morohoshi.site × Nothing.tech
-   Black / White / One accent. Card as hero.
+   DESIGN SYSTEM — Slate Monochrome
+   3色ルール: Slate系ファミリー(明度差のみ) + アクセント1色
+   緑・赤は使わない。既知/未知は accent vs muted で区別。
    Shippori Mincho B1 (terms) · DM Sans (numerics) · Noto Sans JP (JP UI)
    ================================================================ */
 :root {
-  --bg:        #eef0f5;
+  --bg:        #edf0f7;    /* slate-50 相当 */
   --card-bg:   #ffffff;
-  --text:      #0d0d0d;
-  --sub:       #374151;
-  --muted:     #9ca3af;
-  --border:    #dde1eb;
-  --accent:    #1f61f7;   /* morohoshi blue */
-  --accent-lt: #eef3ff;
-  --header:    #0d0d0d;
-  --success:   #2a6b56;   /* muted forest — not vivid */
-  --danger:    #9b3545;   /* muted burgundy — not vivid */
+  --text:      #151c2c;    /* slate-900 相当 */
+  --sub:       #3d4966;    /* slate-700 相当 */
+  --muted:     #7c879c;    /* slate-500 相当 */
+  --border:    #cdd3e2;    /* slate-200 相当 */
+  --accent:    #3f52c4;    /* muted indigo — 唯一の色彩 */
+  --accent-lt: #eceffe;
+  --header:    #151c2c;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
   font-family: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
   background-color: var(--bg);
-  background-image: radial-gradient(circle, #bdc5d4 1px, transparent 1px);
+  background-image: radial-gradient(circle, #bcc3d6 1px, transparent 1px);
   background-size: 24px 24px;
   color: var(--text);
   min-height: 100vh;
@@ -265,16 +263,16 @@ header {
 }
 .flashcard-front {
   background-color: var(--card-bg);
-  background-image: radial-gradient(ellipse at 90% 0%, rgba(13,148,136,0.07) 0%, transparent 55%);
+  background-image: radial-gradient(ellipse at 90% 0%, rgba(63,82,196,0.05) 0%, transparent 55%);
   border: 1px solid var(--border);
   border-left: 3px solid var(--accent);
   box-shadow: 0 2px 6px rgba(0,0,0,0.05), 0 20px 48px rgba(0,0,0,0.07);
 }
 .flashcard-back {
   background-color: var(--card-bg);
-  background-image: radial-gradient(ellipse at 90% 0%, rgba(42,107,86,0.06) 0%, transparent 55%);
-  border: 1px solid #b8d4cb;
-  border-left: 3px solid var(--success);
+  background-image: radial-gradient(ellipse at 90% 0%, rgba(63,82,196,0.04) 0%, transparent 55%);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
   box-shadow: 0 2px 6px rgba(0,0,0,0.05), 0 20px 48px rgba(0,0,0,0.07);
   transform: rotateY(180deg);
 }
@@ -329,7 +327,7 @@ header {
   font-weight: 700;
   letter-spacing: 4px;
   text-transform: uppercase;
-  color: var(--success);
+  color: var(--accent);
   margin-bottom: 16px;
   display: flex;
   align-items: center;
@@ -340,7 +338,7 @@ header {
   display: block;
   width: 18px;
   height: 1.5px;
-  background: var(--success);
+  background: var(--accent);
   flex-shrink: 0;
 }
 .card-answer {
@@ -394,17 +392,17 @@ header {
   transition: all 0.15s;
 }
 #btn-known {
-  background: var(--card-bg);
-  color: var(--success);
-  border: 1.5px solid #9dc4ba;
+  background: var(--accent);
+  color: #ffffff;
+  border: 1.5px solid var(--accent);
 }
-#btn-known:hover { background: #f2f8f6; border-color: #6fa99a; }
+#btn-known:hover { background: #3347b0; border-color: #3347b0; }
 #btn-unknown {
   background: var(--card-bg);
-  color: var(--danger);
-  border: 1.5px solid #d4a3ac;
+  color: var(--muted);
+  border: 1.5px solid var(--border);
 }
-#btn-unknown:hover { background: #faf2f3; border-color: #bc8090; }
+#btn-unknown:hover { border-color: var(--sub); color: var(--sub); }
 
 /* ===== CARD NAV ===== */
 .card-nav {
@@ -484,8 +482,8 @@ header {
   font-weight: 300;
   user-select: none;
 }
-.stat-known   { color: var(--success); }
-.stat-unknown { color: var(--danger); }
+.stat-known   { color: var(--accent); }
+.stat-unknown { color: var(--sub); }
 .stat-total   { color: var(--text); }
 
 /* ===== LIST VIEW ===== */
@@ -523,7 +521,7 @@ header {
   white-space: nowrap;
   flex-shrink: 0;
   letter-spacing: 0.3px;
-  border: 1px solid rgba(13,148,136,0.12);
+  border: 1px solid rgba(63,82,196,0.15);
 }
 .list-item-answer {
   display: none;
@@ -730,14 +728,14 @@ header {
 .ds-compare-row div { padding: 9px 6px; font-size: 0.7rem; text-align: center; line-height: 1.4; }
 .ds-compare-row div:first-child { background: #f3f4f6; font-weight: 700; color: var(--sub); font-size: 0.62rem; }
 .ds-compare-row div:nth-child(2) { color: var(--text); font-weight: 600; }
-.ds-compare-row div:nth-child(3) { color: #5b21b6; font-weight: 600; }
+.ds-compare-row div:nth-child(3) { color: var(--accent); font-weight: 600; }
 .ds-compare-row:nth-child(even) { background: #fafafa; }
 .ds-compare-row:nth-child(even) div:first-child { background: #ececec; }
 .ds-compare.col2 .ds-compare-head,
 .ds-compare.col2 .ds-compare-row { grid-template-columns: 1fr 2.5fr; }
 .ds-compare.col4 .ds-compare-head,
 .ds-compare.col4 .ds-compare-row { grid-template-columns: repeat(4, 1fr); }
-.ds-compare.col4 .ds-compare-row div:nth-child(4) { color: #2a6b56; font-weight: 600; }
+.ds-compare.col4 .ds-compare-row div:nth-child(4) { color: var(--sub); font-weight: 600; }
 .ds-actors.col4 { grid-template-columns: repeat(4, 1fr); }
 
 .ds-qa-item { display: flex; gap: 8px; margin-bottom: 8px; align-items: stretch; }
@@ -754,13 +752,13 @@ header {
   line-height: 1.45;
 }
 .ds-qa-a {
-  background: #f2f7f5;
-  border: 1px solid #b8d4cb;
+  background: var(--accent-lt);
+  border: 1px solid rgba(63,82,196,0.2);
   border-radius: 5px;
   padding: 8px 10px;
   font-size: 0.73rem;
   font-weight: 700;
-  color: #2a6b56;
+  color: var(--accent);
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -781,8 +779,6 @@ header {
   --border:    #262626;
   --accent:    #5b8df5;   /* lighter blue for dark bg */
   --accent-lt: #0d1a3a;
-  --success:   #5aad8a;   /* muted sage */
-  --danger:    #c97585;   /* muted dusty rose */
 }
 [data-dark] body {
   background-color: #0a0a0a;
@@ -806,9 +802,9 @@ header {
 }
 [data-dark] .flashcard-back {
   background-color: var(--card-bg);
-  background-image: radial-gradient(ellipse at 90% 0%, rgba(90,173,138,0.07) 0%, transparent 55%);
-  border-color: #1a4035;
-  border-left-color: var(--success);
+  background-image: radial-gradient(ellipse at 90% 0%, rgba(91,141,245,0.06) 0%, transparent 55%);
+  border-color: var(--border);
+  border-left-color: var(--accent);
   box-shadow: 0 2px 6px rgba(0,0,0,0.5), 0 20px 48px rgba(0,0,0,0.3);
 }
 [data-dark] .card-term    { color: #f5f5f5; }
@@ -822,10 +818,10 @@ header {
 [data-dark] #btn-prev:hover:not(:disabled) { border-color: #555; color: var(--text); }
 [data-dark] #btn-next { background: #f5f5f5; color: #0a0a0a; }
 [data-dark] #btn-next:hover:not(:disabled) { background: #dddddd; }
-[data-dark] #btn-known { background: var(--card-bg); color: var(--success); border-color: #1a4035; }
-[data-dark] #btn-known:hover { background: #0e221c; }
-[data-dark] #btn-unknown { background: var(--card-bg); color: var(--danger); border-color: #3d1c22; }
-[data-dark] #btn-unknown:hover { background: #200f12; }
+[data-dark] #btn-known { background: var(--accent); color: #ffffff; border-color: var(--accent); }
+[data-dark] #btn-known:hover { background: #4a77e0; border-color: #4a77e0; }
+[data-dark] #btn-unknown { background: var(--card-bg); color: var(--muted); border-color: var(--border); }
+[data-dark] #btn-unknown:hover { border-color: #555; color: var(--text); }
 [data-dark] .progress-bar-wrap { background: var(--border); }
 [data-dark] .detail-sheet { background: var(--bg); }
 [data-dark] .detail-top { background: var(--card-bg); border-bottom-color: var(--border); }
@@ -842,7 +838,7 @@ header {
 [data-dark] .ds-compare-row:nth-child(even) div:first-child { background: #181818; }
 [data-dark] .ds-diagram-card { background: var(--card-bg); border-color: var(--border); }
 [data-dark] .ds-qa-q { background: var(--accent-lt); border-left-color: var(--accent); color: #94a3b8; }
-[data-dark] .ds-qa-a { background: #0e221c; border-color: #1a4035; color: var(--success); }
+[data-dark] .ds-qa-a { background: var(--accent-lt); border-color: rgba(91,141,245,0.2); color: var(--accent); }
 [data-dark] .detail-open-btn { color: var(--accent); border-color: var(--accent); }
 [data-dark] .detail-open-btn:hover { background: var(--accent); color: var(--bg); }
 </style>
@@ -933,10 +929,10 @@ header {
 
     <div class="result-btns" id="result-btns" style="display:none">
       <button class="result-btn" id="btn-unknown">
-        <span class="ic ic-close ic-sm" style="color:var(--danger);"></span>もう一度
+        <span class="ic ic-close ic-sm" style="color:var(--muted);"></span>もう一度
       </button>
       <button class="result-btn" id="btn-known">
-        <span class="ic ic-check ic-sm" style="color:var(--success);"></span>覚えた
+        <span class="ic ic-check ic-sm" style="background-color:rgba(255,255,255,0.9);"></span>覚えた
       </button>
     </div>
 
@@ -1229,8 +1225,8 @@ document.getElementById("btn-shuffle").addEventListener("click", () => {
 document.getElementById("btn-unknown-only").addEventListener("click", () => {
   showUnknownOnly = !showUnknownOnly;
   const btn = document.getElementById("btn-unknown-only");
-  btn.style.borderColor = showUnknownOnly ? "var(--danger)" : "";
-  btn.style.color = showUnknownOnly ? "var(--danger)" : "";
+  btn.style.borderColor = showUnknownOnly ? "var(--accent)" : "";
+  btn.style.color = showUnknownOnly ? "var(--accent)" : "";
   applyFilter();
 });
 
