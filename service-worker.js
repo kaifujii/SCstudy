@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sc-tango-v14';
+const CACHE_NAME = 'studydeck-v1';
 const ASSETS = [
   './',
   './index.html',
@@ -21,6 +21,7 @@ const ASSETS = [
   './icons/ui/check.svg',
   './icons/ui/arrow-left.svg',
   './icons/ui/arrow-right.svg',
+  './sc/index.html',
   './data/ch01.js',
   './data/ch02.js',
   './data/ch03.js',
@@ -29,6 +30,7 @@ const ASSETS = [
   './data/ch06.js',
   './data/ch08.js',
   './data/ch09.js',
+  './az305/index.html',
 ];
 
 // インストール時に全アセットをキャッシュ
