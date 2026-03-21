@@ -6,16 +6,24 @@
 <title>AZ-305 — StudyDeck</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,700;9..40,800&family=Noto+Sans+JP:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700;9..40,800&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #edf0f7; --card-bg: #ffffff; --text: #151c2c;
-  --sub: #3d4966; --muted: #7c879c; --border: #cdd3e2;
-  --accent: #3f52c4; --header: #151c2c;
+  --bg:        #edf0f7;
+  --card-bg:   #ffffff;
+  --text:      #151c2c;
+  --sub:       #3d4966;
+  --muted:     #7c879c;
+  --border:    #cdd3e2;
+  --accent:    #3f52c4;
+  --accent-lt: #eceffe;
+  --header:    #151c2c;
+  --az:        #0078d4;
+  --az-lt:     #e8f3fb;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
-  font-family: 'Noto Sans JP', sans-serif;
+  font-family: 'Noto Sans JP', -apple-system, sans-serif;
   background-color: var(--bg);
   background-image: radial-gradient(circle, #bcc3d6 1px, transparent 1px);
   background-size: 24px 24px;
@@ -23,73 +31,305 @@ body {
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
 }
+
+/* ===== HEADER ===== */
 header {
-  background: var(--header);
-  height: 54px; padding: 0 20px;
-  display: flex; align-items: center; gap: 10px;
-  position: sticky; top: 0; z-index: 100;
+  background-color: var(--header);
+  background-image:
+    linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+  background-size: 36px 36px;
+  height: 54px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 .back-link {
   display: flex; align-items: center; justify-content: center;
   width: 28px; height: 28px; border-radius: 5px; text-decoration: none;
-  transition: background 0.15s;
+  transition: background 0.15s; flex-shrink: 0;
 }
 .back-link:hover { background: rgba(255,255,255,0.1); }
+.logo-text { display: flex; flex-direction: column; gap: 1px; }
 .logo-sub {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.5rem; color: rgba(255,255,255,0.32);
-  letter-spacing: 3.5px; text-transform: uppercase; font-weight: 500;
+  font-family: 'DM Sans', sans-serif; font-size: 0.5rem;
+  color: rgba(255,255,255,0.32); letter-spacing: 3.5px;
+  text-transform: uppercase; font-weight: 500;
 }
 .logo-main {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 1rem; font-weight: 800; color: #fff; letter-spacing: -0.5px;
+  font-family: 'DM Sans', sans-serif; font-size: 1rem;
+  font-weight: 800; color: #ffffff; letter-spacing: -0.5px;
 }
+.az-badge {
+  margin-left: auto;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.6rem; font-weight: 700; letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(80,230,255,0.8);
+  background: rgba(0,120,212,0.2);
+  border: 1px solid rgba(0,120,212,0.35);
+  border-radius: 3px;
+  padding: 3px 9px;
+}
+
+/* ===== MAIN ===== */
 main {
-  max-width: 480px; margin: 0 auto;
-  padding: 80px 20px; text-align: center;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 36px 16px 60px;
 }
-.badge {
+
+/* ===== HERO ===== */
+.hero { margin-bottom: 32px; }
+.hero-eyebrow {
   font-family: 'DM Sans', sans-serif;
-  font-size: 0.6rem; font-weight: 700; letter-spacing: 2px;
-  text-transform: uppercase; color: var(--muted);
-  background: #f3f4f6; border: 1px solid var(--border);
-  border-radius: 3px; padding: 3px 10px;
-  display: inline-block; margin-bottom: 20px;
+  font-size: 0.58rem; font-weight: 700; letter-spacing: 4px;
+  text-transform: uppercase; color: var(--az);
+  display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
 }
-h1 {
+.hero-eyebrow::before {
+  content: ''; display: block; width: 18px; height: 1.5px;
+  background: var(--az); flex-shrink: 0;
+}
+.hero-title {
   font-family: 'DM Sans', sans-serif;
   font-size: 1.8rem; font-weight: 800; letter-spacing: -0.03em;
-  color: var(--text); margin-bottom: 12px; line-height: 1.2;
+  color: var(--text); line-height: 1.2; margin-bottom: 8px;
 }
-p { font-size: 0.88rem; color: var(--muted); line-height: 1.7; margin-bottom: 28px; }
-.back-btn {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 10px 20px; background: var(--card-bg);
-  border: 1.5px solid var(--border); border-radius: 6px;
-  text-decoration: none; font-size: 0.82rem; font-weight: 700;
-  color: var(--sub); transition: border-color 0.15s;
+.hero-sub { font-size: 0.85rem; color: var(--muted); line-height: 1.7; }
+
+/* ===== STATS ROW ===== */
+.stats-row {
+  display: flex; gap: 16px; margin-bottom: 28px; flex-wrap: wrap;
 }
-.back-btn:hover { border-color: var(--text); color: var(--text); }
+.stat-chip {
+  display: flex; align-items: baseline; gap: 4px;
+  background: var(--card-bg); border: 1px solid var(--border);
+  border-radius: 6px; padding: 8px 14px;
+}
+.stat-chip .num {
+  font-family: 'DM Sans', monospace; font-size: 1.2rem;
+  font-weight: 800; color: var(--az); letter-spacing: -1px;
+}
+.stat-chip .lbl {
+  font-size: 0.65rem; color: var(--muted); font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+
+/* ===== SECTION LABEL ===== */
+.section-label {
+  font-family: 'DM Sans', sans-serif; font-size: 0.58rem;
+  font-weight: 700; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 12px;
+}
+
+/* ===== VOL CARDS ===== */
+.vol-list { display: flex; flex-direction: column; gap: 8px; }
+.vol-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--az);
+  border-radius: 8px;
+  padding: 18px 20px;
+  text-decoration: none; color: inherit;
+  display: flex; align-items: center; gap: 16px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  transition: box-shadow 0.18s, transform 0.18s;
+  position: relative; overflow: hidden;
+}
+.vol-card:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.09);
+  transform: translateX(2px);
+}
+.vol-card::after {
+  content: '';
+  position: absolute; top: 0; right: 0;
+  width: 60px; height: 100%;
+  background: linear-gradient(to left, rgba(0,120,212,0.03), transparent);
+  pointer-events: none;
+}
+
+.vol-num {
+  font-family: 'DM Sans', monospace;
+  font-size: 1.5rem; font-weight: 800;
+  color: rgba(0,120,212,0.15); letter-spacing: -2px;
+  flex-shrink: 0; width: 36px; text-align: center;
+  line-height: 1;
+}
+.vol-body { flex: 1; min-width: 0; }
+.vol-title {
+  font-family: 'DM Sans', 'Noto Sans JP', sans-serif;
+  font-size: 0.92rem; font-weight: 700; color: var(--text);
+  margin-bottom: 4px;
+}
+.vol-domains {
+  display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 0;
+}
+.domain-tag {
+  font-size: 0.6rem; font-weight: 600; letter-spacing: 0.3px;
+  padding: 2px 7px; border-radius: 3px;
+  background: var(--az-lt); color: var(--az);
+  border: 1px solid rgba(0,120,212,0.15);
+  white-space: nowrap;
+}
+.vol-meta {
+  display: flex; flex-direction: column; align-items: flex-end;
+  gap: 4px; flex-shrink: 0;
+}
+.vol-count {
+  font-family: 'DM Sans', monospace;
+  font-size: 0.78rem; font-weight: 700;
+  color: var(--text);
+}
+.vol-count span { font-size: 0.6rem; color: var(--muted); font-weight: 500; }
+.vol-arrow {
+  color: var(--muted);
+  transition: color 0.15s, transform 0.15s;
+}
+.vol-card:hover .vol-arrow { color: var(--az); transform: translateX(2px); }
+
+/* ===== DARK MODE ===== */
+[data-dark] {
+  --bg: #0a0a0a; --card-bg: #161616; --text: #f5f5f5;
+  --sub: #d1d5db; --muted: #4b5563; --border: #262626;
+  --accent: #5b8df5; --accent-lt: #0d1a3a;
+  --az: #50e6ff; --az-lt: #0a1f2e;
+}
+[data-dark] body {
+  background-color: #0a0a0a;
+  background-image: radial-gradient(circle, #1c1c1c 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+[data-dark] .domain-tag { background: var(--az-lt); border-color: rgba(80,230,255,0.15); }
+[data-dark] .vol-card::after { background: linear-gradient(to left, rgba(80,230,255,0.03), transparent); }
 </style>
 </head>
 <body>
+
 <header>
-  <a href="../" class="back-link" title="ホームに戻る">
+  <a href="../" class="back-link" title="StudyDeckホームへ">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
   </a>
-  <div>
+  <div class="logo-text">
     <div class="logo-sub">Microsoft Azure</div>
     <div class="logo-main">AZ-305</div>
   </div>
+  <div class="az-badge">Solutions Architect</div>
 </header>
+
 <main>
-  <div class="badge">Coming Soon</div>
-  <h1>AZ-305<br>準備中です</h1>
-  <p>Microsoft Azure Solutions Architect Expert の学習コンテンツを作成中です。<br>もうしばらくお待ちください。</p>
-  <a href="../" class="back-btn">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-    ホームに戻る
-  </a>
+  <div class="hero">
+    <div class="hero-eyebrow">AZ-305 問題集</div>
+    <h1 class="hero-title">Microsoft Azure<br>Solutions Architect Expert</h1>
+    <p class="hero-sub">インフラ設計・ガバナンス・データ・継続性の全ドメインを網羅した演習問題集。全271問・5ボリューム。</p>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-chip"><span class="num">271</span><span class="lbl">総問題数</span></div>
+    <div class="stat-chip"><span class="num">5</span><span class="lbl">ボリューム</span></div>
+    <div class="stat-chip"><span class="num">4</span><span class="lbl">ドメイン</span></div>
+  </div>
+
+  <div class="section-label">ボリューム一覧</div>
+  <div class="vol-list">
+
+    <a href="vol1.html" class="vol-card">
+      <div class="vol-num">01</div>
+      <div class="vol-body">
+        <div class="vol-title">Vol.1 — 日本語問題集</div>
+        <div class="vol-domains">
+          <span class="domain-tag">ビジネス継続性</span>
+          <span class="domain-tag">インフラ設計</span>
+          <span class="domain-tag">データストレージ</span>
+          <span class="domain-tag">ID・ガバナンス</span>
+        </div>
+      </div>
+      <div class="vol-meta">
+        <div class="vol-count">55 <span>問</span></div>
+        <svg class="vol-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+    </a>
+
+    <a href="vol2.html" class="vol-card">
+      <div class="vol-num">02</div>
+      <div class="vol-body">
+        <div class="vol-title">Vol.2 — 練習問題集 詳細解説版</div>
+        <div class="vol-domains">
+          <span class="domain-tag">データストレージ</span>
+          <span class="domain-tag">ID・ガバナンス・監視</span>
+          <span class="domain-tag">ビジネス継続性</span>
+          <span class="domain-tag">インフラ設計</span>
+        </div>
+      </div>
+      <div class="vol-meta">
+        <div class="vol-count">55 <span>問</span></div>
+        <svg class="vol-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+    </a>
+
+    <a href="vol3.html" class="vol-card">
+      <div class="vol-num">03</div>
+      <div class="vol-body">
+        <div class="vol-title">Vol.3 — 練習問題集 詳細解説版</div>
+        <div class="vol-domains">
+          <span class="domain-tag">ID・ガバナンス・監視</span>
+          <span class="domain-tag">データストレージ</span>
+          <span class="domain-tag">ビジネス継続性</span>
+          <span class="domain-tag">インフラ設計</span>
+        </div>
+      </div>
+      <div class="vol-meta">
+        <div class="vol-count">52 <span>問</span></div>
+        <svg class="vol-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+    </a>
+
+    <a href="vol4.html" class="vol-card">
+      <div class="vol-num">04</div>
+      <div class="vol-body">
+        <div class="vol-title">Vol.4 — 模擬問題集</div>
+        <div class="vol-domains">
+          <span class="domain-tag">データストレージ</span>
+          <span class="domain-tag">インフラ設計</span>
+          <span class="domain-tag">ビジネス継続性</span>
+          <span class="domain-tag">ID・ガバナンス</span>
+        </div>
+      </div>
+      <div class="vol-meta">
+        <div class="vol-count">52 <span>問</span></div>
+        <svg class="vol-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+    </a>
+
+    <a href="vol5.html" class="vol-card">
+      <div class="vol-num">05</div>
+      <div class="vol-body">
+        <div class="vol-title">Vol.5 — 練習問題集</div>
+        <div class="vol-domains">
+          <span class="domain-tag">インフラ設計</span>
+          <span class="domain-tag">ビジネス継続性</span>
+          <span class="domain-tag">データストレージ</span>
+        </div>
+      </div>
+      <div class="vol-meta">
+        <div class="vol-count">57 <span>問</span></div>
+        <svg class="vol-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+    </a>
+
+  </div>
 </main>
+
+<script>
+// テーマ同期
+const saved = localStorage.getItem('studydeck-theme');
+if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+  document.documentElement.setAttribute('data-dark', '');
+}
+</script>
 </body>
 </html>
