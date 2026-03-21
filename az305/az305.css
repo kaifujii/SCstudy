@@ -58,6 +58,38 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* ── StudyDeck global nav bar ── */
+.studydeck-nav {
+  position: relative;
+  z-index: 9999;
+  background: #0f1829;
+  border-bottom: 1px solid rgba(255,255,255,.07);
+  height: 42px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 12px;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  flex-shrink: 0;
+}
+.studydeck-nav a {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  color: rgba(255,255,255,.45);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 6px 8px;
+  border-radius: 4px;
+  transition: color 0.15s;
+}
+.studydeck-nav a:hover { color: rgba(255,255,255,.85); }
+.studydeck-nav .nav-sep { color: rgba(255,255,255,.12); font-size: 14px; }
+.studydeck-nav .nav-current { color: rgba(255,255,255,.35); font-size: 11px; font-weight: 600; letter-spacing: 1px; }
+
 /* ================================================================
    HEADER — SCサイトと同じダークネイビー
    ================================================================ */
@@ -74,7 +106,7 @@ body {
   gap: 14px;
   box-shadow: 0 2px 8px rgba(0,0,0,.2);
 }
-.hdr-icon { font-size: 20px; flex-shrink: 0; opacity: .85; }
+.hdr-icon { display: flex; align-items: center; flex-shrink: 0; opacity: .85; color: rgba(255,255,255,.7); }
 .hdr-title {
   font-family: 'DM Sans', sans-serif;
   font-size: 1rem;
@@ -192,10 +224,13 @@ body {
 
 /* ── Buttons ── */
 .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   padding: 6px 14px;
   border-radius: 6px;
   border: none;
-  font-family: 'Noto Sans JP', sans-serif;
+  font-family: 'DM Sans', 'Noto Sans JP', sans-serif;
   font-size: .78rem;
   font-weight: 700;
   cursor: pointer;
@@ -645,7 +680,7 @@ table.ctbl, .etbl { width: 100%; border-collapse: collapse; font-size: .82rem; }
   from { transform: scale(.85); opacity: 0; }
   to   { transform: scale(1); opacity: 1; }
 }
-.m-icon { font-size: 44px; text-align: center; margin-bottom: 8px; }
+.m-icon { display: flex; align-items: center; justify-content: center; color: var(--blue); margin-bottom: 8px; }
 .m-score {
   font-family: 'DM Sans', monospace;
   font-size: 3rem; font-weight: 900;
@@ -667,8 +702,9 @@ table.ctbl, .etbl { width: 100%; border-collapse: collapse; font-size: .82rem; }
 }
 .m-btns { display: flex; flex-direction: column; gap: 7px; }
 .m-btn {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
   padding: 12px; border-radius: 6px; border: none;
-  font-family: 'Noto Sans JP', sans-serif;
+  font-family: 'DM Sans', 'Noto Sans JP', sans-serif;
   font-size: .85rem; font-weight: 700; cursor: pointer; transition: all .15s;
 }
 .m-btn-p { background: var(--blue); color: #fff; }

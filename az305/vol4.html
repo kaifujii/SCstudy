@@ -7,9 +7,14 @@
 <link rel="stylesheet" href="az305.css">
 
 </head>
-<body><div id="studydeck-nav" style="position:relative;z-index:9999;background:#0f1829;border-bottom:1px solid rgba(255,255,255,0.07);height:42px;display:flex;align-items:center;padding:0 16px;gap:12px;font-family:DM Sans,system-ui,sans-serif;flex-shrink:0;"><a href="../" style="display:flex;align-items:center;gap:6px;text-decoration:none;color:rgba(255,255,255,0.45);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:6px 8px;border-radius:4px;transition:color 0.15s;" onmouseover="this.style.color='rgba(255,255,255,0.85)'" onmouseout="this.style.color='rgba(255,255,255,0.45)'"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>StudyDeck</a><span style="color:rgba(255,255,255,0.12);font-size:14px;">/</span><span style="color:rgba(255,255,255,0.35);font-size:11px;font-weight:600;letter-spacing:1px;">AZ-305</span></div>
+<body>
+<div id="studydeck-nav" class="studydeck-nav">
+  <a href="../"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>StudyDeck</a>
+  <span class="nav-sep">/</span>
+  <span class="nav-current">AZ-305</span>
+</div>
 <div class="hdr">
-  <div class="hdr-icon">🏗️</div>
+  <div class="hdr-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
   <div>
     <div class="hdr-title">AZ-305 練習問題集 Vol.3　詳細解説版</div>
     <div class="hdr-sub">Azure Solutions Architect Expert – 全 52 問 ｜ 正解理由・不正解理由・間違えやすいポイント完備</div>
@@ -26,21 +31,21 @@
   <button class="dbtn" data-d="ID・ガバナンス・監視" onclick="filterDomain('ID・ガバナンス・監視')">ID・ガバナンス (11)</button>
   <button class="dbtn" data-d="インフラストラクチャ設計" onclick="filterDomain('インフラストラクチャ設計')">インフラ (23)</button>
 </div>
-    <button class="btn btn-out" onclick="resetAll()">🔄 リセット</button>
-    <button class="btn btn-prim" onclick="showResults()">📊 結果</button>
+    <button class="btn btn-out" onclick="resetAll()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.21"/></svg> リセット</button>
+    <button class="btn btn-prim" onclick="showResults()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg> 結果</button>
   </div>
 </div>
 <div class="qwrap" id="qwrap"></div>
 <div class="modal" id="modal" onclick="modalClose(event)">
   <div class="mcard">
-    <div class="m-icon" id="micon">🎯</div>
+    <div class="m-icon" id="micon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 21 12 17 16 21"/><line x1="12" y1="17" x2="12" y2="11"/><path d="M18 6H6l1-4h10l1 4z"/><path d="M6 6c0 7 6 11 6 11s6-4 6-11"/></svg></div>
     <div class="m-score" id="mscore">--</div>
     <div class="m-pct" id="mpct">正解率</div>
     <div class="m-msg" id="mmsg"></div>
     <div class="m-domains" id="mdomains"></div>
     <div class="m-btns">
-      <button class="m-btn m-btn-p" onclick="resetAll()">🔄 もう一度挑戦する</button>
-      <button class="m-btn m-btn-o" onclick="modalClose()">✕ 閉じる</button>
+      <button class="m-btn m-btn-p" onclick="resetAll()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.21"/></svg> もう一度挑戦する</button>
+      <button class="m-btn m-btn-o" onclick="modalClose()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> 閉じる</button>
     </div>
   </div>
 </div>
@@ -65,7 +70,7 @@ function renderQ(q){
   const mbadge=isMulti?`<span class="mbadge">複数選択 (${q.n_correct}つ)</span>`:'';
   const mhint=isMulti?`<div class="multi-hint">⚡ ${q.n_correct}つの選択肢を選んでください</div>`:'';
   const choices=q.choices.map((c,i)=>`<button class="cbtn" id="c_${q.id}_${i}" onclick="onChoice('${q.id}',${i})"><span class="cltr">${LTR[i]}</span><span>${escH(c.text)}</span></button>`).join('');
-  const sub=isMulti?`<button class="submit-btn" id="sub_${q.id}" onclick="submitMulti('${q.id}')">✅ 回答を確定する</button>`:'';
+  const sub=isMulti?`<button class="submit-btn" id="sub_${q.id}" onclick="submitMulti('${q.id}')">回答を確定する</button>`:'';
   return `<div class="qcard" id="card_${q.id}"><div class="qh"><span class="qnum">問 ${q.num}</span><span class="dbadge" style="background:${q.domain_color||'#0072C6'}">${q.domain}</span>${mbadge}</div><div class="qbody"><p class="qtext">${escH(q.question_text)}</p></div>${mhint}<div class="choices">${choices}</div>${sub}<div class="expanel" id="exp_${q.id}"><div id="rbadge_${q.id}"></div>${q.exp_html}</div></div>`;
 }
 function onChoice(qid,idx){
@@ -101,8 +106,8 @@ function applyAnswer(q,sel){
   });
   document.getElementById(`card_${q.id}`).classList.add(isOk?(q.n_correct>1?'multi-ok':'ok'):'ng');
   document.getElementById(`rbadge_${q.id}`).innerHTML=isOk
-    ?`<div class="rbadge ${q.n_correct>1?'multi-ok':'ok'}">${q.n_correct>1?'🎯 正解！（複数選択）':'✅ 正解！'}</div>`
-    :'<div class="rbadge ng">❌ 不正解 — 解説で正解・理由を確認しましょう</div>';
+    ?`<div class="rbadge ${q.n_correct>1?'multi-ok':'ok'}">${q.n_correct>1?'正解！（複数選択）':'正解！'}</div>`
+    :'<div class="rbadge ng">不正解 — 解説で正解・理由を確認しましょう</div>';
   document.getElementById(`exp_${q.id}`).style.display='block';
   const sub=document.getElementById(`sub_${q.id}`);if(sub)sub.style.display='none';
   updateProgress();
@@ -118,8 +123,8 @@ function restoreQ(q){
   const exp=document.getElementById(`exp_${q.id}`);if(exp)exp.style.display='block';
   const badge=document.getElementById(`rbadge_${q.id}`);
   if(badge)badge.innerHTML=s.correct
-    ?`<div class="rbadge ${q.n_correct>1?'multi-ok':'ok'}">${q.n_correct>1?'🎯 正解！（複数選択）':'✅ 正解！'}</div>`
-    :'<div class="rbadge ng">❌ 不正解 — 解説で正解・理由を確認しましょう</div>';
+    ?`<div class="rbadge ${q.n_correct>1?'multi-ok':'ok'}">${q.n_correct>1?'正解！（複数選択）':'正解！'}</div>`
+    :'<div class="rbadge ng">不正解 — 解説で正解・理由を確認しましょう</div>';
 }
 function filterDomain(d){
   filter=d;
@@ -143,12 +148,16 @@ function showResults(){
   });
   document.getElementById('mscore').textContent=`${cor}/${TOTAL}`;
   document.getElementById('mpct').textContent=`正解率 ${pct}%`;
-  let icon='📚',msg='';
-  if(pct>=80){icon='🏆';msg='合格圏内！本番でも自信を持って！';}
-  else if(pct>=70){icon='📈';msg='あと少し！弱点ドメインを集中的に復習しよう。';}
-  else if(pct>=50){icon='💪';msg='「間違えやすいポイント」を重点的に確認しよう。';}
-  else{icon='📖';msg='各解説の「なぜ正解か」「なぜ不正解か」をしっかり読もう！';}
-  document.getElementById('micon').textContent=icon;
+  const SVG_TROPHY='<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 21 12 17 16 21"/><line x1="12" y1="17" x2="12" y2="11"/><path d="M18 6H6l1-4h10l1 4z"/><path d="M6 6c0 7 6 11 6 11s6-4 6-11"/></svg>';
+  const SVG_UP='<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>';
+  const SVG_ZAP='<svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>';
+  const SVG_BOOK='<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>';
+  let icon=SVG_BOOK,msg='';
+  if(pct>=80){icon=SVG_TROPHY;msg='合格圏内！本番でも自信を持って！';}
+  else if(pct>=70){icon=SVG_UP;msg='あと少し！弱点ドメインを集中的に復習しよう。';}
+  else if(pct>=50){icon=SVG_ZAP;msg='「間違えやすいポイント」を重点的に確認しよう。';}
+  else{icon=SVG_BOOK;msg='各解説の「なぜ正解か」「なぜ不正解か」をしっかり読もう！';}
+  document.getElementById('micon').innerHTML=icon;
   document.getElementById('mmsg').textContent=msg;
   document.getElementById('mdomains').innerHTML=Object.entries(ds).map(([d,s])=>{
     const p=Math.round(s.c/s.t*100);
