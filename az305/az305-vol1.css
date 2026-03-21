@@ -1,0 +1,54 @@
+/* ================================================================
+   az305-vol1.css — Vol.1 フォント & カラーオーバーライド
+   StudyDeck ダークモードパレットに合わせる
+   Space Grotesk → DM Sans / JetBrains Mono → DM Sans
+   ================================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,700;9..40,800&family=Noto+Sans+JP:wght@400;500;700&display=swap');
+
+/* ── Dark palette override (StudyDeck dark mode 準拠) ── */
+:root {
+  --bg:  #0a0a0a;
+  --s1:  #161616;
+  --s2:  #1c1c1c;
+  --s3:  #222222;
+  --tx1: #f5f5f5;
+  --tx2: #d1d5db;
+  --tx3: #4b5563;
+  --bd1: rgba(255,255,255,.07);
+  --bd2: rgba(0,120,212,.2);
+}
+
+/* ── Font override: Space Grotesk → DM Sans ── */
+body {
+  font-family: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  background-color: var(--bg) !important;
+  background-image: radial-gradient(circle, #1c1c1c 1px, transparent 1px) !important;
+  background-size: 24px 24px !important;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Space Grotesk が当たっている要素を DM Sans に差し替え */
+.hdr-brand, .hdr-tagline,
+.welcome-title, .welcome-sub,
+.config-card h3,
+.start-btn,
+.mode-btn .mb-title, .mode-btn .mb-sub,
+.meta-pill,
+.prog-label, .prog-pct,
+.score-pill,
+.q-num, .q-tag, .q-note,
+.ch-ltr,
+.result-banner,
+.final-score, .final-pct, .final-msg,
+.domain-name, .domain-pct {
+  font-family: 'DM Sans', sans-serif !important;
+}
+
+/* JetBrains Mono → DM Sans (tabular nums) */
+.prog-pct, .pass-pct,
+.final-score, .domain-pct,
+.score-pill {
+  font-family: 'DM Sans', monospace !important;
+  font-variant-numeric: tabular-nums;
+}
