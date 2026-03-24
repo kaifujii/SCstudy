@@ -526,7 +526,11 @@ body {
   letter-spacing: .08em;
   text-transform: uppercase;
 }
-.arch-diagram svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+.arch-diagram svg { display: block; margin: 0 auto; max-width: 100%; height: auto; overflow: hidden; }
+.arch-diagram svg text,
+.arch-diagram svg tspan {
+  font-family: 'DM Sans', 'Noto Sans JP', Arial, sans-serif !important;
+}
 
 /* ── CHOICES ── */
 .choices-label {
