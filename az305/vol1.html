@@ -117,48 +117,13 @@
     <div class="score-pill ng" id="sc-ng"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> 不正解 <span id="sc-ng-n">0</span></div>
     <div class="score-pill rem" id="sc-rem">残り 55問</div>
   </div>
-</div>
-
-<!-- ── NAV DOTS ── -->
-<div class="nav-dots-wrap" id="nav-dots-wrap">
-  <div class="nav-dots" id="nav-dots"></div>
-</div>
-
-<!-- ── QUESTION ── -->
-<div class="q-screen" id="q-screen">
-  <div class="q-card" id="q-card">
-    <div class="q-card-head">
-      <span class="qnum-badge" id="qnum-badge">問題 1</span>
-      <span class="domain-badge" id="domain-badge"></span>
-      <span class="multi-badge" id="multi-badge" style="display:none">複数選択</span>
-    </div>
-    <div class="q-body">
-      <div class="q-section-label"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> 設問</div>
-      <div class="q-text" id="q-text"></div>
-      <div class="arch-diagram" id="arch-diagram" style="display:none"></div>
-    </div>
-    <div class="choices-label">選択肢</div>
-    <ul class="choices" id="choices"></ul>
-    <div class="result-banner" id="result-banner">
-      <span class="rb-icon"></span>
-      <div class="rb-text">
-        <div class="rb-main"></div>
-        <div class="rb-ans"></div>
-      </div>
-    </div>
-    <button class="exp-toggle" id="exp-toggle" onclick="toggleExp()">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg> 解説を見る <span class="arr">▼</span>
-    </button>
-    <div class="exp-panel" id="exp-panel"></div>
-    <div class="exp-spacer"></div>
-    <div class="q-actions">
-      <button class="btn btn-secondary" id="btn-prev" onclick="goPrev()">← 前の問題</button>
-      <button class="btn btn-primary" id="btn-submit" onclick="submitAns()" style="display:none"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 9 17 20 6"/></svg> 回答する</button>
-      <button class="btn btn-primary" id="btn-next" onclick="goNext()" style="display:none">次の問題 →</button>
-      <button class="btn btn-ghost" id="btn-finish" onclick="showFinal()" style="display:none"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 21 12 17 16 21"/><line x1="12" y1="17" x2="12" y2="11"/><path d="M18 6H6l1-4h10l1 4z"/><path d="M6 6c0 7 6 11 6 11s6-4 6-11"/></svg> 結果を見る</button>
-    </div>
+  <div style="display:flex;justify-content:flex-end;margin-top:8px">
+    <button class="btn btn-ghost" id="btn-finish-all" onclick="showFinal()" style="display:none"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 21 12 17 16 21"/><line x1="12" y1="17" x2="12" y2="11"/><path d="M18 6H6l1-4h10l1 4z"/><path d="M6 6c0 7 6 11 6 11s6-4 6-11"/></svg> 結果を見る</button>
   </div>
 </div>
+
+<!-- ── QUESTIONS (all cards rendered by JS) ── -->
+<div class="q-screen" id="q-screen"></div>
 
 <!-- ── FINAL ── -->
 <div class="final" id="final">
@@ -244,135 +209,113 @@ function startQuiz(){
   answers=qOrder.map(()=>new Set());
   submitted=new Array(qOrder.length).fill(false);
   expOpen={};
-  cur=0;
 
   document.getElementById('welcome').style.display='none';
   document.getElementById('prog-container').style.display='block';
-  document.getElementById('nav-dots-wrap').style.display='block';
   document.getElementById('q-screen').style.display='block';
   document.getElementById('hdr-right').style.display='flex';
 
-  buildDots();
-  renderQ(0);
+  renderAll();
+  updateProgress();
   window.scrollTo({top:0});
 }
 
-function buildDots(){
-  const c=document.getElementById('nav-dots');
-  c.innerHTML='';
-  qOrder.forEach((_,i)=>{
-    const d=document.createElement('div');
-    d.className='ndot';d.id=`dot-${i}`;d.title=`問題${i+1}`;
-    d.onclick=()=>jumpTo(i);
-    c.appendChild(d);
-  });
+function renderAll(){
+  const screen=document.getElementById('q-screen');
+  screen.innerHTML='';
+  qOrder.forEach((_,idx)=>screen.appendChild(buildCard(idx)));
 }
 
-function updateDot(idx){
-  const d=document.getElementById(`dot-${idx}`);
-  if(!d) return;
-  d.className='ndot'+(idx===cur?' cur':'')+(submitted[idx]?(isOK(idx)?' ok':' ng'):'');
-}
-
-function renderQ(idx){
-  cur=idx;
-  const qi=qOrder[idx],q=QUESTIONS[qi],ord=optOrder[idx],done=submitted[idx];
-
-  document.getElementById('qnum-badge').textContent=`問題 ${idx+1}`;
-  const db=document.getElementById('domain-badge');
-  db.textContent=q.domain||'';
-  db.className='domain-badge '+(DOMAIN_CLASS[q.domain]||'db-is');
-  document.getElementById('multi-badge').style.display=q.n_correct>1?'inline-block':'none';
-
-  document.getElementById('q-text').textContent=q.question_text;
-
-  const arcEl=document.getElementById('arch-diagram');
-  if(q.svg&&showArc){arcEl.innerHTML=q.svg;arcEl.style.display='block'}
-  else arcEl.style.display='none';
-
-  const ul=document.getElementById('choices');
-  ul.innerHTML='';
+function buildCard(idx){
+  const qi=qOrder[idx],q=QUESTIONS[qi],ord=optOrder[idx];
+  const card=document.createElement('div');
+  card.className='q-card';
+  card.id=`qc-${idx}`;
+  const domCls=DOMAIN_CLASS[q.domain]||'db-is';
+  const multiBadge=q.n_correct>1?`<span class="multi-badge">複数選択 (${q.n_correct}つ)</span>`:'';
+  card.innerHTML=`
+    <div class="q-card-head">
+      <span class="qnum-badge">問題 ${idx+1}</span>
+      <span class="domain-badge ${domCls}">${esc(q.domain||'')}</span>
+      ${multiBadge}
+    </div>
+    <div class="q-text">${esc(q.question_text)}</div>
+    ${q.svg&&showArc?`<div class="arch-diagram">${q.svg}</div>`:''}
+    <ul class="choices" id="ch-${idx}"></ul>
+    <div class="result-banner" id="rb-${idx}"><span class="rb-icon"></span><span class="rb-main"></span><span class="rb-ans"></span></div>
+    <div class="exp-toggle" id="et-${idx}"></div>
+    <div class="exp-panel" id="ep-${idx}"></div>
+    ${q.n_correct>1?`<button class="btn btn-submit" id="sub-${idx}" style="display:none" onclick="submitCard(${idx})"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 9 17 20 6"/></svg> 回答する</button>`:''}
+  `;
+  const ul=card.querySelector(`#ch-${idx}`);
   ord.forEach((origIdx,dispIdx)=>{
-    const ch=q.choices[origIdx],sel=answers[idx].has(dispIdx),ok=q.correct_indices.includes(origIdx);
+    const ch=q.choices[origIdx];
     const li=document.createElement('li');
     li.className='choice';li.dataset.di=dispIdx;
-    if(done){
-      li.classList.add('locked');
-      if(ok) li.classList.add('show-ok');
-      else if(sel) li.classList.add('show-ng');
-      else li.classList.add('show-dim');
-    } else {
-      if(sel) li.classList.add('selected');
-      li.onclick=()=>toggleChoice(idx,dispIdx);
-    }
-    const icon=done?(ok?'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 9 17 20 6"/></svg>':sel?'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>':''):'';
-    li.innerHTML=`<div class="ch-lbl">${LETTERS[dispIdx]}</div><div class="ch-text">${esc(ch.text)}</div><div class="ch-icon">${icon}</div>`;
+    li.onclick=()=>toggleChoice(idx,dispIdx);
+    li.innerHTML=`<div class="ch-lbl">${LETTERS[dispIdx]}</div><div class="ch-text">${esc(ch.text)}</div><div class="ch-icon"></div>`;
     ul.appendChild(li);
   });
-
-  const rb=document.getElementById('result-banner');
-  rb.className='result-banner';
-  if(done){
-    const ok=isOK(idx);
-    rb.className='result-banner '+(ok?'ok':'ng');
-    rb.querySelector('.rb-icon').innerHTML=ok?'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 9 17 20 6"/></svg>':'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
-    rb.querySelector('.rb-main').textContent=ok?'正解です！':'不正解です';
-    if(!ok){
-      const ct=q.correct_indices.map(ci=>q.choices[ci].text).join(' ／ ');
-      rb.querySelector('.rb-ans').textContent=`正解: ${ct}`;
-    } else rb.querySelector('.rb-ans').textContent='';
-  }
-
-  const et=document.getElementById('exp-toggle'),ep=document.getElementById('exp-panel');
-  if(done){
-    const open=expOpen[idx];
-    et.className='exp-toggle visible'+(open?' open':'');
-    et.innerHTML='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg> '+(open?'解説を閉じる ':'解説を見る ')+'<span class="arr">'+(open?'▲':'▼')+'</span>';
-    ep.innerHTML=q.exp_html||'';
-    ep.className='exp-panel'+(open?' open':'');
-  } else {
-    et.className='exp-toggle';ep.innerHTML='';ep.className='exp-panel';
-  }
-
-  const bs=document.getElementById('btn-submit'),bn=document.getElementById('btn-next');
-  const bf=document.getElementById('btn-finish'),bp=document.getElementById('btn-prev');
-  bp.disabled=idx===0;
-  const isLast=idx===qOrder.length-1,allDone=submitted.every(Boolean);
-  if(done){
-    bs.style.display='none';
-    bn.style.display=isLast?'none':'flex';
-    bf.style.display=(isLast||allDone)?'flex':'none';
-  } else {
-    bs.style.display=answers[idx].size>0?'flex':'none';
-    bn.style.display='none';bf.style.display='none';
-  }
-
-  updateDot(idx);
-  updateProgress();
-  const dot=document.getElementById(`dot-${idx}`);
-  if(dot) dot.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
-  window.scrollTo({top:0,behavior:'smooth'});
+  return card;
 }
 
-function toggleChoice(qIdx,di){
-  if(submitted[qIdx]) return;
-  const q=QUESTIONS[qOrder[qIdx]],sel=answers[qIdx];
-  if(q.n_correct>1){if(sel.has(di)) sel.delete(di);else sel.add(di)}
-  else{sel.clear();sel.add(di)}
-  document.querySelectorAll('.choice').forEach(li=>{
-    const d=parseInt(li.dataset.di),s=sel.has(d);
-    li.classList.toggle('selected',s);
-    const lbl=li.querySelector('.ch-lbl');
-    if(lbl){lbl.style.background=s?'var(--az-blue)':'';lbl.style.color=s?'#fff':''}
-  });
-  document.getElementById('btn-submit').style.display=sel.size>0?'flex':'none';
+function toggleChoice(idx,di){
+  if(submitted[idx]) return;
+  const q=QUESTIONS[qOrder[idx]],sel=answers[idx];
+  if(q.n_correct>1){
+    if(sel.has(di)) sel.delete(di); else sel.add(di);
+    document.getElementById(`ch-${idx}`).querySelectorAll('.choice').forEach(li=>{
+      const d=parseInt(li.dataset.di),s=sel.has(d);
+      li.classList.toggle('selected',s);
+      const lbl=li.querySelector('.ch-lbl');
+      if(lbl){lbl.style.background=s?'var(--az-blue)':'';lbl.style.color=s?'#fff':''}
+    });
+    const sub=document.getElementById(`sub-${idx}`);
+    if(sub) sub.style.display=sel.size>0?'flex':'none';
+  } else {
+    sel.clear();sel.add(di);
+    submitCard(idx);
+  }
 }
 
-function submitAns(){
-  const idx=cur;
+function submitCard(idx){
   if(submitted[idx]||!answers[idx].size) return;
   submitted[idx]=true;expOpen[idx]=true;
-  renderQ(idx);
+  showResult(idx);
+  checkAllDone();
+  updateProgress();
+}
+
+function showResult(idx){
+  const qi=qOrder[idx],q=QUESTIONS[qi],ord=optOrder[idx];
+  const ul=document.getElementById(`ch-${idx}`);
+  ul.querySelectorAll('.choice').forEach(li=>{
+    const dispIdx=parseInt(li.dataset.di),origIdx=ord[dispIdx];
+    const sel=answers[idx].has(dispIdx),ok=q.correct_indices.includes(origIdx);
+    li.onclick=null;
+    li.classList.remove('selected');li.classList.add('locked');
+    if(ok) li.classList.add('show-ok');
+    else if(sel) li.classList.add('show-ng');
+    else li.classList.add('show-dim');
+    const iconEl=li.querySelector('.ch-icon');
+    if(iconEl) iconEl.innerHTML=ok?'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 9 17 20 6"/></svg>':sel?'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>':'';
+  });
+  const sub=document.getElementById(`sub-${idx}`);
+  if(sub) sub.style.display='none';
+  const ok=isOK(idx);
+  const rb=document.getElementById(`rb-${idx}`);
+  rb.className='result-banner '+(ok?'ok':'ng');
+  rb.querySelector('.rb-icon').innerHTML=ok?'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 9 17 20 6"/></svg>':'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+  rb.querySelector('.rb-main').textContent=ok?'正解です！':'不正解です';
+  if(!ok){
+    const ct=q.correct_indices.map(ci=>q.choices[ci].text).join(' ／ ');
+    rb.querySelector('.rb-ans').textContent=`正解: ${ct}`;
+  } else rb.querySelector('.rb-ans').textContent='';
+  const et=document.getElementById(`et-${idx}`),ep=document.getElementById(`ep-${idx}`);
+  ep.innerHTML=q.exp_html||'';ep.className='exp-panel open';
+  et.className='exp-toggle visible open';
+  et.innerHTML='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg> 解説を閉じる <span class="arr">▲</span>';
+  et.onclick=()=>toggleExpCard(idx);
 }
 
 function isOK(idx){
@@ -383,24 +326,24 @@ function isOK(idx){
   return true;
 }
 
-function toggleExp(){
-  expOpen[cur]=!expOpen[cur];
-  const ep=document.getElementById('exp-panel'),et=document.getElementById('exp-toggle');
-  ep.className='exp-panel'+(expOpen[cur]?' open':'');
-  et.className='exp-toggle visible'+(expOpen[cur]?' open':'');
-  et.innerHTML=(expOpen[cur]?'📖 解説を閉じる ':'📖 解説を見る ')+'<span class="arr">'+(expOpen[cur]?'▲':'▼')+'</span>';
+function toggleExpCard(idx){
+  expOpen[idx]=!expOpen[idx];
+  const ep=document.getElementById(`ep-${idx}`),et=document.getElementById(`et-${idx}`);
+  ep.className='exp-panel'+(expOpen[idx]?' open':'');
+  et.className='exp-toggle visible'+(expOpen[idx]?' open':'');
+  et.innerHTML='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg> '+(expOpen[idx]?'解説を閉じる ':'解説を見る ')+'<span class="arr">'+(expOpen[idx]?'▲':'▼')+'</span>';
 }
 
-function goPrev(){if(cur>0) renderQ(cur-1)}
-function goNext(){if(cur<qOrder.length-1) renderQ(cur+1)}
-function jumpTo(i){renderQ(i)}
+function checkAllDone(){
+  if(submitted.every(Boolean)) document.getElementById('btn-finish-all').style.display='flex';
+}
 
 function updateProgress(){
   const total=qOrder.length;
   const ans=submitted.filter(Boolean).length;
   const ok=qOrder.reduce((a,_,i)=>a+(submitted[i]&&isOK(i)?1:0),0);
   const ng=ans-ok,pct=total?Math.round(ans/total*100):0;
-  document.getElementById('prog-label').textContent=`問題 ${cur+1} / ${total}`;
+  document.getElementById('prog-label').textContent=`回答済み ${ans} / ${total}`;
   document.getElementById('prog-fill').style.width=pct+'%';
   document.getElementById('prog-pct').textContent=pct+'%';
   document.getElementById('sc-ok-n').textContent=ok;
@@ -412,7 +355,6 @@ function updateProgress(){
 
 function showFinal(){
   document.getElementById('prog-container').style.display='none';
-  document.getElementById('nav-dots-wrap').style.display='none';
   document.getElementById('q-screen').style.display='none';
   document.getElementById('final').style.display='block';
 
@@ -470,12 +412,13 @@ function reviewWrong(){
   optOrder=wrongIs.map(i=>optOrder[i]);
   answers=qOrder.map(()=>new Set());
   submitted=new Array(qOrder.length).fill(false);
-  expOpen={};cur=0;
+  expOpen={};
   document.getElementById('final').style.display='none';
   document.getElementById('prog-container').style.display='block';
-  document.getElementById('nav-dots-wrap').style.display='block';
   document.getElementById('q-screen').style.display='block';
-  buildDots();renderQ(0);
+  document.getElementById('btn-finish-all').style.display='none';
+  renderAll();
+  updateProgress();
   window.scrollTo({top:0,behavior:'smooth'});
 }
 </script>
