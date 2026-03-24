@@ -31,6 +31,7 @@
   <button class="dbtn" data-d="ビジネス継続性設計" onclick="filterDomain('ビジネス継続性設計')">継続性 (5)</button>
   <button class="dbtn" data-d="インフラストラクチャ設計" onclick="filterDomain('インフラストラクチャ設計')">インフラ (18)</button>
   <div class="cbar-right">
+    <label class="shuf-label"><input type="checkbox" id="chk-shuf"> 選択肢シャッフル</label>
     <div class="pbar-wrap"><div class="pbar" id="pbar" style="width:0%"></div></div>
     <button class="btn btn-out" onclick="resetAll()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.21"/></svg> リセット</button>
     <button class="btn btn-prim" onclick="showResults()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg> 結果</button>
@@ -57,8 +58,13 @@ const TOTAL = QUESTIONS.length;
 const LTR = 'ABCDEFGHIJKLMNOP';
 let state={}, filter='all', multiSel={};
 function initState(){
-  state={};multiSel={};
-  QUESTIONS.forEach(q=>{state[q.id]={answered:false,correct:false};});
+  const chk=document.getElementById('chk-shuf');
+  const doShuf=chk&&chk.checked;
+  state={};multiSel={};displayChoices={};
+  QUESTIONS.forEach(q=>{
+    state[q.id]={answered:false,correct:false};
+    displayChoices[q.id]=doShuf?shuf([...q.choices]):[...q.choices];
+  });
 }
 function filtered(){return filter==='all'?QUESTIONS:QUESTIONS.filter(q=>q.domain===filter);}
 function escH(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
@@ -72,7 +78,7 @@ function renderQ(q){
   const isMulti=q.n_correct>1;
   const mbadge=isMulti?`<span class="mbadge">複数選択 (${q.n_correct}つ)</span>`:'';
   const mhint=isMulti?`<div class="multi-hint">⚡ ${q.n_correct}つの選択肢を選んでください</div>`:'';
-  const choices=q.choices.map((c,i)=>`<button class="cbtn" id="c_${q.id}_${i}" onclick="onChoice('${q.id}',${i})"><span class="cltr">${LTR[i]}</span><span>${escH(c.text)}</span></button>`).join('');
+  const choices=(displayChoices[q.id]||q.choices).map((c,i)=>`<button class="cbtn" id="c_${q.id}_${i}" onclick="onChoice('${q.id}',${i})"><span class="cltr">${LTR[i]}</span><span>${escH(c.text)}</span></button>`).join('');
   const sub=isMulti?`<button class="submit-btn" id="sub_${q.id}" onclick="submitMulti('${q.id}')">✅ 回答を確定する</button>`:'';
   return `<div class="qcard" id="card_${q.id}"><div class="qh"><span class="qnum">問 ${q.num}</span><span class="dbadge" style="background:${q.domain_color||'#0072C6'}">${q.domain}</span>${mbadge}</div><div class="qbody"><p class="qtext">${escH(q.question_text)}</p></div>${mhint}<div class="choices">${choices}</div>${sub}<div class="expanel" id="exp_${q.id}"><div id="rbadge_${q.id}"></div>${q.exp_html}</div></div>`;
 }
@@ -87,7 +93,7 @@ function onChoice(qid,idx){
     const sub=document.getElementById(`sub_${qid}`);
     if(sub)sub.style.display=multiSel[qid].size>=q.n_correct?'block':'none';
   }else{
-    state[qid]={answered:true,correct:q.choices[idx].is_correct};
+    state[qid]={answered:true,correct:(displayChoices[qid]||q.choices)[idx].is_correct};
     applyAnswer(q,[idx]);
   }
 }
@@ -95,13 +101,13 @@ function submitMulti(qid){
   if(state[qid]?.answered)return;
   const q=QUESTIONS.find(x=>x.id===qid);
   const sel=[...(multiSel[qid]||new Set())];
-  const cset=new Set(q.choices.map((c,i)=>c.is_correct?i:-1).filter(i=>i>=0));
+  const cset=new Set((displayChoices[qid]||q.choices).map((c,i)=>c.is_correct?i:-1).filter(i=>i>=0));
   state[qid]={answered:true,correct:sel.length===cset.size&&sel.every(i=>cset.has(i))};
   applyAnswer(q,sel);
 }
 function applyAnswer(q,sel){
   const sset=new Set(sel);const isOk=state[q.id].correct;
-  q.choices.forEach((c,i)=>{
+  (displayChoices[q.id]||q.choices).forEach((c,i)=>{
     const btn=document.getElementById(`c_${q.id}_${i}`);if(!btn)return;
     btn.disabled=true;btn.classList.remove('multi-selected');
     if(sset.has(i))btn.classList.add(c.is_correct?'correct':'wrong');
@@ -118,7 +124,7 @@ function applyAnswer(q,sel){
 }
 function restoreQ(q){
   const s=state[q.id];if(!s?.answered)return;
-  q.choices.forEach((c,i)=>{
+  (displayChoices[q.id]||q.choices).forEach((c,i)=>{
     const btn=document.getElementById(`c_${q.id}_${i}`);if(!btn)return;
     btn.disabled=true;if(c.is_correct)btn.classList.add(s.correct?'correct':'reveal');
   });

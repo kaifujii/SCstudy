@@ -33,6 +33,7 @@
   <button class="dbtn" data-d="BC" onclick="filterDomain('BC')">継続性 (6)</button>
   <button class="dbtn" data-d="IS" onclick="filterDomain('IS')">インフラ (15)</button>
   <div class="cbar-right">
+    <label class="shuf-label"><input type="checkbox" id="chk-shuf"> 選択肢シャッフル</label>
     <div class="pb-wrap"><div class="pb" id="pb" style="width:0%"></div></div>
     <button class="btn btn-out" onclick="resetAll()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.21"/></svg> リセット</button>
     <button class="btn btn-prim" onclick="showResults()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg> 結果</button>
@@ -2226,11 +2227,17 @@ const LTR = 'ABCDEFGHIJ';
 let state = {};
 let multiSel = {};
 let filter = 'all';
+let displayChoices = {};
+function shuf(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 
 function initState(){
-  state = {};
-  multiSel = {};
-  QS.forEach(q=>{ state[q.id]={answered:false,correct:false}; });
+  const chk=document.getElementById('chk-shuf');
+  const doShuf=chk&&chk.checked;
+  state={};multiSel={};displayChoices={};
+  QS.forEach(q=>{
+    state[q.id]={answered:false,correct:false};
+    displayChoices[q.id]=doShuf?shuf([...q.choices]):[...q.choices];
+  });
 }
 
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
@@ -2248,7 +2255,7 @@ function renderQ(q){
   const multi=q.n>1;
   const mBadge=multi?`<span class="mbadge">複数選択 (${q.n}つ)</span>`:'';
   const mHint=multi?`<div class="multi-hint">⚡ ${q.n}つ選択してください</div>`:'';
-  const choices=q.choices.map((c,i)=>`
+  const choices=(displayChoices[q.id]||q.choices).map((c,i)=>`
     <button class="cbtn" id="c_${q.id}_${i}" onclick="onChoice('${q.id}',${i})">
       <span class="cltr">${LTR[i]}</span>
       <span>${esc(c.t)}</span>
@@ -2288,7 +2295,7 @@ function onChoice(qid,idx){
     const sub=document.getElementById(`sub_${qid}`);
     if(sub) sub.style.display=multiSel[qid].size>=q.n?'block':'none';
   } else {
-    const ok=q.choices[idx].c;
+    const ok=(displayChoices[qid]||q.choices)[idx].c;
     state[qid]={answered:true,correct:ok};
     applyAnswer(q,[idx],ok);
   }
@@ -2298,7 +2305,7 @@ function submitMulti(qid){
   if(state[qid]?.answered) return;
   const q=QS.find(x=>x.id===qid);
   const sel=[...(multiSel[qid]||new Set())];
-  const correctSet=new Set(q.choices.map((c,i)=>c.c?i:-1).filter(i=>i>=0));
+  const correctSet=new Set((displayChoices[qid]||q.choices).map((c,i)=>c.c?i:-1).filter(i=>i>=0));
   const ok=sel.length===correctSet.size&&sel.every(i=>correctSet.has(i));
   state[qid]={answered:true,correct:ok};
   applyAnswer(q,sel,ok);
@@ -2306,7 +2313,7 @@ function submitMulti(qid){
 
 function applyAnswer(q,selIdxs,ok){
   const selSet=new Set(selIdxs);
-  q.choices.forEach((c,i)=>{
+  (displayChoices[q.id]||q.choices).forEach((c,i)=>{
     const btn=document.getElementById(`c_${q.id}_${i}`);
     if(!btn) return;
     btn.disabled=true;
@@ -2330,8 +2337,8 @@ function applyAnswer(q,selIdxs,ok){
 function restoreQ(q){
   const s=state[q.id];
   if(!s?.answered) return;
-  const correctSet=new Set(q.choices.map((c,i)=>c.c?i:-1).filter(i=>i>=0));
-  q.choices.forEach((c,i)=>{
+  const correctSet=new Set((displayChoices[q.id]||q.choices).map((c,i)=>c.c?i:-1).filter(i=>i>=0));
+  (displayChoices[q.id]||q.choices).forEach((c,i)=>{
     const btn=document.getElementById(`c_${q.id}_${i}`);
     if(!btn) return;
     btn.disabled=true;

@@ -208,6 +208,18 @@ body {
   padding: 8px 0;
 }
 
+/* ── Shuffle Label ── */
+.shuf-label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: var(--tx2);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.shuf-label input { cursor: pointer; accent-color: var(--az-blue); }
+
 /* ── Progress Bar (両エイリアス) ── */
 .pbar-wrap, .pb-wrap {
   width: 90px;
