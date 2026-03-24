@@ -74,7 +74,7 @@ ci:[1],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="arch-box">
-<div class="arch-title">🏗️ アーキテクチャ概念図</div>
+<div class="arch-title">アーキテクチャ概念図</div>
 <svg viewBox="0 0 500 160" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:500px">
   <rect width="500" height="160" fill="#F0F6FF" rx="10"/>
   <!-- Region 1 -->
@@ -107,13 +107,13 @@ exp:`<div class="exp-section">
 </svg>
 </div>
 <div class="key-box">
-<div class="k-title">💡 正解：2</div>
+<div class="k-title">正解：2</div>
 Azure VNet は<strong>リージョンスコープのリソース</strong>です。1 つの VNet は 1 つのリージョン内にしか存在できません。<br><br>
 「2 リージョン × 各 2 AZ = 計 4 AZ」という構成では、リージョンごとに VNet が 1 つ必要となるため、最低 <strong>2 つの VNet</strong> が必要です。<br><br>
 可用性ゾーン (AZ) は同一リージョン内の物理的な分離であり、同じ VNet 内のサブネットで対応できるため、VNet 数は増えません。
 </div>
 <div class="warn-box">
-<div class="w-title">⚠️ よくある誤解</div>
+<div class="w-title">よくある誤解</div>
 「4 つの AZ → 4 つの VNet が必要」と思いがちですが誤りです。AZ はネットワーク分離ではなくデータセンターの物理分離です。リージョンをまたぐ通信には VNet ピアリングまたは VPN Gateway を使用します。
 </div>
 <div class="tbl-wrap">
@@ -125,7 +125,7 @@ Azure VNet は<strong>リージョンスコープのリソース</strong>です�
 <tr><td>可用性ゾーン</td><td>リージョン内</td><td>VNet 数に影響しない</td></tr>
 </tbody></table></div>
 </div>
-<div class="refs"><div class="refs-title">📚 参考ドキュメント</div><ul>
+<div class="refs"><div class="refs-title">参考ドキュメント</div><ul>
 <li><a href="https://learn.microsoft.com/azure/virtual-network/virtual-networks-overview" target="_blank">Azure 仮想ネットワークの概要</a></li>
 <li><a href="https://learn.microsoft.com/azure/availability-zones/az-overview" target="_blank">可用性ゾーンの概要</a></li>
 </ul></div>`},
@@ -171,20 +171,20 @@ exp:`<div class="exp-section">
 </svg>
 </div>
 <div class="key-box">
-<div class="k-title">💡 正解：B シリーズ（バースト可能 VM）</div>
+<div class="k-title">正解：B シリーズ（バースト可能 VM）</div>
 B シリーズは<strong>CPU クレジット方式</strong>を採用しており、使用率が低いときにクレジットを蓄積し、ピーク時に消費してバーストパフォーマンスを発揮します。「朝夕のみピーク、それ以外は低負荷」という App1 の特性に最適です。
 </div>
 <div class="tbl-wrap">
 <table class="ctbl">
 <thead><tr><th class="hl">VM シリーズ</th><th>CPU クレジット</th><th>主な用途</th><th>本問の判定</th></tr></thead>
 <tbody>
-<tr class="hl"><td><strong>B シリーズ</strong></td><td>✅ 蓄積・消費</td><td>バースト可能、断続的ワークロード</td><td><span class="badge-ok">✅ 正解</span></td></tr>
-<tr><td>A シリーズ</td><td>❌ なし</td><td>開発・テスト用エントリーモデル</td><td><span class="badge-ng">❌</span></td></tr>
-<tr><td>D シリーズ</td><td>❌ なし</td><td>汎用・高コンピュート</td><td><span class="badge-ng">❌</span></td></tr>
-<tr><td>M シリーズ</td><td>❌ なし</td><td>大規模インメモリワークロード</td><td><span class="badge-ng">❌</span></td></tr>
+<tr class="hl"><td><strong>B シリーズ</strong></td><td>蓄積・消費</td><td>バースト可能、断続的ワークロード</td><td><span class="badge-ok">正解</span></td></tr>
+<tr><td>A シリーズ</td><td>なし</td><td>開発・テスト用エントリーモデル</td><td><span class="badge-ng">❌</span></td></tr>
+<tr><td>D シリーズ</td><td>なし</td><td>汎用・高コンピュート</td><td><span class="badge-ng">❌</span></td></tr>
+<tr><td>M シリーズ</td><td>なし</td><td>大規模インメモリワークロード</td><td><span class="badge-ng">❌</span></td></tr>
 </tbody></table></div>
 </div>
-<div class="refs"><div class="refs-title">📚 参考ドキュメント</div><ul>
+<div class="refs"><div class="refs-title">参考ドキュメント</div><ul>
 <li><a href="https://learn.microsoft.com/azure/virtual-machines/sizes-b-series-burstable" target="_blank">B シリーズ バースト可能 VM</a></li>
 </ul></div>`},
 
@@ -203,7 +203,7 @@ ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="arch-box">
-<div class="arch-title">🏗️ Azure SQL Database Business Critical – レプリカ構成</div>
+<div class="arch-title">Azure SQL Database Business Critical – レプリカ構成</div>
 <svg viewBox="0 0 480 160" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:480px">
   <rect width="480" height="160" fill="#F0F6FF" rx="10"/>
   <!-- Primary -->
@@ -234,23 +234,23 @@ exp:`<div class="exp-section">
 </svg>
 </div>
 <div class="key-box">
-<div class="k-title">💡 正解：Azure SQL Database (Business Critical 層)</div>
+<div class="k-title">正解：Azure SQL Database (Business Critical 層)</div>
 Business Critical 層は Always On 可用性グループをベースにしており、<strong>最大 4 つの読み取り可能なセカンダリレプリカ</strong>をサポートします。RTO は 30 秒未満で、15 分の要件を大きく下回ります。
 </div>
 <div class="tbl-wrap">
 <table class="ctbl">
 <thead><tr><th class="hl">サービス</th><th>複数セカンダリ</th><th>自動レプリケーション</th><th>RTO</th></tr></thead>
 <tbody>
-<tr class="hl"><td><strong>SQL DB (Business Critical)</strong></td><td>✅ 最大 4 つ</td><td>✅ Always On AG</td><td>~30 秒</td></tr>
-<tr><td>SQL Managed Instance (BC)</td><td>❌ 最大 1 つ</td><td>✅</td><td>~30 秒</td></tr>
-<tr><td>SQL DB (Hyperscale)</td><td>✅ 最大 30</td><td>✅</td><td>~3 分</td></tr>
+<tr class="hl"><td><strong>SQL DB (Business Critical)</strong></td><td>最大 4 つ</td><td>Always On AG</td><td>~30 秒</td></tr>
+<tr><td>SQL Managed Instance (BC)</td><td>最大 1 つ</td><td>✅</td><td>~30 秒</td></tr>
+<tr><td>SQL DB (Hyperscale)</td><td>最大 30</td><td>✅</td><td>~3 分</td></tr>
 </tbody></table></div>
 <div class="warn-box">
-<div class="w-title">⚠️ SQL MI との違い</div>
+<div class="w-title">SQL MI との違い</div>
 「複数のセカンダリレプリカ」がキー要件です。SQL Managed Instance の Business Critical 層はセカンダリレプリカが 1 つのみのため不正解です。Hyperscale は多数のセカンダリをサポートしますが、一般的な移行シナリオでは SQL DB が適切です。
 </div>
 </div>
-<div class="refs"><div class="refs-title">📚 参考ドキュメント</div><ul>
+<div class="refs"><div class="refs-title">参考ドキュメント</div><ul>
 <li><a href="https://learn.microsoft.com/azure/azure-sql/database/service-tier-business-critical" target="_blank">Business Critical サービス層</a></li>
 </ul></div>`},
 
@@ -264,7 +264,7 @@ ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="arch-box">
-<div class="arch-title">🏗️ アクティブ geo レプリケーション – 構成図</div>
+<div class="arch-title">アクティブ geo レプリケーション – 構成図</div>
 <svg viewBox="0 0 480 140" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:480px">
   <rect width="480" height="140" fill="#F0F6FF" rx="10"/>
   <!-- Primary Region -->
@@ -296,23 +296,23 @@ exp:`<div class="exp-section">
 </svg>
 </div>
 <div class="key-box">
-<div class="k-title">💡 正解：アクティブ geo レプリケーション</div>
+<div class="k-title">正解：アクティブ geo レプリケーション</div>
 アクティブ geo レプリケーションは Azure SQL Database 専用の機能で、<strong>最大 4 つの読み取り可能なセカンダリレプリカ</strong>を異なるリージョンに作成できます。RTO は 30 秒未満（手動フェールオーバー）です。
 </div>
 <div class="tbl-wrap">
 <table class="ctbl">
 <thead><tr><th class="hl">レプリケーション</th><th>複数セカンダリ</th><th>読み取り可能</th><th>RTO</th><th>対象サービス</th></tr></thead>
 <tbody>
-<tr class="hl"><td><strong>アクティブ geo レプリケーション</strong></td><td>✅ 最大4</td><td>✅</td><td>&lt;30秒</td><td>SQL Database のみ</td></tr>
-<tr><td>自動フェールオーバーグループ</td><td>❌ グループ単位</td><td>✅</td><td>&lt;60秒</td><td>SQL DB / SQL MI</td></tr>
-<tr><td>標準 geo レプリケーション</td><td>❌ 1つのみ</td><td>❌ オフライン</td><td>可変</td><td>旧機能</td></tr>
+<tr class="hl"><td><strong>アクティブ geo レプリケーション</strong></td><td>最大4</td><td>✅</td><td>&lt;30秒</td><td>SQL Database のみ</td></tr>
+<tr><td>自動フェールオーバーグループ</td><td>グループ単位</td><td>✅</td><td>&lt;60秒</td><td>SQL DB / SQL MI</td></tr>
+<tr><td>標準 geo レプリケーション</td><td>1つのみ</td><td>オフライン</td><td>可変</td><td>旧機能</td></tr>
 </tbody></table></div>
 <div class="warn-box">
-<div class="w-title">⚠️ 自動フェールオーバーグループとの違い</div>
+<div class="w-title">自動フェールオーバーグループとの違い</div>
 自動フェールオーバーグループは<strong>複数の独立したセカンダリレプリカを持てない</strong>（グループ内でのフェールオーバーは1つの方向）ため、「複数の読み取り専用レプリカ」要件を満たしません。
 </div>
 </div>
-<div class="refs"><div class="refs-title">📚 参考ドキュメント</div><ul>
+<div class="refs"><div class="refs-title">参考ドキュメント</div><ul>
 <li><a href="https://learn.microsoft.com/azure/azure-sql/database/active-geo-replication-overview" target="_blank">アクティブ geo レプリケーションの概要</a></li>
 </ul></div>`},
 
@@ -329,7 +329,7 @@ ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="arch-box">
-<div class="arch-title">🏗️ 大規模データ分析アーキテクチャ</div>
+<div class="arch-title">大規模データ分析アーキテクチャ</div>
 <svg viewBox="0 0 500 130" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:500px">
   <rect width="500" height="130" fill="#F0F6FF" rx="10"/>
   <!-- Source -->
@@ -358,19 +358,19 @@ exp:`<div class="exp-section">
 </svg>
 </div>
 <div class="key-box">
-<div class="k-title">💡 正解：Azure Data Explorer (ADX)</div>
+<div class="k-title">正解：Azure Data Explorer (ADX)</div>
 ADX はペタバイト規模の<strong>インタラクティブ分析</strong>に特化したサービスです。KQL (Kusto Query Language) を使用し、数秒での大規模クエリ、自動スケーリング、時系列データの可視化に優れています。
 </div>
 <div class="tbl-wrap">
 <table class="ctbl">
 <thead><tr><th class="hl">サービス</th><th>インタラクティブ分析</th><th>スケーリング</th><th>クエリ言語</th></tr></thead>
 <tbody>
-<tr class="hl"><td><strong>Azure Data Explorer</strong></td><td>✅ 特化</td><td>✅ 手動/自動</td><td>KQL</td></tr>
-<tr><td>Data Lake Analytics</td><td>❌ バッチ処理向け</td><td>ジョブ単位</td><td>U-SQL</td></tr>
+<tr class="hl"><td><strong>Azure Data Explorer</strong></td><td>特化</td><td>手動/自動</td><td>KQL</td></tr>
+<tr><td>Data Lake Analytics</td><td>バッチ処理向け</td><td>ジョブ単位</td><td>U-SQL</td></tr>
 <tr><td>Log Analytics</td><td>△ ログ/テレメトリ向け</td><td>限定的</td><td>KQL (制限あり)</td></tr>
 </tbody></table></div>
 </div>
-<div class="refs"><div class="refs-title">📚 参考ドキュメント</div><ul>
+<div class="refs"><div class="refs-title">参考ドキュメント</div><ul>
 <li><a href="https://learn.microsoft.com/azure/data-explorer/data-explorer-overview" target="_blank">Azure Data Explorer の概要</a></li>
 </ul></div>`},
 
@@ -382,7 +382,7 @@ ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="key-box">
-<div class="k-title">💡 正解：KQL（Kusto Query Language）</div>
+<div class="k-title">正解：KQL（Kusto Query Language）</div>
 KQL は Azure Data Explorer のネイティブクエリ言語です。パイプライン（<code>|</code>）ベースの読みやすい構文で、大規模データの集計・フィルタリング・可視化を高速に行えます。
 </div>
 <div class="arch-box">
@@ -405,7 +405,7 @@ LogData
 <tr><td>U-SQL</td><td>Azure Data Lake Analytics（廃止予定）</td><td>バッチ ETL 処理</td></tr>
 </tbody></table></div>
 </div>
-<div class="refs"><div class="refs-title">📚 参考ドキュメント</div><ul>
+<div class="refs"><div class="refs-title">参考ドキュメント</div><ul>
 <li><a href="https://learn.microsoft.com/azure/data-explorer/kusto/query/" target="_blank">KQL クエリ言語リファレンス</a></li>
 </ul></div>`},
 
@@ -424,7 +424,7 @@ ci:[1],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="arch-box">
-<div class="arch-title">🏗️ ストレージアカウント選択フロー</div>
+<div class="arch-title">ストレージアカウント選択フロー</div>
 <svg viewBox="0 0 480 160" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:480px">
   <rect width="480" height="160" fill="#F0F6FF" rx="10"/>
   <!-- Decision 1 -->
@@ -449,7 +449,7 @@ exp:`<div class="exp-section">
 </svg>
 </div>
 <div class="key-box">
-<div class="k-title">💡 正解：BlockBlobStorage（Premium ブロック BLOB）</div>
+<div class="k-title">正解：BlockBlobStorage（Premium ブロック BLOB）</div>
 BlockBlobStorage は SSD ベースの Premium ストレージを使用し、<strong>最高のスループットと最低レイテンシ</strong>を提供します。不変ストレージ（WORM）ポリシーもサポートしており、すべての要件を満たします。
 </div>
 <div class="tbl-wrap">
@@ -462,7 +462,7 @@ BlockBlobStorage は SSD ベースの Premium ストレージを使用し、<str
 <tr><td>StorageV2</td><td>Standard/Premium</td><td>✅</td><td>汎用（全機能）</td></tr>
 </tbody></table></div>
 </div>
-<div class="refs"><div class="refs-title">📚 参考ドキュメント</div><ul>
+<div class="refs"><div class="refs-title">参考ドキュメント</div><ul>
 <li><a href="https://learn.microsoft.com/azure/storage/common/storage-account-overview" target="_blank">ストレージアカウントの概要</a></li>
 </ul></div>`},
 
@@ -474,7 +474,7 @@ ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="key-box">
-<div class="k-title">💡 正解：Blob</div>
+<div class="k-title">正解：Blob</div>
 Azure Blob Storage は大量の非構造化データを格納するオブジェクトストレージです。BlockBlobStorage アカウントと組み合わせることで最高スループット・低レイテンシを実現し、<strong>不変ストレージ（WORM）ポリシー</strong>も Blob レベルで設定できます。
 </div>
 <div class="tbl-wrap">
@@ -501,7 +501,7 @@ ci:[1],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="arch-box">
-<div class="arch-title">🏗️ VM → Log Analytics ログ転送フロー</div>
+<div class="arch-title">VM → Log Analytics ログ転送フロー</div>
 <svg viewBox="0 0 500 120" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:500px">
   <rect width="500" height="120" fill="#F0F6FF" rx="10"/>
   <!-- VM -->
@@ -535,16 +535,16 @@ exp:`<div class="exp-section">
 </svg>
 </div>
 <div class="key-box">
-<div class="k-title">💡 正解：Azure Monitor データ収集エンドポイント (DCE)</div>
+<div class="k-title">正解：Azure Monitor データ収集エンドポイント (DCE)</div>
 DCE は Azure Monitor エージェント (AMA) がログデータを送信するためのエンドポイントです。VM → DCE → DCR (変換) → Log Analytics というフローでデータを転送します。
 </div>
 <div class="tbl-wrap">
 <table class="ctbl">
 <thead><tr><th class="hl">オプション</th><th>役割</th><th>ログ転送に適切か</th></tr></thead>
 <tbody>
-<tr class="hl"><td><strong>DCE（データ収集エンドポイント）</strong></td><td>AMA のデータ送信先エンドポイント</td><td>✅ 転送に必須</td></tr>
-<tr><td>リンクストレージアカウント</td><td>カスタムログの一時保存</td><td>❌ 転送専用ではない</td></tr>
-<tr><td>サービスエンドポイント</td><td>VNet からのトラフィック制御</td><td>❌ ログ転送とは無関係</td></tr>
+<tr class="hl"><td><strong>DCE（データ収集エンドポイント）</strong></td><td>AMA のデータ送信先エンドポイント</td><td>転送に必須</td></tr>
+<tr><td>リンクストレージアカウント</td><td>カスタムログの一時保存</td><td>転送専用ではない</td></tr>
+<tr><td>サービスエンドポイント</td><td>VNet からのトラフィック制御</td><td>ログ転送とは無関係</td></tr>
 </tbody></table></div>
 </div>`},
 
@@ -556,7 +556,7 @@ ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="key-box">
-<div class="k-title">💡 正解：KQL クエリ（DCR 内の変換）</div>
+<div class="k-title">正解：KQL クエリ（DCR 内の変換）</div>
 データ収集ルール (DCR) 内では KQL を使用してデータを変換します。具体的には <code>transformKql</code> プロパティに KQL 式を記述し、受信した JSON データを加工してカスタムテーブルに格納します。
 </div>
 <div class="arch-box">
@@ -592,7 +592,7 @@ ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="arch-box">
-<div class="arch-title">🏗️ ABAC — BLOB タグベースアクセス制御の仕組み</div>
+<div class="arch-title">ABAC — BLOB タグベースアクセス制御の仕組み</div>
 <svg viewBox="0 0 480 140" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:480px">
   <rect width="480" height="140" fill="#F0F6FF" rx="10"/>
   <!-- User -->
@@ -612,26 +612,26 @@ exp:`<div class="exp-section">
   <rect x="305" y="30" width="160" height="80" rx="7" fill="#0072C6"/>
   <text x="385" y="55" text-anchor="middle" font-size="10" fill="#fff" font-weight="bold">Blob Storage</text>
   <rect x="315" y="65" width="130" height="22" rx="4" fill="#fff" opacity=".2"/>
-  <text x="380" y="80" text-anchor="middle" font-size="9" fill="#fff">tag: Department=HR ✅ アクセス可</text>
+  <text x="380" y="80" text-anchor="middle" font-size="9" fill="#fff">tag: Department=HR アクセス可</text>
   <rect x="315" y="90" width="130" height="14" rx="4" fill="#E53935" opacity=".6"/>
-  <text x="380" y="101" text-anchor="middle" font-size="9" fill="#fff">tag: Department=Finance ❌ 拒否</text>
+  <text x="380" y="101" text-anchor="middle" font-size="9" fill="#fff">tag: Department=Finance 拒否</text>
   <defs><marker id="a11" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#555"/></marker></defs>
 </svg>
 </div>
 <div class="key-box">
-<div class="k-title">💡 正解：ABAC（属性ベースアクセス制御）</div>
+<div class="k-title">正解：ABAC（属性ベースアクセス制御）</div>
 ABAC は RBAC に条件（Condition）を追加した拡張機能です。BLOB インデックスタグなどのリソース属性に基づいてアクセスを細粒度で制御できます。「特定タグを持つ BLOB のみ」というシナリオに最適です。
 </div>
 <div class="tbl-wrap">
 <table class="ctbl">
 <thead><tr><th class="hl">モデル</th><th>タグ条件</th><th>管理</th><th>本問の判定</th></tr></thead>
 <tbody>
-<tr class="hl"><td><strong>ABAC</strong></td><td>✅ BLOB タグで条件付け可</td><td>Azure AD 管理</td><td><span class="badge-ok">✅ 正解</span></td></tr>
-<tr><td>RBAC のみ</td><td>❌ リソース全体への権限のみ</td><td>Azure AD 管理</td><td><span class="badge-ng">❌</span></td></tr>
-<tr><td>SAS</td><td>❌ タグ条件不可</td><td>手動管理（漏洩リスク）</td><td><span class="badge-ng">❌</span></td></tr>
+<tr class="hl"><td><strong>ABAC</strong></td><td>BLOB タグで条件付け可</td><td>Azure AD 管理</td><td><span class="badge-ok">正解</span></td></tr>
+<tr><td>RBAC のみ</td><td>リソース全体への権限のみ</td><td>Azure AD 管理</td><td><span class="badge-ng">❌</span></td></tr>
+<tr><td>SAS</td><td>タグ条件不可</td><td>手動管理（漏洩リスク）</td><td><span class="badge-ng">❌</span></td></tr>
 </tbody></table></div>
 </div>
-<div class="refs"><div class="refs-title">📚 参考ドキュメント</div><ul>
+<div class="refs"><div class="refs-title">参考ドキュメント</div><ul>
 <li><a href="https://learn.microsoft.com/azure/role-based-access-control/conditions-overview" target="_blank">Azure ABAC 条件の概要</a></li>
 </ul></div>`},
 
@@ -643,7 +643,7 @@ ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="arch-box">
-<div class="arch-title">📊 Blob ライフサイクル管理によるコスト最適化</div>
+<div class="arch-title">Blob ライフサイクル管理によるコスト最適化</div>
 <svg viewBox="0 0 480 130" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:480px">
   <rect width="480" height="130" fill="#F0F6FF" rx="10"/>
   <!-- Hot -->
@@ -684,11 +684,11 @@ exp:`<div class="exp-section">
 </svg>
 </div>
 <div class="key-box">
-<div class="k-title">💡 正解：Blobs</div>
+<div class="k-title">正解：Blobs</div>
 Azure Blob Storage は<strong>ライフサイクル管理ポリシー</strong>により、データを自動的に Hot → Cool → Cold → Archive 層へ移行できます。月 1 度のアクセスであれば Cool/Cold 層、保持中はアーカイブが最適です。
 </div>
 <div class="warn-box">
-<div class="w-title">⚠️ Files と Tables は不適</div>
+<div class="w-title">Files と Tables は不適</div>
 Azure Files は SMB/NFS ファイル共有用でアーカイブ層がなく、コスト最適化に不向きです。Tables は NoSQL データストアであり、ログファイル保存用途ではありません。
 </div>
 </div>`},
@@ -707,7 +707,7 @@ ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="arch-box">
-<div class="arch-title">🏗️ ブロック BLOB の並列アップロード仕組み</div>
+<div class="arch-title">ブロック BLOB の並列アップロード仕組み</div>
 <svg viewBox="0 0 480 140" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:480px">
   <rect width="480" height="140" fill="#F0F6FF" rx="10"/>
   <!-- File -->
@@ -744,7 +744,7 @@ exp:`<div class="exp-section">
 </svg>
 </div>
 <div class="key-box">
-<div class="k-title">💡 正解：ブロック BLOB</div>
+<div class="k-title">正解：ブロック BLOB</div>
 ブロック BLOB はデータを独立したブロックに分割してアップロードします。各ブロックは<strong>並列アップロード</strong>が可能で、失敗したブロックのみ再送できるため「再開可能アップロード」を実現できます。最大サイズは約 190.7 TB です。
 </div>
 <div class="tbl-wrap">
@@ -752,8 +752,8 @@ exp:`<div class="exp-section">
 <thead><tr><th class="hl">BLOB の種類</th><th>並列アップロード</th><th>再開可能</th><th>主な用途</th></tr></thead>
 <tbody>
 <tr class="hl"><td><strong>ブロック BLOB</strong></td><td>✅</td><td>✅</td><td>テキスト・バイナリファイル</td></tr>
-<tr><td>アペンド BLOB</td><td>❌ 末尾追記のみ</td><td>❌</td><td>ログファイルの蓄積</td></tr>
-<tr><td>ページ BLOB</td><td>❌ ランダム書込み</td><td>❌</td><td>Azure VM ディスク (VHD)</td></tr>
+<tr><td>アペンド BLOB</td><td>末尾追記のみ</td><td>❌</td><td>ログファイルの蓄積</td></tr>
+<tr><td>ページ BLOB</td><td>ランダム書込み</td><td>❌</td><td>Azure VM ディスク (VHD)</td></tr>
 </tbody></table></div>
 </div>`},
 
@@ -769,7 +769,7 @@ ci:[2],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="arch-box">
-<div class="arch-title">🏗️ Azure Synapse Link for Cosmos DB — HTAP アーキテクチャ</div>
+<div class="arch-title">Azure Synapse Link for Cosmos DB — HTAP アーキテクチャ</div>
 <svg viewBox="0 0 500 140" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:500px">
   <rect width="500" height="140" fill="#F0F6FF" rx="10"/>
   <!-- Cosmos DB -->
@@ -801,20 +801,20 @@ exp:`<div class="exp-section">
 </svg>
 </div>
 <div class="key-box">
-<div class="k-title">💡 正解：Azure Synapse Link for Cosmos DB</div>
+<div class="k-title">正解：Azure Synapse Link for Cosmos DB</div>
 Synapse Link は Cosmos DB の<strong>分析ストア</strong>（列指向ストレージ）を自動作成し、ETL なしで Synapse Analytics から直接クエリできます。OLTP ワークロードへの影響がゼロで、ほぼリアルタイムの分析が可能です。
 </div>
 <div class="tbl-wrap">
 <table class="ctbl">
 <thead><tr><th class="hl">オプション</th><th>OLTP への影響</th><th>リアルタイム性</th><th>ETL 不要か</th></tr></thead>
 <tbody>
-<tr class="hl"><td><strong>Synapse Link (分析ストア)</strong></td><td>✅ なし</td><td>✅ ほぼリアルタイム</td><td>✅ 不要</td></tr>
-<tr><td>変更フィード</td><td>△ 低影響</td><td>✅ リアルタイム</td><td>❌ コード実装必要</td></tr>
-<tr><td>Azure Data Factory</td><td>△ バッチ時に影響</td><td>❌ バッチ処理</td><td>❌ パイプライン構築必要</td></tr>
-<tr><td>読み取りレプリカ</td><td>✅ なし</td><td>△</td><td>❌ Synapse 連携不可</td></tr>
+<tr class="hl"><td><strong>Synapse Link (分析ストア)</strong></td><td>なし</td><td>ほぼリアルタイム</td><td>不要</td></tr>
+<tr><td>変更フィード</td><td>△ 低影響</td><td>リアルタイム</td><td>コード実装必要</td></tr>
+<tr><td>Azure Data Factory</td><td>△ バッチ時に影響</td><td>バッチ処理</td><td>パイプライン構築必要</td></tr>
+<tr><td>読み取りレプリカ</td><td>なし</td><td>△</td><td>Synapse 連携不可</td></tr>
 </tbody></table></div>
 </div>
-<div class="refs"><div class="refs-title">📚 参考ドキュメント</div><ul>
+<div class="refs"><div class="refs-title">参考ドキュメント</div><ul>
 <li><a href="https://learn.microsoft.com/azure/cosmos-db/synapse-link" target="_blank">Azure Synapse Link for Azure Cosmos DB</a></li>
 </ul></div>`},
 
@@ -828,7 +828,7 @@ ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="arch-box">
-<div class="arch-title">🏗️ Entra Identity Governance — ゲストライフサイクル管理</div>
+<div class="arch-title">Entra Identity Governance — ゲストライフサイクル管理</div>
 <svg viewBox="0 0 500 130" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:500px">
   <rect width="500" height="130" fill="#F0F6FF" rx="10"/>
   <!-- Guest invited -->
@@ -851,27 +851,27 @@ exp:`<div class="exp-section">
   <!-- Continue -->
   <rect x="322" y="25" width="80" height="35" rx="6" fill="#107C10"/>
   <text x="362" y="42" text-anchor="middle" font-size="10" fill="#fff">継続アクセス</text>
-  <text x="362" y="55" text-anchor="middle" font-size="9" fill="#ddd">✅ 承認</text>
+  <text x="362" y="55" text-anchor="middle" font-size="9" fill="#ddd">承認</text>
   <!-- Revoke -->
   <rect x="322" y="70" width="80" height="35" rx="6" fill="#E53935"/>
   <text x="362" y="84" text-anchor="middle" font-size="10" fill="#fff">アクセス削除</text>
-  <text x="362" y="97" text-anchor="middle" font-size="9" fill="#fdd">❌ 拒否/未応答</text>
+  <text x="362" y="97" text-anchor="middle" font-size="9" fill="#fdd">拒否/未応答</text>
   <text x="240" y="12" text-anchor="middle" font-size="10" fill="#7719AA" font-weight="bold">アクセスライフサイクル管理フロー</text>
   <defs><marker id="a15" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#555"/></marker></defs>
 </svg>
 </div>
 <div class="key-box">
-<div class="k-title">💡 正解：Microsoft Entra Identity Governance</div>
+<div class="k-title">正解：Microsoft Entra Identity Governance</div>
 Entra Identity Governance の<strong>アクセスレビュー機能</strong>により、ゲストユーザーのアクセス権を定期的に確認・削除できます。複数サブスクリプション横断での管理も可能です。
 </div>
 <div class="tbl-wrap">
 <table class="ctbl">
 <thead><tr><th class="hl">サービス</th><th>アクセスレビュー</th><th>ゲスト管理</th><th>自動削除</th></tr></thead>
 <tbody>
-<tr class="hl"><td><strong>Identity Governance</strong></td><td>✅ 月次/週次</td><td>✅</td><td>✅ ポリシー設定可</td></tr>
-<tr><td>Identity Protection</td><td>❌ リスク検出のみ</td><td>❌</td><td>❌</td></tr>
-<tr><td>PIM</td><td>❌ 特権 ID 向け</td><td>△</td><td>❌</td></tr>
-<tr><td>Azure Automation</td><td>❌ カスタム実装が必要</td><td>❌</td><td>△ スクリプト次第</td></tr>
+<tr class="hl"><td><strong>Identity Governance</strong></td><td>月次/週次</td><td>✅</td><td>ポリシー設定可</td></tr>
+<tr><td>Identity Protection</td><td>リスク検出のみ</td><td>❌</td><td>❌</td></tr>
+<tr><td>PIM</td><td>特権 ID 向け</td><td>△</td><td>❌</td></tr>
+<tr><td>Azure Automation</td><td>カスタム実装が必要</td><td>❌</td><td>△ スクリプト次第</td></tr>
 </tbody></table></div>
 </div>`},
 
@@ -885,7 +885,7 @@ ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="key-box">
-<div class="k-title">💡 正解：OWASP Top 10 脅威からの保護ポリシー</div>
+<div class="k-title">正解：OWASP Top 10 脅威からの保護ポリシー</div>
 Azure APIM には OWASP Top 10 の脅威（SQL インジェクション、XSS、CSRF など）からリクエストを保護する組み込みポリシーがあります。WAF（Web Application Firewall）機能として動作します。
 </div>
 <div class="tbl-wrap">
@@ -906,19 +906,19 @@ ci:[1],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="key-box">
-<div class="k-title">💡 正解：キーによるレート制限（rate-limit-by-key）</div>
+<div class="k-title">正解：キーによるレート制限（rate-limit-by-key）</div>
 <code>rate-limit-by-key</code> ポリシーはサブスクリプションキー・IP アドレス・ユーザー ID など任意のキーに基づいて API 呼び出しレートを制限します。「単位時間あたりの呼び出し数」を制御するリアルタイムのスロットリングです。
 </div>
 <div class="tbl-wrap">
 <table class="ctbl">
 <thead><tr><th class="hl">ポリシー</th><th>機能</th><th>キー指定</th></tr></thead>
 <tbody>
-<tr class="hl"><td><strong>rate-limit-by-key</strong></td><td>単位時間あたりの呼び出し数制限</td><td>✅ 任意のキー</td></tr>
-<tr><td>rate-limit</td><td>サブスクリプション全体の呼び出し数制限</td><td>❌ サブスクリプション固定</td></tr>
-<tr><td>quota</td><td>長期間での合計呼び出し数/帯域制限</td><td>❌ 長期クォータ</td></tr>
+<tr class="hl"><td><strong>rate-limit-by-key</strong></td><td>単位時間あたりの呼び出し数制限</td><td>任意のキー</td></tr>
+<tr><td>rate-limit</td><td>サブスクリプション全体の呼び出し数制限</td><td>サブスクリプション固定</td></tr>
+<tr><td>quota</td><td>長期間での合計呼び出し数/帯域制限</td><td>長期クォータ</td></tr>
 </tbody></table></div>
 <div class="warn-box">
-<div class="w-title">⚠️ rate-limit と quota の違い</div>
+<div class="w-title">rate-limit と quota の違い</div>
 <code>rate-limit</code> は短期間（秒・分）のスロットリング、<code>quota</code> は長期間（週・月）の上限設定です。パートナー向け API の過負荷防止には <code>rate-limit-by-key</code> が最適です。
 </div>
 </div>`},
@@ -933,7 +933,7 @@ ci:[1],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="arch-box">
-<div class="arch-title">🏗️ Azure Policy Effect の動作フロー</div>
+<div class="arch-title">Azure Policy Effect の動作フロー</div>
 <svg viewBox="0 0 480 140" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:480px">
   <rect width="480" height="140" fill="#F0F6FF" rx="10"/>
   <!-- Request -->
@@ -954,17 +954,17 @@ exp:`<div class="exp-section">
   <line x1="293" y1="85" x2="323" y2="95" stroke="#107C10" stroke-width="2" marker-end="url(#a18)"/>
   <!-- Deny result -->
   <rect x="325" y="25" width="140" height="35" rx="6" fill="#E53935"/>
-  <text x="395" y="42" text-anchor="middle" font-size="10" fill="#fff" font-weight="bold">❌ デプロイ拒否</text>
+  <text x="395" y="42" text-anchor="middle" font-size="10" fill="#fff" font-weight="bold">デプロイ拒否</text>
   <text x="395" y="56" text-anchor="middle" font-size="9" fill="#fdd">403 エラー返却</text>
   <!-- Allow result -->
   <rect x="325" y="75" width="140" height="35" rx="6" fill="#107C10"/>
-  <text x="395" y="89" text-anchor="middle" font-size="10" fill="#fff" font-weight="bold">✅ デプロイ許可</text>
+  <text x="395" y="89" text-anchor="middle" font-size="10" fill="#fff" font-weight="bold">デプロイ許可</text>
   <text x="395" y="103" text-anchor="middle" font-size="9" fill="#ddd">許可リージョン内</text>
   <defs><marker id="a18" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#555"/></marker></defs>
 </svg>
 </div>
 <div class="key-box">
-<div class="k-title">💡 正解：Deny（拒否）</div>
+<div class="k-title">正解：Deny（拒否）</div>
 <strong>Deny</strong> は条件を満たすリソースの作成・更新要求を直接ブロックします。「指定リージョン外へのデプロイ防止」という要件には Deny が最も直接的な手段です。
 </div>
 <div class="tbl-wrap">
@@ -976,7 +976,7 @@ exp:`<div class="exp-section">
 <tr><td>Audit</td><td>ログ記録のみ（作成は許可）</td><td>❌</td><td>❌</td></tr>
 </tbody></table></div>
 </div>
-<div class="refs"><div class="refs-title">📚 参考ドキュメント</div><ul>
+<div class="refs"><div class="refs-title">参考ドキュメント</div><ul>
 <li><a href="https://learn.microsoft.com/azure/governance/policy/concepts/effects" target="_blank">Azure Policy の効果について</a></li>
 </ul></div>`},
 
@@ -990,19 +990,19 @@ ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="key-box">
-<div class="k-title">💡 正解：必要な権限のみを持つ RBAC ロールを割り当てる</div>
+<div class="k-title">正解：必要な権限のみを持つ RBAC ロールを割り当てる</div>
 最小権限の原則は<strong>RBAC（ロールベースアクセス制御）</strong>を通じて実装します。組み込みロール（Owner → Contributor → Reader → カスタムロール）から必要最小限の権限のみを持つロールを選択し、適切なスコープ（リソースグループ・リソースレベル）で割り当てます。
 </div>
 <div class="tbl-wrap">
 <table class="ctbl">
 <thead><tr><th class="hl">オプション</th><th>目的</th><th>最小権限の実現</th></tr></thead>
 <tbody>
-<tr class="hl"><td><strong>RBAC ロール割り当て</strong></td><td>権限管理（誰が何をできるか）</td><td>✅ 直接的に実現</td></tr>
-<tr><td>リソースロック</td><td>削除・変更の保護（ReadOnly/Delete）</td><td>❌ 権限管理ではない</td></tr>
-<tr><td>条件付きアクセス</td><td>サインイン条件の制御（MFA、場所など）</td><td>❌ 認証条件の制御</td></tr>
+<tr class="hl"><td><strong>RBAC ロール割り当て</strong></td><td>権限管理（誰が何をできるか）</td><td>直接的に実現</td></tr>
+<tr><td>リソースロック</td><td>削除・変更の保護（ReadOnly/Delete）</td><td>権限管理ではない</td></tr>
+<tr><td>条件付きアクセス</td><td>サインイン条件の制御（MFA、場所など）</td><td>認証条件の制御</td></tr>
 </tbody></table></div>
 <div class="warn-box">
-<div class="w-title">⚠️ よくある誤解</div>
+<div class="w-title">よくある誤解</div>
 条件付きアクセスは「誰がサインインできるか」を制御しますが、「サインイン後に何ができるか」の権限は RBAC で制御します。リソースロックは既存リソースの保護であり、アクセス権限の管理とは別の機能です。
 </div>
 </div>`},
@@ -1017,7 +1017,7 @@ ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="arch-box">
-<div class="arch-title">🏗️ ストレージ冗長性の比較</div>
+<div class="arch-title">ストレージ冗長性の比較</div>
 <svg viewBox="0 0 480 140" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:480px">
   <rect width="480" height="140" fill="#F0F6FF" rx="10"/>
   <!-- LRS -->
@@ -1025,14 +1025,14 @@ exp:`<div class="exp-section">
   <text x="75" y="45" text-anchor="middle" font-size="10" fill="#fff" font-weight="bold">LRS</text>
   <text x="75" y="60" text-anchor="middle" font-size="9" fill="#ddd">同一 DC 内 3 コピー</text>
   <rect x="20" y="70" width="110" height="15" rx="3" fill="#fff" opacity=".2"/>
-  <text x="75" y="82" text-anchor="middle" font-size="8" fill="#fff">ゾーン障害 ❌ 脆弱</text>
+  <text x="75" y="82" text-anchor="middle" font-size="8" fill="#fff">ゾーン障害 脆弱</text>
   <text x="75" y="106" text-anchor="middle" font-size="9" fill="#4CAF50">💰 最安</text>
   <!-- ZRS -->
   <rect x="155" y="25" width="160" height="90" rx="7" fill="#E53935"/>
   <text x="235" y="45" text-anchor="middle" font-size="10" fill="#fff" font-weight="bold">ZRS ← 正解</text>
   <text x="235" y="60" text-anchor="middle" font-size="9" fill="#fff">3 AZ に 1 コピーずつ</text>
   <rect x="165" y="68" width="130" height="15" rx="3" fill="#fff" opacity=".2"/>
-  <text x="235" y="80" text-anchor="middle" font-size="8" fill="#fff">ゾーン障害 ✅ 耐性あり</text>
+  <text x="235" y="80" text-anchor="middle" font-size="8" fill="#fff">ゾーン障害 耐性あり</text>
   <text x="235" y="95" text-anchor="middle" font-size="9" fill="#fdd">リージョン障害 ❌</text>
   <text x="235" y="108" text-anchor="middle" font-size="9" fill="#4CAF50">💰💰 中コスト</text>
   <!-- GRS -->
@@ -1046,7 +1046,7 @@ exp:`<div class="exp-section">
 </svg>
 </div>
 <div class="key-box">
-<div class="k-title">💡 正解：ZRS（ゾーン冗長ストレージ）</div>
+<div class="k-title">正解：ZRS（ゾーン冗長ストレージ）</div>
 ZRS は同一リージョン内の 3 つの可用性ゾーンにデータを分散コピーします。1 ゾーン障害に対して耐性を持ち、LRS よりも高可用性で GRS よりもコストが低い、最適な選択です。
 </div>
 </div>`},
@@ -1065,16 +1065,16 @@ ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="key-box">
-<div class="k-title">💡 正解：Premium ブロック BLOB（BlockBlobStorage） + ZRS</div>
+<div class="k-title">正解：Premium ブロック BLOB（BlockBlobStorage） + ZRS</div>
 「最高のトランザクションパフォーマンス」には <strong>Premium（SSD ベース）</strong>の BlockBlobStorage アカウントが必要です。「ゾーン障害耐性」には <strong>ZRS</strong> が必要です。この 2 つの組み合わせがすべての要件を満たします。
 </div>
 <div class="tbl-wrap">
 <table class="ctbl">
 <thead><tr><th class="hl">オプション</th><th>パフォーマンス</th><th>ゾーン耐性</th><th>判定</th></tr></thead>
 <tbody>
-<tr class="hl"><td><strong>Premium BlockBlobStorage + ZRS</strong></td><td>✅ 最高 (SSD)</td><td>✅</td><td><span class="badge-ok">✅ 正解</span></td></tr>
-<tr><td>Standard V2 + GRS</td><td>❌ 標準 (HDD)</td><td>✅</td><td><span class="badge-ng">❌</span></td></tr>
-<tr><td>Standard V2 + LRS</td><td>❌ 標準 (HDD)</td><td>❌</td><td><span class="badge-ng">❌</span></td></tr>
+<tr class="hl"><td><strong>Premium BlockBlobStorage + ZRS</strong></td><td>最高 (SSD)</td><td>✅</td><td><span class="badge-ok">正解</span></td></tr>
+<tr><td>Standard V2 + GRS</td><td>標準 (HDD)</td><td>✅</td><td><span class="badge-ng">❌</span></td></tr>
+<tr><td>Standard V2 + LRS</td><td>標準 (HDD)</td><td>❌</td><td><span class="badge-ng">❌</span></td></tr>
 </tbody></table></div>
 </div>`},
 
@@ -1088,7 +1088,7 @@ ci:[1],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="arch-box">
-<div class="arch-title">🏗️ エラスティックプール — マルチテナント DB アーキテクチャ</div>
+<div class="arch-title">エラスティックプール — マルチテナント DB アーキテクチャ</div>
 <svg viewBox="0 0 480 140" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:480px">
   <rect width="480" height="140" fill="#F0F6FF" rx="10"/>
   <!-- Pool -->
@@ -1123,17 +1123,17 @@ exp:`<div class="exp-section">
 </svg>
 </div>
 <div class="key-box">
-<div class="k-title">💡 正解：Azure SQL Database のエラスティックプール</div>
+<div class="k-title">正解：Azure SQL Database のエラスティックプール</div>
 エラスティックプールは複数のデータベースが eDTU または vCore リソースを共有する仕組みです。各テナントに独立したデータベースを提供しながら、コンピュートリソースを共有することでコストを大幅に削減できます。テナントの増減にも柔軟に対応します。
 </div>
 <div class="tbl-wrap">
 <table class="ctbl">
 <thead><tr><th class="hl">オプション</th><th>テナント分離</th><th>コスト最適化</th><th>スケール柔軟性</th></tr></thead>
 <tbody>
-<tr><td>SQL Managed Instance</td><td>✅</td><td>❌ 高コスト</td><td>△</td></tr>
-<tr class="hl"><td><strong>エラスティックプール</strong></td><td>✅ 各 DB 独立</td><td>✅ 共有リソース</td><td>✅ DB 追加/削除</td></tr>
-<tr><td>個別インスタンス</td><td>✅ 最高分離</td><td>❌ 最高コスト</td><td>❌</td></tr>
-<tr><td>同一サーバーの共有 DB</td><td>❌ テナント混在</td><td>✅</td><td>△</td></tr>
+<tr><td>SQL Managed Instance</td><td>✅</td><td>高コスト</td><td>△</td></tr>
+<tr class="hl"><td><strong>エラスティックプール</strong></td><td>各 DB 独立</td><td>共有リソース</td><td>DB 追加/削除</td></tr>
+<tr><td>個別インスタンス</td><td>最高分離</td><td>最高コスト</td><td>❌</td></tr>
+<tr><td>同一サーバーの共有 DB</td><td>テナント混在</td><td>✅</td><td>△</td></tr>
 </tbody></table></div>
 </div>`},
 
@@ -1152,16 +1152,16 @@ ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="key-box">
-<div class="k-title">💡 正解：Azure Container Apps</div>
+<div class="k-title">正解：Azure Container Apps</div>
 Azure Container Apps は Kubernetes の知識なしにコンテナーをサーバーレスで実行できるマネージドサービスです。KEDA（Kubernetes Event-Driven Autoscaling）による自動スケール、サービス間通信、Dapr 統合をすぐに利用できます。
 </div>
 <div class="tbl-wrap">
 <table class="ctbl">
 <thead><tr><th class="hl">サービス</th><th>サーバーレス</th><th>Kubernetes 知識</th><th>自動スケール</th><th>マイクロサービス</th></tr></thead>
 <tbody>
-<tr class="hl"><td><strong>Container Apps</strong></td><td>✅</td><td>不要 ✅</td><td>✅ KEDA</td><td>✅</td></tr>
+<tr class="hl"><td><strong>Container Apps</strong></td><td>✅</td><td>不要 ✅</td><td>KEDA</td><td>✅</td></tr>
 <tr><td>AKS</td><td>❌</td><td>必要 ❌</td><td>✅</td><td>✅</td></tr>
-<tr><td>Container Instances</td><td>✅</td><td>不要 ✅</td><td>❌ 手動</td><td>❌ 単発向け</td></tr>
+<tr><td>Container Instances</td><td>✅</td><td>不要 ✅</td><td>手動</td><td>単発向け</td></tr>
 <tr><td>App Service</td><td>△</td><td>不要 ✅</td><td>✅</td><td>△</td></tr>
 </tbody></table></div>
 </div>`},
@@ -1176,7 +1176,7 @@ ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="arch-box">
-<div class="arch-title">🏗️ CI/CD パイプライン + ACR フロー</div>
+<div class="arch-title">CI/CD パイプライン + ACR フロー</div>
 <svg viewBox="0 0 500 120" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:500px">
   <rect width="500" height="120" fill="#F0F6FF" rx="10"/>
   <!-- Code -->
@@ -1207,11 +1207,11 @@ exp:`<div class="exp-section">
 </svg>
 </div>
 <div class="key-box">
-<div class="k-title">💡 正解：Azure Container Registry (ACR)</div>
+<div class="k-title">正解：Azure Container Registry (ACR)</div>
 ACR はプライベートな Docker イメージレジストリです。イメージのバージョン管理、脆弱性スキャン（Microsoft Defender for Containers との統合）、geo レプリケーションを提供します。
 </div>
 <div class="warn-box">
-<div class="w-title">⚠️ 他の選択肢との混同に注意</div>
+<div class="w-title">他の選択肢との混同に注意</div>
 Container Apps・AKS はコンテナーの<strong>実行環境</strong>であり、イメージの保存には使用しません。Blob Storage はオブジェクトストレージですが、Docker レジストリプロトコルをサポートしていません。
 </div>
 </div>`},
@@ -1226,14 +1226,14 @@ ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="key-box">
-<div class="k-title">💡 正解：既存の可用性グループにセカンダリレプリカを追加する</div>
+<div class="k-title">正解：既存の可用性グループにセカンダリレプリカを追加する</div>
 RTO 短縮には複数の<strong>同期コミット</strong>セカンダリレプリカを追加することが効果的です。自動フェールオーバーの対象となるレプリカが増えることで、障害時に最も近いレプリカへ迅速にフェールオーバーできます。
 </div>
 <div class="tbl-wrap">
 <table class="ctbl">
 <thead><tr><th>コミットモード</th><th>RTO</th><th>RPO</th><th>適した配置</th></tr></thead>
 <tbody>
-<tr><td>同期コミット</td><td>✅ 数秒（自動フェールオーバー可）</td><td>✅ ゼロ（データ損失なし）</td><td>同一リージョン</td></tr>
+<tr><td>同期コミット</td><td>数秒（自動フェールオーバー可）</td><td>ゼロ（データ損失なし）</td><td>同一リージョン</td></tr>
 <tr><td>非同期コミット</td><td>△ 数分（手動フェールオーバー）</td><td>△ 少量の損失可能性</td><td>異なるリージョン（DR）</td></tr>
 </tbody></table></div>
 </div>`},
@@ -1248,7 +1248,7 @@ ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="arch-box">
-<div class="arch-title">🏗️ 分散可用性グループ — リージョン間 DR</div>
+<div class="arch-title">分散可用性グループ — リージョン間 DR</div>
 <svg viewBox="0 0 500 140" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:500px">
   <rect width="500" height="140" fill="#F0F6FF" rx="10"/>
   <!-- Region 1 -->
@@ -1277,16 +1277,16 @@ exp:`<div class="exp-section">
 </svg>
 </div>
 <div class="key-box">
-<div class="k-title">💡 正解：分散可用性グループ</div>
+<div class="k-title">正解：分散可用性グループ</div>
 分散可用性グループは、異なる WSFC（Windows Server フェールオーバークラスター）上の 2 つの可用性グループを接続します。これにより異なるリージョン間でのフェールオーバーが可能になります。
 </div>
 <div class="tbl-wrap">
 <table class="ctbl">
 <thead><tr><th class="hl">ソリューション</th><th>リージョン間対応</th><th>自動フェールオーバー</th><th>現在の推奨</th></tr></thead>
 <tbody>
-<tr class="hl"><td><strong>分散 AG</strong></td><td>✅</td><td>✅ 設定次第</td><td>✅ 推奨</td></tr>
-<tr><td>DBミラーリング</td><td>✅</td><td>✅</td><td>❌ 廃止（SQL 2012 以降非推奨）</td></tr>
-<tr><td>ログ配布</td><td>✅</td><td>❌ 手動のみ</td><td>△ 制限あり</td></tr>
+<tr class="hl"><td><strong>分散 AG</strong></td><td>✅</td><td>設定次第</td><td>推奨</td></tr>
+<tr><td>DBミラーリング</td><td>✅</td><td>✅</td><td>廃止（SQL 2012 以降非推奨）</td></tr>
+<tr><td>ログ配布</td><td>✅</td><td>手動のみ</td><td>△ 制限あり</td></tr>
 </tbody></table></div>
 </div>`},
 
@@ -1305,7 +1305,7 @@ ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="arch-box">
-<div class="arch-title">🏗️ グローバルロードバランシング選択ガイド</div>
+<div class="arch-title">グローバルロードバランシング選択ガイド</div>
 <svg viewBox="0 0 500 140" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:500px">
   <rect width="500" height="140" fill="#F0F6FF" rx="10"/>
   <!-- Internet users -->
@@ -1317,9 +1317,9 @@ exp:`<div class="exp-section">
   <rect x="110" y="30" width="150" height="80" rx="7" fill="#E53935"/>
   <text x="185" y="52" text-anchor="middle" font-size="11" fill="#fff" font-weight="bold">Azure Front Door</text>
   <rect x="120" y="60" width="130" height="42" rx="4" fill="#fff" opacity=".15"/>
-  <text x="185" y="74" text-anchor="middle" font-size="9" fill="#fff">✅ グローバル L7 LB</text>
-  <text x="185" y="87" text-anchor="middle" font-size="9" fill="#fff">✅ WAF + DDoS 保護</text>
-  <text x="185" y="100" text-anchor="middle" font-size="9" fill="#fff">✅ 自動フェールオーバー</text>
+  <text x="185" y="74" text-anchor="middle" font-size="9" fill="#fff">グローバル L7 LB</text>
+  <text x="185" y="87" text-anchor="middle" font-size="9" fill="#fff">WAF + DDoS 保護</text>
+  <text x="185" y="100" text-anchor="middle" font-size="9" fill="#fff">自動フェールオーバー</text>
   <!-- Arrow to regions -->
   <line x1="263" y1="55" x2="293" y2="45" stroke="#555" stroke-width="1.5" marker-end="url(#a27)"/>
   <line x1="263" y1="85" x2="293" y2="95" stroke="#555" stroke-width="1.5" marker-end="url(#a27)"/>
@@ -1339,7 +1339,7 @@ exp:`<div class="exp-section">
 </svg>
 </div>
 <div class="key-box">
-<div class="k-title">💡 正解：Azure Front Door</div>
+<div class="k-title">正解：Azure Front Door</div>
 Azure Front Door はグローバル HTTP/HTTPS ロードバランシング、CDN、WAF、DDoS 保護を統合したサービスです。Anycast ネットワークにより最も近い PoP（Point of Presence）にルーティングします。
 </div>
 <div class="tbl-wrap">
@@ -1347,9 +1347,9 @@ Azure Front Door はグローバル HTTP/HTTPS ロードバランシング、CDN
 <thead><tr><th class="hl">サービス</th><th>スコープ</th><th>WAF/DDoS</th><th>自動フェールオーバー</th></tr></thead>
 <tbody>
 <tr class="hl"><td><strong>Front Door</strong></td><td>グローバル L7</td><td>✅</td><td>✅</td></tr>
-<tr><td>Traffic Manager</td><td>グローバル DNS</td><td>❌</td><td>✅ DNS ベース</td></tr>
+<tr><td>Traffic Manager</td><td>グローバル DNS</td><td>❌</td><td>DNS ベース</td></tr>
 <tr><td>Load Balancer</td><td>リージョン L4</td><td>❌</td><td>❌</td></tr>
-<tr><td>Application Gateway</td><td>リージョン L7</td><td>✅</td><td>❌ グローバル不可</td></tr>
+<tr><td>Application Gateway</td><td>リージョン L7</td><td>✅</td><td>グローバル不可</td></tr>
 </tbody></table></div>
 </div>`},
 
@@ -1363,7 +1363,7 @@ ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="key-box">
-<div class="k-title">💡 正解：Azure Application Gateway</div>
+<div class="k-title">正解：Azure Application Gateway</div>
 Application Gateway はリージョンスコープの Layer 7 ロードバランサーで、リバースプロキシ・SSL 終端・WAF（Web Application Firewall）機能を提供します。「単一リージョン + WAF + リバースプロキシ」の要件に最適です。
 </div>
 <div class="tbl-wrap">
@@ -1376,7 +1376,7 @@ Application Gateway はリージョンスコープの Layer 7 ロードバラン
 <tr><td>Azure Firewall</td><td>ネットワーク FW</td><td>❌</td><td>❌</td><td>❌</td></tr>
 </tbody></table></div>
 <div class="warn-box">
-<div class="w-title">⚠️ Front Door との使い分け</div>
+<div class="w-title">Front Door との使い分け</div>
 Front Door は<strong>グローバル</strong>の分散アプリに使用します。<strong>単一リージョン</strong>の Web アプリには Application Gateway が適切です。
 </div>
 </div>`},
@@ -1391,7 +1391,7 @@ ci:[1],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="arch-box">
-<div class="arch-title">🏗️ App Service ↔ SQL Database プライベート接続</div>
+<div class="arch-title">App Service ↔ SQL Database プライベート接続</div>
 <svg viewBox="0 0 500 160" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:500px">
   <rect width="500" height="160" fill="#F0F6FF" rx="10"/>
   <!-- VNet border -->
@@ -1417,18 +1417,18 @@ exp:`<div class="exp-section">
   <text x="370" y="73" text-anchor="middle" font-size="10" fill="#fff" font-weight="bold">DB1（プライベート EP）</text>
   <text x="370" y="88" text-anchor="middle" font-size="9" fill="#ddd">プライベート IP でアクセス</text>
   <text x="370" y="100" text-anchor="middle" font-size="9" fill="#ddd">（EP はネットワークポリシー必要）</text>
-  <text x="240" y="150" text-anchor="middle" font-size="10" fill="#E53935" font-weight="bold">⚠️ VNet統合サブネットとプライベートEPは同一サブネット不可 → 最低 2 サブネット必要</text>
+  <text x="240" y="150" text-anchor="middle" font-size="10" fill="#E53935" font-weight="bold">VNet統合サブネットとプライベートEPは同一サブネット不可 → 最低 2 サブネット必要</text>
   <defs><marker id="a29" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#E53935"/></marker></defs>
 </svg>
 </div>
 <div class="key-box">
-<div class="k-title">💡 正解：2 サブネット</div>
+<div class="k-title">正解：2 サブネット</div>
 プライベート接続には 2 つの独立したサブネットが必要です：<br>
 ① <strong>App Service VNet 統合用サブネット</strong>（WebApp1 の送信トラフィックを VNet に通す。Microsoft.Web/serverFarms への委任が必要）<br>
 ② <strong>プライベートエンドポイント用サブネット</strong>（DB1 のプライベートエンドポイントを配置）
 </div>
 <div class="warn-box">
-<div class="w-title">⚠️ 同一サブネットは不可</div>
+<div class="w-title">同一サブネットは不可</div>
 App Service の VNet 統合サブネットとプライベートエンドポイントを同じサブネットに配置することはできません（委任とプライベートエンドポイントポリシーの競合のため）。
 </div>
 </div>`},
@@ -1443,15 +1443,15 @@ ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="key-box">
-<div class="k-title">💡 正解：Azure プライベート DNS ゾーン</div>
+<div class="k-title">正解：Azure プライベート DNS ゾーン</div>
 プライベートエンドポイントを使用する場合、データベースの FQDN（例：<code>sql1.database.windows.net</code>）がプライベート IP アドレスに解決されるよう<strong>プライベート DNS ゾーン</strong>（例：<code>privatelink.database.windows.net</code>）を VNet にリンクする必要があります。
 </div>
 <div class="tbl-wrap">
 <table class="ctbl">
 <thead><tr><th class="hl">DNS オプション</th><th>機能</th><th>プライベートEP の名前解決</th></tr></thead>
 <tbody>
-<tr class="hl"><td><strong>プライベート DNS ゾーン</strong></td><td>VNet 内の名前解決</td><td>✅ プライベート IP に解決</td></tr>
-<tr><td>パブリック DNS ゾーン</td><td>インターネットからの名前解決</td><td>❌ パブリック IP を返す</td></tr>
+<tr class="hl"><td><strong>プライベート DNS ゾーン</strong></td><td>VNet 内の名前解決</td><td>プライベート IP に解決</td></tr>
+<tr><td>パブリック DNS ゾーン</td><td>インターネットからの名前解決</td><td>パブリック IP を返す</td></tr>
 <tr><td>Azure DNS プライベートリゾルバー</td><td>オンプレミス ↔ Azure DNS クエリ転送</td><td>△ 追加設定が必要</td></tr>
 </tbody></table></div>
 </div>`},
@@ -1467,16 +1467,16 @@ ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="key-box">
-<div class="k-title">💡 正解：True</div>
+<div class="k-title">正解：True</div>
 APIM が<strong>外部 VNet モード</strong>で統合されている場合、APIM はパブリック IP アドレスを持ち、インターネットからアクセス可能な状態になります。したがって、パートナーはインターネット経由で API にアクセスできます。
 </div>
 <div class="tbl-wrap">
 <table class="ctbl">
 <thead><tr><th class="hl">APIM VNet モード</th><th>パブリックアクセス</th><th>VNet バックエンドアクセス</th></tr></thead>
 <tbody>
-<tr class="hl"><td><strong>外部モード</strong></td><td>✅ インターネット可</td><td>✅ VNet 内に到達可</td></tr>
-<tr><td>内部モード</td><td>❌ VNet 内のみ</td><td>✅</td></tr>
-<tr><td>非統合</td><td>✅</td><td>❌ VNet 内に到達不可</td></tr>
+<tr class="hl"><td><strong>外部モード</strong></td><td>インターネット可</td><td>VNet 内に到達可</td></tr>
+<tr><td>内部モード</td><td>VNet 内のみ</td><td>✅</td></tr>
+<tr><td>非統合</td><td>✅</td><td>VNet 内に到達不可</td></tr>
 </tbody></table></div>
 </div>`},
 
@@ -1491,7 +1491,7 @@ ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="key-box">
-<div class="k-title">💡 正解：True</div>
+<div class="k-title">正解：True</div>
 APIM（ProdSubnet）と VM1（Subnet1）は<strong>同じ VNet1 内</strong>にあります。同一 VNet 内であれば VNet ピアリング等なしに直接通信可能です。外部 VNet モードの APIM は VNet 内バックエンドにプライベート IP でアクセスできます。
 </div>
 <div class="arch-box">
@@ -1514,16 +1514,16 @@ ci:[1],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="key-box">
-<div class="k-title">💡 正解：False</div>
+<div class="k-title">正解：False</div>
 APIM が外部 VNet モードで統合されている場合、API はすでにパブリックインターネットからアクセス可能です。パートナーが API を利用するために<strong>VPN ゲートウェイは不要</strong>です。
 </div>
 <div class="tbl-wrap">
 <table class="ctbl">
 <thead><tr><th>VPN ゲートウェイが必要なケース</th><th>本シナリオ</th></tr></thead>
 <tbody>
-<tr><td>オンプレミス ↔ Azure VNet のサイト間接続</td><td>❌ 不要（パブリック API アクセス）</td></tr>
-<tr><td>Azure VNet ↔ VNet 間の接続</td><td>❌ 不要</td></tr>
-<tr><td>リモートユーザーのポイント対サイト接続</td><td>❌ 不要</td></tr>
+<tr><td>オンプレミス ↔ Azure VNet のサイト間接続</td><td>不要（パブリック API アクセス）</td></tr>
+<tr><td>Azure VNet ↔ VNet 間の接続</td><td>不要</td></tr>
+<tr><td>リモートユーザーのポイント対サイト接続</td><td>不要</td></tr>
 </tbody></table></div>
 </div>`},
 
@@ -1537,15 +1537,15 @@ ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="key-box">
-<div class="k-title">💡 正解：BLOB バージョニング</div>
+<div class="k-title">正解：BLOB バージョニング</div>
 BLOB バージョニングを有効にすると、BLOB が上書きされるたびに<strong>以前のバージョンが自動的に保存</strong>されます。現在のバージョン（Current Version）と過去バージョン（Previous Versions）の両方を保持できます。
 </div>
 <div class="tbl-wrap">
 <table class="ctbl">
 <thead><tr><th class="hl">機能</th><th>自動バージョン保持</th><th>用途</th></tr></thead>
 <tbody>
-<tr class="hl"><td><strong>BLOB バージョニング</strong></td><td>✅ 上書き時に自動保存</td><td>バージョン管理・復元</td></tr>
-<tr><td>BLOB スナップショット</td><td>❌ 手動作成が必要</td><td>特定時点のコピー</td></tr>
+<tr class="hl"><td><strong>BLOB バージョニング</strong></td><td>上書き時に自動保存</td><td>バージョン管理・復元</td></tr>
+<tr><td>BLOB スナップショット</td><td>手動作成が必要</td><td>特定時点のコピー</td></tr>
 <tr><td>ソフト削除</td><td>❌（削除保護のみ）</td><td>誤削除からの保護</td></tr>
 <tr><td>変更フィード</td><td>❌（変更履歴記録のみ）</td><td>監査・イベント処理</td></tr>
 </tbody></table></div>
@@ -1566,7 +1566,7 @@ ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="arch-box">
-<div class="arch-title">🏗️ Azure Data Factory — ETL パイプライン</div>
+<div class="arch-title">Azure Data Factory — ETL パイプライン</div>
 <svg viewBox="0 0 500 130" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:500px">
   <rect width="500" height="130" fill="#F0F6FF" rx="10"/>
   <!-- Sources -->
@@ -1597,17 +1597,17 @@ exp:`<div class="exp-section">
 </svg>
 </div>
 <div class="key-box">
-<div class="k-title">💡 正解：Azure Data Factory</div>
+<div class="k-title">正解：Azure Data Factory</div>
 ADF はコードなしのデータ統合サービスです。90 以上のコネクタ（オンプレミス含む）、データフローによる変換、スケジュールトリガーをすべて統合的に提供します。
 </div>
 <div class="tbl-wrap">
 <table class="ctbl">
 <thead><tr><th class="hl">オプション</th><th>変換</th><th>スケジュール</th><th>多様なソース</th></tr></thead>
 <tbody>
-<tr class="hl"><td><strong>Azure Data Factory</strong></td><td>✅ データフロー</td><td>✅</td><td>✅ 90+コネクタ</td></tr>
+<tr class="hl"><td><strong>Azure Data Factory</strong></td><td>データフロー</td><td>✅</td><td>90+コネクタ</td></tr>
 <tr><td>Synapse Analytics</td><td>✅</td><td>✅</td><td>△ 分析基盤向け</td></tr>
-<tr><td>AzCopy</td><td>❌</td><td>❌ 手動</td><td>△ Azure のみ</td></tr>
-<tr><td>Storage Explorer</td><td>❌</td><td>❌</td><td>❌ GUI 手動操作</td></tr>
+<tr><td>AzCopy</td><td>❌</td><td>手動</td><td>△ Azure のみ</td></tr>
+<tr><td>Storage Explorer</td><td>❌</td><td>❌</td><td>GUI 手動操作</td></tr>
 </tbody></table></div>
 </div>`},
 
@@ -1621,19 +1621,19 @@ ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="key-box">
-<div class="k-title">💡 正解：DeployIfNotExists</div>
+<div class="k-title">正解：DeployIfNotExists</div>
 <code>DeployIfNotExists</code> は指定された条件が満たされていない場合に、ARM テンプレートを使用してリソースを<strong>自動的にデプロイ・設定</strong>します。「診断設定がないリソースに自動で診断設定を追加する」という要件に最適です。修復タスクを手動または自動でトリガーできます。
 </div>
 <div class="tbl-wrap">
 <table class="ctbl">
 <thead><tr><th class="hl">Effect</th><th>動作</th><th>自動修復</th><th>「診断設定追加」に適切か</th></tr></thead>
 <tbody>
-<tr class="hl"><td><strong>DeployIfNotExists</strong></td><td>条件不満足時にリソースを自動デプロイ</td><td>✅</td><td>✅ 正解</td></tr>
+<tr class="hl"><td><strong>DeployIfNotExists</strong></td><td>条件不満足時にリソースを自動デプロイ</td><td>✅</td><td>正解</td></tr>
 <tr><td>Deny</td><td>非準拠リソースの作成を拒否</td><td>❌</td><td>❌（既存リソースには効果なし）</td></tr>
 <tr><td>Audit</td><td>非準拠をログ記録のみ</td><td>❌</td><td>❌（修復しない）</td></tr>
 </tbody></table></div>
 </div>
-<div class="refs"><div class="refs-title">📚 参考ドキュメント</div><ul>
+<div class="refs"><div class="refs-title">参考ドキュメント</div><ul>
 <li><a href="https://learn.microsoft.com/azure/governance/policy/concepts/effect-deploy-if-not-exists" target="_blank">DeployIfNotExists の詳細</a></li>
 </ul></div>`},
 
@@ -1647,7 +1647,7 @@ ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="arch-box">
-<div class="arch-title">🏗️ マネージド ID による資格情報レスアクセス</div>
+<div class="arch-title">マネージド ID による資格情報レスアクセス</div>
 <svg viewBox="0 0 500 120" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:500px">
   <rect width="500" height="120" fill="#F0F6FF" rx="10"/>
   <!-- Logic Apps -->
@@ -1676,16 +1676,16 @@ exp:`<div class="exp-section">
 </svg>
 </div>
 <div class="key-box">
-<div class="k-title">💡 正解：マネージド ID</div>
+<div class="k-title">正解：マネージド ID</div>
 マネージド ID は Azure AD によって自動管理される ID です。クライアントシークレットや証明書を手動管理する必要がなく、ローテーションも自動です。Azure サービスから他の Azure サービスへのアクセスでは常に第一選択です。
 </div>
 <div class="tbl-wrap">
 <table class="ctbl">
 <thead><tr><th class="hl">認証方法</th><th>資格情報管理</th><th>自動ローテーション</th><th>推奨度</th></tr></thead>
 <tbody>
-<tr class="hl"><td><strong>マネージド ID</strong></td><td>不要 ✅</td><td>✅ 自動</td><td>最高 ⭐⭐⭐</td></tr>
-<tr><td>SP + 証明書</td><td>証明書管理が必要</td><td>❌ 手動</td><td>中 ⭐⭐</td></tr>
-<tr><td>SP + クライアントシークレット</td><td>シークレット管理が必要</td><td>❌ 手動</td><td>低 ⭐</td></tr>
+<tr class="hl"><td><strong>マネージド ID</strong></td><td>不要 ✅</td><td>自動</td><td>最高 ⭐⭐⭐</td></tr>
+<tr><td>SP + 証明書</td><td>証明書管理が必要</td><td>手動</td><td>中 ⭐⭐</td></tr>
+<tr><td>SP + クライアントシークレット</td><td>シークレット管理が必要</td><td>手動</td><td>低 ⭐</td></tr>
 </tbody></table></div>
 </div>`},
 
@@ -1704,17 +1704,17 @@ ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="key-box">
-<div class="k-title">💡 正解：vCore ベースの Azure SQL Database（Business Critical 層）</div>
+<div class="k-title">正解：vCore ベースの Azure SQL Database（Business Critical 層）</div>
 vCore モデルの Business Critical 層は SSD ベースの高 IOPS ストレージ、組み込みの読み取り可能なセカンダリレプリカ（読み取りスケールアウト）、最高可用性を提供します。
 </div>
 <div class="tbl-wrap">
 <table class="ctbl">
 <thead><tr><th class="hl">オプション</th><th>IOPS</th><th>読み取りスケールアウト</th><th>ビジネスクリティカル向け</th></tr></thead>
 <tbody>
-<tr class="hl"><td><strong>vCore SQL DB (Business Critical)</strong></td><td>✅ 高 (SSD)</td><td>✅ セカンダリレプリカ</td><td>✅</td></tr>
-<tr><td>DTU SQL DB (Standard)</td><td>❌ 限定的</td><td>❌</td><td>❌</td></tr>
+<tr class="hl"><td><strong>vCore SQL DB (Business Critical)</strong></td><td>高 (SSD)</td><td>セカンダリレプリカ</td><td>✅</td></tr>
+<tr><td>DTU SQL DB (Standard)</td><td>限定的</td><td>❌</td><td>❌</td></tr>
 <tr><td>SQL MI (General Purpose)</td><td>△ 中程度</td><td>❌</td><td>△</td></tr>
-<tr><td>Azure DB for MySQL</td><td>△</td><td>✅ 読み取りレプリカ</td><td>❌ SQL Server 非互換</td></tr>
+<tr><td>Azure DB for MySQL</td><td>△</td><td>読み取りレプリカ</td><td>SQL Server 非互換</td></tr>
 </tbody></table></div>
 </div>`},
 
@@ -1726,7 +1726,7 @@ ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="key-box">
-<div class="k-title">💡 正解：長期リテンションポリシー（LTR）を構成する</div>
+<div class="k-title">正解：長期リテンションポリシー（LTR）を構成する</div>
 Azure SQL Database の LTR（Long-Term Retention）を使用すると、<strong>週次・月次・年次のバックアップを最大 10 年間</strong> Azure Blob Storage に自動保持できます。7 年間の要件を満たす最適な方法です。
 </div>
 <div class="tbl-wrap">
@@ -1734,8 +1734,8 @@ Azure SQL Database の LTR（Long-Term Retention）を使用すると、<strong>
 <thead><tr><th class="hl">オプション</th><th>最大保存期間</th><th>7年要件</th><th>コスト</th></tr></thead>
 <tbody>
 <tr class="hl"><td><strong>LTR（長期リテンション）</strong></td><td>最大 10 年</td><td>✅</td><td>低（RA-GRS Blob）</td></tr>
-<tr><td>Log Analytics</td><td>最大 2 年</td><td>❌ 不足</td><td>中</td></tr>
-<tr><td>Storage（診断設定）</td><td>最大 365 日</td><td>❌ 不足</td><td>低</td></tr>
+<tr><td>Log Analytics</td><td>最大 2 年</td><td>不足</td><td>中</td></tr>
+<tr><td>Storage（診断設定）</td><td>最大 365 日</td><td>不足</td><td>低</td></tr>
 </tbody></table></div>
 </div>`},
 
@@ -1751,19 +1751,19 @@ ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="key-box">
-<div class="k-title">💡 正解：Azure VM にドメインコントローラーをデプロイする</div>
+<div class="k-title">正解：Azure VM にドメインコントローラーをデプロイする</div>
 <strong>NTLM/Kerberos 認証</strong>には Windows Server Active Directory Domain Services が必要です。Azure VM 上に既存ドメイン（corp.ironclad.com）の DC をデプロイし、オンプレミス AD と同期することで、既存ユーザーが Kerberos/NTLM で認証できるようになります。
 </div>
 <div class="tbl-wrap">
 <table class="ctbl">
 <thead><tr><th class="hl">オプション</th><th>NTLM/Kerberos</th><th>既存 AD との統合</th><th>マネージド</th></tr></thead>
 <tbody>
-<tr class="hl"><td><strong>Azure VM DC (corp.ironclad.com)</strong></td><td>✅</td><td>✅ 同一ドメイン</td><td>❌ 自己管理</td></tr>
-<tr><td>Entra Domain Services</td><td>✅</td><td>△ ワンウェイ同期</td><td>✅ マネージド</td></tr>
-<tr><td>AD FS</td><td>❌ フェデレーション認証</td><td>✅</td><td>❌</td></tr>
+<tr class="hl"><td><strong>Azure VM DC (corp.ironclad.com)</strong></td><td>✅</td><td>同一ドメイン</td><td>自己管理</td></tr>
+<tr><td>Entra Domain Services</td><td>✅</td><td>△ ワンウェイ同期</td><td>マネージド</td></tr>
+<tr><td>AD FS</td><td>フェデレーション認証</td><td>✅</td><td>❌</td></tr>
 </tbody></table></div>
 <div class="warn-box">
-<div class="w-title">⚠️ Entra Domain Services では不十分な理由</div>
+<div class="w-title">Entra Domain Services では不十分な理由</div>
 Entra Domain Services は Entra ID からの<strong>ワンウェイ同期</strong>のみで、既存オンプレミス AD との完全な双方向信頼関係を確立できません。corp.ironclad.com ドメインとの完全な統合には Azure VM DC が必要です。
 </div>
 </div>`},
@@ -1787,7 +1787,7 @@ ci:[0,4],n:2,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="key-box">
-<div class="k-title">💡 正解：① Azure Backup 操作バックアップ + ② 永続削除を有効にする</div>
+<div class="k-title">正解：① Azure Backup 操作バックアップ + ② 永続削除を有効にする</div>
 <strong>① Azure Backup の操作バックアップ：</strong>バックアップポリシーを使用してサブスクリプション全体で一貫したリテンションポリシーを Azure Policy として適用できます。<br><br>
 <strong>② ソフト削除済みアイテムの永続削除（Permanent Delete）：</strong>ソフト削除状態のデータを保持期間内に完全削除する機能です。不正な場所に移動されたデータを確実に削除するための要件を満たします。
 </div>
@@ -1795,10 +1795,10 @@ exp:`<div class="exp-section">
 <table class="ctbl">
 <thead><tr><th class="hl">設定</th><th>サブスク横断ポリシー</th><th>データ完全削除</th></tr></thead>
 <tbody>
-<tr class="hl"><td><strong>Azure Backup 操作バックアップ</strong></td><td>✅ Azure Policy で適用可</td><td>—</td></tr>
-<tr class="hl"><td><strong>永続削除（Permanent Delete）</strong></td><td>—</td><td>✅ ソフト削除中でも削除可</td></tr>
+<tr class="hl"><td><strong>Azure Backup 操作バックアップ</strong></td><td>Azure Policy で適用可</td><td>—</td></tr>
+<tr class="hl"><td><strong>永続削除（Permanent Delete）</strong></td><td>—</td><td>ソフト削除中でも削除可</td></tr>
 <tr><td>ポイントインタイムリストア</td><td>❌</td><td>❌（復元機能）</td></tr>
-<tr><td>BLOB/コンテナーのソフト削除</td><td>❌ アカウント単位</td><td>❌（復元保護）</td></tr>
+<tr><td>BLOB/コンテナーのソフト削除</td><td>アカウント単位</td><td>❌（復元保護）</td></tr>
 <tr><td>BLOB バージョニング</td><td>❌</td><td>❌（バージョン管理）</td></tr>
 </tbody></table></div>
 </div>`},
@@ -1813,16 +1813,16 @@ ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="key-box">
-<div class="k-title">💡 正解：Synapse Analytics のマネージド仮想ネットワーク（Managed VNet）</div>
+<div class="k-title">正解：Synapse Analytics のマネージド仮想ネットワーク（Managed VNet）</div>
 Synapse の Managed Virtual Network を有効にすると、すべての統合ランタイムが分離された専用 VNet 内で実行されます。マネージドプライベートエンドポイントを使用してデータソースにプライベート接続でき、<strong>データエクスフィルトレーション（データ持ち出し）保護</strong>も提供されます。
 </div>
 <div class="tbl-wrap">
 <table class="ctbl">
 <thead><tr><th class="hl">オプション</th><th>プライベート接続</th><th>データ持ち出し保護</th><th>推奨</th></tr></thead>
 <tbody>
-<tr class="hl"><td><strong>Managed VNet</strong></td><td>✅ マネージド PE</td><td>✅</td><td>✅ ベストプラクティス</td></tr>
+<tr class="hl"><td><strong>Managed VNet</strong></td><td>マネージド PE</td><td>✅</td><td>ベストプラクティス</td></tr>
 <tr><td>パブリックエンドポイント</td><td>❌</td><td>❌</td><td>❌</td></tr>
-<tr><td>VPN ゲートウェイ</td><td>✅</td><td>△</td><td>❌ 管理オーバーヘッド高</td></tr>
+<tr><td>VPN ゲートウェイ</td><td>✅</td><td>△</td><td>管理オーバーヘッド高</td></tr>
 </tbody></table></div>
 </div>`},
 
@@ -1834,7 +1834,7 @@ ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="key-box">
-<div class="k-title">💡 正解：マネージドプライベートエンドポイント</div>
+<div class="k-title">正解：マネージドプライベートエンドポイント</div>
 マネージドプライベートエンドポイントは Synapse の Managed VNet 内から外部 Azure サービス（ADLS Gen2、Azure SQL など）へのプライベート接続を提供します。インターネットを経由せず、プライベート IP でデータソースにアクセスできます。
 </div>
 <div class="tbl-wrap">
@@ -1842,7 +1842,7 @@ exp:`<div class="exp-section">
 <thead><tr><th class="hl">接続方法</th><th>プライベート接続</th><th>セキュリティレベル</th></tr></thead>
 <tbody>
 <tr class="hl"><td><strong>マネージドプライベートエンドポイント</strong></td><td>✅</td><td>最高</td></tr>
-<tr><td>パブリックエンドポイント</td><td>❌ インターネット経由</td><td>低</td></tr>
+<tr><td>パブリックエンドポイント</td><td>インターネット経由</td><td>低</td></tr>
 <tr><td>VNet ゲートウェイ</td><td>✅</td><td>高（管理複雑）</td></tr>
 </tbody></table></div>
 </div>`},
@@ -1857,14 +1857,14 @@ ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="key-box">
-<div class="k-title">💡 正解：DeployIfNotExists</div>
+<div class="k-title">正解：DeployIfNotExists</div>
 <code>DeployIfNotExists</code> は非準拠リソースを検出した際に、ARM テンプレートを使用してリソースを<strong>自動的にデプロイ・修復</strong>します。マネージド ID で修復タスクを実行します。「自動修復」の要件にはこの Effect のみが対応します。
 </div>
 <div class="tbl-wrap">
 <table class="ctbl">
 <thead><tr><th class="hl">Effect</th><th>自動修復</th><th>作成ブロック</th><th>「自動修復」要件</th></tr></thead>
 <tbody>
-<tr class="hl"><td><strong>DeployIfNotExists</strong></td><td>✅</td><td>❌</td><td>✅ 正解</td></tr>
+<tr class="hl"><td><strong>DeployIfNotExists</strong></td><td>✅</td><td>❌</td><td>正解</td></tr>
 <tr><td>Deny</td><td>❌</td><td>✅</td><td>❌</td></tr>
 <tr><td>AuditIfNotExists</td><td>❌</td><td>❌</td><td>❌</td></tr>
 </tbody></table></div>
@@ -1878,7 +1878,7 @@ ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="key-box">
-<div class="k-title">💡 正解：マネージド ID（Q37 の再確認問題）</div>
+<div class="k-title">正解：マネージド ID（Q37 の再確認問題）</div>
 Q37 と同様に、Azure リソースから Azure Key Vault へのアクセスには<strong>マネージド ID</strong>が最もセキュアです。クライアントシークレットや証明書を管理する必要がなく、ライフサイクルは Azure が自動管理します。
 </div>
 <div class="tbl-wrap">
@@ -1906,7 +1906,7 @@ ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="key-box">
-<div class="k-title">💡 正解：vCore SQL Database（サーバーレス計算層）</div>
+<div class="k-title">正解：vCore SQL Database（サーバーレス計算層）</div>
 vCore モデルの <strong>General Purpose 層のサーバーレス計算層</strong> は、使用状況に応じて自動スケールし、非アクティブ時には<strong>自動一時停止</strong>してコストをほぼゼロに削減できます。予測不可能なワークロードに最適です。
 </div>
 <div class="tbl-wrap">
@@ -1914,9 +1914,9 @@ vCore モデルの <strong>General Purpose 層のサーバーレス計算層</st
 <thead><tr><th class="hl">オプション</th><th>自動スケール</th><th>自動一時停止</th><th>最新機能</th></tr></thead>
 <tbody>
 <tr class="hl"><td><strong>vCore SQL DB（サーバーレス）</strong></td><td>✅</td><td>✅</td><td>✅</td></tr>
-<tr><td>DTU Standard</td><td>❌ 固定リソース</td><td>❌</td><td>✅</td></tr>
-<tr><td>SQL Managed Instance</td><td>△</td><td>❌</td><td>✅ SQL Server 完全互換</td></tr>
-<tr><td>Azure DB for PostgreSQL</td><td>✅</td><td>✅</td><td>❌ PostgreSQL のみ</td></tr>
+<tr><td>DTU Standard</td><td>固定リソース</td><td>❌</td><td>✅</td></tr>
+<tr><td>SQL Managed Instance</td><td>△</td><td>❌</td><td>SQL Server 完全互換</td></tr>
+<tr><td>Azure DB for PostgreSQL</td><td>✅</td><td>✅</td><td>PostgreSQL のみ</td></tr>
 </tbody></table></div>
 </div>`},
 
@@ -1930,7 +1930,7 @@ ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="key-box">
-<div class="k-title">💡 正解：長期リテンションポリシー（LTR）を構成する</div>
+<div class="k-title">正解：長期リテンションポリシー（LTR）を構成する</div>
 Azure SQL Database の LTR は、週次・月次・年次バックアップを<strong>最大 10 年間</strong> Azure Blob Storage（RA-GRS）に自動保持します。3 年間の要件を満たす最適な方法です。<br><br>
 既定の保持期間: 7 日（Basic: 1 日）、最大: 35 日 → LTR を使用することで最大 10 年まで拡張可能
 </div>
@@ -1946,7 +1946,7 @@ ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="arch-box">
-<div class="arch-title">🏗️ Azure Lighthouse — クロステナント管理委任</div>
+<div class="arch-title">Azure Lighthouse — クロステナント管理委任</div>
 <svg viewBox="0 0 500 130" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:500px">
   <rect width="500" height="130" fill="#F0F6FF" rx="10"/>
   <!-- Customer Tenant -->
@@ -1970,16 +1970,16 @@ exp:`<div class="exp-section">
 </svg>
 </div>
 <div class="key-box">
-<div class="k-title">💡 正解：Azure Lighthouse</div>
+<div class="k-title">正解：Azure Lighthouse</div>
 Azure Lighthouse はサービスプロバイダー（MSP）が顧客の Azure リソースを<strong>自身のテナントから</strong>管理するための委任アクセスを提供します。ARM を介した安全なクロステナント管理が可能です。
 </div>
 <div class="tbl-wrap">
 <table class="ctbl">
 <thead><tr><th class="hl">サービス</th><th>クロステナント管理</th><th>MSP 向け</th></tr></thead>
 <tbody>
-<tr class="hl"><td><strong>Azure Lighthouse</strong></td><td>✅ 委任アクセス</td><td>✅</td></tr>
-<tr><td>Entra B2B</td><td>△ ゲストとして招待</td><td>❌ テナント切り替えが必要</td></tr>
-<tr><td>Azure Policy</td><td>❌ ポリシー管理のみ</td><td>❌</td></tr>
+<tr class="hl"><td><strong>Azure Lighthouse</strong></td><td>委任アクセス</td><td>✅</td></tr>
+<tr><td>Entra B2B</td><td>△ ゲストとして招待</td><td>テナント切り替えが必要</td></tr>
+<tr><td>Azure Policy</td><td>ポリシー管理のみ</td><td>❌</td></tr>
 </tbody></table></div>
 </div>`},
 
@@ -1993,16 +1993,16 @@ ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="key-box">
-<div class="k-title">💡 正解：Azure Monitor エージェント (AMA)</div>
+<div class="k-title">正解：Azure Monitor エージェント (AMA)</div>
 AMA は Log Analytics エージェント（MMA）と Diagnostics 拡張機能の後継統合エージェントです。データ収集ルール（DCR）による細粒度な設定、Windows/Linux 対応、オンプレミス・Azure・マルチクラウドに対応しています。
 </div>
 <div class="tbl-wrap">
 <table class="ctbl">
 <thead><tr><th class="hl">エージェント</th><th>オンプレミス対応</th><th>DCR サポート</th><th>現在の状態</th></tr></thead>
 <tbody>
-<tr class="hl"><td><strong>Azure Monitor エージェント (AMA)</strong></td><td>✅</td><td>✅</td><td>✅ 現行推奨</td></tr>
-<tr><td>Log Analytics エージェント (MMA)</td><td>✅</td><td>❌</td><td>⚠️ 2024年8月廃止</td></tr>
-<tr><td>Diagnostics 拡張機能</td><td>❌ Azure VM のみ</td><td>❌</td><td>△ 限定的用途</td></tr>
+<tr class="hl"><td><strong>Azure Monitor エージェント (AMA)</strong></td><td>✅</td><td>✅</td><td>現行推奨</td></tr>
+<tr><td>Log Analytics エージェント (MMA)</td><td>✅</td><td>❌</td><td>2024年8月廃止</td></tr>
+<tr><td>Diagnostics 拡張機能</td><td>Azure VM のみ</td><td>❌</td><td>△ 限定的用途</td></tr>
 </tbody></table></div>
 </div>`},
 
@@ -2017,7 +2017,7 @@ ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="key-box">
-<div class="k-title">💡 正解：True</div>
+<div class="k-title">正解：True</div>
 BLOB バージョニングが有効な場合、BLOB が作成・上書き・削除されるたびに、Azure Storage は自動的に以前のバージョンを保存します。上書き後も「過去バージョン」として以前の内容にアクセス・復元が可能です。
 </div>
 <div class="arch-box">
@@ -2026,7 +2026,7 @@ BLOB バージョニングが有効な場合、BLOB が作成・上書き・削�
 操作              現在バージョン    保持されるバージョン
 ──────────────────────────────────────────
 アップロード     v1（Current）      なし
-上書き           v2（Current）      v1（Previous）✅ 自動保持
+上書き           v2（Current）      v1（Previous）自動保持
 再上書き         v3（Current）      v1, v2（Previous）✅
 削除マーカー     Delete Marker      v1, v2, v3（全て保持）
 </pre>
@@ -2044,14 +2044,14 @@ ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="key-box">
-<div class="k-title">💡 正解：True</div>
+<div class="k-title">正解：True</div>
 ソフト削除が有効な場合：<br>
 ・削除操作後 → データは「ソフト削除済み」状態で<strong>保持期間中は復元可能</strong><br>
 ・保持期間（1〜365 日）が終了後 → <strong>データは自動的に完全削除（ガベージコレクション）</strong><br><br>
 したがって「保持期間が終了すると完全に削除される」は<strong>True</strong>です。
 </div>
 <div class="warn-box">
-<div class="w-title">⚠️ 注意：「永続削除（Permanent Delete）」について</div>
+<div class="w-title">注意：「永続削除（Permanent Delete）」について</div>
 Q41 で登場した<strong>永続削除を有効にする</strong>設定は、保持期間<strong>内</strong>でも完全削除を可能にするオプションです。これはデータ移動後のアクセス無効化シナリオで使用します。
 </div>
 </div>`},
@@ -2069,7 +2069,7 @@ ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="key-box">
-<div class="k-title">💡 正解：True</div>
+<div class="k-title">正解：True</div>
 分散可用性グループは異なる WSFC 間の AG を接続し、<strong>異なるリージョン間の手動フェールオーバー</strong>をサポートします。RTO 4 時間は十分達成可能です。
 </div>
 </div>`},
@@ -2085,15 +2085,15 @@ ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="key-box">
-<div class="k-title">💡 正解：True</div>
+<div class="k-title">正解：True</div>
 <strong>非同期コミットモード</strong>は地理的に離れたリージョン間のレプリケーションに適しています。プライマリへのコミットはセカンダリの確認を待たないため、ネットワークレイテンシの影響が最小限です。RTO 4 時間の手動フェールオーバーに対応できます。
 </div>
 <div class="tbl-wrap">
 <table class="ctbl">
 <thead><tr><th>コミットモード</th><th>リージョン間 DR</th><th>パフォーマンス影響</th><th>RPO</th></tr></thead>
 <tbody>
-<tr><td>同期コミット</td><td>❌ 高レイテンシで不推奨</td><td>高（ブロッキング）</td><td>ゼロ</td></tr>
-<tr><td>非同期コミット</td><td>✅ 推奨</td><td>低（ノンブロッキング）</td><td>少量の損失可能性</td></tr>
+<tr><td>同期コミット</td><td>高レイテンシで不推奨</td><td>高（ブロッキング）</td><td>ゼロ</td></tr>
+<tr><td>非同期コミット</td><td>推奨</td><td>低（ノンブロッキング）</td><td>少量の損失可能性</td></tr>
 </tbody></table></div>
 </div>`},
 
@@ -2108,11 +2108,11 @@ ci:[1],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="key-box">
-<div class="k-title">💡 正解：False</div>
+<div class="k-title">正解：False</div>
 <strong>同期コミットモード</strong>はセカンダリがコミットを確認するまでプライマリがブロックされます。リージョン間の高いネットワークレイテンシ（通常数十〜数百 ms）があると、プライマリのトランザクションパフォーマンスに<strong>深刻な影響</strong>が出ます。
 </div>
 <div class="warn-box">
-<div class="w-title">⚠️ 同期コミットの推奨環境</div>
+<div class="w-title">同期コミットの推奨環境</div>
 同期コミットは<strong>同一データセンター内または往復レイテンシ &lt; 5ms の環境</strong>でのみ推奨されます。異なるリージョン間では非同期コミットを使用してください。
 </div>
 </div>`},
@@ -2127,7 +2127,7 @@ ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="key-box">
-<div class="k-title">💡 正解：1</div>
+<div class="k-title">正解：1</div>
 Azure Policy のイニシアチブは<strong>1 つ以上</strong>のポリシー定義をグループ化したコレクションです。技術的には 1 つのポリシー定義だけでもイニシアチブを作成できます（実用的には複数定義をまとめるために使用します）。
 </div>
 <div class="tbl-wrap">
@@ -2150,11 +2150,11 @@ ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="key-box">
-<div class="k-title">💡 正解：0</div>
+<div class="k-title">正解：0</div>
 RBAC ロール割り当ては<strong>0 から始まります</strong>。新しく作成した VM に明示的なロール割り当てがなければ、リソースレベルでのロール割り当ては 0 件になります。ただし、上位スコープ（リソースグループ・サブスクリプション）からのロールは継承されますが、VM 単体の IAM 画面には「継承されたロール」として表示されます。
 </div>
 <div class="warn-box">
-<div class="w-title">⚠️ RBAC スコープの継承に注意</div>
+<div class="w-title">RBAC スコープの継承に注意</div>
 Azure RBAC はスコープ階層（管理グループ → サブスクリプション → リソースグループ → リソース）で継承されます。「このリソースに直接割り当てられているロール」は 0 件でも、上位スコープから継承されたロールが有効です。
 </div>
 </div>`},
@@ -2169,7 +2169,7 @@ ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="arch-box">
-<div class="arch-title">🏗️ Entra Connect Health による同期監視</div>
+<div class="arch-title">Entra Connect Health による同期監視</div>
 <svg viewBox="0 0 500 110" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:500px">
   <rect width="500" height="110" fill="#F0F6FF" rx="10"/>
   <!-- On-premises AD -->
@@ -2204,17 +2204,17 @@ exp:`<div class="exp-section">
 </svg>
 </div>
 <div class="key-box">
-<div class="k-title">💡 正解：Microsoft Entra Connect Health</div>
+<div class="k-title">正解：Microsoft Entra Connect Health</div>
 Entra Connect Health は Entra Connect（Azure AD Connect）の同期状態をリアルタイムで監視する専用サービスです。同期エラー・レイテンシグラフ・アラート・パフォーマンスデータを提供します。
 </div>
 <div class="tbl-wrap">
 <table class="ctbl">
 <thead><tr><th class="hl">ツール</th><th>同期状態監視</th><th>リアルタイム</th><th>本シナリオ</th></tr></thead>
 <tbody>
-<tr class="hl"><td><strong>Entra Connect Health</strong></td><td>✅ 専用設計</td><td>✅</td><td><span class="badge-ok">✅ 正解</span></td></tr>
-<tr><td>Azure Monitor</td><td>△ カスタム設定必要</td><td>✅</td><td><span class="badge-ng">❌ 設定複雑</span></td></tr>
-<tr><td>Defender for Identity</td><td>❌ セキュリティ脅威検出</td><td>✅</td><td><span class="badge-ng">❌ 用途違い</span></td></tr>
-<tr><td>Azure AD 監査ログ</td><td>△ 変更ログのみ</td><td>△</td><td><span class="badge-ng">❌ リアルタイム不可</span></td></tr>
+<tr class="hl"><td><strong>Entra Connect Health</strong></td><td>専用設計</td><td>✅</td><td><span class="badge-ok">正解</span></td></tr>
+<tr><td>Azure Monitor</td><td>△ カスタム設定必要</td><td>✅</td><td><span class="badge-ng">設定複雑</span></td></tr>
+<tr><td>Defender for Identity</td><td>セキュリティ脅威検出</td><td>✅</td><td><span class="badge-ng">用途違い</span></td></tr>
+<tr><td>Azure AD 監査ログ</td><td>△ 変更ログのみ</td><td>△</td><td><span class="badge-ng">リアルタイム不可</span></td></tr>
 </tbody></table></div>
 </div>`}
 ];
@@ -2260,7 +2260,7 @@ function renderQ(q){
       <span class="cltr">${LTR[i]}</span>
       <span>${esc(c.t)}</span>
     </button>`).join('');
-  const subBtn=multi?`<button class="sub-btn" id="sub_${q.id}" onclick="submitMulti('${q.id}')">✅ 回答を確定する</button>`:'';
+  const subBtn=multi?`<button class="sub-btn" id="sub_${q.id}" onclick="submitMulti('${q.id}')">回答を確定する</button>`:'';
   return `<div class="qcard" id="card_${q.id}">
     <div class="qh">
       <span class="qnum">問 ${q.num}</span>
