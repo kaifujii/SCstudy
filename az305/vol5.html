@@ -73,39 +73,7 @@ choices:[{t:"1",c:false},{t:"2",c:true},{t:"3",c:false},{t:"4",c:false}],
 ci:[1],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
-<div class="arch-box"><div class="arch-title">2リージョン 4可用性ゾーン VM（Q1）</div><svg viewBox="0 0 720 160" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:720px;display:block;margin:10px auto;border-radius:10px;">
-<rect width="720" height="160" rx="10" fill="#0d1b2e"/>
-<defs>
-  <marker id="arr" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-    <polygon points="0 0,7 2.5,0 5" fill="#4a9fd4"/>
-  </marker>
-  <marker id="arr_w" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-    <polygon points="0 0,7 2.5,0 5" fill="#ffffff"/>
-  </marker>
-</defs>
-<rect x="30" y="20" width="300" height="120" rx="8" fill="#0072C6" fill-opacity="0.06" stroke="#0072C6" stroke-width="1" stroke-dasharray="5,3"/>
-<text x="38" y="34" font-size="8.5" font-weight="600" fill="#0072C6" font-family="Segoe UI,Arial,sans-serif">East Japan リージョン 1  VNet 1</text>
-<rect x="390" y="20" width="300" height="120" rx="8" fill="#107C10" fill-opacity="0.06" stroke="#107C10" stroke-width="1" stroke-dasharray="5,3"/>
-<text x="398" y="34" font-size="8.5" font-weight="600" fill="#107C10" font-family="Segoe UI,Arial,sans-serif">West Japan リージョン 2  VNet 2</text>
-<rect x="70" y="62" width="80" height="56" rx="7" fill="#112240" stroke="#0072C6" stroke-width="1.5"/>
-<rect x="76" y="67" width="68" height="28" rx="4" fill="#0072C6" fill-opacity="0.18"/>
-<text x="110" y="86" text-anchor="middle" font-size="12" font-weight="700" fill="#0072C6" font-family="Segoe UI,Arial,sans-serif">VM群</text>
-<text x="110" y="104" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">AZ-1</text>
-<rect x="190" y="62" width="80" height="56" rx="7" fill="#112240" stroke="#0072C6" stroke-width="1.5"/>
-<rect x="196" y="67" width="68" height="28" rx="4" fill="#0072C6" fill-opacity="0.18"/>
-<text x="230" y="86" text-anchor="middle" font-size="12" font-weight="700" fill="#0072C6" font-family="Segoe UI,Arial,sans-serif">VM群</text>
-<text x="230" y="104" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">AZ-2</text>
-<rect x="430" y="62" width="80" height="56" rx="7" fill="#112240" stroke="#0072C6" stroke-width="1.5"/>
-<rect x="436" y="67" width="68" height="28" rx="4" fill="#0072C6" fill-opacity="0.18"/>
-<text x="470" y="86" text-anchor="middle" font-size="12" font-weight="700" fill="#0072C6" font-family="Segoe UI,Arial,sans-serif">VM群</text>
-<text x="470" y="104" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">AZ-3</text>
-<rect x="550" y="62" width="80" height="56" rx="7" fill="#112240" stroke="#0072C6" stroke-width="1.5"/>
-<rect x="556" y="67" width="68" height="28" rx="4" fill="#0072C6" fill-opacity="0.18"/>
-<text x="590" y="86" text-anchor="middle" font-size="12" font-weight="700" fill="#0072C6" font-family="Segoe UI,Arial,sans-serif">VM群</text>
-<text x="590" y="104" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">AZ-4</text>
-<line x1="330" y1="90" x2="388" y2="90" stroke="#4a9fd4" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr)"/>
-<text x="360" y="84" text-anchor="middle" font-size="8" fill="#7a9cbf" font-family="Segoe UI,Arial,sans-serif">VNet Peering</text>
-</svg></div>
+<div class="arch-box"><div class="arch-title">2リージョン 4可用性ゾーン VM（Q1）</div><img src="picture/vol5_q01_multiregion_az.png" alt="2リージョン 4可用性ゾーン VM（Q1）" style="width:100%;max-width:740px;display:block;margin:10px auto;border-radius:8px;"></div>
 <div class="key-box">
 <div class="k-title">正解：2</div>
 Azure VNet は<strong>リージョンスコープのリソース</strong>です。1 つの VNet は 1 つのリージョン内にしか存在できません。<br><br>
@@ -202,44 +170,7 @@ choices:[{t:"Azure SQL Database (Business Critical 層)",c:true},{t:"Azure SQL M
 ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
-<div class="arch-box"><div class="arch-title">SQL Server → Azure SQL DB 移行 + HA（Q3-4）</div><svg viewBox="0 0 740 150" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:740px;display:block;margin:10px auto;border-radius:10px;">
-<rect width="740" height="150" rx="10" fill="#0d1b2e"/>
-<defs>
-  <marker id="arr" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-    <polygon points="0 0,7 2.5,0 5" fill="#4a9fd4"/>
-  </marker>
-  <marker id="arr_w" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-    <polygon points="0 0,7 2.5,0 5" fill="#ffffff"/>
-  </marker>
-</defs>
-<rect x="376" y="26" width="228" height="98" rx="8" fill="#6264A7" fill-opacity="0.06" stroke="#6264A7" stroke-width="1" stroke-dasharray="5,3"/>
-<text x="384" y="40" font-size="8.5" font-weight="600" fill="#6264A7" font-family="Segoe UI,Arial,sans-serif">Azure SQL DB Business Critical</text>
-<rect x="146" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#546E7A" stroke-width="1.5"/>
-<rect x="152" y="49" width="76" height="28" rx="4" fill="#546E7A" fill-opacity="0.18"/>
-<text x="190" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#546E7A" font-family="Segoe UI,Arial,sans-serif">SRV</text>
-<text x="190" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">SQL Server</text>
-<text x="190" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">SQL1 オンプレ</text>
-<rect x="266" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#37474F" stroke-width="1.5"/>
-<rect x="272" y="49" width="76" height="28" rx="4" fill="#37474F" fill-opacity="0.18"/>
-<text x="310" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#37474F" font-family="Segoe UI,Arial,sans-serif">DMS</text>
-<text x="310" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Database</text>
-<text x="310" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Migration Svc</text>
-<rect x="386" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#6264A7" stroke-width="1.5"/>
-<rect x="392" y="49" width="76" height="28" rx="4" fill="#6264A7" fill-opacity="0.18"/>
-<text x="430" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#6264A7" font-family="Segoe UI,Arial,sans-serif">SQL</text>
-<text x="430" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">SQL DB</text>
-<text x="430" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Primary</text>
-<rect x="506" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#6264A7" stroke-width="1.5"/>
-<rect x="512" y="49" width="76" height="28" rx="4" fill="#6264A7" fill-opacity="0.18"/>
-<text x="550" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#6264A7" font-family="Segoe UI,Arial,sans-serif">SQL</text>
-<text x="550" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Read-only</text>
-<text x="550" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Replica x2</text>
-<line x1="234" y1="75" x2="260" y2="75" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-<text x="250" y="70" text-anchor="middle" font-size="8" fill="#7a9cbf" font-family="Segoe UI,Arial,sans-serif">移行</text>
-<line x1="354" y1="75" x2="380" y2="75" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-<line x1="474" y1="75" x2="500" y2="75" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-<text x="490" y="70" text-anchor="middle" font-size="8" fill="#7a9cbf" font-family="Segoe UI,Arial,sans-serif">自動同期</text>
-</svg></div>
+<div class="arch-box"><div class="arch-title">SQL Server → Azure SQL DB 移行 + HA（Q3-4）</div><img src="picture/vol5_q03_q04_sql_migration.png" alt="SQL Server → Azure SQL DB 移行 + HA（Q3-4）" style="width:100%;max-width:740px;display:block;margin:10px auto;border-radius:8px;"></div>
 <div class="key-box">
 <div class="k-title">正解：Azure SQL Database (Business Critical 層)</div>
 Business Critical 層は Always On 可用性グループをベースにしており、<strong>最大 4 つの読み取り可能なセカンダリレプリカ</strong>をサポートします。RTO は 30 秒未満で、15 分の要件を大きく下回ります。
@@ -304,43 +235,7 @@ choices:[{t:"Azure Data Explorer",c:true},{t:"Azure Data Lake Analytics",c:false
 ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
-<div class="arch-box"><div class="arch-title">ペタバイト Data Lake アーキテクチャ（Q5-6）</div><svg viewBox="0 0 740 150" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:740px;display:block;margin:10px auto;border-radius:10px;">
-<rect width="740" height="150" rx="10" fill="#0d1b2e"/>
-<defs>
-  <marker id="arr" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-    <polygon points="0 0,7 2.5,0 5" fill="#4a9fd4"/>
-  </marker>
-  <marker id="arr_w" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-    <polygon points="0 0,7 2.5,0 5" fill="#ffffff"/>
-  </marker>
-</defs>
-<rect x="256" y="26" width="348" height="98" rx="8" fill="#0072C6" fill-opacity="0.06" stroke="#0072C6" stroke-width="1" stroke-dasharray="5,3"/>
-<text x="264" y="40" font-size="8.5" font-weight="600" fill="#0072C6" font-family="Segoe UI,Arial,sans-serif">Azure</text>
-<rect x="146" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#546E7A" stroke-width="1.5"/>
-<rect x="152" y="49" width="76" height="28" rx="4" fill="#546E7A" fill-opacity="0.18"/>
-<text x="190" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#546E7A" font-family="Segoe UI,Arial,sans-serif">SRC</text>
-<text x="190" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">多様な</text>
-<text x="190" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">データソース</text>
-<rect x="266" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#00B0F0" stroke-width="1.5"/>
-<rect x="272" y="49" width="76" height="28" rx="4" fill="#00B0F0" fill-opacity="0.18"/>
-<text x="310" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#00B0F0" font-family="Segoe UI,Arial,sans-serif">ADL</text>
-<text x="310" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">ADLS Gen2</text>
-<text x="310" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">ペタバイト規模</text>
-<rect x="386" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#00897B" stroke-width="1.5"/>
-<rect x="392" y="49" width="76" height="28" rx="4" fill="#00897B" fill-opacity="0.18"/>
-<text x="430" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#00897B" font-family="Segoe UI,Arial,sans-serif">ADE</text>
-<text x="430" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Data Explorer</text>
-<text x="430" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">KQL クエリ</text>
-<rect x="506" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#00897B" stroke-width="1.5"/>
-<rect x="512" y="49" width="76" height="28" rx="4" fill="#00897B" fill-opacity="0.18"/>
-<text x="550" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#00897B" font-family="Segoe UI,Arial,sans-serif">SYN</text>
-<text x="550" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Synapse</text>
-<text x="550" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Analytics</text>
-<line x1="234" y1="75" x2="260" y2="75" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-<text x="250" y="70" text-anchor="middle" font-size="8" fill="#7a9cbf" font-family="Segoe UI,Arial,sans-serif">取り込み</text>
-<line x1="354" y1="75" x2="380" y2="75" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-<line x1="474" y1="75" x2="500" y2="75" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-</svg></div>
+<div class="arch-box"><div class="arch-title">ペタバイト Data Lake アーキテクチャ（Q5-6）</div><img src="picture/vol5_q05_q06_datalake.png" alt="ペタバイト Data Lake アーキテクチャ（Q5-6）" style="width:100%;max-width:740px;display:block;margin:10px auto;border-radius:8px;"></div>
 <div class="key-box">
 <div class="k-title">正解：Azure Data Explorer (ADX)</div>
 ADX はペタバイト規模の<strong>インタラクティブ分析</strong>に特化したサービスです。KQL (Kusto Query Language) を使用し、数秒での大規模クエリ、自動スケーリング、時系列データの可視化に優れています。
@@ -483,40 +378,7 @@ choices:[{t:"Log Analytics ワークスペースのリンクストレージア�
 ci:[1],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
-<div class="arch-box">
-<div class="arch-title">VM → Log Analytics ログ転送フロー</div>
-<svg viewBox="0 0 500 120" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:500px">
-  <rect width="500" height="120" fill="#F0F6FF" rx="10"/>
-  <!-- VM -->
-  <rect x="15" y="35" width="85" height="50" rx="7" fill="#607D8B"/>
-  <text x="57" y="57" text-anchor="middle" font-size="10" fill="#fff">Windows VM</text>
-  <text x="57" y="70" text-anchor="middle" font-size="9" fill="#ddd">×100台</text>
-  <text x="57" y="83" text-anchor="middle" font-size="9" fill="#ddd">AMA エージェント</text>
-  <!-- Arrow 1 -->
-  <line x1="103" y1="60" x2="133" y2="60" stroke="#555" stroke-width="1.5" marker-end="url(#a9)"/>
-  <text x="118" y="53" text-anchor="middle" font-size="8" fill="#555">JSON</text>
-  <!-- DCE -->
-  <rect x="135" y="30" width="100" height="60" rx="7" fill="#E53935"/>
-  <text x="185" y="52" text-anchor="middle" font-size="10" fill="#fff" font-weight="bold">データ収集</text>
-  <text x="185" y="65" text-anchor="middle" font-size="10" fill="#fff" font-weight="bold">エンドポイント</text>
-  <text x="185" y="78" text-anchor="middle" font-size="9" fill="#fdd">(DCE) ← 正解</text>
-  <!-- Arrow 2 -->
-  <line x1="238" y1="60" x2="268" y2="60" stroke="#555" stroke-width="1.5" marker-end="url(#a9)"/>
-  <!-- DCR -->
-  <rect x="270" y="30" width="100" height="60" rx="7" fill="#7719AA"/>
-  <text x="320" y="52" text-anchor="middle" font-size="10" fill="#fff" font-weight="bold">データ収集</text>
-  <text x="320" y="65" text-anchor="middle" font-size="10" fill="#fff" font-weight="bold">ルール (DCR)</text>
-  <text x="320" y="78" text-anchor="middle" font-size="9" fill="#ddd">KQL 変換</text>
-  <!-- Arrow 3 -->
-  <line x1="373" y1="60" x2="403" y2="60" stroke="#555" stroke-width="1.5" marker-end="url(#a9)"/>
-  <!-- Log Analytics -->
-  <rect x="405" y="30" width="85" height="60" rx="7" fill="#0072C6"/>
-  <text x="447" y="52" text-anchor="middle" font-size="10" fill="#fff">Log Analytics</text>
-  <text x="447" y="65" text-anchor="middle" font-size="10" fill="#fff">ワークスペース</text>
-  <text x="447" y="78" text-anchor="middle" font-size="9" fill="#ddd">カスタムテーブル</text>
-  <defs><marker id="a9" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#555"/></marker></defs>
-</svg>
-</div>
+<div class="arch-box"><div class="arch-title">VM → Log Analytics ログ転送フロー</div><img src="picture/vol5_q_vm_loganalytics.png" alt="VM → Log Analytics ログ転送フロー" style="width:100%;max-width:740px;display:block;margin:10px auto;border-radius:8px;"></div>
 <div class="key-box">
 <div class="k-title">正解：Azure Monitor データ収集エンドポイント (DCE)</div>
 DCE は Azure Monitor エージェント (AMA) がログデータを送信するためのエンドポイントです。VM → DCE → DCR (変換) → Log Analytics というフローでデータを転送します。
@@ -751,38 +613,7 @@ choices:[{t:"変更フィード（Change Feed）",c:false},{t:"Azure Data Factor
 ci:[2],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
-<div class="arch-box">
-<div class="arch-title">Azure Synapse Link for Cosmos DB — HTAP アーキテクチャ</div>
-<svg viewBox="0 0 500 140" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:500px">
-  <rect width="500" height="140" fill="#F0F6FF" rx="10"/>
-  <!-- Cosmos DB -->
-  <rect x="15" y="30" width="130" height="80" rx="8" fill="#0072C6"/>
-  <text x="80" y="55" text-anchor="middle" font-size="10" fill="#fff" font-weight="bold">Cosmos DB</text>
-  <rect x="25" y="63" width="110" height="20" rx="4" fill="#fff" opacity=".2"/>
-  <text x="80" y="77" text-anchor="middle" font-size="9" fill="#fff">トランザクション</text>
-  <text x="80" y="90" text-anchor="middle" font-size="9" fill="#ddd">(OLTP) ← 影響なし</text>
-  <!-- Auto sync arrow -->
-  <line x1="148" y1="70" x2="178" y2="70" stroke="#107C10" stroke-width="2" marker-end="url(#a14)"/>
-  <text x="163" y="63" font-size="8" fill="#107C10" font-weight="bold">自動</text>
-  <text x="163" y="82" font-size="8" fill="#107C10" font-weight="bold">同期</text>
-  <!-- Analytical Store -->
-  <rect x="180" y="30" width="140" height="80" rx="8" fill="#E53935"/>
-  <text x="250" y="52" text-anchor="middle" font-size="10" fill="#fff" font-weight="bold">分析ストア</text>
-  <text x="250" y="66" text-anchor="middle" font-size="10" fill="#fff" font-weight="bold">（列指向）</text>
-  <text x="250" y="82" text-anchor="middle" font-size="9" fill="#fdd">コスト：ETL 不要</text>
-  <text x="250" y="95" text-anchor="middle" font-size="9" fill="#fdd">OLTP に影響なし ○</text>
-  <!-- Arrow -->
-  <line x1="323" y1="70" x2="353" y2="70" stroke="#555" stroke-width="1.5" marker-end="url(#a14)"/>
-  <!-- Synapse -->
-  <rect x="355" y="30" width="130" height="80" rx="8" fill="#7719AA"/>
-  <text x="420" y="55" text-anchor="middle" font-size="10" fill="#fff" font-weight="bold">Azure Synapse</text>
-  <text x="420" y="70" text-anchor="middle" font-size="10" fill="#fff" font-weight="bold">Analytics</text>
-  <text x="420" y="85" text-anchor="middle" font-size="9" fill="#ddd">ほぼリアルタイム</text>
-  <text x="420" y="98" text-anchor="middle" font-size="9" fill="#ddd">分析・レポート</text>
-  <text x="250" y="15" text-anchor="middle" font-size="10" fill="#0072C6" font-weight="bold">Synapse Link = HTAP（ハイブリッドトランザクション/分析処理）</text>
-  <defs><marker id="a14" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#555"/></marker></defs>
-</svg>
-</div>
+<div class="arch-box"><div class="arch-title">Azure Synapse Link for Cosmos DB — HTAP アーキテクチャ</div><img src="picture/vol5_q_synapse_cosmos.png" alt="Azure Synapse Link for Cosmos DB — HTAP アーキテクチャ" style="width:100%;max-width:740px;display:block;margin:10px auto;border-radius:8px;"></div>
 <div class="key-box">
 <div class="k-title">正解：Azure Synapse Link for Cosmos DB</div>
 Synapse Link は Cosmos DB の<strong>分析ストア</strong>（列指向ストレージ）を自動作成し、ETL なしで Synapse Analytics から直接クエリできます。OLTP ワークロードへの影響がゼロで、ほぼリアルタイムの分析が可能です。
@@ -810,39 +641,7 @@ choices:[{t:"Microsoft Entra Identity Governance（アクセスレビュー）",
 ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
-<div class="arch-box">
-<div class="arch-title">Entra Identity Governance — ゲストライフサイクル管理</div>
-<svg viewBox="0 0 500 130" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:500px">
-  <rect width="500" height="130" fill="#F0F6FF" rx="10"/>
-  <!-- Guest invited -->
-  <rect x="15" y="30" width="90" height="70" rx="7" fill="#607D8B"/>
-  <text x="60" y="55" text-anchor="middle" font-size="10" fill="#fff">ゲストユーザー</text>
-  <text x="60" y="70" text-anchor="middle" font-size="10" fill="#fff">招待</text>
-  <text x="60" y="85" text-anchor="middle" font-size="9" fill="#ddd">アクセス付与</text>
-  <!-- Arrow -->
-  <line x1="108" y1="65" x2="135" y2="65" stroke="#555" stroke-width="1.5" marker-end="url(#a15)"/>
-  <!-- Access Review -->
-  <rect x="137" y="20" width="150" height="90" rx="7" fill="#7719AA"/>
-  <text x="212" y="45" text-anchor="middle" font-size="10" fill="#fff" font-weight="bold">月次アクセスレビュー</text>
-  <text x="212" y="60" text-anchor="middle" font-size="9" fill="#ddd">Identity Governance</text>
-  <rect x="147" y="68" width="130" height="35" rx="4" fill="#fff" opacity=".15"/>
-  <text x="212" y="82" text-anchor="middle" font-size="9" fill="#fff">承認者: アクセスを確認</text>
-  <text x="212" y="96" text-anchor="middle" font-size="9" fill="#fff">未応答 → 自動削除</text>
-  <!-- Arrow approve -->
-  <line x1="290" y1="55" x2="320" y2="45" stroke="#107C10" stroke-width="1.5" marker-end="url(#a15)"/>
-  <line x1="290" y1="75" x2="320" y2="85" stroke="#E53935" stroke-width="1.5" marker-end="url(#a15)"/>
-  <!-- Continue -->
-  <rect x="322" y="25" width="80" height="35" rx="6" fill="#107C10"/>
-  <text x="362" y="42" text-anchor="middle" font-size="10" fill="#fff">継続アクセス</text>
-  <text x="362" y="55" text-anchor="middle" font-size="9" fill="#ddd">承認</text>
-  <!-- Revoke -->
-  <rect x="322" y="70" width="80" height="35" rx="6" fill="#E53935"/>
-  <text x="362" y="84" text-anchor="middle" font-size="10" fill="#fff">アクセス削除</text>
-  <text x="362" y="97" text-anchor="middle" font-size="9" fill="#fdd">拒否/未応答</text>
-  <text x="240" y="12" text-anchor="middle" font-size="10" fill="#7719AA" font-weight="bold">アクセスライフサイクル管理フロー</text>
-  <defs><marker id="a15" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#555"/></marker></defs>
-</svg>
-</div>
+<div class="arch-box"><div class="arch-title">Entra Identity Governance — ゲストライフサイクル管理</div><img src="picture/vol5_q_entra_governance.png" alt="Entra Identity Governance — ゲストライフサイクル管理" style="width:100%;max-width:740px;display:block;margin:10px auto;border-radius:8px;"></div>
 <div class="key-box">
 <div class="k-title">正解：Microsoft Entra Identity Governance</div>
 Entra Identity Governance の<strong>アクセスレビュー機能</strong>により、ゲストユーザーのアクセス権を定期的に確認・削除できます。複数サブスクリプション横断での管理も可能です。
@@ -867,38 +666,7 @@ choices:[{t:"OWASP Top 10 脅威からの保護ポリシー",c:true},{t:"JWT ト
 ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
-<div class="arch-box"><div class="arch-title">API Management + App Service バックエンド（Q16-17）</div><svg viewBox="0 0 640 150" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:640px;display:block;margin:10px auto;border-radius:10px;">
-<rect width="640" height="150" rx="10" fill="#0d1b2e"/>
-<defs>
-  <marker id="arr" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-    <polygon points="0 0,7 2.5,0 5" fill="#4a9fd4"/>
-  </marker>
-  <marker id="arr_w" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-    <polygon points="0 0,7 2.5,0 5" fill="#ffffff"/>
-  </marker>
-</defs>
-<rect x="266" y="26" width="228" height="98" rx="8" fill="#0072C6" fill-opacity="0.06" stroke="#0072C6" stroke-width="1" stroke-dasharray="5,3"/>
-<text x="274" y="40" font-size="8.5" font-weight="600" fill="#0072C6" font-family="Segoe UI,Arial,sans-serif">Azure</text>
-<rect x="156" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#546E7A" stroke-width="1.5"/>
-<rect x="162" y="49" width="76" height="28" rx="4" fill="#546E7A" fill-opacity="0.18"/>
-<text x="200" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#546E7A" font-family="Segoe UI,Arial,sans-serif">PTN</text>
-<text x="200" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">外部</text>
-<text x="200" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">パートナー</text>
-<rect x="276" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#9575CD" stroke-width="1.5"/>
-<rect x="282" y="49" width="76" height="28" rx="4" fill="#9575CD" fill-opacity="0.18"/>
-<text x="320" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#9575CD" font-family="Segoe UI,Arial,sans-serif">APIM</text>
-<text x="320" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">API Management</text>
-<text x="320" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">レート制限/認証</text>
-<rect x="396" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#0072C6" stroke-width="1.5"/>
-<rect x="402" y="49" width="76" height="28" rx="4" fill="#0072C6" fill-opacity="0.18"/>
-<text x="440" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#0072C6" font-family="Segoe UI,Arial,sans-serif">APP</text>
-<text x="440" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">App Service</text>
-<text x="440" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">バックエンド</text>
-<line x1="244" y1="75" x2="270" y2="75" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-<text x="260" y="70" text-anchor="middle" font-size="8" fill="#7a9cbf" font-family="Segoe UI,Arial,sans-serif">HTTPS</text>
-<line x1="364" y1="75" x2="390" y2="75" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-<text x="380" y="70" text-anchor="middle" font-size="8" fill="#7a9cbf" font-family="Segoe UI,Arial,sans-serif">プロキシ</text>
-</svg></div>
+<div class="arch-box"><div class="arch-title">API Management + App Service バックエンド（Q16-17）</div><img src="picture/vol5_q16_q17_apim.png" alt="API Management + App Service バックエンド（Q16-17）" style="width:100%;max-width:740px;display:block;margin:10px auto;border-radius:8px;"></div>
 <div class="key-box">
 <div class="k-title">正解：OWASP Top 10 脅威からの保護ポリシー</div>
 Azure APIM には OWASP Top 10 の脅威（SQL インジェクション、XSS、CSRF など）からリクエストを保護する組み込みポリシーがあります。WAF（Web Application Firewall）機能として動作します。
@@ -1103,37 +871,7 @@ choices:[{t:"Azure SQL Managed Instance 上の複数データベース",c:false}
 ci:[1],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
-<div class="arch-box"><div class="arch-title">マルチテナント SaaS + Elastic Pool（Q22）</div><svg viewBox="0 0 660 210" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:660px;display:block;margin:10px auto;border-radius:10px;">
-<rect width="660" height="210" rx="10" fill="#0d1b2e"/>
-<defs>
-  <marker id="arr" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-    <polygon points="0 0,7 2.5,0 5" fill="#4a9fd4"/>
-  </marker>
-  <marker id="arr_w" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-    <polygon points="0 0,7 2.5,0 5" fill="#ffffff"/>
-  </marker>
-</defs>
-<rect x="56" y="74" width="88" height="62" rx="7" fill="#112240" stroke="#0072C6" stroke-width="1.5"/>
-<rect x="62" y="79" width="76" height="28" rx="4" fill="#0072C6" fill-opacity="0.18"/>
-<text x="100" y="98" text-anchor="middle" font-size="12" font-weight="700" fill="#0072C6" font-family="Segoe UI,Arial,sans-serif">APP</text>
-<text x="100" y="116" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">SaaS アプリ</text>
-<text x="100" y="127" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">App Service</text>
-<rect x="556" y="-6" width="88" height="62" rx="7" fill="#112240" stroke="#6264A7" stroke-width="1.5"/>
-<rect x="562" y="-1" width="76" height="28" rx="4" fill="#6264A7" fill-opacity="0.18"/>
-<text x="600" y="18" text-anchor="middle" font-size="12" font-weight="700" fill="#6264A7" font-family="Segoe UI,Arial,sans-serif">SQL</text>
-<text x="600" y="36" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">テナント DB 1</text>
-<rect x="556" y="74" width="88" height="62" rx="7" fill="#112240" stroke="#6264A7" stroke-width="1.5"/>
-<rect x="562" y="79" width="76" height="28" rx="4" fill="#6264A7" fill-opacity="0.18"/>
-<text x="600" y="98" text-anchor="middle" font-size="12" font-weight="700" fill="#6264A7" font-family="Segoe UI,Arial,sans-serif">SQL</text>
-<text x="600" y="116" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">テナント DB 2</text>
-<rect x="556" y="154" width="88" height="62" rx="7" fill="#112240" stroke="#6264A7" stroke-width="1.5"/>
-<rect x="562" y="159" width="76" height="28" rx="4" fill="#6264A7" fill-opacity="0.18"/>
-<text x="600" y="178" text-anchor="middle" font-size="12" font-weight="700" fill="#6264A7" font-family="Segoe UI,Arial,sans-serif">SQL</text>
-<text x="600" y="196" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">テナント DB N</text>
-<line x1="144" y1="105" x2="556" y2="25" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-<line x1="144" y1="105" x2="556" y2="105" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-<line x1="144" y1="105" x2="556" y2="185" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-</svg></div>
+<div class="arch-box"><div class="arch-title">マルチテナント SaaS + Elastic Pool（Q22）</div><img src="picture/vol5_q22_multitenant_saas.png" alt="マルチテナント SaaS + Elastic Pool（Q22）" style="width:100%;max-width:740px;display:block;margin:10px auto;border-radius:8px;"></div>
 <div class="key-box">
 <div class="k-title">正解：Azure SQL Database のエラスティックプール</div>
 エラスティックプールは複数のデータベースが eDTU または vCore リソースを共有する仕組みです。各テナントに独立したデータベースを提供しながら、コンピュートリソースを共有することでコストを大幅に削減できます。テナントの増減にも柔軟に対応します。
@@ -1163,38 +901,7 @@ choices:[{t:"Azure Container Apps",c:true},{t:"Azure Kubernetes Service (AKS)",c
 ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
-<div class="arch-box"><div class="arch-title">AKS マイクロサービス + Container Registry（Q23-24）</div><svg viewBox="0 0 640 150" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:640px;display:block;margin:10px auto;border-radius:10px;">
-<rect width="640" height="150" rx="10" fill="#0d1b2e"/>
-<defs>
-  <marker id="arr" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-    <polygon points="0 0,7 2.5,0 5" fill="#4a9fd4"/>
-  </marker>
-  <marker id="arr_w" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-    <polygon points="0 0,7 2.5,0 5" fill="#ffffff"/>
-  </marker>
-</defs>
-<rect x="266" y="26" width="228" height="98" rx="8" fill="#0072C6" fill-opacity="0.06" stroke="#0072C6" stroke-width="1" stroke-dasharray="5,3"/>
-<text x="274" y="40" font-size="8.5" font-weight="600" fill="#0072C6" font-family="Segoe UI,Arial,sans-serif">Azure Kubernetes Service</text>
-<rect x="156" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#0072C6" stroke-width="1.5"/>
-<rect x="162" y="49" width="76" height="28" rx="4" fill="#0072C6" fill-opacity="0.18"/>
-<text x="200" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#0072C6" font-family="Segoe UI,Arial,sans-serif">ACR</text>
-<text x="200" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Container</text>
-<text x="200" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Registry</text>
-<rect x="276" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#0072C6" stroke-width="1.5"/>
-<rect x="282" y="49" width="76" height="28" rx="4" fill="#0072C6" fill-opacity="0.18"/>
-<text x="320" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#0072C6" font-family="Segoe UI,Arial,sans-serif">AKS</text>
-<text x="320" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">AKS</text>
-<text x="320" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">クラスター</text>
-<rect x="396" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#0072C6" stroke-width="1.5"/>
-<rect x="402" y="49" width="76" height="28" rx="4" fill="#0072C6" fill-opacity="0.18"/>
-<text x="440" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#0072C6" font-family="Segoe UI,Arial,sans-serif">SVC</text>
-<text x="440" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">マイクロサービス</text>
-<text x="440" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">A / B</text>
-<line x1="244" y1="75" x2="270" y2="75" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-<text x="260" y="70" text-anchor="middle" font-size="8" fill="#7a9cbf" font-family="Segoe UI,Arial,sans-serif">イメージ プル</text>
-<line x1="364" y1="75" x2="390" y2="75" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-<text x="380" y="70" text-anchor="middle" font-size="8" fill="#7a9cbf" font-family="Segoe UI,Arial,sans-serif">デプロイ</text>
-</svg></div>
+<div class="arch-box"><div class="arch-title">AKS マイクロサービス + Container Registry（Q23-24）</div><img src="picture/vol5_q23_q24_aks_acr.png" alt="AKS マイクロサービス + Container Registry（Q23-24）" style="width:100%;max-width:740px;display:block;margin:10px auto;border-radius:8px;"></div>
 <div class="key-box">
 <div class="k-title">正解：Azure Container Apps</div>
 Azure Container Apps は Kubernetes の知識なしにコンテナーをサーバーレスで実行できるマネージドサービスです。KEDA（Kubernetes Event-Driven Autoscaling）による自動スケール、サービス間通信、Dapr 統合をすぐに利用できます。
@@ -1262,46 +969,7 @@ choices:[{t:"分散可用性グループ（Distributed Availability Group）",c:
 ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
-<div class="arch-box"><div class="arch-title">SQL Always On + Traffic Manager DR（Q26）</div><svg viewBox="0 0 740 150" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:740px;display:block;margin:10px auto;border-radius:10px;">
-<rect width="740" height="150" rx="10" fill="#0d1b2e"/>
-<defs>
-  <marker id="arr" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-    <polygon points="0 0,7 2.5,0 5" fill="#4a9fd4"/>
-  </marker>
-  <marker id="arr_w" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-    <polygon points="0 0,7 2.5,0 5" fill="#ffffff"/>
-  </marker>
-</defs>
-<rect x="256" y="26" width="228" height="98" rx="8" fill="#0072C6" fill-opacity="0.06" stroke="#0072C6" stroke-width="1" stroke-dasharray="5,3"/>
-<text x="264" y="40" font-size="8.5" font-weight="600" fill="#0072C6" font-family="Segoe UI,Arial,sans-serif">East US VNet</text>
-<rect x="496" y="26" width="108" height="98" rx="8" fill="#107C10" fill-opacity="0.06" stroke="#107C10" stroke-width="1" stroke-dasharray="5,3"/>
-<text x="504" y="40" font-size="8.5" font-weight="600" fill="#107C10" font-family="Segoe UI,Arial,sans-serif">West US VNet</text>
-<rect x="146" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#107C10" stroke-width="1.5"/>
-<rect x="152" y="49" width="76" height="28" rx="4" fill="#107C10" fill-opacity="0.18"/>
-<text x="190" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#107C10" font-family="Segoe UI,Arial,sans-serif">TM</text>
-<text x="190" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Traffic Manager</text>
-<text x="190" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">フェールオーバー</text>
-<rect x="266" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#107C10" stroke-width="1.5"/>
-<rect x="272" y="49" width="76" height="28" rx="4" fill="#107C10" fill-opacity="0.18"/>
-<text x="310" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#107C10" font-family="Segoe UI,Arial,sans-serif">ILB</text>
-<text x="310" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">ILB Listener</text>
-<text x="310" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">East US</text>
-<rect x="386" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#0072C6" stroke-width="1.5"/>
-<rect x="392" y="49" width="76" height="28" rx="4" fill="#0072C6" fill-opacity="0.18"/>
-<text x="430" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#0072C6" font-family="Segoe UI,Arial,sans-serif">VM</text>
-<text x="430" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">SQL Always On</text>
-<text x="430" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Primary Replica</text>
-<rect x="506" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#0072C6" stroke-width="1.5"/>
-<rect x="512" y="49" width="76" height="28" rx="4" fill="#0072C6" fill-opacity="0.18"/>
-<text x="550" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#0072C6" font-family="Segoe UI,Arial,sans-serif">VM</text>
-<text x="550" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">SQL Always On</text>
-<text x="550" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Secondary Replica</text>
-<line x1="234" y1="75" x2="260" y2="75" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-<text x="250" y="70" text-anchor="middle" font-size="8" fill="#7a9cbf" font-family="Segoe UI,Arial,sans-serif">ルーティング</text>
-<line x1="354" y1="75" x2="380" y2="75" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-<line x1="474" y1="75" x2="500" y2="75" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-<text x="490" y="70" text-anchor="middle" font-size="8" fill="#7a9cbf" font-family="Segoe UI,Arial,sans-serif">Always On 同期</text>
-</svg></div>
+<div class="arch-box"><div class="arch-title">SQL Always On + Traffic Manager DR（Q26）</div><img src="picture/vol5_q26_sql_alwayson_tm.png" alt="SQL Always On + Traffic Manager DR（Q26）" style="width:100%;max-width:740px;display:block;margin:10px auto;border-radius:8px;"></div>
 <div class="key-box">
 <div class="k-title">正解：分散可用性グループ</div>
 分散可用性グループは、異なる WSFC（Windows Server フェールオーバークラスター）上の 2 つの可用性グループを接続します。これにより異なるリージョン間でのフェールオーバーが可能になります。
@@ -1330,34 +998,7 @@ choices:[{t:"Azure Front Door",c:true},{t:"Azure Traffic Manager",c:false},{t:"A
 ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
-<div class="arch-box"><div class="arch-title">マルチリージョン Web App + Front Door WAF（Q27-28）</div><svg viewBox="0 0 640 180" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:640px;display:block;margin:10px auto;border-radius:10px;">
-<rect width="640" height="180" rx="10" fill="#0d1b2e"/>
-<defs>
-  <marker id="arr" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-    <polygon points="0 0,7 2.5,0 5" fill="#4a9fd4"/>
-  </marker>
-  <marker id="arr_w" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-    <polygon points="0 0,7 2.5,0 5" fill="#ffffff"/>
-  </marker>
-</defs>
-<rect x="56" y="59" width="88" height="62" rx="7" fill="#112240" stroke="#107C10" stroke-width="1.5"/>
-<rect x="62" y="64" width="76" height="28" rx="4" fill="#107C10" fill-opacity="0.18"/>
-<text x="100" y="83" text-anchor="middle" font-size="12" font-weight="700" fill="#107C10" font-family="Segoe UI,Arial,sans-serif">FD</text>
-<text x="100" y="101" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Front Door</text>
-<text x="100" y="112" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Global LB / WAF</text>
-<rect x="556" y="19" width="88" height="62" rx="7" fill="#112240" stroke="#0072C6" stroke-width="1.5"/>
-<rect x="562" y="24" width="76" height="28" rx="4" fill="#0072C6" fill-opacity="0.18"/>
-<text x="600" y="43" text-anchor="middle" font-size="12" font-weight="700" fill="#0072C6" font-family="Segoe UI,Arial,sans-serif">APP</text>
-<text x="600" y="61" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Web App</text>
-<text x="600" y="72" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">リージョン A</text>
-<rect x="556" y="99" width="88" height="62" rx="7" fill="#112240" stroke="#0072C6" stroke-width="1.5"/>
-<rect x="562" y="104" width="76" height="28" rx="4" fill="#0072C6" fill-opacity="0.18"/>
-<text x="600" y="123" text-anchor="middle" font-size="12" font-weight="700" fill="#0072C6" font-family="Segoe UI,Arial,sans-serif">APP</text>
-<text x="600" y="141" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Web App</text>
-<text x="600" y="152" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">リージョン B</text>
-<line x1="144" y1="90" x2="556" y2="50" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-<line x1="144" y1="90" x2="556" y2="130" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-</svg></div>
+<div class="arch-box"><div class="arch-title">マルチリージョン Web App + Front Door WAF（Q27-28）</div><img src="picture/vol5_q27_q28_webapp_waf.png" alt="マルチリージョン Web App + Front Door WAF（Q27-28）" style="width:100%;max-width:740px;display:block;margin:10px auto;border-radius:8px;"></div>
 <div class="key-box">
 <div class="k-title">正解：Azure Front Door</div>
 Azure Front Door はグローバル HTTP/HTTPS ロードバランシング、CDN、WAF、DDoS 保護を統合したサービスです。Anycast ネットワークにより最も近い PoP（Point of Presence）にルーティングします。
@@ -1411,44 +1052,7 @@ choices:[{t:"1 サブネット",c:false},{t:"2 サブネット",c:true},{t:"3 �
 ci:[1],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
-<div class="arch-box"><div class="arch-title">App Service + Private Endpoint + DNS（Q29-30）</div><svg viewBox="0 0 740 150" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:740px;display:block;margin:10px auto;border-radius:10px;">
-<rect width="740" height="150" rx="10" fill="#0d1b2e"/>
-<defs>
-  <marker id="arr" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-    <polygon points="0 0,7 2.5,0 5" fill="#4a9fd4"/>
-  </marker>
-  <marker id="arr_w" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-    <polygon points="0 0,7 2.5,0 5" fill="#ffffff"/>
-  </marker>
-</defs>
-<rect x="136" y="26" width="468" height="98" rx="8" fill="#0072C6" fill-opacity="0.06" stroke="#0072C6" stroke-width="1" stroke-dasharray="5,3"/>
-<text x="144" y="40" font-size="8.5" font-weight="600" fill="#0072C6" font-family="Segoe UI,Arial,sans-serif">Azure (East Japan)</text>
-<rect x="146" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#0072C6" stroke-width="1.5"/>
-<rect x="152" y="49" width="76" height="28" rx="4" fill="#0072C6" fill-opacity="0.18"/>
-<text x="190" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#0072C6" font-family="Segoe UI,Arial,sans-serif">APP</text>
-<text x="190" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">WebApp1</text>
-<text x="190" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">VNet Integration</text>
-<rect x="266" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#107C10" stroke-width="1.5"/>
-<rect x="272" y="49" width="76" height="28" rx="4" fill="#107C10" fill-opacity="0.18"/>
-<text x="310" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#107C10" font-family="Segoe UI,Arial,sans-serif">PE</text>
-<text x="310" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Private</text>
-<text x="310" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Endpoint</text>
-<rect x="386" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#107C10" stroke-width="1.5"/>
-<rect x="392" y="49" width="76" height="28" rx="4" fill="#107C10" fill-opacity="0.18"/>
-<text x="430" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#107C10" font-family="Segoe UI,Arial,sans-serif">DNS</text>
-<text x="430" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">プライベート</text>
-<text x="430" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">DNS ゾーン</text>
-<rect x="506" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#6264A7" stroke-width="1.5"/>
-<rect x="512" y="49" width="76" height="28" rx="4" fill="#6264A7" fill-opacity="0.18"/>
-<text x="550" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#6264A7" font-family="Segoe UI,Arial,sans-serif">SQL</text>
-<text x="550" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">DB1</text>
-<text x="550" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Azure SQL DB</text>
-<line x1="234" y1="75" x2="260" y2="75" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-<text x="250" y="70" text-anchor="middle" font-size="8" fill="#7a9cbf" font-family="Segoe UI,Arial,sans-serif">VNet 経由</text>
-<line x1="354" y1="75" x2="380" y2="75" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-<text x="370" y="70" text-anchor="middle" font-size="8" fill="#7a9cbf" font-family="Segoe UI,Arial,sans-serif">名前解決</text>
-<line x1="474" y1="75" x2="500" y2="75" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-</svg></div>
+<div class="arch-box"><div class="arch-title">App Service + Private Endpoint + DNS（Q29-30）</div><img src="picture/vol5_q29_q30_app_pe_dns.png" alt="App Service + Private Endpoint + DNS（Q29-30）" style="width:100%;max-width:740px;display:block;margin:10px auto;border-radius:8px;"></div>
 <div class="key-box">
 <div class="k-title">正解：2 サブネット</div>
 プライベート接続には 2 つの独立したサブネットが必要です：<br>
@@ -1495,38 +1099,7 @@ choices:[{t:"True",c:true},{t:"False",c:false}],
 ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
-<div class="arch-box"><div class="arch-title">APIM 外部 VNet モード + バックエンド VM（Q31-33）</div><svg viewBox="0 0 640 150" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:640px;display:block;margin:10px auto;border-radius:10px;">
-<rect width="640" height="150" rx="10" fill="#0d1b2e"/>
-<defs>
-  <marker id="arr" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-    <polygon points="0 0,7 2.5,0 5" fill="#4a9fd4"/>
-  </marker>
-  <marker id="arr_w" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-    <polygon points="0 0,7 2.5,0 5" fill="#ffffff"/>
-  </marker>
-</defs>
-<rect x="266" y="26" width="228" height="98" rx="8" fill="#0072C6" fill-opacity="0.06" stroke="#0072C6" stroke-width="1" stroke-dasharray="5,3"/>
-<text x="274" y="40" font-size="8.5" font-weight="600" fill="#0072C6" font-family="Segoe UI,Arial,sans-serif">VNet1</text>
-<rect x="156" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#546E7A" stroke-width="1.5"/>
-<rect x="162" y="49" width="76" height="28" rx="4" fill="#546E7A" fill-opacity="0.18"/>
-<text x="200" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#546E7A" font-family="Segoe UI,Arial,sans-serif">CLI</text>
-<text x="200" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">外部</text>
-<text x="200" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">クライアント</text>
-<rect x="276" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#9575CD" stroke-width="1.5"/>
-<rect x="282" y="49" width="76" height="28" rx="4" fill="#9575CD" fill-opacity="0.18"/>
-<text x="320" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#9575CD" font-family="Segoe UI,Arial,sans-serif">APIM</text>
-<text x="320" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">API Management</text>
-<text x="320" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">外部 VNet モード</text>
-<rect x="396" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#0072C6" stroke-width="1.5"/>
-<rect x="402" y="49" width="76" height="28" rx="4" fill="#0072C6" fill-opacity="0.18"/>
-<text x="440" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#0072C6" font-family="Segoe UI,Arial,sans-serif">VM</text>
-<text x="440" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">VM1 / VM2</text>
-<text x="440" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">バックエンド</text>
-<line x1="244" y1="75" x2="270" y2="75" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-<text x="260" y="70" text-anchor="middle" font-size="8" fill="#7a9cbf" font-family="Segoe UI,Arial,sans-serif">インターネット</text>
-<line x1="364" y1="75" x2="390" y2="75" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-<text x="380" y="70" text-anchor="middle" font-size="8" fill="#7a9cbf" font-family="Segoe UI,Arial,sans-serif">内部ルーティング</text>
-</svg></div>
+<div class="arch-box"><div class="arch-title">APIM 外部 VNet モード + バックエンド VM（Q31-33）</div><img src="picture/vol5_q31_q33_apim_vnet.png" alt="APIM 外部 VNet モード + バックエンド VM（Q31-33）" style="width:100%;max-width:740px;display:block;margin:10px auto;border-radius:8px;"></div>
 <div class="key-box">
 <div class="k-title">正解：True</div>
 APIM が<strong>外部 VNet モード</strong>で統合されている場合、APIM はパブリック IP アドレスを持ち、インターネットからアクセス可能な状態になります。したがって、パートナーはインターネット経由で API にアクセスできます。
@@ -1557,7 +1130,7 @@ exp:`<div class="exp-section">
 APIM（ProdSubnet）と VM1（Subnet1）は<strong>同じ VNet1 内</strong>にあります。同一 VNet 内であれば VNet ピアリング等なしに直接通信可能です。外部 VNet モードの APIM は VNet 内バックエンドにプライベート IP でアクセスできます。
 </div>
 <div class="arch-box">
-<div class="arch-title">通信フロー</div>
+<div class="arch-title">通信フロー（APIM → VNet → VM）</div>
 <pre style="font-size:12px;line-height:1.8;color:#1a1a2e">
 インターネット → APIM (ProdSubnet, パブリック IP) → VM1 (Subnet1, プライベート IP)
                ↑ 外部モード: パブリックアクセス可    ↑ 同一 VNet: プライベート通信可
@@ -1628,37 +1201,7 @@ choices:[{t:"Azure Data Factory",c:true},{t:"Azure Synapse Analytics",c:false},{
 ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
-<div class="arch-box">
-<div class="arch-title">Azure Data Factory — ETL パイプライン</div>
-<svg viewBox="0 0 500 130" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:500px">
-  <rect width="500" height="130" fill="#F0F6FF" rx="10"/>
-  <!-- Sources -->
-  <rect x="10" y="15" width="100" height="25" rx="4" fill="#607D8B"/>
-  <text x="60" y="31" text-anchor="middle" font-size="9" fill="#fff">オンプレミス DB</text>
-  <rect x="10" y="50" width="100" height="25" rx="4" fill="#607D8B"/>
-  <text x="60" y="66" text-anchor="middle" font-size="9" fill="#fff">Azure Blob Storage</text>
-  <rect x="10" y="85" width="100" height="25" rx="4" fill="#607D8B"/>
-  <text x="60" y="101" text-anchor="middle" font-size="9" fill="#fff">SQL Server</text>
-  <!-- Arrows to ADF -->
-  <line x1="113" y1="27" x2="148" y2="55" stroke="#555" stroke-width="1.2" marker-end="url(#a35)"/>
-  <line x1="113" y1="62" x2="148" y2="62" stroke="#555" stroke-width="1.2" marker-end="url(#a35)"/>
-  <line x1="113" y1="97" x2="148" y2="70" stroke="#555" stroke-width="1.2" marker-end="url(#a35)"/>
-  <!-- ADF -->
-  <rect x="150" y="30" width="150" height="65" rx="7" fill="#E53935"/>
-  <text x="225" y="52" text-anchor="middle" font-size="11" fill="#fff" font-weight="bold">Azure Data Factory</text>
-  <text x="225" y="67" text-anchor="middle" font-size="9" fill="#fdd">コピーアクティビティ</text>
-  <text x="225" y="80" text-anchor="middle" font-size="9" fill="#fdd">データフロー（変換）</text>
-  <text x="225" y="92" text-anchor="middle" font-size="9" fill="#fdd">スケジュールトリガー</text>
-  <!-- Arrow to ADLS -->
-  <line x1="303" y1="62" x2="338" y2="62" stroke="#555" stroke-width="1.5" marker-end="url(#a35)"/>
-  <!-- ADLS -->
-  <rect x="340" y="30" width="150" height="65" rx="7" fill="#107C10"/>
-  <text x="415" y="55" text-anchor="middle" font-size="11" fill="#fff" font-weight="bold">ADLS Gen2</text>
-  <text x="415" y="70" text-anchor="middle" font-size="9" fill="#ddd">変換済みデータ</text>
-  <text x="415" y="83" text-anchor="middle" font-size="9" fill="#ddd">移行先</text>
-  <defs><marker id="a35" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#555"/></marker></defs>
-</svg>
-</div>
+<div class="arch-box"><div class="arch-title">Azure Data Factory — ETL パイプライン</div><img src="picture/vol5_q_data_factory_etl.png" alt="Azure Data Factory — ETL パイプライン" style="width:100%;max-width:740px;display:block;margin:10px auto;border-radius:8px;"></div>
 <div class="key-box">
 <div class="k-title">正解：Azure Data Factory</div>
 ADF はコードなしのデータ統合サービスです。90 以上のコネクタ（オンプレミス含む）、データフローによる変換、スケジュールトリガーをすべて統合的に提供します。
@@ -1709,35 +1252,7 @@ choices:[{t:"マネージド ID（システム割り当てまたはユーザー�
 ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
-<div class="arch-box">
-<div class="arch-title">マネージド ID による資格情報レスアクセス</div>
-<svg viewBox="0 0 500 120" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:500px">
-  <rect width="500" height="120" fill="#F0F6FF" rx="10"/>
-  <!-- Logic Apps -->
-  <rect x="15" y="35" width="120" height="50" rx="7" fill="#0072C6"/>
-  <text x="75" y="57" text-anchor="middle" font-size="10" fill="#fff" font-weight="bold">Logic Apps</text>
-  <text x="75" y="72" text-anchor="middle" font-size="9" fill="#ddd">マネージド ID</text>
-  <text x="75" y="83" text-anchor="middle" font-size="9" fill="#ddd">有効化済み</text>
-  <!-- Arrow to Entra -->
-  <line x1="138" y1="60" x2="168" y2="60" stroke="#555" stroke-width="1.5" marker-end="url(#a37)"/>
-  <text x="153" y="52" text-anchor="middle" font-size="8" fill="#555">自動</text>
-  <!-- Entra ID -->
-  <rect x="170" y="30" width="130" height="60" rx="7" fill="#7719AA"/>
-  <text x="235" y="52" text-anchor="middle" font-size="10" fill="#fff" font-weight="bold">Entra ID</text>
-  <text x="235" y="67" text-anchor="middle" font-size="9" fill="#ddd">トークン自動発行</text>
-  <text x="235" y="80" text-anchor="middle" font-size="9" fill="#ddd">認証情報の管理不要</text>
-  <!-- Arrow to Key Vault -->
-  <line x1="303" y1="60" x2="333" y2="60" stroke="#555" stroke-width="1.5" marker-end="url(#a37)"/>
-  <text x="318" y="52" text-anchor="middle" font-size="8" fill="#555">アクセス</text>
-  <!-- Key Vault -->
-  <rect x="335" y="30" width="150" height="60" rx="7" fill="#E53935"/>
-  <text x="410" y="52" text-anchor="middle" font-size="10" fill="#fff" font-weight="bold">Key Vault</text>
-  <text x="410" y="67" text-anchor="middle" font-size="9" fill="#fdd">シークレット取得</text>
-  <text x="410" y="80" text-anchor="middle" font-size="9" fill="#fdd">コードに資格情報不要 ○</text>
-  <text x="250" y="15" text-anchor="middle" font-size="10" fill="#0072C6" font-weight="bold">シークレット不要のセキュアアクセス</text>
-  <defs><marker id="a37" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#555"/></marker></defs>
-</svg>
-</div>
+<div class="arch-box"><div class="arch-title">マネージド ID による資格情報レスアクセス</div><img src="picture/vol5_q_managed_identity.png" alt="マネージド ID による資格情報レスアクセス" style="width:100%;max-width:740px;display:block;margin:10px auto;border-radius:8px;"></div>
 <div class="key-box">
 <div class="k-title">正解：マネージド ID</div>
 マネージド ID は Azure AD によって自動管理される ID です。クライアントシークレットや証明書を手動管理する必要がなく、ローテーションも自動です。Azure サービスから他の Azure サービスへのアクセスでは常に第一選択です。
@@ -1813,46 +1328,7 @@ choices:[{t:"Azure VM に corp.ironclad.com のドメインコントローラー
 ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
-<div class="arch-box"><div class="arch-title">オンプレミス AD + Entra ID Connect 同期（Q40）</div><svg viewBox="0 0 740 150" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:740px;display:block;margin:10px auto;border-radius:10px;">
-<rect width="740" height="150" rx="10" fill="#0d1b2e"/>
-<defs>
-  <marker id="arr" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-    <polygon points="0 0,7 2.5,0 5" fill="#4a9fd4"/>
-  </marker>
-  <marker id="arr_w" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-    <polygon points="0 0,7 2.5,0 5" fill="#ffffff"/>
-  </marker>
-</defs>
-<rect x="136" y="26" width="108" height="98" rx="8" fill="#546E7A" fill-opacity="0.06" stroke="#546E7A" stroke-width="1" stroke-dasharray="5,3"/>
-<text x="144" y="40" font-size="8.5" font-weight="600" fill="#546E7A" font-family="Segoe UI,Arial,sans-serif">オンプレミス</text>
-<rect x="376" y="26" width="228" height="98" rx="8" fill="#0072C6" fill-opacity="0.06" stroke="#0072C6" stroke-width="1" stroke-dasharray="5,3"/>
-<text x="384" y="40" font-size="8.5" font-weight="600" fill="#0072C6" font-family="Segoe UI,Arial,sans-serif">Azure</text>
-<rect x="146" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#546E7A" stroke-width="1.5"/>
-<rect x="152" y="49" width="76" height="28" rx="4" fill="#546E7A" fill-opacity="0.18"/>
-<text x="190" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#546E7A" font-family="Segoe UI,Arial,sans-serif">AD</text>
-<text x="190" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">AD DS</text>
-<text x="190" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">corp.ironclad.com</text>
-<rect x="266" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#7719AA" stroke-width="1.5"/>
-<rect x="272" y="49" width="76" height="28" rx="4" fill="#7719AA" fill-opacity="0.18"/>
-<text x="310" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#7719AA" font-family="Segoe UI,Arial,sans-serif">EC</text>
-<text x="310" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Entra Connect</text>
-<text x="310" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">ID 同期</text>
-<rect x="386" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#7719AA" stroke-width="1.5"/>
-<rect x="392" y="49" width="76" height="28" rx="4" fill="#7719AA" fill-opacity="0.18"/>
-<text x="430" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#7719AA" font-family="Segoe UI,Arial,sans-serif">AAD</text>
-<text x="430" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Microsoft</text>
-<text x="430" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Entra ID</text>
-<rect x="506" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#0072C6" stroke-width="1.5"/>
-<rect x="512" y="49" width="76" height="28" rx="4" fill="#0072C6" fill-opacity="0.18"/>
-<text x="550" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#0072C6" font-family="Segoe UI,Arial,sans-serif">RES</text>
-<text x="550" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Azure</text>
-<text x="550" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">リソース (RBAC)</text>
-<line x1="234" y1="75" x2="260" y2="75" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-<text x="250" y="70" text-anchor="middle" font-size="8" fill="#7a9cbf" font-family="Segoe UI,Arial,sans-serif">同期</text>
-<line x1="354" y1="75" x2="380" y2="75" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-<line x1="474" y1="75" x2="500" y2="75" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-<text x="490" y="70" text-anchor="middle" font-size="8" fill="#7a9cbf" font-family="Segoe UI,Arial,sans-serif">アクセス制御</text>
-</svg></div>
+<div class="arch-box"><div class="arch-title">オンプレミス AD + Entra ID Connect 同期（Q40）</div><img src="picture/vol5_q40_ad_entra_connect.png" alt="オンプレミス AD + Entra ID Connect 同期（Q40）" style="width:100%;max-width:740px;display:block;margin:10px auto;border-radius:8px;"></div>
 <div class="key-box">
 <div class="k-title">正解：Azure VM にドメインコントローラーをデプロイする</div>
 <strong>NTLM/Kerberos 認証</strong>には Windows Server Active Directory Domain Services が必要です。Azure VM 上に既存ドメイン（corp.ironclad.com）の DC をデプロイし、オンプレミス AD と同期することで、既存ユーザーが Kerberos/NTLM で認証できるようになります。
@@ -1915,37 +1391,7 @@ choices:[{t:"Synapse Analytics 専用のマネージド仮想ネットワーク�
 ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
-<div class="arch-box"><div class="arch-title">Synapse Analytics + Managed Private Endpoint（Q42-43）</div><svg viewBox="0 0 640 150" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:640px;display:block;margin:10px auto;border-radius:10px;">
-<rect width="640" height="150" rx="10" fill="#0d1b2e"/>
-<defs>
-  <marker id="arr" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-    <polygon points="0 0,7 2.5,0 5" fill="#4a9fd4"/>
-  </marker>
-  <marker id="arr_w" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-    <polygon points="0 0,7 2.5,0 5" fill="#ffffff"/>
-  </marker>
-</defs>
-<rect x="266" y="26" width="228" height="98" rx="8" fill="#0072C6" fill-opacity="0.06" stroke="#0072C6" stroke-width="1" stroke-dasharray="5,3"/>
-<text x="274" y="40" font-size="8.5" font-weight="600" fill="#0072C6" font-family="Segoe UI,Arial,sans-serif">Managed VNet</text>
-<rect x="156" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#00897B" stroke-width="1.5"/>
-<rect x="162" y="49" width="76" height="28" rx="4" fill="#00897B" fill-opacity="0.18"/>
-<text x="200" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#00897B" font-family="Segoe UI,Arial,sans-serif">SYN</text>
-<text x="200" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Synapse</text>
-<text x="200" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Analytics</text>
-<rect x="276" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#107C10" stroke-width="1.5"/>
-<rect x="282" y="49" width="76" height="28" rx="4" fill="#107C10" fill-opacity="0.18"/>
-<text x="320" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#107C10" font-family="Segoe UI,Arial,sans-serif">MPE</text>
-<text x="320" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Managed</text>
-<text x="320" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Private Endpoint</text>
-<rect x="396" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#00B0F0" stroke-width="1.5"/>
-<rect x="402" y="49" width="76" height="28" rx="4" fill="#00B0F0" fill-opacity="0.18"/>
-<text x="440" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#00B0F0" font-family="Segoe UI,Arial,sans-serif">ADL</text>
-<text x="440" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">ADLS Gen2</text>
-<text x="440" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">機密データ</text>
-<line x1="244" y1="75" x2="270" y2="75" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-<text x="260" y="70" text-anchor="middle" font-size="8" fill="#7a9cbf" font-family="Segoe UI,Arial,sans-serif">安全なアクセス</text>
-<line x1="364" y1="75" x2="390" y2="75" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-</svg></div>
+<div class="arch-box"><div class="arch-title">Synapse Analytics + Managed Private Endpoint（Q42-43）</div><img src="picture/vol5_q42_q43_synapse_mpe.png" alt="Synapse Analytics + Managed Private Endpoint（Q42-43）" style="width:100%;max-width:740px;display:block;margin:10px auto;border-radius:8px;"></div>
 <div class="key-box">
 <div class="k-title">正解：Synapse Analytics のマネージド仮想ネットワーク（Managed VNet）</div>
 Synapse の Managed Virtual Network を有効にすると、すべての統合ランタイムが分離された専用 VNet 内で実行されます。マネージドプライベートエンドポイントを使用してデータソースにプライベート接続でき、<strong>データエクスフィルトレーション（データ持ち出し）保護</strong>も提供されます。
@@ -2080,30 +1526,7 @@ choices:[{t:"Azure Lighthouse",c:true},{t:"Microsoft Entra B2B コラボレー�
 ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
-<div class="arch-box">
-<div class="arch-title">Azure Lighthouse — クロステナント管理委任</div>
-<svg viewBox="0 0 500 130" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:500px">
-  <rect width="500" height="130" fill="#F0F6FF" rx="10"/>
-  <!-- Customer Tenant -->
-  <rect x="15" y="20" width="200" height="90" rx="7" fill="#0072C6" opacity=".15" stroke="#0072C6" stroke-width="2" stroke-dasharray="5,3"/>
-  <text x="115" y="40" text-anchor="middle" font-size="10" fill="#0072C6" font-weight="bold">顧客テナント</text>
-  <rect x="30" y="50" width="170" height="50" rx="5" fill="#0072C6" opacity=".6"/>
-  <text x="115" y="70" text-anchor="middle" font-size="10" fill="#fff">Azure サブスクリプション</text>
-  <text x="115" y="85" text-anchor="middle" font-size="9" fill="#ddd">リソース（VM・DB など）</text>
-  <!-- Lighthouse arrow -->
-  <line x1="218" y1="65" x2="268" y2="65" stroke="#E53935" stroke-width="2" marker-end="url(#a48)"/>
-  <text x="243" y="57" text-anchor="middle" font-size="9" fill="#E53935" font-weight="bold">Lighthouse</text>
-  <text x="243" y="76" text-anchor="middle" font-size="9" fill="#E53935">委任アクセス</text>
-  <!-- MSP Tenant -->
-  <rect x="270" y="20" width="220" height="90" rx="7" fill="#107C10" opacity=".15" stroke="#107C10" stroke-width="2" stroke-dasharray="5,3"/>
-  <text x="380" y="40" text-anchor="middle" font-size="10" fill="#107C10" font-weight="bold">MSP パートナーテナント</text>
-  <rect x="285" y="50" width="190" height="50" rx="5" fill="#107C10" opacity=".6"/>
-  <text x="380" y="68" text-anchor="middle" font-size="10" fill="#fff">MSP が自分のテナントから</text>
-  <text x="380" y="82" text-anchor="middle" font-size="10" fill="#fff">顧客リソースを管理できる ○</text>
-  <text x="250" y="118" text-anchor="middle" font-size="10" fill="#E53935" font-weight="bold">テナントをまたいだリソース管理 = Azure Lighthouse</text>
-  <defs><marker id="a48" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#E53935"/></marker></defs>
-</svg>
-</div>
+<div class="arch-box"><div class="arch-title">Azure Lighthouse — クロステナント管理委任</div><img src="picture/vol5_q_lighthouse.png" alt="Azure Lighthouse — クロステナント管理委任" style="width:100%;max-width:740px;display:block;margin:10px auto;border-radius:8px;"></div>
 <div class="key-box">
 <div class="k-title">正解：Azure Lighthouse</div>
 Azure Lighthouse はサービスプロバイダー（MSP）が顧客の Azure リソースを<strong>自身のテナントから</strong>管理するための委任アクセスを提供します。ARM を介した安全なクロステナント管理が可能です。
@@ -2127,45 +1550,7 @@ choices:[{t:"Azure Monitor エージェント (AMA)",c:true},{t:"Log Analytics �
 ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
-<div class="arch-box"><div class="arch-title">ハイブリッド監視: Log Analytics + Azure Arc（Q49）</div><svg viewBox="0 0 700 180" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:700px;display:block;margin:10px auto;border-radius:10px;">
-<rect width="700" height="180" rx="10" fill="#0d1b2e"/>
-<defs>
-  <marker id="arr" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-    <polygon points="0 0,7 2.5,0 5" fill="#4a9fd4"/>
-  </marker>
-  <marker id="arr_w" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-    <polygon points="0 0,7 2.5,0 5" fill="#ffffff"/>
-  </marker>
-</defs>
-<rect x="30" y="20" width="180" height="130" rx="8" fill="#546E7A" fill-opacity="0.06" stroke="#546E7A" stroke-width="1" stroke-dasharray="5,3"/>
-<text x="38" y="34" font-size="8.5" font-weight="600" fill="#546E7A" font-family="Segoe UI,Arial,sans-serif">オンプレミス</text>
-<rect x="410" y="20" width="260" height="130" rx="8" fill="#0072C6" fill-opacity="0.06" stroke="#0072C6" stroke-width="1" stroke-dasharray="5,3"/>
-<text x="418" y="34" font-size="8.5" font-weight="600" fill="#0072C6" font-family="Segoe UI,Arial,sans-serif">Azure</text>
-<rect x="76" y="39" width="88" height="62" rx="7" fill="#112240" stroke="#546E7A" stroke-width="1.5"/>
-<rect x="82" y="44" width="76" height="28" rx="4" fill="#546E7A" fill-opacity="0.18"/>
-<text x="120" y="63" text-anchor="middle" font-size="12" font-weight="700" fill="#546E7A" font-family="Segoe UI,Arial,sans-serif">VM</text>
-<text x="120" y="81" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">オンプレ VM</text>
-<text x="120" y="92" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Arc 登録済み</text>
-<rect x="76" y="109" width="88" height="62" rx="7" fill="#112240" stroke="#0072C6" stroke-width="1.5"/>
-<rect x="82" y="114" width="76" height="28" rx="4" fill="#0072C6" fill-opacity="0.18"/>
-<text x="120" y="133" text-anchor="middle" font-size="12" font-weight="700" fill="#0072C6" font-family="Segoe UI,Arial,sans-serif">VM</text>
-<text x="120" y="151" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Azure VM</text>
-<rect x="421" y="54" width="88" height="62" rx="7" fill="#112240" stroke="#D13438" stroke-width="1.5"/>
-<rect x="427" y="59" width="76" height="28" rx="4" fill="#D13438" fill-opacity="0.18"/>
-<text x="465" y="78" text-anchor="middle" font-size="12" font-weight="700" fill="#D13438" font-family="Segoe UI,Arial,sans-serif">AMA</text>
-<text x="465" y="96" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Azure Monitor</text>
-<text x="465" y="107" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Agent (AMA)</text>
-<rect x="556" y="54" width="88" height="62" rx="7" fill="#112240" stroke="#D13438" stroke-width="1.5"/>
-<rect x="562" y="59" width="76" height="28" rx="4" fill="#D13438" fill-opacity="0.18"/>
-<text x="600" y="78" text-anchor="middle" font-size="12" font-weight="700" fill="#D13438" font-family="Segoe UI,Arial,sans-serif">LAW</text>
-<text x="600" y="96" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Log Analytics</text>
-<text x="600" y="107" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Workspace</text>
-<line x1="164" y1="70" x2="421" y2="80" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-<text x="292" y="70" text-anchor="middle" font-size="8" fill="#7a9cbf" font-family="Segoe UI,Arial,sans-serif">ログ</text>
-<line x1="164" y1="140" x2="421" y2="90" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-<text x="292" y="110" text-anchor="middle" font-size="8" fill="#7a9cbf" font-family="Segoe UI,Arial,sans-serif">ログ</text>
-<line x1="509" y1="85" x2="549" y2="85" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-</svg></div>
+<div class="arch-box"><div class="arch-title">ハイブリッド監視: Log Analytics + Azure Arc（Q49）</div><img src="picture/vol5_q49_hybrid_monitoring.png" alt="ハイブリッド監視: Log Analytics + Azure Arc（Q49）" style="width:100%;max-width:740px;display:block;margin:10px auto;border-radius:8px;"></div>
 <div class="key-box">
 <div class="k-title">正解：Azure Monitor エージェント (AMA)</div>
 AMA は Log Analytics エージェント（MMA）と Diagnostics 拡張機能の後継統合エージェントです。データ収集ルール（DCR）による細粒度な設定、Windows/Linux 対応、オンプレミス・Azure・マルチクラウドに対応しています。
@@ -2195,7 +1580,7 @@ exp:`<div class="exp-section">
 BLOB バージョニングが有効な場合、BLOB が作成・上書き・削除されるたびに、Azure Storage は自動的に以前のバージョンを保存します。上書き後も「過去バージョン」として以前の内容にアクセス・復元が可能です。
 </div>
 <div class="arch-box">
-<div class="arch-title">📋 バージョニングの動作例</div>
+<div class="arch-title">バージョニングの動作例</div>
 <pre style="font-size:12px;color:#1a1a2e;line-height:1.8">
 操作              現在バージョン    保持されるバージョン
 ──────────────────────────────────────────
@@ -2242,45 +1627,7 @@ choices:[{t:"True",c:true},{t:"False",c:false}],
 ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
-<div class="arch-box"><div class="arch-title">ハイブリッド SQL Always On + DR（Q52-54）</div><svg viewBox="0 0 740 150" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:740px;display:block;margin:10px auto;border-radius:10px;">
-<rect width="740" height="150" rx="10" fill="#0d1b2e"/>
-<defs>
-  <marker id="arr" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-    <polygon points="0 0,7 2.5,0 5" fill="#4a9fd4"/>
-  </marker>
-  <marker id="arr_w" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-    <polygon points="0 0,7 2.5,0 5" fill="#ffffff"/>
-  </marker>
-</defs>
-<rect x="136" y="26" width="108" height="98" rx="8" fill="#546E7A" fill-opacity="0.06" stroke="#546E7A" stroke-width="1" stroke-dasharray="5,3"/>
-<text x="144" y="40" font-size="8.5" font-weight="600" fill="#546E7A" font-family="Segoe UI,Arial,sans-serif">オンプレミス DC</text>
-<rect x="376" y="26" width="228" height="98" rx="8" fill="#0072C6" fill-opacity="0.06" stroke="#0072C6" stroke-width="1" stroke-dasharray="5,3"/>
-<text x="384" y="40" font-size="8.5" font-weight="600" fill="#0072C6" font-family="Segoe UI,Arial,sans-serif">Azure (DR リージョン)</text>
-<rect x="146" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#546E7A" stroke-width="1.5"/>
-<rect x="152" y="49" width="76" height="28" rx="4" fill="#546E7A" fill-opacity="0.18"/>
-<text x="190" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#546E7A" font-family="Segoe UI,Arial,sans-serif">SQL</text>
-<text x="190" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">SQL Server</text>
-<text x="190" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">プライマリ (OnPrem)</text>
-<rect x="266" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#107C10" stroke-width="1.5"/>
-<rect x="272" y="49" width="76" height="28" rx="4" fill="#107C10" fill-opacity="0.18"/>
-<text x="310" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#107C10" font-family="Segoe UI,Arial,sans-serif">VPN</text>
-<text x="310" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">VPN / ER</text>
-<rect x="386" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#0072C6" stroke-width="1.5"/>
-<rect x="392" y="49" width="76" height="28" rx="4" fill="#0072C6" fill-opacity="0.18"/>
-<text x="430" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#0072C6" font-family="Segoe UI,Arial,sans-serif">VM</text>
-<text x="430" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">SQL Server VM</text>
-<text x="430" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">セカンダリ (DR)</text>
-<rect x="506" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#37474F" stroke-width="1.5"/>
-<rect x="512" y="49" width="76" height="28" rx="4" fill="#37474F" fill-opacity="0.18"/>
-<text x="550" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#37474F" font-family="Segoe UI,Arial,sans-serif">RSV</text>
-<text x="550" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Recovery</text>
-<text x="550" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Services Vault</text>
-<line x1="234" y1="75" x2="260" y2="75" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-<text x="250" y="70" text-anchor="middle" font-size="8" fill="#7a9cbf" font-family="Segoe UI,Arial,sans-serif">Always On レプリ</text>
-<line x1="354" y1="75" x2="380" y2="75" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-<line x1="474" y1="75" x2="500" y2="75" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-<text x="490" y="70" text-anchor="middle" font-size="8" fill="#7a9cbf" font-family="Segoe UI,Arial,sans-serif">Azure Backup</text>
-</svg></div>
+<div class="arch-box"><div class="arch-title">ハイブリッド SQL Always On + DR（Q52-54）</div><img src="picture/vol5_q52_q54_hybrid_sql_dr.png" alt="ハイブリッド SQL Always On + DR（Q52-54）" style="width:100%;max-width:740px;display:block;margin:10px auto;border-radius:8px;"></div>
 <div class="key-box">
 <div class="k-title">正解：True</div>
 分散可用性グループは異なる WSFC 間の AG を接続し、<strong>異なるリージョン間の手動フェールオーバー</strong>をサポートします。RTO 4 時間は十分達成可能です。
@@ -2383,41 +1730,7 @@ choices:[{t:"Microsoft Entra Connect Health",c:true},{t:"Azure Monitor（カス�
 ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
-<div class="arch-box">
-<div class="arch-title">Entra Connect Health による同期監視</div>
-<svg viewBox="0 0 500 110" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:500px">
-  <rect width="500" height="110" fill="#F0F6FF" rx="10"/>
-  <!-- On-premises AD -->
-  <rect x="15" y="30" width="100" height="50" rx="7" fill="#607D8B"/>
-  <text x="65" y="52" text-anchor="middle" font-size="10" fill="#fff">オンプレミス</text>
-  <text x="65" y="66" text-anchor="middle" font-size="10" fill="#fff">AD DS</text>
-  <!-- Arrow -->
-  <line x1="118" y1="55" x2="148" y2="55" stroke="#555" stroke-width="1.5" marker-end="url(#a57)"/>
-  <!-- Entra Connect -->
-  <rect x="150" y="25" width="130" height="60" rx="7" fill="#0072C6"/>
-  <text x="215" y="48" text-anchor="middle" font-size="10" fill="#fff" font-weight="bold">Entra Connect</text>
-  <text x="215" y="63" text-anchor="middle" font-size="9" fill="#ddd">ディレクトリ同期</text>
-  <text x="215" y="78" text-anchor="middle" font-size="9" fill="#ddd">パスワード同期</text>
-  <!-- Arrow -->
-  <line x1="283" y1="55" x2="313" y2="55" stroke="#555" stroke-width="1.5" marker-end="url(#a57)"/>
-  <!-- Entra ID -->
-  <rect x="315" y="25" width="80" height="60" rx="7" fill="#7719AA"/>
-  <text x="355" y="50" text-anchor="middle" font-size="10" fill="#fff" font-weight="bold">Entra ID</text>
-  <text x="355" y="65" text-anchor="middle" font-size="9" fill="#ddd">クラウド</text>
-  <text x="355" y="78" text-anchor="middle" font-size="9" fill="#ddd">ディレクトリ</text>
-  <!-- Connect Health arrow -->
-  <line x1="215" y1="87" x2="215" y2="98" stroke="#E53935" stroke-width="1.5"/>
-  <line x1="215" y1="98" x2="420" y2="98" stroke="#E53935" stroke-width="1.5"/>
-  <line x1="420" y1="98" x2="420" y2="87" stroke="#E53935" stroke-width="1.5" marker-end="url(#a57r)"/>
-  <rect x="400" y="55" width="90" height="28" rx="5" fill="#E53935"/>
-  <text x="445" y="68" text-anchor="middle" font-size="9" fill="#fff" font-weight="bold">Connect Health</text>
-  <text x="445" y="80" text-anchor="middle" font-size="8" fill="#fdd">監視・アラート</text>
-  <defs>
-    <marker id="a57" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#555"/></marker>
-    <marker id="a57r" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#E53935"/></marker>
-  </defs>
-</svg>
-</div>
+<div class="arch-box"><div class="arch-title">Entra Connect Health による同期監視</div><img src="picture/vol5_q_entra_connect_health.png" alt="Entra Connect Health による同期監視" style="width:100%;max-width:740px;display:block;margin:10px auto;border-radius:8px;"></div>
 <div class="key-box">
 <div class="k-title">正解：Microsoft Entra Connect Health</div>
 Entra Connect Health は Entra Connect（Azure AD Connect）の同期状態をリアルタイムで監視する専用サービスです。同期エラー・レイテンシグラフ・アラート・パフォーマンスデータを提供します。
@@ -2433,6 +1746,79 @@ Entra Connect Health は Entra Connect（Azure AD Connect）の同期状態を�
 </tbody></table></div>
 </div>`}
 ];
+
+// ============================================================
+// Azure Service Icons
+// ============================================================
+(function(){
+  const _i=(bg,s)=>`<svg class="az-i" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="14" height="14" rx="2" fill="${bg}"/>${s}</svg>`;
+  const ICONS={
+    'Azure SQL Managed Instance':_i('#0072C6','<ellipse cx="4.5" cy="4.5" rx="1.8" ry="1" stroke="white" stroke-width=".85" fill="none"/><path d="M2.7 4.5v4c0 .55.8 1 1.8 1s1.8-.45 1.8-1V4.5" stroke="white" stroke-width=".85" fill="none"/><ellipse cx="9.5" cy="4.5" rx="1.8" ry="1" stroke="white" stroke-width=".85" fill="none"/><path d="M7.7 4.5v4c0 .55.8 1 1.8 1s1.8-.45 1.8-1V4.5" stroke="white" stroke-width=".85" fill="none"/>'),
+    'SQL Managed Instance':_i('#0072C6','<ellipse cx="4.5" cy="4.5" rx="1.8" ry="1" stroke="white" stroke-width=".85" fill="none"/><path d="M2.7 4.5v4c0 .55.8 1 1.8 1s1.8-.45 1.8-1V4.5" stroke="white" stroke-width=".85" fill="none"/><ellipse cx="9.5" cy="4.5" rx="1.8" ry="1" stroke="white" stroke-width=".85" fill="none"/><path d="M7.7 4.5v4c0 .55.8 1 1.8 1s1.8-.45 1.8-1V4.5" stroke="white" stroke-width=".85" fill="none"/>'),
+    'Azure SQL Database':_i('#0072C6','<ellipse cx="7" cy="4" rx="3.5" ry="1.5" stroke="white" stroke-width="1" fill="none"/><path d="M3.5 4v6c0 .8 1.6 1.5 3.5 1.5s3.5-.7 3.5-1.5V4" stroke="white" stroke-width="1" fill="none"/><line x1="3.5" y1="7" x2="10.5" y2="7" stroke="white" stroke-width=".7"/>'),
+    'SQL Database':_i('#0072C6','<ellipse cx="7" cy="4" rx="3.5" ry="1.5" stroke="white" stroke-width="1" fill="none"/><path d="M3.5 4v6c0 .8 1.6 1.5 3.5 1.5s3.5-.7 3.5-1.5V4" stroke="white" stroke-width="1" fill="none"/><line x1="3.5" y1="7" x2="10.5" y2="7" stroke="white" stroke-width=".7"/>'),
+    'Azure Virtual Network':_i('#00897B','<circle cx="7" cy="7" r="1.5" fill="white"/><circle cx="2.5" cy="3.5" r="1.2" fill="white"/><circle cx="11.5" cy="3.5" r="1.2" fill="white"/><circle cx="2.5" cy="10.5" r="1.2" fill="white"/><circle cx="11.5" cy="10.5" r="1.2" fill="white"/><line x1="5.5" y1="6" x2="3.5" y2="4.5" stroke="white" stroke-width=".9"/><line x1="8.5" y1="6" x2="10.5" y2="4.5" stroke="white" stroke-width=".9"/><line x1="5.5" y1="8" x2="3.5" y2="9.5" stroke="white" stroke-width=".9"/><line x1="8.5" y1="8" x2="10.5" y2="9.5" stroke="white" stroke-width=".9"/>'),
+    'VNet':_i('#00897B','<circle cx="7" cy="7" r="1.5" fill="white"/><circle cx="2.5" cy="3.5" r="1.2" fill="white"/><circle cx="11.5" cy="3.5" r="1.2" fill="white"/><circle cx="2.5" cy="10.5" r="1.2" fill="white"/><circle cx="11.5" cy="10.5" r="1.2" fill="white"/><line x1="5.5" y1="6" x2="3.5" y2="4.5" stroke="white" stroke-width=".9"/><line x1="8.5" y1="6" x2="10.5" y2="4.5" stroke="white" stroke-width=".9"/><line x1="5.5" y1="8" x2="3.5" y2="9.5" stroke="white" stroke-width=".9"/><line x1="8.5" y1="8" x2="10.5" y2="9.5" stroke="white" stroke-width=".9"/>'),
+    'API Management':_i('#C50F1F','<text x="7" y="9.5" text-anchor="middle" font-size="5" font-weight="700" fill="white" font-family="Arial,sans-serif">API</text>'),
+    'APIM':_i('#C50F1F','<text x="7" y="9.5" text-anchor="middle" font-size="5" font-weight="700" fill="white" font-family="Arial,sans-serif">API</text>'),
+    'Azure Front Door':_i('#0072C6','<circle cx="7" cy="7" r="4.5" stroke="white" stroke-width="1" fill="none"/><line x1="2.5" y1="7" x2="11.5" y2="7" stroke="white" stroke-width=".8"/><path d="M7 2.5Q9.5 4.5 9.5 7Q9.5 9.5 7 11.5Q4.5 9.5 4.5 7Q4.5 4.5 7 2.5" stroke="white" stroke-width=".8" fill="none"/>'),
+    'Front Door':_i('#0072C6','<circle cx="7" cy="7" r="4.5" stroke="white" stroke-width="1" fill="none"/><line x1="2.5" y1="7" x2="11.5" y2="7" stroke="white" stroke-width=".8"/><path d="M7 2.5Q9.5 4.5 9.5 7Q9.5 9.5 7 11.5Q4.5 9.5 4.5 7Q4.5 4.5 7 2.5" stroke="white" stroke-width=".8" fill="none"/>'),
+    'Application Gateway':_i('#0078D4','<path d="M7 1.5L12 4.5V9.5C12 11.5 9.8 13 7 13.5C4.2 13 2 11.5 2 9.5V4.5Z" stroke="white" stroke-width="1" fill="none"/>'),
+    'Traffic Manager':_i('#8661C5','<circle cx="7" cy="7" r="2" stroke="white" stroke-width=".9" fill="none"/><line x1="7" y1="1.5" x2="7" y2="5" stroke="white" stroke-width="1"/><line x1="7" y1="9" x2="7" y2="12.5" stroke="white" stroke-width="1"/><line x1="1.5" y1="7" x2="5" y2="7" stroke="white" stroke-width="1"/><line x1="9" y1="7" x2="12.5" y2="7" stroke="white" stroke-width="1"/>'),
+    'BlockBlobStorage':_i('#0072C6','<ellipse cx="7" cy="4" rx="4" ry="1.5" stroke="white" stroke-width="1" fill="none"/><path d="M3 4v6c0 .8 1.8 1.5 4 1.5s4-.7 4-1.5V4" stroke="white" stroke-width="1" fill="none"/>'),
+    'Blob Storage':_i('#0072C6','<ellipse cx="7" cy="4" rx="4" ry="1.5" stroke="white" stroke-width="1" fill="none"/><path d="M3 4v6c0 .8 1.8 1.5 4 1.5s4-.7 4-1.5V4" stroke="white" stroke-width="1" fill="none"/>'),
+    'Storage Account':_i('#0072C6','<ellipse cx="7" cy="4" rx="4" ry="1.5" stroke="white" stroke-width="1" fill="none"/><path d="M3 4v6c0 .8 1.8 1.5 4 1.5s4-.7 4-1.5V4" stroke="white" stroke-width="1" fill="none"/>'),
+    'Data Lake Storage':_i('#0072C6','<ellipse cx="7" cy="3.5" rx="4" ry="1.5" stroke="white" stroke-width="1" fill="none"/><path d="M3 6Q5 7 7 6Q9 5 11 6" stroke="white" stroke-width=".9" fill="none"/><path d="M3 8.5Q5 9.5 7 8.5Q9 7.5 11 8.5" stroke="white" stroke-width=".9" fill="none"/>'),
+    'ADLS':_i('#0072C6','<ellipse cx="7" cy="3.5" rx="4" ry="1.5" stroke="white" stroke-width="1" fill="none"/><path d="M3 6Q5 7 7 6Q9 5 11 6" stroke="white" stroke-width=".9" fill="none"/><path d="M3 8.5Q5 9.5 7 8.5Q9 7.5 11 8.5" stroke="white" stroke-width=".9" fill="none"/>'),
+    'Azure Key Vault':_i('#0078D4','<circle cx="6.5" cy="5.5" r="2.5" stroke="white" stroke-width="1" fill="none"/><line x1="6.5" y1="8" x2="6.5" y2="12" stroke="white" stroke-width="1.1"/><line x1="6.5" y1="10.5" x2="8.5" y2="10.5" stroke="white" stroke-width="1.1"/>'),
+    'Key Vault':_i('#0078D4','<circle cx="6.5" cy="5.5" r="2.5" stroke="white" stroke-width="1" fill="none"/><line x1="6.5" y1="8" x2="6.5" y2="12" stroke="white" stroke-width="1.1"/><line x1="6.5" y1="10.5" x2="8.5" y2="10.5" stroke="white" stroke-width="1.1"/>'),
+    'Log Analytics':_i('#0072C6','<circle cx="6" cy="6" r="3.5" stroke="white" stroke-width="1.1" fill="none"/><line x1="8.5" y1="8.5" x2="12" y2="12" stroke="white" stroke-width="1.4"/>'),
+    'Azure Monitor':_i('#0072C6','<polyline points="2,11 5,8 8,10 11,5.5 12,6.5" stroke="white" stroke-width="1.3" fill="none" stroke-linejoin="round"/><line x1="2" y1="12" x2="12" y2="12" stroke="white" stroke-width=".7"/>'),
+    'Azure Kubernetes Service':_i('#326CE5','<circle cx="7" cy="7" r="1.8" fill="white"/><circle cx="7" cy="2.3" r=".9" fill="white"/><circle cx="11" cy="4.7" r=".9" fill="white"/><circle cx="11" cy="9.3" r=".9" fill="white"/><circle cx="7" cy="11.7" r=".9" fill="white"/><circle cx="3" cy="9.3" r=".9" fill="white"/><circle cx="3" cy="4.7" r=".9" fill="white"/><line x1="7" y1="5.2" x2="7" y2="3.2" stroke="white" stroke-width=".75"/><line x1="8.4" y1="6" x2="10.1" y2="5.3" stroke="white" stroke-width=".75"/><line x1="8.4" y1="8" x2="10.1" y2="8.7" stroke="white" stroke-width=".75"/><line x1="7" y1="8.8" x2="7" y2="10.8" stroke="white" stroke-width=".75"/><line x1="5.6" y1="8" x2="3.9" y2="8.7" stroke="white" stroke-width=".75"/><line x1="5.6" y1="6" x2="3.9" y2="5.3" stroke="white" stroke-width=".75"/>'),
+    'AKS':_i('#326CE5','<circle cx="7" cy="7" r="1.8" fill="white"/><circle cx="7" cy="2.3" r=".9" fill="white"/><circle cx="11" cy="4.7" r=".9" fill="white"/><circle cx="11" cy="9.3" r=".9" fill="white"/><circle cx="7" cy="11.7" r=".9" fill="white"/><circle cx="3" cy="9.3" r=".9" fill="white"/><circle cx="3" cy="4.7" r=".9" fill="white"/><line x1="7" y1="5.2" x2="7" y2="3.2" stroke="white" stroke-width=".75"/><line x1="8.4" y1="6" x2="10.1" y2="5.3" stroke="white" stroke-width=".75"/><line x1="8.4" y1="8" x2="10.1" y2="8.7" stroke="white" stroke-width=".75"/><line x1="7" y1="8.8" x2="7" y2="10.8" stroke="white" stroke-width=".75"/><line x1="5.6" y1="8" x2="3.9" y2="8.7" stroke="white" stroke-width=".75"/><line x1="5.6" y1="6" x2="3.9" y2="5.3" stroke="white" stroke-width=".75"/>'),
+    'Container Registry':_i('#8661C5','<rect x="2" y="2" width="4.5" height="4.5" rx=".5" stroke="white" stroke-width=".9" fill="none"/><rect x="7.5" y="2" width="4.5" height="4.5" rx=".5" stroke="white" stroke-width=".9" fill="none"/><rect x="2" y="7.5" width="4.5" height="4.5" rx=".5" stroke="white" stroke-width=".9" fill="none"/><rect x="7.5" y="7.5" width="4.5" height="4.5" rx=".5" stroke="white" stroke-width=".9" fill="none"/>'),
+    'ACR':_i('#8661C5','<rect x="2" y="2" width="4.5" height="4.5" rx=".5" stroke="white" stroke-width=".9" fill="none"/><rect x="7.5" y="2" width="4.5" height="4.5" rx=".5" stroke="white" stroke-width=".9" fill="none"/><rect x="2" y="7.5" width="4.5" height="4.5" rx=".5" stroke="white" stroke-width=".9" fill="none"/><rect x="7.5" y="7.5" width="4.5" height="4.5" rx=".5" stroke="white" stroke-width=".9" fill="none"/>'),
+    'Container Apps':_i('#8661C5','<rect x="2" y="3" width="4" height="8" rx=".8" stroke="white" stroke-width=".9" fill="none"/><rect x="8" y="3" width="4" height="3.5" rx=".8" stroke="white" stroke-width=".9" fill="none"/><rect x="8" y="7.5" width="4" height="3.5" rx=".8" stroke="white" stroke-width=".9" fill="none"/>'),
+    'Azure Synapse':_i('#0F5BA4','<path d="M8 2L5.5 7H8L5.5 12L10.5 7H8L10 2Z" fill="white" opacity=".95"/>'),
+    'Synapse Analytics':_i('#0F5BA4','<path d="M8 2L5.5 7H8L5.5 12L10.5 7H8L10 2Z" fill="white" opacity=".95"/>'),
+    'Azure Data Factory':_i('#2D7D9A','<circle cx="3" cy="7" r="1.5" fill="white"/><circle cx="11" cy="7" r="1.5" fill="white"/><rect x="5" y="5.5" width="4" height="3" rx=".5" stroke="white" stroke-width=".9" fill="none"/><line x1="4.5" y1="7" x2="5" y2="7" stroke="white" stroke-width="1"/><line x1="9" y1="7" x2="9.5" y2="7" stroke="white" stroke-width="1"/>'),
+    'Data Factory':_i('#2D7D9A','<circle cx="3" cy="7" r="1.5" fill="white"/><circle cx="11" cy="7" r="1.5" fill="white"/><rect x="5" y="5.5" width="4" height="3" rx=".5" stroke="white" stroke-width=".9" fill="none"/><line x1="4.5" y1="7" x2="5" y2="7" stroke="white" stroke-width="1"/><line x1="9" y1="7" x2="9.5" y2="7" stroke="white" stroke-width="1"/>'),
+    'Cosmos DB':_i('#4F3BA2','<circle cx="7" cy="7" r="1.8" fill="white"/><ellipse cx="7" cy="7" rx="5" ry="2.5" stroke="white" stroke-width=".9" fill="none"/><ellipse cx="7" cy="7" rx="5" ry="2.5" stroke="white" stroke-width=".9" fill="none" transform="rotate(60 7 7)"/><ellipse cx="7" cy="7" rx="5" ry="2.5" stroke="white" stroke-width=".9" fill="none" transform="rotate(120 7 7)"/>'),
+    'Microsoft Entra':_i('#0078D4','<circle cx="7" cy="5.5" r="2.5" stroke="white" stroke-width="1" fill="none"/><path d="M2.5 13.5c0-2.5 2-4.5 4.5-4.5s4.5 2 4.5 4.5" stroke="white" stroke-width="1" fill="none"/>'),
+    'Entra ID':_i('#0078D4','<circle cx="7" cy="5.5" r="2.5" stroke="white" stroke-width="1" fill="none"/><path d="M2.5 13.5c0-2.5 2-4.5 4.5-4.5s4.5 2 4.5 4.5" stroke="white" stroke-width="1" fill="none"/>'),
+    'Azure AD':_i('#0078D4','<circle cx="7" cy="5.5" r="2.5" stroke="white" stroke-width="1" fill="none"/><path d="M2.5 13.5c0-2.5 2-4.5 4.5-4.5s4.5 2 4.5 4.5" stroke="white" stroke-width="1" fill="none"/>'),
+    'Azure Policy':_i('#8661C5','<path d="M7 1.5L12 4V9C12 11 9.8 12.8 7 13.5C4.2 12.8 2 11 2 9V4Z" stroke="white" stroke-width="1" fill="none"/><polyline points="5,7.5 6.5,9 9.5,6" stroke="white" stroke-width="1.1" fill="none"/>'),
+    'App Service':_i('#0062AD','<rect x="2" y="3.5" width="10" height="7.5" rx="1" stroke="white" stroke-width="1" fill="none"/><line x1="2" y1="6.5" x2="12" y2="6.5" stroke="white" stroke-width=".8"/><circle cx="4" cy="5" r=".6" fill="white"/><circle cx="6.2" cy="5" r=".6" fill="white"/>'),
+    'Azure VM':_i('#0072C6','<rect x="2" y="3.5" width="10" height="6.5" rx="1" stroke="white" stroke-width="1" fill="none"/><line x1="5.5" y1="10" x2="5.5" y2="12" stroke="white" stroke-width="1"/><line x1="8.5" y1="10" x2="8.5" y2="12" stroke="white" stroke-width="1"/><line x1="3.5" y1="12" x2="10.5" y2="12" stroke="white" stroke-width="1"/>'),
+    'Private Endpoint':_i('#0078D4','<circle cx="7" cy="7" r="3" stroke="white" stroke-width="1" fill="none"/><line x1="1.5" y1="7" x2="4" y2="7" stroke="white" stroke-width="1"/><circle cx="3" cy="7" r=".7" fill="white"/>'),
+    'Azure Firewall':_i('#C75B07','<path d="M7 1.5L12 4V9C12 11 9.8 12.8 7 13.5C4.2 12.8 2 11 2 9V4Z" stroke="white" stroke-width="1" fill="none"/><path d="M7 4C6 5.5 5 7 6.5 8C7 6.5 8 7 8.5 9C9 7 8 5.5 7 4Z" fill="white" opacity=".9"/>'),
+    'Managed Identity':_i('#0078D4','<circle cx="5.5" cy="5" r="2" stroke="white" stroke-width=".9" fill="none"/><path d="M2 12c0-2 1.6-3.5 3.5-3.5" stroke="white" stroke-width=".9" fill="none"/><circle cx="10.5" cy="9.5" r="2" stroke="white" stroke-width=".9" fill="none"/><line x1="10.5" y1="11.5" x2="10.5" y2="13" stroke="white" stroke-width=".9"/>'),
+    'Azure Functions':_i('#FFB900','<path d="M8.5 2L5.5 7.5H8L5.5 12L10.5 6.5H8L10 2Z" fill="#0f1f3d" opacity=".9"/>'),
+    'VPN Gateway':_i('#0072C6','<path d="M7 2L12 5V9L7 12L2 9V5Z" stroke="white" stroke-width=".9" fill="none"/><line x1="7" y1="12" x2="7" y2="13.5" stroke="white" stroke-width="1.2"/><line x1="4" y1="13.5" x2="10" y2="13.5" stroke="white" stroke-width="1.2"/>'),
+    'ExpressRoute':_i('#0072C6','<path d="M2 7L5 5L7 7L9 5L12 7" stroke="white" stroke-width="1.3" fill="none" stroke-linejoin="round"/><circle cx="2" cy="7" r="1" fill="white"/><circle cx="12" cy="7" r="1" fill="white"/>'),
+    'Load Balancer':_i('#0078D4','<rect x="5.5" y="2" width="3" height="3" rx=".5" fill="white"/><rect x="2" y="9" width="3" height="3" rx=".5" fill="white"/><rect x="9" y="9" width="3" height="3" rx=".5" fill="white"/><line x1="7" y1="5" x2="3.5" y2="9" stroke="white" stroke-width=".9"/><line x1="7" y1="5" x2="10.5" y2="9" stroke="white" stroke-width=".9"/>'),
+    'Azure DNS':_i('#0078D4','<circle cx="7" cy="7" r="4.5" stroke="white" stroke-width="1" fill="none"/><line x1="2.5" y1="7" x2="11.5" y2="7" stroke="white" stroke-width=".8"/>'),
+    'Azure Data Explorer':_i('#00897B','<polyline points="2,11 4.5,7 7,9 9.5,5 12,7" stroke="white" stroke-width="1.2" fill="none" stroke-linejoin="round"/><circle cx="9.5" cy="5" r="1.2" fill="white"/>'),
+    'B シリーズ':_i('#0072C6','<line x1="2" y1="11" x2="2" y2="3" stroke="white" stroke-width="1.1"/><rect x="2" y="8" width="5" height="3" rx=".5" fill="white" opacity=".9"/><rect x="2" y="3" width="4" height="3.5" rx=".5" fill="white" opacity=".6"/>'),
+  };
+  function escR(s){return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');}
+  function tagIcons(html){
+    const sv=[];
+    let s=html.replace(/<(svg|pre|code|a)[^>]*>[\s\S]*?<\/\1>/gi,m=>{sv.push(m);return'\x00S'+(sv.length-1)+'\x00';});
+    const entries=Object.entries(ICONS).sort((a,b)=>b[0].length-a[0].length);
+    const ph=[];
+    for(const[name,icon]of entries){
+      s=s.replace(new RegExp(escR(name),'g'),()=>{
+        ph.push(`<span class="az-svc">${icon}${name}</span>`);
+        return'\x00I'+(ph.length-1)+'\x00';
+      });
+    }
+    s=s.replace(/\x00I(\d+)\x00/g,(_,i)=>ph[+i]);
+    s=s.replace(/\x00S(\d+)\x00/g,(_,i)=>sv[+i]);
+    return s;
+  }
+  QS.forEach(q=>{q.exp=tagIcons(q.exp);});
+})();
 
 // ============================================================
 // App state & helpers

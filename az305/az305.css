@@ -782,6 +782,21 @@ table.ctbl, .etbl { width: 100%; border-collapse: collapse; font-size: .82rem; }
   font-family: 'Segoe UI', Arial, sans-serif;
   white-space: nowrap;
 }
+/* Azure service name + icon wrapper */
+.az-svc {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  white-space: nowrap;
+}
+.az-svc .az-i {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  border-radius: 2px;
+  vertical-align: -3px;
+  overflow: visible;
+}
 /* comparison table markers */
 .tbl-ok   { color: var(--ok);     font-weight: 700; }
 .tbl-ng   { color: var(--ng); }
