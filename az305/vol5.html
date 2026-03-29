@@ -140,7 +140,7 @@ ci:[1],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
 <div class="arch-box">
-<div class="arch-title">⚡ B シリーズの CPU クレジット動作</div>
+<div class="arch-title">B シリーズの CPU クレジット動作</div>
 <svg viewBox="0 0 480 140" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:480px">
   <rect width="480" height="140" fill="#F0F6FF" rx="10"/>
   <!-- Timeline axis -->
@@ -179,9 +179,9 @@ B シリーズは<strong>CPU クレジット方式</strong>を採用しており
 <thead><tr><th class="hl">VM シリーズ</th><th>CPU クレジット</th><th>主な用途</th><th>本問の判定</th></tr></thead>
 <tbody>
 <tr class="hl"><td><strong>B シリーズ</strong></td><td>蓄積・消費</td><td>バースト可能、断続的ワークロード</td><td><span class="badge-ok">正解</span></td></tr>
-<tr><td>A シリーズ</td><td>なし</td><td>開発・テスト用エントリーモデル</td><td><span class="badge-ng">❌</span></td></tr>
-<tr><td>D シリーズ</td><td>なし</td><td>汎用・高コンピュート</td><td><span class="badge-ng">❌</span></td></tr>
-<tr><td>M シリーズ</td><td>なし</td><td>大規模インメモリワークロード</td><td><span class="badge-ng">❌</span></td></tr>
+<tr><td>A シリーズ</td><td>なし</td><td>開発・テスト用エントリーモデル</td><td><span class="badge-ng">×</span></td></tr>
+<tr><td>D シリーズ</td><td>なし</td><td>汎用・高コンピュート</td><td><span class="badge-ng">×</span></td></tr>
+<tr><td>M シリーズ</td><td>なし</td><td>大規模インメモリワークロード</td><td><span class="badge-ng">×</span></td></tr>
 </tbody></table></div>
 </div>
 <div class="refs"><div class="refs-title">参考ドキュメント</div><ul>
@@ -249,8 +249,8 @@ Business Critical 層は Always On 可用性グループをベースにしてお
 <thead><tr><th class="hl">サービス</th><th>複数セカンダリ</th><th>自動レプリケーション</th><th>RTO</th></tr></thead>
 <tbody>
 <tr class="hl"><td><strong>SQL DB (Business Critical)</strong></td><td>最大 4 つ</td><td>Always On AG</td><td>~30 秒</td></tr>
-<tr><td>SQL Managed Instance (BC)</td><td>最大 1 つ</td><td>✅</td><td>~30 秒</td></tr>
-<tr><td>SQL DB (Hyperscale)</td><td>最大 30</td><td>✅</td><td>~3 分</td></tr>
+<tr><td>SQL Managed Instance (BC)</td><td>最大 1 つ</td><td>○</td><td>~30 秒</td></tr>
+<tr><td>SQL DB (Hyperscale)</td><td>最大 30</td><td>○</td><td>~3 分</td></tr>
 </tbody></table></div>
 <div class="warn-box">
 <div class="w-title">SQL MI との違い</div>
@@ -270,44 +270,7 @@ choices:[{t:"アクティブ geo レプリケーション",c:true},{t:"自動フ
 ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
-<div class="arch-box"><div class="arch-title">SQL Server → Azure SQL DB 移行 + HA（Q3-4）</div><svg viewBox="0 0 740 150" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:740px;display:block;margin:10px auto;border-radius:10px;">
-<rect width="740" height="150" rx="10" fill="#0d1b2e"/>
-<defs>
-  <marker id="arr" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-    <polygon points="0 0,7 2.5,0 5" fill="#4a9fd4"/>
-  </marker>
-  <marker id="arr_w" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-    <polygon points="0 0,7 2.5,0 5" fill="#ffffff"/>
-  </marker>
-</defs>
-<rect x="376" y="26" width="228" height="98" rx="8" fill="#6264A7" fill-opacity="0.06" stroke="#6264A7" stroke-width="1" stroke-dasharray="5,3"/>
-<text x="384" y="40" font-size="8.5" font-weight="600" fill="#6264A7" font-family="Segoe UI,Arial,sans-serif">Azure SQL DB Business Critical</text>
-<rect x="146" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#546E7A" stroke-width="1.5"/>
-<rect x="152" y="49" width="76" height="28" rx="4" fill="#546E7A" fill-opacity="0.18"/>
-<text x="190" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#546E7A" font-family="Segoe UI,Arial,sans-serif">SRV</text>
-<text x="190" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">SQL Server</text>
-<text x="190" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">SQL1 オンプレ</text>
-<rect x="266" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#37474F" stroke-width="1.5"/>
-<rect x="272" y="49" width="76" height="28" rx="4" fill="#37474F" fill-opacity="0.18"/>
-<text x="310" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#37474F" font-family="Segoe UI,Arial,sans-serif">DMS</text>
-<text x="310" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Database</text>
-<text x="310" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Migration Svc</text>
-<rect x="386" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#6264A7" stroke-width="1.5"/>
-<rect x="392" y="49" width="76" height="28" rx="4" fill="#6264A7" fill-opacity="0.18"/>
-<text x="430" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#6264A7" font-family="Segoe UI,Arial,sans-serif">SQL</text>
-<text x="430" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">SQL DB</text>
-<text x="430" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Primary</text>
-<rect x="506" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#6264A7" stroke-width="1.5"/>
-<rect x="512" y="49" width="76" height="28" rx="4" fill="#6264A7" fill-opacity="0.18"/>
-<text x="550" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#6264A7" font-family="Segoe UI,Arial,sans-serif">SQL</text>
-<text x="550" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Read-only</text>
-<text x="550" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Replica x2</text>
-<line x1="234" y1="75" x2="260" y2="75" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-<text x="250" y="70" text-anchor="middle" font-size="8" fill="#7a9cbf" font-family="Segoe UI,Arial,sans-serif">移行</text>
-<line x1="354" y1="75" x2="380" y2="75" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-<line x1="474" y1="75" x2="500" y2="75" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-<text x="490" y="70" text-anchor="middle" font-size="8" fill="#7a9cbf" font-family="Segoe UI,Arial,sans-serif">自動同期</text>
-</svg></div>
+
 <div class="key-box">
 <div class="k-title">正解：アクティブ geo レプリケーション</div>
 アクティブ geo レプリケーションは Azure SQL Database 専用の機能で、<strong>最大 4 つの読み取り可能なセカンダリレプリカ</strong>を異なるリージョンに作成できます。RTO は 30 秒未満（手動フェールオーバー）です。
@@ -316,8 +279,8 @@ exp:`<div class="exp-section">
 <table class="ctbl">
 <thead><tr><th class="hl">レプリケーション</th><th>複数セカンダリ</th><th>読み取り可能</th><th>RTO</th><th>対象サービス</th></tr></thead>
 <tbody>
-<tr class="hl"><td><strong>アクティブ geo レプリケーション</strong></td><td>最大4</td><td>✅</td><td>&lt;30秒</td><td>SQL Database のみ</td></tr>
-<tr><td>自動フェールオーバーグループ</td><td>グループ単位</td><td>✅</td><td>&lt;60秒</td><td>SQL DB / SQL MI</td></tr>
+<tr class="hl"><td><strong>アクティブ geo レプリケーション</strong></td><td>最大4</td><td>○</td><td>&lt;30秒</td><td>SQL Database のみ</td></tr>
+<tr><td>自動フェールオーバーグループ</td><td>グループ単位</td><td>○</td><td>&lt;60秒</td><td>SQL DB / SQL MI</td></tr>
 <tr><td>標準 geo レプリケーション</td><td>1つのみ</td><td>オフライン</td><td>可変</td><td>旧機能</td></tr>
 </tbody></table></div>
 <div class="warn-box">
@@ -406,43 +369,7 @@ exp:`<div class="exp-section">
 <div class="k-title">正解：KQL（Kusto Query Language）</div>
 KQL は Azure Data Explorer のネイティブクエリ言語です。パイプライン（<code>|</code>）ベースの読みやすい構文で、大規模データの集計・フィルタリング・可視化を高速に行えます。
 </div>
-<div class="arch-box"><div class="arch-title">ペタバイト Data Lake アーキテクチャ（Q5-6）</div><svg viewBox="0 0 740 150" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:740px;display:block;margin:10px auto;border-radius:10px;">
-<rect width="740" height="150" rx="10" fill="#0d1b2e"/>
-<defs>
-  <marker id="arr" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-    <polygon points="0 0,7 2.5,0 5" fill="#4a9fd4"/>
-  </marker>
-  <marker id="arr_w" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-    <polygon points="0 0,7 2.5,0 5" fill="#ffffff"/>
-  </marker>
-</defs>
-<rect x="256" y="26" width="348" height="98" rx="8" fill="#0072C6" fill-opacity="0.06" stroke="#0072C6" stroke-width="1" stroke-dasharray="5,3"/>
-<text x="264" y="40" font-size="8.5" font-weight="600" fill="#0072C6" font-family="Segoe UI,Arial,sans-serif">Azure</text>
-<rect x="146" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#546E7A" stroke-width="1.5"/>
-<rect x="152" y="49" width="76" height="28" rx="4" fill="#546E7A" fill-opacity="0.18"/>
-<text x="190" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#546E7A" font-family="Segoe UI,Arial,sans-serif">SRC</text>
-<text x="190" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">多様な</text>
-<text x="190" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">データソース</text>
-<rect x="266" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#00B0F0" stroke-width="1.5"/>
-<rect x="272" y="49" width="76" height="28" rx="4" fill="#00B0F0" fill-opacity="0.18"/>
-<text x="310" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#00B0F0" font-family="Segoe UI,Arial,sans-serif">ADL</text>
-<text x="310" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">ADLS Gen2</text>
-<text x="310" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">ペタバイト規模</text>
-<rect x="386" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#00897B" stroke-width="1.5"/>
-<rect x="392" y="49" width="76" height="28" rx="4" fill="#00897B" fill-opacity="0.18"/>
-<text x="430" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#00897B" font-family="Segoe UI,Arial,sans-serif">ADE</text>
-<text x="430" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Data Explorer</text>
-<text x="430" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">KQL クエリ</text>
-<rect x="506" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#00897B" stroke-width="1.5"/>
-<rect x="512" y="49" width="76" height="28" rx="4" fill="#00897B" fill-opacity="0.18"/>
-<text x="550" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#00897B" font-family="Segoe UI,Arial,sans-serif">SYN</text>
-<text x="550" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Synapse</text>
-<text x="550" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Analytics</text>
-<line x1="234" y1="75" x2="260" y2="75" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-<text x="250" y="70" text-anchor="middle" font-size="8" fill="#7a9cbf" font-family="Segoe UI,Arial,sans-serif">取り込み</text>
-<line x1="354" y1="75" x2="380" y2="75" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-<line x1="474" y1="75" x2="500" y2="75" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-</svg></div>
+
 <pre style="font-size:12px;color:#1a1a2e;line-height:1.7;overflow-x:auto">
 LogData
 | where TimeGenerated &gt; ago(1h)
@@ -500,7 +427,7 @@ exp:`<div class="exp-section">
   <!-- Result -->
   <rect x="130" y="120" width="220" height="35" rx="6" fill="#E53935"/>
   <text x="240" y="136" text-anchor="middle" font-size="12" fill="#fff" font-weight="bold">BlockBlobStorage</text>
-  <text x="240" y="150" text-anchor="middle" font-size="9" fill="#fdd">Premium SSD + WORM 対応 ✅</text>
+  <text x="240" y="150" text-anchor="middle" font-size="9" fill="#fdd">Premium SSD + WORM 対応 ○</text>
   <defs><marker id="a7" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#555"/></marker></defs>
 </svg>
 </div>
@@ -512,10 +439,10 @@ BlockBlobStorage は SSD ベースの Premium ストレージを使用し、<str
 <table class="ctbl">
 <thead><tr><th class="hl">アカウント種別</th><th>パフォーマンス</th><th>WORM対応</th><th>主な用途</th></tr></thead>
 <tbody>
-<tr class="hl"><td><strong>BlockBlobStorage</strong></td><td>Premium (SSD)</td><td>✅</td><td>高スループット Blob</td></tr>
-<tr><td>BlobStorage</td><td>Standard (HDD)</td><td>✅</td><td>レガシー Blob 専用</td></tr>
-<tr><td>FileStorage</td><td>Premium (SSD)</td><td>❌</td><td>SMB/NFS ファイル共有</td></tr>
-<tr><td>StorageV2</td><td>Standard/Premium</td><td>✅</td><td>汎用（全機能）</td></tr>
+<tr class="hl"><td><strong>BlockBlobStorage</strong></td><td>Premium (SSD)</td><td>○</td><td>高スループット Blob</td></tr>
+<tr><td>BlobStorage</td><td>Standard (HDD)</td><td>○</td><td>レガシー Blob 専用</td></tr>
+<tr><td>FileStorage</td><td>Premium (SSD)</td><td>×</td><td>SMB/NFS ファイル共有</td></tr>
+<tr><td>StorageV2</td><td>Standard/Premium</td><td>○</td><td>汎用（全機能）</td></tr>
 </tbody></table></div>
 </div>
 <div class="refs"><div class="refs-title">参考ドキュメント</div><ul>
@@ -537,9 +464,9 @@ Azure Blob Storage は大量の非構造化データを格納するオブジェ�
 <table class="ctbl">
 <thead><tr><th class="hl">ストレージサービス</th><th>用途</th><th>WORM</th><th>高スループット</th></tr></thead>
 <tbody>
-<tr class="hl"><td><strong>Blob</strong></td><td>非構造化データ（動画・ログ・バックアップ）</td><td>✅</td><td>✅</td></tr>
-<tr><td>File</td><td>SMB/NFS ファイル共有</td><td>❌</td><td>△</td></tr>
-<tr><td>Table</td><td>NoSQL 構造化データ</td><td>❌</td><td>❌</td></tr>
+<tr class="hl"><td><strong>Blob</strong></td><td>非構造化データ（動画・ログ・バックアップ）</td><td>○</td><td>○</td></tr>
+<tr><td>File</td><td>SMB/NFS ファイル共有</td><td>×</td><td>△</td></tr>
+<tr><td>Table</td><td>NoSQL 構造化データ</td><td>×</td><td>×</td></tr>
 </tbody></table></div>
 </div>`},
 
@@ -616,7 +543,7 @@ exp:`<div class="exp-section">
 データ収集ルール (DCR) 内では KQL を使用してデータを変換します。具体的には <code>transformKql</code> プロパティに KQL 式を記述し、受信した JSON データを加工してカスタムテーブルに格納します。
 </div>
 <div class="arch-box">
-<div class="arch-title">📝 DCR 変換 KQL の例</div>
+<div class="arch-title">DCR 変換 KQL の例</div>
 <pre style="font-size:12px;color:#1a1a2e;line-height:1.7;overflow-x:auto">
 source
 | extend TimeGenerated = todatetime(RawData.timestamp)
@@ -630,9 +557,9 @@ source
 <table class="ctbl">
 <thead><tr><th class="hl">クエリ言語</th><th>使用場所</th><th>DCR 変換に使用可能か</th></tr></thead>
 <tbody>
-<tr class="hl"><td><strong>KQL</strong></td><td>DCR、Log Analytics、ADX、Sentinel</td><td>✅</td></tr>
-<tr><td>WQL</td><td>Windows WMI クエリ</td><td>❌</td></tr>
-<tr><td>XPath</td><td>XML ドキュメント、Windows イベントフィルタリング</td><td>❌（構造変換には使えない）</td></tr>
+<tr class="hl"><td><strong>KQL</strong></td><td>DCR、Log Analytics、ADX、Sentinel</td><td>○</td></tr>
+<tr><td>WQL</td><td>Windows WMI クエリ</td><td>×</td></tr>
+<tr><td>XPath</td><td>XML ドキュメント、Windows イベントフィルタリング</td><td>×（構造変換には使えない）</td></tr>
 </tbody></table></div>
 </div>`},
 
@@ -683,8 +610,8 @@ ABAC は RBAC に条件（Condition）を追加した拡張機能です。BLOB �
 <thead><tr><th class="hl">モデル</th><th>タグ条件</th><th>管理</th><th>本問の判定</th></tr></thead>
 <tbody>
 <tr class="hl"><td><strong>ABAC</strong></td><td>BLOB タグで条件付け可</td><td>Azure AD 管理</td><td><span class="badge-ok">正解</span></td></tr>
-<tr><td>RBAC のみ</td><td>リソース全体への権限のみ</td><td>Azure AD 管理</td><td><span class="badge-ng">❌</span></td></tr>
-<tr><td>SAS</td><td>タグ条件不可</td><td>手動管理（漏洩リスク）</td><td><span class="badge-ng">❌</span></td></tr>
+<tr><td>RBAC のみ</td><td>リソース全体への権限のみ</td><td>Azure AD 管理</td><td><span class="badge-ng">×</span></td></tr>
+<tr><td>SAS</td><td>タグ条件不可</td><td>手動管理（漏洩リスク）</td><td><span class="badge-ng">×</span></td></tr>
 </tbody></table></div>
 </div>
 <div class="refs"><div class="refs-title">参考ドキュメント</div><ul>
@@ -781,7 +708,7 @@ exp:`<div class="exp-section">
   <rect x="150" y="55" width="60" height="30" rx="5" fill="#0072C6"/>
   <text x="180" y="74" text-anchor="middle" font-size="9" fill="#fff">Block 2</text>
   <rect x="150" y="85" width="60" height="30" rx="5" fill="#E53935"/>
-  <text x="180" y="104" text-anchor="middle" font-size="9" fill="#fff">Block 3 ❌</text>
+  <text x="180" y="104" text-anchor="middle" font-size="9" fill="#fff">Block 3 ×</text>
   <!-- Arrow to commit -->
   <line x1="213" y1="65" x2="248" y2="65" stroke="#555" stroke-width="1.5" marker-end="url(#a13)"/>
   <!-- Commit -->
@@ -795,7 +722,7 @@ exp:`<div class="exp-section">
   <rect x="390" y="40" width="80" height="50" rx="7" fill="#512DA8"/>
   <text x="430" y="60" text-anchor="middle" font-size="10" fill="#fff">完成した</text>
   <text x="430" y="74" text-anchor="middle" font-size="10" fill="#fff">Block Blob</text>
-  <text x="430" y="88" text-anchor="middle" font-size="9" fill="#ddd">再開可能 ✅</text>
+  <text x="430" y="88" text-anchor="middle" font-size="9" fill="#ddd">再開可能 ○</text>
   <defs><marker id="a13" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#555"/></marker></defs>
 </svg>
 </div>
@@ -807,9 +734,9 @@ exp:`<div class="exp-section">
 <table class="ctbl">
 <thead><tr><th class="hl">BLOB の種類</th><th>並列アップロード</th><th>再開可能</th><th>主な用途</th></tr></thead>
 <tbody>
-<tr class="hl"><td><strong>ブロック BLOB</strong></td><td>✅</td><td>✅</td><td>テキスト・バイナリファイル</td></tr>
-<tr><td>アペンド BLOB</td><td>末尾追記のみ</td><td>❌</td><td>ログファイルの蓄積</td></tr>
-<tr><td>ページ BLOB</td><td>ランダム書込み</td><td>❌</td><td>Azure VM ディスク (VHD)</td></tr>
+<tr class="hl"><td><strong>ブロック BLOB</strong></td><td>○</td><td>○</td><td>テキスト・バイナリファイル</td></tr>
+<tr><td>アペンド BLOB</td><td>末尾追記のみ</td><td>×</td><td>ログファイルの蓄積</td></tr>
+<tr><td>ページ BLOB</td><td>ランダム書込み</td><td>×</td><td>Azure VM ディスク (VHD)</td></tr>
 </tbody></table></div>
 </div>`},
 
@@ -843,7 +770,7 @@ exp:`<div class="exp-section">
   <text x="250" y="52" text-anchor="middle" font-size="10" fill="#fff" font-weight="bold">分析ストア</text>
   <text x="250" y="66" text-anchor="middle" font-size="10" fill="#fff" font-weight="bold">（列指向）</text>
   <text x="250" y="82" text-anchor="middle" font-size="9" fill="#fdd">コスト：ETL 不要</text>
-  <text x="250" y="95" text-anchor="middle" font-size="9" fill="#fdd">OLTP に影響なし ✅</text>
+  <text x="250" y="95" text-anchor="middle" font-size="9" fill="#fdd">OLTP に影響なし ○</text>
   <!-- Arrow -->
   <line x1="323" y1="70" x2="353" y2="70" stroke="#555" stroke-width="1.5" marker-end="url(#a14)"/>
   <!-- Synapse -->
@@ -924,10 +851,10 @@ Entra Identity Governance の<strong>アクセスレビュー機能</strong>に�
 <table class="ctbl">
 <thead><tr><th class="hl">サービス</th><th>アクセスレビュー</th><th>ゲスト管理</th><th>自動削除</th></tr></thead>
 <tbody>
-<tr class="hl"><td><strong>Identity Governance</strong></td><td>月次/週次</td><td>✅</td><td>ポリシー設定可</td></tr>
-<tr><td>Identity Protection</td><td>リスク検出のみ</td><td>❌</td><td>❌</td></tr>
-<tr><td>PIM</td><td>特権 ID 向け</td><td>△</td><td>❌</td></tr>
-<tr><td>Azure Automation</td><td>カスタム実装が必要</td><td>❌</td><td>△ スクリプト次第</td></tr>
+<tr class="hl"><td><strong>Identity Governance</strong></td><td>月次/週次</td><td>○</td><td>ポリシー設定可</td></tr>
+<tr><td>Identity Protection</td><td>リスク検出のみ</td><td>×</td><td>×</td></tr>
+<tr><td>PIM</td><td>特権 ID 向け</td><td>△</td><td>×</td></tr>
+<tr><td>Azure Automation</td><td>カスタム実装が必要</td><td>×</td><td>△ スクリプト次第</td></tr>
 </tbody></table></div>
 </div>`},
 
@@ -980,9 +907,9 @@ Azure APIM には OWASP Top 10 の脅威（SQL インジェクション、XSS、
 <table class="ctbl">
 <thead><tr><th class="hl">ポリシー</th><th>保護対象</th><th>Web 攻撃保護</th></tr></thead>
 <tbody>
-<tr class="hl"><td><strong>OWASP Top 10 保護</strong></td><td>SQL インジェクション、XSS、CSRF など</td><td>✅</td></tr>
-<tr><td>JWT 検証</td><td>認証トークンの有効性確認</td><td>❌（認証用）</td></tr>
-<tr><td>IP フィルタリング</td><td>特定 IP の許可/拒否</td><td>❌（アクセス制御用）</td></tr>
+<tr class="hl"><td><strong>OWASP Top 10 保護</strong></td><td>SQL インジェクション、XSS、CSRF など</td><td>○</td></tr>
+<tr><td>JWT 検証</td><td>認証トークンの有効性確認</td><td>×（認証用）</td></tr>
+<tr><td>IP フィルタリング</td><td>特定 IP の許可/拒否</td><td>×（アクセス制御用）</td></tr>
 </tbody></table></div>
 </div>`},
 
@@ -993,38 +920,7 @@ choices:[{t:"JWT トークンによる認証後にレート制限する（valida
 ci:[1],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
-<div class="arch-box"><div class="arch-title">API Management + App Service バックエンド（Q16-17）</div><svg viewBox="0 0 640 150" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:640px;display:block;margin:10px auto;border-radius:10px;">
-<rect width="640" height="150" rx="10" fill="#0d1b2e"/>
-<defs>
-  <marker id="arr" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-    <polygon points="0 0,7 2.5,0 5" fill="#4a9fd4"/>
-  </marker>
-  <marker id="arr_w" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-    <polygon points="0 0,7 2.5,0 5" fill="#ffffff"/>
-  </marker>
-</defs>
-<rect x="266" y="26" width="228" height="98" rx="8" fill="#0072C6" fill-opacity="0.06" stroke="#0072C6" stroke-width="1" stroke-dasharray="5,3"/>
-<text x="274" y="40" font-size="8.5" font-weight="600" fill="#0072C6" font-family="Segoe UI,Arial,sans-serif">Azure</text>
-<rect x="156" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#546E7A" stroke-width="1.5"/>
-<rect x="162" y="49" width="76" height="28" rx="4" fill="#546E7A" fill-opacity="0.18"/>
-<text x="200" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#546E7A" font-family="Segoe UI,Arial,sans-serif">PTN</text>
-<text x="200" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">外部</text>
-<text x="200" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">パートナー</text>
-<rect x="276" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#9575CD" stroke-width="1.5"/>
-<rect x="282" y="49" width="76" height="28" rx="4" fill="#9575CD" fill-opacity="0.18"/>
-<text x="320" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#9575CD" font-family="Segoe UI,Arial,sans-serif">APIM</text>
-<text x="320" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">API Management</text>
-<text x="320" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">レート制限/認証</text>
-<rect x="396" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#0072C6" stroke-width="1.5"/>
-<rect x="402" y="49" width="76" height="28" rx="4" fill="#0072C6" fill-opacity="0.18"/>
-<text x="440" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#0072C6" font-family="Segoe UI,Arial,sans-serif">APP</text>
-<text x="440" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">App Service</text>
-<text x="440" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">バックエンド</text>
-<line x1="244" y1="75" x2="270" y2="75" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-<text x="260" y="70" text-anchor="middle" font-size="8" fill="#7a9cbf" font-family="Segoe UI,Arial,sans-serif">HTTPS</text>
-<line x1="364" y1="75" x2="390" y2="75" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-<text x="380" y="70" text-anchor="middle" font-size="8" fill="#7a9cbf" font-family="Segoe UI,Arial,sans-serif">プロキシ</text>
-</svg></div>
+
 <div class="key-box">
 <div class="k-title">正解：キーによるレート制限（rate-limit-by-key）</div>
 <code>rate-limit-by-key</code> ポリシーはサブスクリプションキー・IP アドレス・ユーザー ID など任意のキーに基づいて API 呼び出しレートを制限します。「単位時間あたりの呼び出し数」を制御するリアルタイムのスロットリングです。
@@ -1091,9 +987,9 @@ exp:`<div class="exp-section">
 <table class="ctbl">
 <thead><tr><th class="hl">Effect</th><th>動作</th><th>自動修復</th><th>リージョン制限に適切か</th></tr></thead>
 <tbody>
-<tr><td>DeployIfNotExists</td><td>条件不満足時にリソースを自動デプロイ</td><td>✅</td><td>❌（作成を許可してしまう）</td></tr>
-<tr class="hl"><td><strong>Deny</strong></td><td>非準拠リソースの作成・更新を拒否</td><td>❌</td><td>✅</td></tr>
-<tr><td>Audit</td><td>ログ記録のみ（作成は許可）</td><td>❌</td><td>❌</td></tr>
+<tr><td>DeployIfNotExists</td><td>条件不満足時にリソースを自動デプロイ</td><td>○</td><td>×（作成を許可してしまう）</td></tr>
+<tr class="hl"><td><strong>Deny</strong></td><td>非準拠リソースの作成・更新を拒否</td><td>×</td><td>○</td></tr>
+<tr><td>Audit</td><td>ログ記録のみ（作成は許可）</td><td>×</td><td>×</td></tr>
 </tbody></table></div>
 </div>
 <div class="refs"><div class="refs-title">参考ドキュメント</div><ul>
@@ -1153,14 +1049,14 @@ exp:`<div class="exp-section">
   <text x="235" y="60" text-anchor="middle" font-size="9" fill="#fff">3 AZ に 1 コピーずつ</text>
   <rect x="165" y="68" width="130" height="15" rx="3" fill="#fff" opacity=".2"/>
   <text x="235" y="80" text-anchor="middle" font-size="8" fill="#fff">ゾーン障害 耐性あり</text>
-  <text x="235" y="95" text-anchor="middle" font-size="9" fill="#fdd">リージョン障害 ❌</text>
+  <text x="235" y="95" text-anchor="middle" font-size="9" fill="#fdd">リージョン障害 ×</text>
   <text x="235" y="108" text-anchor="middle" font-size="9" fill="#4CAF50">💰💰 中コスト</text>
   <!-- GRS -->
   <rect x="330" y="25" width="140" height="90" rx="7" fill="#607D8B"/>
   <text x="400" y="45" text-anchor="middle" font-size="10" fill="#fff" font-weight="bold">GRS</text>
   <text x="400" y="60" text-anchor="middle" font-size="9" fill="#ddd">2 リージョンに複製</text>
-  <text x="400" y="75" text-anchor="middle" font-size="9" fill="#ddd">ゾーン障害 ✅</text>
-  <text x="400" y="90" text-anchor="middle" font-size="9" fill="#ddd">リージョン障害 ✅</text>
+  <text x="400" y="75" text-anchor="middle" font-size="9" fill="#ddd">ゾーン障害 ○</text>
+  <text x="400" y="90" text-anchor="middle" font-size="9" fill="#ddd">リージョン障害 ○</text>
   <text x="400" y="106" text-anchor="middle" font-size="9" fill="#FF9800">💰💰💰 高コスト</text>
   <text x="240" y="15" text-anchor="middle" font-size="10" fill="#0072C6" font-weight="bold">ゾーン障害耐性 + コスト最小 = ZRS</text>
 </svg>
@@ -1192,9 +1088,9 @@ exp:`<div class="exp-section">
 <table class="ctbl">
 <thead><tr><th class="hl">オプション</th><th>パフォーマンス</th><th>ゾーン耐性</th><th>判定</th></tr></thead>
 <tbody>
-<tr class="hl"><td><strong>Premium BlockBlobStorage + ZRS</strong></td><td>最高 (SSD)</td><td>✅</td><td><span class="badge-ok">正解</span></td></tr>
-<tr><td>Standard V2 + GRS</td><td>標準 (HDD)</td><td>✅</td><td><span class="badge-ng">❌</span></td></tr>
-<tr><td>Standard V2 + LRS</td><td>標準 (HDD)</td><td>❌</td><td><span class="badge-ng">❌</span></td></tr>
+<tr class="hl"><td><strong>Premium BlockBlobStorage + ZRS</strong></td><td>最高 (SSD)</td><td>○</td><td><span class="badge-ok">正解</span></td></tr>
+<tr><td>Standard V2 + GRS</td><td>標準 (HDD)</td><td>○</td><td><span class="badge-ng">×</span></td></tr>
+<tr><td>Standard V2 + LRS</td><td>標準 (HDD)</td><td>×</td><td><span class="badge-ng">×</span></td></tr>
 </tbody></table></div>
 </div>`},
 
@@ -1246,10 +1142,10 @@ exp:`<div class="exp-section">
 <table class="ctbl">
 <thead><tr><th class="hl">オプション</th><th>テナント分離</th><th>コスト最適化</th><th>スケール柔軟性</th></tr></thead>
 <tbody>
-<tr><td>SQL Managed Instance</td><td>✅</td><td>高コスト</td><td>△</td></tr>
+<tr><td>SQL Managed Instance</td><td>○</td><td>高コスト</td><td>△</td></tr>
 <tr class="hl"><td><strong>エラスティックプール</strong></td><td>各 DB 独立</td><td>共有リソース</td><td>DB 追加/削除</td></tr>
-<tr><td>個別インスタンス</td><td>最高分離</td><td>最高コスト</td><td>❌</td></tr>
-<tr><td>同一サーバーの共有 DB</td><td>テナント混在</td><td>✅</td><td>△</td></tr>
+<tr><td>個別インスタンス</td><td>最高分離</td><td>最高コスト</td><td>×</td></tr>
+<tr><td>同一サーバーの共有 DB</td><td>テナント混在</td><td>○</td><td>△</td></tr>
 </tbody></table></div>
 </div>`},
 
@@ -1307,10 +1203,10 @@ Azure Container Apps は Kubernetes の知識なしにコンテナーをサー�
 <table class="ctbl">
 <thead><tr><th class="hl">サービス</th><th>サーバーレス</th><th>Kubernetes 知識</th><th>自動スケール</th><th>マイクロサービス</th></tr></thead>
 <tbody>
-<tr class="hl"><td><strong>Container Apps</strong></td><td>✅</td><td>不要 ✅</td><td>KEDA</td><td>✅</td></tr>
-<tr><td>AKS</td><td>❌</td><td>必要 ❌</td><td>✅</td><td>✅</td></tr>
-<tr><td>Container Instances</td><td>✅</td><td>不要 ✅</td><td>手動</td><td>単発向け</td></tr>
-<tr><td>App Service</td><td>△</td><td>不要 ✅</td><td>✅</td><td>△</td></tr>
+<tr class="hl"><td><strong>Container Apps</strong></td><td>○</td><td>不要 ○</td><td>KEDA</td><td>○</td></tr>
+<tr><td>AKS</td><td>×</td><td>必要 ×</td><td>○</td><td>○</td></tr>
+<tr><td>Container Instances</td><td>○</td><td>不要 ○</td><td>手動</td><td>単発向け</td></tr>
+<tr><td>App Service</td><td>△</td><td>不要 ○</td><td>○</td><td>△</td></tr>
 </tbody></table></div>
 </div>`},
 
@@ -1323,70 +1219,8 @@ choices:[{t:"Azure Container Registry (ACR)",c:true},{t:"Azure Container Apps",c
 ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
-<div class="arch-box"><div class="arch-title">AKS マイクロサービス + Container Registry（Q23-24）</div><svg viewBox="0 0 640 150" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:640px;display:block;margin:10px auto;border-radius:10px;">
-<rect width="640" height="150" rx="10" fill="#0d1b2e"/>
-<defs>
-  <marker id="arr" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-    <polygon points="0 0,7 2.5,0 5" fill="#4a9fd4"/>
-  </marker>
-  <marker id="arr_w" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-    <polygon points="0 0,7 2.5,0 5" fill="#ffffff"/>
-  </marker>
-</defs>
-<rect x="266" y="26" width="228" height="98" rx="8" fill="#0072C6" fill-opacity="0.06" stroke="#0072C6" stroke-width="1" stroke-dasharray="5,3"/>
-<text x="274" y="40" font-size="8.5" font-weight="600" fill="#0072C6" font-family="Segoe UI,Arial,sans-serif">Azure Kubernetes Service</text>
-<rect x="156" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#0072C6" stroke-width="1.5"/>
-<rect x="162" y="49" width="76" height="28" rx="4" fill="#0072C6" fill-opacity="0.18"/>
-<text x="200" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#0072C6" font-family="Segoe UI,Arial,sans-serif">ACR</text>
-<text x="200" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Container</text>
-<text x="200" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Registry</text>
-<rect x="276" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#0072C6" stroke-width="1.5"/>
-<rect x="282" y="49" width="76" height="28" rx="4" fill="#0072C6" fill-opacity="0.18"/>
-<text x="320" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#0072C6" font-family="Segoe UI,Arial,sans-serif">AKS</text>
-<text x="320" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">AKS</text>
-<text x="320" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">クラスター</text>
-<rect x="396" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#0072C6" stroke-width="1.5"/>
-<rect x="402" y="49" width="76" height="28" rx="4" fill="#0072C6" fill-opacity="0.18"/>
-<text x="440" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#0072C6" font-family="Segoe UI,Arial,sans-serif">SVC</text>
-<text x="440" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">マイクロサービス</text>
-<text x="440" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">A / B</text>
-<line x1="244" y1="75" x2="270" y2="75" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-<text x="260" y="70" text-anchor="middle" font-size="8" fill="#7a9cbf" font-family="Segoe UI,Arial,sans-serif">イメージ プル</text>
-<line x1="364" y1="75" x2="390" y2="75" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-<text x="380" y="70" text-anchor="middle" font-size="8" fill="#7a9cbf" font-family="Segoe UI,Arial,sans-serif">デプロイ</text>
-</svg></div>
-<div class="arch-box"><div class="arch-title">AKS マイクロサービス + Container Registry（Q23-24）</div><svg viewBox="0 0 640 150" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:640px;display:block;margin:10px auto;border-radius:10px;">
-<rect width="640" height="150" rx="10" fill="#0d1b2e"/>
-<defs>
-  <marker id="arr" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-    <polygon points="0 0,7 2.5,0 5" fill="#4a9fd4"/>
-  </marker>
-  <marker id="arr_w" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-    <polygon points="0 0,7 2.5,0 5" fill="#ffffff"/>
-  </marker>
-</defs>
-<rect x="266" y="26" width="228" height="98" rx="8" fill="#0072C6" fill-opacity="0.06" stroke="#0072C6" stroke-width="1" stroke-dasharray="5,3"/>
-<text x="274" y="40" font-size="8.5" font-weight="600" fill="#0072C6" font-family="Segoe UI,Arial,sans-serif">Azure Kubernetes Service</text>
-<rect x="156" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#0072C6" stroke-width="1.5"/>
-<rect x="162" y="49" width="76" height="28" rx="4" fill="#0072C6" fill-opacity="0.18"/>
-<text x="200" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#0072C6" font-family="Segoe UI,Arial,sans-serif">ACR</text>
-<text x="200" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Container</text>
-<text x="200" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Registry</text>
-<rect x="276" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#0072C6" stroke-width="1.5"/>
-<rect x="282" y="49" width="76" height="28" rx="4" fill="#0072C6" fill-opacity="0.18"/>
-<text x="320" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#0072C6" font-family="Segoe UI,Arial,sans-serif">AKS</text>
-<text x="320" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">AKS</text>
-<text x="320" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">クラスター</text>
-<rect x="396" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#0072C6" stroke-width="1.5"/>
-<rect x="402" y="49" width="76" height="28" rx="4" fill="#0072C6" fill-opacity="0.18"/>
-<text x="440" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#0072C6" font-family="Segoe UI,Arial,sans-serif">SVC</text>
-<text x="440" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">マイクロサービス</text>
-<text x="440" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">A / B</text>
-<line x1="244" y1="75" x2="270" y2="75" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-<text x="260" y="70" text-anchor="middle" font-size="8" fill="#7a9cbf" font-family="Segoe UI,Arial,sans-serif">イメージ プル</text>
-<line x1="364" y1="75" x2="390" y2="75" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-<text x="380" y="70" text-anchor="middle" font-size="8" fill="#7a9cbf" font-family="Segoe UI,Arial,sans-serif">デプロイ</text>
-</svg></div>
+
+
 <div class="key-box">
 <div class="k-title">正解：Azure Container Registry (ACR)</div>
 ACR はプライベートな Docker イメージレジストリです。イメージのバージョン管理、脆弱性スキャン（Microsoft Defender for Containers との統合）、geo レプリケーションを提供します。
@@ -1476,9 +1310,9 @@ exp:`<div class="exp-section">
 <table class="ctbl">
 <thead><tr><th class="hl">ソリューション</th><th>リージョン間対応</th><th>自動フェールオーバー</th><th>現在の推奨</th></tr></thead>
 <tbody>
-<tr class="hl"><td><strong>分散 AG</strong></td><td>✅</td><td>設定次第</td><td>推奨</td></tr>
-<tr><td>DBミラーリング</td><td>✅</td><td>✅</td><td>廃止（SQL 2012 以降非推奨）</td></tr>
-<tr><td>ログ配布</td><td>✅</td><td>手動のみ</td><td>△ 制限あり</td></tr>
+<tr class="hl"><td><strong>分散 AG</strong></td><td>○</td><td>設定次第</td><td>推奨</td></tr>
+<tr><td>DBミラーリング</td><td>○</td><td>○</td><td>廃止（SQL 2012 以降非推奨）</td></tr>
+<tr><td>ログ配布</td><td>○</td><td>手動のみ</td><td>△ 制限あり</td></tr>
 </tbody></table></div>
 </div>`},
 
@@ -1532,10 +1366,10 @@ Azure Front Door はグローバル HTTP/HTTPS ロードバランシング、CDN
 <table class="ctbl">
 <thead><tr><th class="hl">サービス</th><th>スコープ</th><th>WAF/DDoS</th><th>自動フェールオーバー</th></tr></thead>
 <tbody>
-<tr class="hl"><td><strong>Front Door</strong></td><td>グローバル L7</td><td>✅</td><td>✅</td></tr>
-<tr><td>Traffic Manager</td><td>グローバル DNS</td><td>❌</td><td>DNS ベース</td></tr>
-<tr><td>Load Balancer</td><td>リージョン L4</td><td>❌</td><td>❌</td></tr>
-<tr><td>Application Gateway</td><td>リージョン L7</td><td>✅</td><td>グローバル不可</td></tr>
+<tr class="hl"><td><strong>Front Door</strong></td><td>グローバル L7</td><td>○</td><td>○</td></tr>
+<tr><td>Traffic Manager</td><td>グローバル DNS</td><td>×</td><td>DNS ベース</td></tr>
+<tr><td>Load Balancer</td><td>リージョン L4</td><td>×</td><td>×</td></tr>
+<tr><td>Application Gateway</td><td>リージョン L7</td><td>○</td><td>グローバル不可</td></tr>
 </tbody></table></div>
 </div>`},
 
@@ -1548,34 +1382,7 @@ choices:[{t:"Azure Application Gateway",c:true},{t:"Azure Front Door",c:false},{
 ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
-<div class="arch-box"><div class="arch-title">マルチリージョン Web App + Front Door WAF（Q27-28）</div><svg viewBox="0 0 640 180" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:640px;display:block;margin:10px auto;border-radius:10px;">
-<rect width="640" height="180" rx="10" fill="#0d1b2e"/>
-<defs>
-  <marker id="arr" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-    <polygon points="0 0,7 2.5,0 5" fill="#4a9fd4"/>
-  </marker>
-  <marker id="arr_w" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-    <polygon points="0 0,7 2.5,0 5" fill="#ffffff"/>
-  </marker>
-</defs>
-<rect x="56" y="59" width="88" height="62" rx="7" fill="#112240" stroke="#107C10" stroke-width="1.5"/>
-<rect x="62" y="64" width="76" height="28" rx="4" fill="#107C10" fill-opacity="0.18"/>
-<text x="100" y="83" text-anchor="middle" font-size="12" font-weight="700" fill="#107C10" font-family="Segoe UI,Arial,sans-serif">FD</text>
-<text x="100" y="101" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Front Door</text>
-<text x="100" y="112" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Global LB / WAF</text>
-<rect x="556" y="19" width="88" height="62" rx="7" fill="#112240" stroke="#0072C6" stroke-width="1.5"/>
-<rect x="562" y="24" width="76" height="28" rx="4" fill="#0072C6" fill-opacity="0.18"/>
-<text x="600" y="43" text-anchor="middle" font-size="12" font-weight="700" fill="#0072C6" font-family="Segoe UI,Arial,sans-serif">APP</text>
-<text x="600" y="61" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Web App</text>
-<text x="600" y="72" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">リージョン A</text>
-<rect x="556" y="99" width="88" height="62" rx="7" fill="#112240" stroke="#0072C6" stroke-width="1.5"/>
-<rect x="562" y="104" width="76" height="28" rx="4" fill="#0072C6" fill-opacity="0.18"/>
-<text x="600" y="123" text-anchor="middle" font-size="12" font-weight="700" fill="#0072C6" font-family="Segoe UI,Arial,sans-serif">APP</text>
-<text x="600" y="141" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Web App</text>
-<text x="600" y="152" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">リージョン B</text>
-<line x1="144" y1="90" x2="556" y2="50" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-<line x1="144" y1="90" x2="556" y2="130" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-</svg></div>
+
 <div class="key-box">
 <div class="k-title">正解：Azure Application Gateway</div>
 Application Gateway はリージョンスコープの Layer 7 ロードバランサーで、リバースプロキシ・SSL 終端・WAF（Web Application Firewall）機能を提供します。「単一リージョン + WAF + リバースプロキシ」の要件に最適です。
@@ -1584,10 +1391,10 @@ Application Gateway はリージョンスコープの Layer 7 ロードバラン
 <table class="ctbl">
 <thead><tr><th class="hl">サービス</th><th>スコープ</th><th>リバースプロキシ</th><th>WAF</th><th>SSL 終端</th></tr></thead>
 <tbody>
-<tr class="hl"><td><strong>Application Gateway</strong></td><td>リージョン L7</td><td>✅</td><td>✅</td><td>✅</td></tr>
-<tr><td>Front Door</td><td>グローバル L7</td><td>✅</td><td>✅</td><td>✅</td></tr>
-<tr><td>Load Balancer</td><td>リージョン L4</td><td>❌</td><td>❌</td><td>❌</td></tr>
-<tr><td>Azure Firewall</td><td>ネットワーク FW</td><td>❌</td><td>❌</td><td>❌</td></tr>
+<tr class="hl"><td><strong>Application Gateway</strong></td><td>リージョン L7</td><td>○</td><td>○</td><td>○</td></tr>
+<tr><td>Front Door</td><td>グローバル L7</td><td>○</td><td>○</td><td>○</td></tr>
+<tr><td>Load Balancer</td><td>リージョン L4</td><td>×</td><td>×</td><td>×</td></tr>
+<tr><td>Azure Firewall</td><td>ネットワーク FW</td><td>×</td><td>×</td><td>×</td></tr>
 </tbody></table></div>
 <div class="warn-box">
 <div class="w-title">Front Door との使い分け</div>
@@ -1663,44 +1470,7 @@ choices:[{t:"Azure プライベート DNS ゾーン",c:true},{t:"パブリック
 ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
-<div class="arch-box"><div class="arch-title">App Service + Private Endpoint + DNS（Q29-30）</div><svg viewBox="0 0 740 150" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:740px;display:block;margin:10px auto;border-radius:10px;">
-<rect width="740" height="150" rx="10" fill="#0d1b2e"/>
-<defs>
-  <marker id="arr" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-    <polygon points="0 0,7 2.5,0 5" fill="#4a9fd4"/>
-  </marker>
-  <marker id="arr_w" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-    <polygon points="0 0,7 2.5,0 5" fill="#ffffff"/>
-  </marker>
-</defs>
-<rect x="136" y="26" width="468" height="98" rx="8" fill="#0072C6" fill-opacity="0.06" stroke="#0072C6" stroke-width="1" stroke-dasharray="5,3"/>
-<text x="144" y="40" font-size="8.5" font-weight="600" fill="#0072C6" font-family="Segoe UI,Arial,sans-serif">Azure (East Japan)</text>
-<rect x="146" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#0072C6" stroke-width="1.5"/>
-<rect x="152" y="49" width="76" height="28" rx="4" fill="#0072C6" fill-opacity="0.18"/>
-<text x="190" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#0072C6" font-family="Segoe UI,Arial,sans-serif">APP</text>
-<text x="190" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">WebApp1</text>
-<text x="190" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">VNet Integration</text>
-<rect x="266" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#107C10" stroke-width="1.5"/>
-<rect x="272" y="49" width="76" height="28" rx="4" fill="#107C10" fill-opacity="0.18"/>
-<text x="310" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#107C10" font-family="Segoe UI,Arial,sans-serif">PE</text>
-<text x="310" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Private</text>
-<text x="310" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Endpoint</text>
-<rect x="386" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#107C10" stroke-width="1.5"/>
-<rect x="392" y="49" width="76" height="28" rx="4" fill="#107C10" fill-opacity="0.18"/>
-<text x="430" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#107C10" font-family="Segoe UI,Arial,sans-serif">DNS</text>
-<text x="430" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">プライベート</text>
-<text x="430" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">DNS ゾーン</text>
-<rect x="506" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#6264A7" stroke-width="1.5"/>
-<rect x="512" y="49" width="76" height="28" rx="4" fill="#6264A7" fill-opacity="0.18"/>
-<text x="550" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#6264A7" font-family="Segoe UI,Arial,sans-serif">SQL</text>
-<text x="550" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">DB1</text>
-<text x="550" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Azure SQL DB</text>
-<line x1="234" y1="75" x2="260" y2="75" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-<text x="250" y="70" text-anchor="middle" font-size="8" fill="#7a9cbf" font-family="Segoe UI,Arial,sans-serif">VNet 経由</text>
-<line x1="354" y1="75" x2="380" y2="75" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-<text x="370" y="70" text-anchor="middle" font-size="8" fill="#7a9cbf" font-family="Segoe UI,Arial,sans-serif">名前解決</text>
-<line x1="474" y1="75" x2="500" y2="75" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-</svg></div>
+
 <div class="key-box">
 <div class="k-title">正解：Azure プライベート DNS ゾーン</div>
 プライベートエンドポイントを使用する場合、データベースの FQDN（例：<code>sql1.database.windows.net</code>）がプライベート IP アドレスに解決されるよう<strong>プライベート DNS ゾーン</strong>（例：<code>privatelink.database.windows.net</code>）を VNet にリンクする必要があります。
@@ -1766,8 +1536,8 @@ APIM が<strong>外部 VNet モード</strong>で統合されている場合、A
 <thead><tr><th class="hl">APIM VNet モード</th><th>パブリックアクセス</th><th>VNet バックエンドアクセス</th></tr></thead>
 <tbody>
 <tr class="hl"><td><strong>外部モード</strong></td><td>インターネット可</td><td>VNet 内に到達可</td></tr>
-<tr><td>内部モード</td><td>VNet 内のみ</td><td>✅</td></tr>
-<tr><td>非統合</td><td>✅</td><td>VNet 内に到達不可</td></tr>
+<tr><td>内部モード</td><td>VNet 内のみ</td><td>○</td></tr>
+<tr><td>非統合</td><td>○</td><td>VNet 内に到達不可</td></tr>
 </tbody></table></div>
 </div>`},
 
@@ -1781,38 +1551,7 @@ choices:[{t:"True",c:true},{t:"False",c:false}],
 ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
-<div class="arch-box"><div class="arch-title">APIM 外部 VNet モード + バックエンド VM（Q31-33）</div><svg viewBox="0 0 640 150" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:640px;display:block;margin:10px auto;border-radius:10px;">
-<rect width="640" height="150" rx="10" fill="#0d1b2e"/>
-<defs>
-  <marker id="arr" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-    <polygon points="0 0,7 2.5,0 5" fill="#4a9fd4"/>
-  </marker>
-  <marker id="arr_w" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-    <polygon points="0 0,7 2.5,0 5" fill="#ffffff"/>
-  </marker>
-</defs>
-<rect x="266" y="26" width="228" height="98" rx="8" fill="#0072C6" fill-opacity="0.06" stroke="#0072C6" stroke-width="1" stroke-dasharray="5,3"/>
-<text x="274" y="40" font-size="8.5" font-weight="600" fill="#0072C6" font-family="Segoe UI,Arial,sans-serif">VNet1</text>
-<rect x="156" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#546E7A" stroke-width="1.5"/>
-<rect x="162" y="49" width="76" height="28" rx="4" fill="#546E7A" fill-opacity="0.18"/>
-<text x="200" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#546E7A" font-family="Segoe UI,Arial,sans-serif">CLI</text>
-<text x="200" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">外部</text>
-<text x="200" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">クライアント</text>
-<rect x="276" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#9575CD" stroke-width="1.5"/>
-<rect x="282" y="49" width="76" height="28" rx="4" fill="#9575CD" fill-opacity="0.18"/>
-<text x="320" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#9575CD" font-family="Segoe UI,Arial,sans-serif">APIM</text>
-<text x="320" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">API Management</text>
-<text x="320" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">外部 VNet モード</text>
-<rect x="396" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#0072C6" stroke-width="1.5"/>
-<rect x="402" y="49" width="76" height="28" rx="4" fill="#0072C6" fill-opacity="0.18"/>
-<text x="440" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#0072C6" font-family="Segoe UI,Arial,sans-serif">VM</text>
-<text x="440" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">VM1 / VM2</text>
-<text x="440" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">バックエンド</text>
-<line x1="244" y1="75" x2="270" y2="75" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-<text x="260" y="70" text-anchor="middle" font-size="8" fill="#7a9cbf" font-family="Segoe UI,Arial,sans-serif">インターネット</text>
-<line x1="364" y1="75" x2="390" y2="75" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-<text x="380" y="70" text-anchor="middle" font-size="8" fill="#7a9cbf" font-family="Segoe UI,Arial,sans-serif">内部ルーティング</text>
-</svg></div>
+
 <div class="key-box">
 <div class="k-title">正解：True</div>
 APIM（ProdSubnet）と VM1（Subnet1）は<strong>同じ VNet1 内</strong>にあります。同一 VNet 内であれば VNet ピアリング等なしに直接通信可能です。外部 VNet モードの APIM は VNet 内バックエンドにプライベート IP でアクセスできます。
@@ -1836,38 +1575,7 @@ choices:[{t:"True",c:false},{t:"False",c:true}],
 ci:[1],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
-<div class="arch-box"><div class="arch-title">APIM 外部 VNet モード + バックエンド VM（Q31-33）</div><svg viewBox="0 0 640 150" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:640px;display:block;margin:10px auto;border-radius:10px;">
-<rect width="640" height="150" rx="10" fill="#0d1b2e"/>
-<defs>
-  <marker id="arr" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-    <polygon points="0 0,7 2.5,0 5" fill="#4a9fd4"/>
-  </marker>
-  <marker id="arr_w" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-    <polygon points="0 0,7 2.5,0 5" fill="#ffffff"/>
-  </marker>
-</defs>
-<rect x="266" y="26" width="228" height="98" rx="8" fill="#0072C6" fill-opacity="0.06" stroke="#0072C6" stroke-width="1" stroke-dasharray="5,3"/>
-<text x="274" y="40" font-size="8.5" font-weight="600" fill="#0072C6" font-family="Segoe UI,Arial,sans-serif">VNet1</text>
-<rect x="156" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#546E7A" stroke-width="1.5"/>
-<rect x="162" y="49" width="76" height="28" rx="4" fill="#546E7A" fill-opacity="0.18"/>
-<text x="200" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#546E7A" font-family="Segoe UI,Arial,sans-serif">CLI</text>
-<text x="200" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">外部</text>
-<text x="200" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">クライアント</text>
-<rect x="276" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#9575CD" stroke-width="1.5"/>
-<rect x="282" y="49" width="76" height="28" rx="4" fill="#9575CD" fill-opacity="0.18"/>
-<text x="320" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#9575CD" font-family="Segoe UI,Arial,sans-serif">APIM</text>
-<text x="320" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">API Management</text>
-<text x="320" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">外部 VNet モード</text>
-<rect x="396" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#0072C6" stroke-width="1.5"/>
-<rect x="402" y="49" width="76" height="28" rx="4" fill="#0072C6" fill-opacity="0.18"/>
-<text x="440" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#0072C6" font-family="Segoe UI,Arial,sans-serif">VM</text>
-<text x="440" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">VM1 / VM2</text>
-<text x="440" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">バックエンド</text>
-<line x1="244" y1="75" x2="270" y2="75" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-<text x="260" y="70" text-anchor="middle" font-size="8" fill="#7a9cbf" font-family="Segoe UI,Arial,sans-serif">インターネット</text>
-<line x1="364" y1="75" x2="390" y2="75" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-<text x="380" y="70" text-anchor="middle" font-size="8" fill="#7a9cbf" font-family="Segoe UI,Arial,sans-serif">内部ルーティング</text>
-</svg></div>
+
 <div class="key-box">
 <div class="k-title">正解：False</div>
 APIM が外部 VNet モードで統合されている場合、API はすでにパブリックインターネットからアクセス可能です。パートナーが API を利用するために<strong>VPN ゲートウェイは不要</strong>です。
@@ -1901,8 +1609,8 @@ BLOB バージョニングを有効にすると、BLOB が上書きされるた�
 <tbody>
 <tr class="hl"><td><strong>BLOB バージョニング</strong></td><td>上書き時に自動保存</td><td>バージョン管理・復元</td></tr>
 <tr><td>BLOB スナップショット</td><td>手動作成が必要</td><td>特定時点のコピー</td></tr>
-<tr><td>ソフト削除</td><td>❌（削除保護のみ）</td><td>誤削除からの保護</td></tr>
-<tr><td>変更フィード</td><td>❌（変更履歴記録のみ）</td><td>監査・イベント処理</td></tr>
+<tr><td>ソフト削除</td><td>×（削除保護のみ）</td><td>誤削除からの保護</td></tr>
+<tr><td>変更フィード</td><td>×（変更履歴記録のみ）</td><td>監査・イベント処理</td></tr>
 </tbody></table></div>
 </div>`},
 
@@ -1959,10 +1667,10 @@ ADF はコードなしのデータ統合サービスです。90 以上のコネ�
 <table class="ctbl">
 <thead><tr><th class="hl">オプション</th><th>変換</th><th>スケジュール</th><th>多様なソース</th></tr></thead>
 <tbody>
-<tr class="hl"><td><strong>Azure Data Factory</strong></td><td>データフロー</td><td>✅</td><td>90+コネクタ</td></tr>
-<tr><td>Synapse Analytics</td><td>✅</td><td>✅</td><td>△ 分析基盤向け</td></tr>
-<tr><td>AzCopy</td><td>❌</td><td>手動</td><td>△ Azure のみ</td></tr>
-<tr><td>Storage Explorer</td><td>❌</td><td>❌</td><td>GUI 手動操作</td></tr>
+<tr class="hl"><td><strong>Azure Data Factory</strong></td><td>データフロー</td><td>○</td><td>90+コネクタ</td></tr>
+<tr><td>Synapse Analytics</td><td>○</td><td>○</td><td>△ 分析基盤向け</td></tr>
+<tr><td>AzCopy</td><td>×</td><td>手動</td><td>△ Azure のみ</td></tr>
+<tr><td>Storage Explorer</td><td>×</td><td>×</td><td>GUI 手動操作</td></tr>
 </tbody></table></div>
 </div>`},
 
@@ -1983,9 +1691,9 @@ exp:`<div class="exp-section">
 <table class="ctbl">
 <thead><tr><th class="hl">Effect</th><th>動作</th><th>自動修復</th><th>「診断設定追加」に適切か</th></tr></thead>
 <tbody>
-<tr class="hl"><td><strong>DeployIfNotExists</strong></td><td>条件不満足時にリソースを自動デプロイ</td><td>✅</td><td>正解</td></tr>
-<tr><td>Deny</td><td>非準拠リソースの作成を拒否</td><td>❌</td><td>❌（既存リソースには効果なし）</td></tr>
-<tr><td>Audit</td><td>非準拠をログ記録のみ</td><td>❌</td><td>❌（修復しない）</td></tr>
+<tr class="hl"><td><strong>DeployIfNotExists</strong></td><td>条件不満足時にリソースを自動デプロイ</td><td>○</td><td>正解</td></tr>
+<tr><td>Deny</td><td>非準拠リソースの作成を拒否</td><td>×</td><td>×（既存リソースには効果なし）</td></tr>
+<tr><td>Audit</td><td>非準拠をログ記録のみ</td><td>×</td><td>×（修復しない）</td></tr>
 </tbody></table></div>
 </div>
 <div class="refs"><div class="refs-title">参考ドキュメント</div><ul>
@@ -2025,7 +1733,7 @@ exp:`<div class="exp-section">
   <rect x="335" y="30" width="150" height="60" rx="7" fill="#E53935"/>
   <text x="410" y="52" text-anchor="middle" font-size="10" fill="#fff" font-weight="bold">Key Vault</text>
   <text x="410" y="67" text-anchor="middle" font-size="9" fill="#fdd">シークレット取得</text>
-  <text x="410" y="80" text-anchor="middle" font-size="9" fill="#fdd">コードに資格情報不要 ✅</text>
+  <text x="410" y="80" text-anchor="middle" font-size="9" fill="#fdd">コードに資格情報不要 ○</text>
   <text x="250" y="15" text-anchor="middle" font-size="10" fill="#0072C6" font-weight="bold">シークレット不要のセキュアアクセス</text>
   <defs><marker id="a37" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#555"/></marker></defs>
 </svg>
@@ -2038,9 +1746,9 @@ exp:`<div class="exp-section">
 <table class="ctbl">
 <thead><tr><th class="hl">認証方法</th><th>資格情報管理</th><th>自動ローテーション</th><th>推奨度</th></tr></thead>
 <tbody>
-<tr class="hl"><td><strong>マネージド ID</strong></td><td>不要 ✅</td><td>自動</td><td>最高 ⭐⭐⭐</td></tr>
-<tr><td>SP + 証明書</td><td>証明書管理が必要</td><td>手動</td><td>中 ⭐⭐</td></tr>
-<tr><td>SP + クライアントシークレット</td><td>シークレット管理が必要</td><td>手動</td><td>低 ⭐</td></tr>
+<tr class="hl"><td><strong>マネージド ID</strong></td><td>不要 ○</td><td>自動</td><td>最高</td></tr>
+<tr><td>SP + 証明書</td><td>証明書管理が必要</td><td>手動</td><td>中</td></tr>
+<tr><td>SP + クライアントシークレット</td><td>シークレット管理が必要</td><td>手動</td><td>低</td></tr>
 </tbody></table></div>
 </div>`},
 
@@ -2066,9 +1774,9 @@ vCore モデルの Business Critical 層は SSD ベースの高 IOPS ストレ�
 <table class="ctbl">
 <thead><tr><th class="hl">オプション</th><th>IOPS</th><th>読み取りスケールアウト</th><th>ビジネスクリティカル向け</th></tr></thead>
 <tbody>
-<tr class="hl"><td><strong>vCore SQL DB (Business Critical)</strong></td><td>高 (SSD)</td><td>セカンダリレプリカ</td><td>✅</td></tr>
-<tr><td>DTU SQL DB (Standard)</td><td>限定的</td><td>❌</td><td>❌</td></tr>
-<tr><td>SQL MI (General Purpose)</td><td>△ 中程度</td><td>❌</td><td>△</td></tr>
+<tr class="hl"><td><strong>vCore SQL DB (Business Critical)</strong></td><td>高 (SSD)</td><td>セカンダリレプリカ</td><td>○</td></tr>
+<tr><td>DTU SQL DB (Standard)</td><td>限定的</td><td>×</td><td>×</td></tr>
+<tr><td>SQL MI (General Purpose)</td><td>△ 中程度</td><td>×</td><td>△</td></tr>
 <tr><td>Azure DB for MySQL</td><td>△</td><td>読み取りレプリカ</td><td>SQL Server 非互換</td></tr>
 </tbody></table></div>
 </div>`},
@@ -2088,7 +1796,7 @@ Azure SQL Database の LTR（Long-Term Retention）を使用すると、<strong>
 <table class="ctbl">
 <thead><tr><th class="hl">オプション</th><th>最大保存期間</th><th>7年要件</th><th>コスト</th></tr></thead>
 <tbody>
-<tr class="hl"><td><strong>LTR（長期リテンション）</strong></td><td>最大 10 年</td><td>✅</td><td>低（RA-GRS Blob）</td></tr>
+<tr class="hl"><td><strong>LTR（長期リテンション）</strong></td><td>最大 10 年</td><td>○</td><td>低（RA-GRS Blob）</td></tr>
 <tr><td>Log Analytics</td><td>最大 2 年</td><td>不足</td><td>中</td></tr>
 <tr><td>Storage（診断設定）</td><td>最大 365 日</td><td>不足</td><td>低</td></tr>
 </tbody></table></div>
@@ -2153,9 +1861,9 @@ exp:`<div class="exp-section">
 <table class="ctbl">
 <thead><tr><th class="hl">オプション</th><th>NTLM/Kerberos</th><th>既存 AD との統合</th><th>マネージド</th></tr></thead>
 <tbody>
-<tr class="hl"><td><strong>Azure VM DC (corp.ironclad.com)</strong></td><td>✅</td><td>同一ドメイン</td><td>自己管理</td></tr>
-<tr><td>Entra Domain Services</td><td>✅</td><td>△ ワンウェイ同期</td><td>マネージド</td></tr>
-<tr><td>AD FS</td><td>フェデレーション認証</td><td>✅</td><td>❌</td></tr>
+<tr class="hl"><td><strong>Azure VM DC (corp.ironclad.com)</strong></td><td>○</td><td>同一ドメイン</td><td>自己管理</td></tr>
+<tr><td>Entra Domain Services</td><td>○</td><td>△ ワンウェイ同期</td><td>マネージド</td></tr>
+<tr><td>AD FS</td><td>フェデレーション認証</td><td>○</td><td>×</td></tr>
 </tbody></table></div>
 <div class="warn-box">
 <div class="w-title">Entra Domain Services では不十分な理由</div>
@@ -2192,9 +1900,9 @@ exp:`<div class="exp-section">
 <tbody>
 <tr class="hl"><td><strong>Azure Backup 操作バックアップ</strong></td><td>Azure Policy で適用可</td><td>—</td></tr>
 <tr class="hl"><td><strong>永続削除（Permanent Delete）</strong></td><td>—</td><td>ソフト削除中でも削除可</td></tr>
-<tr><td>ポイントインタイムリストア</td><td>❌</td><td>❌（復元機能）</td></tr>
-<tr><td>BLOB/コンテナーのソフト削除</td><td>アカウント単位</td><td>❌（復元保護）</td></tr>
-<tr><td>BLOB バージョニング</td><td>❌</td><td>❌（バージョン管理）</td></tr>
+<tr><td>ポイントインタイムリストア</td><td>×</td><td>×（復元機能）</td></tr>
+<tr><td>BLOB/コンテナーのソフト削除</td><td>アカウント単位</td><td>×（復元保護）</td></tr>
+<tr><td>BLOB バージョニング</td><td>×</td><td>×（バージョン管理）</td></tr>
 </tbody></table></div>
 </div>`},
 
@@ -2246,9 +1954,9 @@ Synapse の Managed Virtual Network を有効にすると、すべての統合�
 <table class="ctbl">
 <thead><tr><th class="hl">オプション</th><th>プライベート接続</th><th>データ持ち出し保護</th><th>推奨</th></tr></thead>
 <tbody>
-<tr class="hl"><td><strong>Managed VNet</strong></td><td>マネージド PE</td><td>✅</td><td>ベストプラクティス</td></tr>
-<tr><td>パブリックエンドポイント</td><td>❌</td><td>❌</td><td>❌</td></tr>
-<tr><td>VPN ゲートウェイ</td><td>✅</td><td>△</td><td>管理オーバーヘッド高</td></tr>
+<tr class="hl"><td><strong>Managed VNet</strong></td><td>マネージド PE</td><td>○</td><td>ベストプラクティス</td></tr>
+<tr><td>パブリックエンドポイント</td><td>×</td><td>×</td><td>×</td></tr>
+<tr><td>VPN ゲートウェイ</td><td>○</td><td>△</td><td>管理オーバーヘッド高</td></tr>
 </tbody></table></div>
 </div>`},
 
@@ -2259,37 +1967,7 @@ choices:[{t:"マネージドプライベートエンドポイント",c:true},{t:
 ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
-<div class="arch-box"><div class="arch-title">Synapse Analytics + Managed Private Endpoint（Q42-43）</div><svg viewBox="0 0 640 150" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:640px;display:block;margin:10px auto;border-radius:10px;">
-<rect width="640" height="150" rx="10" fill="#0d1b2e"/>
-<defs>
-  <marker id="arr" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-    <polygon points="0 0,7 2.5,0 5" fill="#4a9fd4"/>
-  </marker>
-  <marker id="arr_w" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-    <polygon points="0 0,7 2.5,0 5" fill="#ffffff"/>
-  </marker>
-</defs>
-<rect x="266" y="26" width="228" height="98" rx="8" fill="#0072C6" fill-opacity="0.06" stroke="#0072C6" stroke-width="1" stroke-dasharray="5,3"/>
-<text x="274" y="40" font-size="8.5" font-weight="600" fill="#0072C6" font-family="Segoe UI,Arial,sans-serif">Managed VNet</text>
-<rect x="156" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#00897B" stroke-width="1.5"/>
-<rect x="162" y="49" width="76" height="28" rx="4" fill="#00897B" fill-opacity="0.18"/>
-<text x="200" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#00897B" font-family="Segoe UI,Arial,sans-serif">SYN</text>
-<text x="200" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Synapse</text>
-<text x="200" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Analytics</text>
-<rect x="276" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#107C10" stroke-width="1.5"/>
-<rect x="282" y="49" width="76" height="28" rx="4" fill="#107C10" fill-opacity="0.18"/>
-<text x="320" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#107C10" font-family="Segoe UI,Arial,sans-serif">MPE</text>
-<text x="320" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Managed</text>
-<text x="320" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Private Endpoint</text>
-<rect x="396" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#00B0F0" stroke-width="1.5"/>
-<rect x="402" y="49" width="76" height="28" rx="4" fill="#00B0F0" fill-opacity="0.18"/>
-<text x="440" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#00B0F0" font-family="Segoe UI,Arial,sans-serif">ADL</text>
-<text x="440" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">ADLS Gen2</text>
-<text x="440" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">機密データ</text>
-<line x1="244" y1="75" x2="270" y2="75" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-<text x="260" y="70" text-anchor="middle" font-size="8" fill="#7a9cbf" font-family="Segoe UI,Arial,sans-serif">安全なアクセス</text>
-<line x1="364" y1="75" x2="390" y2="75" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-</svg></div>
+
 <div class="key-box">
 <div class="k-title">正解：マネージドプライベートエンドポイント</div>
 マネージドプライベートエンドポイントは Synapse の Managed VNet 内から外部 Azure サービス（ADLS Gen2、Azure SQL など）へのプライベート接続を提供します。インターネットを経由せず、プライベート IP でデータソースにアクセスできます。
@@ -2298,9 +1976,9 @@ exp:`<div class="exp-section">
 <table class="ctbl">
 <thead><tr><th class="hl">接続方法</th><th>プライベート接続</th><th>セキュリティレベル</th></tr></thead>
 <tbody>
-<tr class="hl"><td><strong>マネージドプライベートエンドポイント</strong></td><td>✅</td><td>最高</td></tr>
+<tr class="hl"><td><strong>マネージドプライベートエンドポイント</strong></td><td>○</td><td>最高</td></tr>
 <tr><td>パブリックエンドポイント</td><td>インターネット経由</td><td>低</td></tr>
-<tr><td>VNet ゲートウェイ</td><td>✅</td><td>高（管理複雑）</td></tr>
+<tr><td>VNet ゲートウェイ</td><td>○</td><td>高（管理複雑）</td></tr>
 </tbody></table></div>
 </div>`},
 
@@ -2321,9 +1999,9 @@ exp:`<div class="exp-section">
 <table class="ctbl">
 <thead><tr><th class="hl">Effect</th><th>自動修復</th><th>作成ブロック</th><th>「自動修復」要件</th></tr></thead>
 <tbody>
-<tr class="hl"><td><strong>DeployIfNotExists</strong></td><td>✅</td><td>❌</td><td>正解</td></tr>
-<tr><td>Deny</td><td>❌</td><td>✅</td><td>❌</td></tr>
-<tr><td>AuditIfNotExists</td><td>❌</td><td>❌</td><td>❌</td></tr>
+<tr class="hl"><td><strong>DeployIfNotExists</strong></td><td>○</td><td>×</td><td>正解</td></tr>
+<tr><td>Deny</td><td>×</td><td>○</td><td>×</td></tr>
+<tr><td>AuditIfNotExists</td><td>×</td><td>×</td><td>×</td></tr>
 </tbody></table></div>
 </div>`},
 
@@ -2342,9 +2020,9 @@ Q37 と同様に、Azure リソースから Azure Key Vault へのアクセス�
 <table class="ctbl">
 <thead><tr><th class="hl">認証方法</th><th>シークレット管理</th><th>Key Vault アクセス</th></tr></thead>
 <tbody>
-<tr class="hl"><td><strong>マネージド ID</strong></td><td>不要 ✅</td><td>RBAC または Key Vault アクセスポリシー経由</td></tr>
-<tr><td>サービスプリンシパル</td><td>必要 ❌</td><td>クライアントシークレット/証明書が必要</td></tr>
-<tr><td>アクセスキー</td><td>必要 ❌</td><td>Key Vault には不適</td></tr>
+<tr class="hl"><td><strong>マネージド ID</strong></td><td>不要 ○</td><td>RBAC または Key Vault アクセスポリシー経由</td></tr>
+<tr><td>サービスプリンシパル</td><td>必要 ×</td><td>クライアントシークレット/証明書が必要</td></tr>
+<tr><td>アクセスキー</td><td>必要 ×</td><td>Key Vault には不適</td></tr>
 </tbody></table></div>
 </div>`},
 
@@ -2370,10 +2048,10 @@ vCore モデルの <strong>General Purpose 層のサーバーレス計算層</st
 <table class="ctbl">
 <thead><tr><th class="hl">オプション</th><th>自動スケール</th><th>自動一時停止</th><th>最新機能</th></tr></thead>
 <tbody>
-<tr class="hl"><td><strong>vCore SQL DB（サーバーレス）</strong></td><td>✅</td><td>✅</td><td>✅</td></tr>
-<tr><td>DTU Standard</td><td>固定リソース</td><td>❌</td><td>✅</td></tr>
-<tr><td>SQL Managed Instance</td><td>△</td><td>❌</td><td>SQL Server 完全互換</td></tr>
-<tr><td>Azure DB for PostgreSQL</td><td>✅</td><td>✅</td><td>PostgreSQL のみ</td></tr>
+<tr class="hl"><td><strong>vCore SQL DB（サーバーレス）</strong></td><td>○</td><td>○</td><td>○</td></tr>
+<tr><td>DTU Standard</td><td>固定リソース</td><td>×</td><td>○</td></tr>
+<tr><td>SQL Managed Instance</td><td>△</td><td>×</td><td>SQL Server 完全互換</td></tr>
+<tr><td>Azure DB for PostgreSQL</td><td>○</td><td>○</td><td>PostgreSQL のみ</td></tr>
 </tbody></table></div>
 </div>`},
 
@@ -2421,7 +2099,7 @@ exp:`<div class="exp-section">
   <text x="380" y="40" text-anchor="middle" font-size="10" fill="#107C10" font-weight="bold">MSP パートナーテナント</text>
   <rect x="285" y="50" width="190" height="50" rx="5" fill="#107C10" opacity=".6"/>
   <text x="380" y="68" text-anchor="middle" font-size="10" fill="#fff">MSP が自分のテナントから</text>
-  <text x="380" y="82" text-anchor="middle" font-size="10" fill="#fff">顧客リソースを管理できる ✅</text>
+  <text x="380" y="82" text-anchor="middle" font-size="10" fill="#fff">顧客リソースを管理できる ○</text>
   <text x="250" y="118" text-anchor="middle" font-size="10" fill="#E53935" font-weight="bold">テナントをまたいだリソース管理 = Azure Lighthouse</text>
   <defs><marker id="a48" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#E53935"/></marker></defs>
 </svg>
@@ -2434,9 +2112,9 @@ Azure Lighthouse はサービスプロバイダー（MSP）が顧客の Azure �
 <table class="ctbl">
 <thead><tr><th class="hl">サービス</th><th>クロステナント管理</th><th>MSP 向け</th></tr></thead>
 <tbody>
-<tr class="hl"><td><strong>Azure Lighthouse</strong></td><td>委任アクセス</td><td>✅</td></tr>
+<tr class="hl"><td><strong>Azure Lighthouse</strong></td><td>委任アクセス</td><td>○</td></tr>
 <tr><td>Entra B2B</td><td>△ ゲストとして招待</td><td>テナント切り替えが必要</td></tr>
-<tr><td>Azure Policy</td><td>ポリシー管理のみ</td><td>❌</td></tr>
+<tr><td>Azure Policy</td><td>ポリシー管理のみ</td><td>×</td></tr>
 </tbody></table></div>
 </div>`},
 
@@ -2496,9 +2174,9 @@ AMA は Log Analytics エージェント（MMA）と Diagnostics 拡張機能の
 <table class="ctbl">
 <thead><tr><th class="hl">エージェント</th><th>オンプレミス対応</th><th>DCR サポート</th><th>現在の状態</th></tr></thead>
 <tbody>
-<tr class="hl"><td><strong>Azure Monitor エージェント (AMA)</strong></td><td>✅</td><td>✅</td><td>現行推奨</td></tr>
-<tr><td>Log Analytics エージェント (MMA)</td><td>✅</td><td>❌</td><td>2024年8月廃止</td></tr>
-<tr><td>Diagnostics 拡張機能</td><td>Azure VM のみ</td><td>❌</td><td>△ 限定的用途</td></tr>
+<tr class="hl"><td><strong>Azure Monitor エージェント (AMA)</strong></td><td>○</td><td>○</td><td>現行推奨</td></tr>
+<tr><td>Log Analytics エージェント (MMA)</td><td>○</td><td>×</td><td>2024年8月廃止</td></tr>
+<tr><td>Diagnostics 拡張機能</td><td>Azure VM のみ</td><td>×</td><td>△ 限定的用途</td></tr>
 </tbody></table></div>
 </div>`},
 
@@ -2523,7 +2201,7 @@ BLOB バージョニングが有効な場合、BLOB が作成・上書き・削�
 ──────────────────────────────────────────
 アップロード     v1（Current）      なし
 上書き           v2（Current）      v1（Previous）自動保持
-再上書き         v3（Current）      v1, v2（Previous）✅
+再上書き         v3（Current）      v1, v2（Previous）○
 削除マーカー     Delete Marker      v1, v2, v3（全て保持）
 </pre>
 </div>
@@ -2619,45 +2297,7 @@ choices:[{t:"True",c:true},{t:"False",c:false}],
 ci:[0],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
-<div class="arch-box"><div class="arch-title">ハイブリッド SQL Always On + DR（Q52-54）</div><svg viewBox="0 0 740 150" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:740px;display:block;margin:10px auto;border-radius:10px;">
-<rect width="740" height="150" rx="10" fill="#0d1b2e"/>
-<defs>
-  <marker id="arr" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-    <polygon points="0 0,7 2.5,0 5" fill="#4a9fd4"/>
-  </marker>
-  <marker id="arr_w" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-    <polygon points="0 0,7 2.5,0 5" fill="#ffffff"/>
-  </marker>
-</defs>
-<rect x="136" y="26" width="108" height="98" rx="8" fill="#546E7A" fill-opacity="0.06" stroke="#546E7A" stroke-width="1" stroke-dasharray="5,3"/>
-<text x="144" y="40" font-size="8.5" font-weight="600" fill="#546E7A" font-family="Segoe UI,Arial,sans-serif">オンプレミス DC</text>
-<rect x="376" y="26" width="228" height="98" rx="8" fill="#0072C6" fill-opacity="0.06" stroke="#0072C6" stroke-width="1" stroke-dasharray="5,3"/>
-<text x="384" y="40" font-size="8.5" font-weight="600" fill="#0072C6" font-family="Segoe UI,Arial,sans-serif">Azure (DR リージョン)</text>
-<rect x="146" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#546E7A" stroke-width="1.5"/>
-<rect x="152" y="49" width="76" height="28" rx="4" fill="#546E7A" fill-opacity="0.18"/>
-<text x="190" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#546E7A" font-family="Segoe UI,Arial,sans-serif">SQL</text>
-<text x="190" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">SQL Server</text>
-<text x="190" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">プライマリ (OnPrem)</text>
-<rect x="266" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#107C10" stroke-width="1.5"/>
-<rect x="272" y="49" width="76" height="28" rx="4" fill="#107C10" fill-opacity="0.18"/>
-<text x="310" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#107C10" font-family="Segoe UI,Arial,sans-serif">VPN</text>
-<text x="310" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">VPN / ER</text>
-<rect x="386" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#0072C6" stroke-width="1.5"/>
-<rect x="392" y="49" width="76" height="28" rx="4" fill="#0072C6" fill-opacity="0.18"/>
-<text x="430" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#0072C6" font-family="Segoe UI,Arial,sans-serif">VM</text>
-<text x="430" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">SQL Server VM</text>
-<text x="430" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">セカンダリ (DR)</text>
-<rect x="506" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#37474F" stroke-width="1.5"/>
-<rect x="512" y="49" width="76" height="28" rx="4" fill="#37474F" fill-opacity="0.18"/>
-<text x="550" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#37474F" font-family="Segoe UI,Arial,sans-serif">RSV</text>
-<text x="550" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Recovery</text>
-<text x="550" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Services Vault</text>
-<line x1="234" y1="75" x2="260" y2="75" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-<text x="250" y="70" text-anchor="middle" font-size="8" fill="#7a9cbf" font-family="Segoe UI,Arial,sans-serif">Always On レプリ</text>
-<line x1="354" y1="75" x2="380" y2="75" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-<line x1="474" y1="75" x2="500" y2="75" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-<text x="490" y="70" text-anchor="middle" font-size="8" fill="#7a9cbf" font-family="Segoe UI,Arial,sans-serif">Azure Backup</text>
-</svg></div>
+
 <div class="key-box">
 <div class="k-title">正解：True</div>
 <strong>非同期コミットモード</strong>は地理的に離れたリージョン間のレプリケーションに適しています。プライマリへのコミットはセカンダリの確認を待たないため、ネットワークレイテンシの影響が最小限です。RTO 4 時間の手動フェールオーバーに対応できます。
@@ -2681,45 +2321,7 @@ choices:[{t:"True",c:false},{t:"False",c:true}],
 ci:[1],n:1,
 exp:`<div class="exp-section">
 <div class="exp-title">解説</div>
-<div class="arch-box"><div class="arch-title">ハイブリッド SQL Always On + DR（Q52-54）</div><svg viewBox="0 0 740 150" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:740px;display:block;margin:10px auto;border-radius:10px;">
-<rect width="740" height="150" rx="10" fill="#0d1b2e"/>
-<defs>
-  <marker id="arr" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-    <polygon points="0 0,7 2.5,0 5" fill="#4a9fd4"/>
-  </marker>
-  <marker id="arr_w" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-    <polygon points="0 0,7 2.5,0 5" fill="#ffffff"/>
-  </marker>
-</defs>
-<rect x="136" y="26" width="108" height="98" rx="8" fill="#546E7A" fill-opacity="0.06" stroke="#546E7A" stroke-width="1" stroke-dasharray="5,3"/>
-<text x="144" y="40" font-size="8.5" font-weight="600" fill="#546E7A" font-family="Segoe UI,Arial,sans-serif">オンプレミス DC</text>
-<rect x="376" y="26" width="228" height="98" rx="8" fill="#0072C6" fill-opacity="0.06" stroke="#0072C6" stroke-width="1" stroke-dasharray="5,3"/>
-<text x="384" y="40" font-size="8.5" font-weight="600" fill="#0072C6" font-family="Segoe UI,Arial,sans-serif">Azure (DR リージョン)</text>
-<rect x="146" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#546E7A" stroke-width="1.5"/>
-<rect x="152" y="49" width="76" height="28" rx="4" fill="#546E7A" fill-opacity="0.18"/>
-<text x="190" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#546E7A" font-family="Segoe UI,Arial,sans-serif">SQL</text>
-<text x="190" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">SQL Server</text>
-<text x="190" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">プライマリ (OnPrem)</text>
-<rect x="266" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#107C10" stroke-width="1.5"/>
-<rect x="272" y="49" width="76" height="28" rx="4" fill="#107C10" fill-opacity="0.18"/>
-<text x="310" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#107C10" font-family="Segoe UI,Arial,sans-serif">VPN</text>
-<text x="310" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">VPN / ER</text>
-<rect x="386" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#0072C6" stroke-width="1.5"/>
-<rect x="392" y="49" width="76" height="28" rx="4" fill="#0072C6" fill-opacity="0.18"/>
-<text x="430" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#0072C6" font-family="Segoe UI,Arial,sans-serif">VM</text>
-<text x="430" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">SQL Server VM</text>
-<text x="430" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">セカンダリ (DR)</text>
-<rect x="506" y="44" width="88" height="62" rx="7" fill="#112240" stroke="#37474F" stroke-width="1.5"/>
-<rect x="512" y="49" width="76" height="28" rx="4" fill="#37474F" fill-opacity="0.18"/>
-<text x="550" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#37474F" font-family="Segoe UI,Arial,sans-serif">RSV</text>
-<text x="550" y="86" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Recovery</text>
-<text x="550" y="97" text-anchor="middle" font-size="8.5" fill="#c5d8ef" font-family="Segoe UI,Arial,sans-serif">Services Vault</text>
-<line x1="234" y1="75" x2="260" y2="75" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-<text x="250" y="70" text-anchor="middle" font-size="8" fill="#7a9cbf" font-family="Segoe UI,Arial,sans-serif">Always On レプリ</text>
-<line x1="354" y1="75" x2="380" y2="75" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-<line x1="474" y1="75" x2="500" y2="75" stroke="#4a9fd4" stroke-width="1.5" marker-end="url(#arr)"/>
-<text x="490" y="70" text-anchor="middle" font-size="8" fill="#7a9cbf" font-family="Segoe UI,Arial,sans-serif">Azure Backup</text>
-</svg></div>
+
 <div class="key-box">
 <div class="k-title">正解：False</div>
 <strong>同期コミットモード</strong>はセカンダリがコミットを確認するまでプライマリがブロックされます。リージョン間の高いネットワークレイテンシ（通常数十〜数百 ms）があると、プライマリのトランザクションパフォーマンスに<strong>深刻な影響</strong>が出ます。
@@ -2824,9 +2426,9 @@ Entra Connect Health は Entra Connect（Azure AD Connect）の同期状態を�
 <table class="ctbl">
 <thead><tr><th class="hl">ツール</th><th>同期状態監視</th><th>リアルタイム</th><th>本シナリオ</th></tr></thead>
 <tbody>
-<tr class="hl"><td><strong>Entra Connect Health</strong></td><td>専用設計</td><td>✅</td><td><span class="badge-ok">正解</span></td></tr>
-<tr><td>Azure Monitor</td><td>△ カスタム設定必要</td><td>✅</td><td><span class="badge-ng">設定複雑</span></td></tr>
-<tr><td>Defender for Identity</td><td>セキュリティ脅威検出</td><td>✅</td><td><span class="badge-ng">用途違い</span></td></tr>
+<tr class="hl"><td><strong>Entra Connect Health</strong></td><td>専用設計</td><td>○</td><td><span class="badge-ok">正解</span></td></tr>
+<tr><td>Azure Monitor</td><td>△ カスタム設定必要</td><td>○</td><td><span class="badge-ng">設定複雑</span></td></tr>
+<tr><td>Defender for Identity</td><td>セキュリティ脅威検出</td><td>○</td><td><span class="badge-ng">用途違い</span></td></tr>
 <tr><td>Azure AD 監査ログ</td><td>△ 変更ログのみ</td><td>△</td><td><span class="badge-ng">リアルタイム不可</span></td></tr>
 </tbody></table></div>
 </div>`}
@@ -2867,7 +2469,7 @@ function renderAll(){
 function renderQ(q){
   const multi=q.n>1;
   const mBadge=multi?`<span class="mbadge">複数選択 (${q.n}つ)</span>`:'';
-  const mHint=multi?`<div class="multi-hint">⚡ ${q.n}つ選択してください</div>`:'';
+  const mHint=multi?`<div class="multi-hint">${q.n}つ選択してください</div>`:'';
   const choices=(displayChoices[q.id]||q.choices).map((c,i)=>`
     <button class="cbtn" id="c_${q.id}_${i}" onclick="onChoice('${q.id}',${i})">
       <span class="cltr">${LTR[i]}</span>
