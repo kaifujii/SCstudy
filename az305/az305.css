@@ -767,3 +767,22 @@ table.ctbl, .etbl { width: 100%; border-collapse: collapse; font-size: .82rem; }
   .expanel, .mcard { animation: none; }
   .pbar, .pb { transition: none; }
 }
+
+/* ── Azure service inline icons ── */
+.az-ic {
+  display: inline-block;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: .72em;
+  font-weight: 700;
+  color: #fff;
+  vertical-align: middle;
+  margin: 0 3px 1px 0;
+  letter-spacing: .01em;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  white-space: nowrap;
+}
+/* comparison table markers */
+.tbl-ok   { color: var(--ok);     font-weight: 700; }
+.tbl-ng   { color: var(--ng); }
+.tbl-part { color: var(--orange); }
