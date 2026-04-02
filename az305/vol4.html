@@ -99,6 +99,92 @@
 .expanel {
   display: none;
 }
+
+/* ===== VOL JUMP NAV ===== */
+.vol-jump-nav {
+  background: #1a2640;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 0 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  overflow-x: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.vol-jump-nav::-webkit-scrollbar { display: none; }
+.vj-link {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.45);
+  text-decoration: none;
+  padding: 7px 10px;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+  letter-spacing: 0.3px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.vj-link:hover { color: rgba(255,255,255,0.8); }
+.vj-link.vj-active {
+  color: #50e6ff;
+  border-bottom-color: #50e6ff;
+}
+.vj-home { padding: 7px 12px 7px 4px; }
+.vj-review {
+  margin-left: auto;
+  color: rgba(255,200,0,0.7);
+}
+.vj-review:hover { color: rgba(255,200,0,1); }
+.vj-badge {
+  background: rgba(255,200,0,0.2);
+  color: rgba(255,200,0,0.9);
+  border-radius: 10px;
+  font-size: 0.6rem;
+  font-weight: 700;
+  padding: 1px 5px;
+  min-width: 16px;
+  text-align: center;
+}
+/* ===== REVIEW BUTTON ===== */
+.review-btn {
+  margin-left: auto;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  color: rgba(0,0,0,0.2);
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: color 0.15s, background 0.15s;
+  line-height: 1;
+}
+.review-btn:hover { color: #f0c000; background: rgba(240,192,0,0.1); }
+.review-btn.review-active { color: #f0c000; }
+/* ===== ARCH DIAGRAM REVEAL ===== */
+.arch-hidden { position: relative; }
+.arch-hidden > svg, .arch-hidden > div:not(.arch-reveal-overlay) { opacity: 0.04; pointer-events: none; filter: blur(4px); transition: opacity 0.4s, filter 0.4s; }
+.arch-reveal-overlay {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(240,242,248,0.85);
+  border-radius: 8px;
+  border: 1.5px dashed #c0c8d8;
+}
+.arch-reveal-hint {
+  font-size: 0.75rem;
+  color: #7c879c;
+  font-weight: 500;
+  padding: 8px 16px;
+  background: rgba(255,255,255,0.9);
+  border-radius: 6px;
+  border: 1px solid #dde1ec;
+}
+.arch-hidden.arch-revealed > svg, .arch-hidden.arch-revealed > div:not(.arch-reveal-overlay) { opacity: 1; filter: none; pointer-events: auto; }
+.arch-hidden.arch-revealed .arch-reveal-overlay { display: none; }
 </style>
 </head>
 <body>
@@ -118,6 +204,19 @@
     <span id="hdrPct">正解率 --%</span>
   </div>
 </div>
+<nav class="vol-jump-nav">
+  <a href="index.html" class="vj-link vj-home" title="ホームへ">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+  </a>
+  <a href="vol1.html" class="vj-link" id="vj1">Vol.1</a>
+  <a href="vol2.html" class="vj-link" id="vj2">Vol.2</a>
+  <a href="vol3.html" class="vj-link" id="vj3">Vol.3</a>
+  <a href="vol4.html" class="vj-link" id="vj4">Vol.4</a>
+  <a href="vol5.html" class="vj-link" id="vj5">Vol.5</a>
+  <a href="review.html" class="vj-link vj-review" id="vj-review">
+    ★ 復習 <span id="vj-review-count" class="vj-badge"></span>
+  </a>
+</nav>
 <div class="cbar">
   <span class="cbar-label">ドメイン</span>
   <button class="dbtn on" data-d="all" onclick="filterDomain('all')">全問題 (57)</button>
@@ -169,13 +268,50 @@ function render(){
   qs.forEach(q=>{if(state[q.id]?.answered)restoreQ(q);});
   updateProgress();
 }
+// ===== REVIEW SYSTEM =====
+let reviewSet = new Set(JSON.parse(localStorage.getItem('az305_review_ids')||'[]'));
+
+function toggleReview(qid, vol, num) {
+  if(reviewSet.has(qid)) {
+    reviewSet.delete(qid);
+    const data = JSON.parse(localStorage.getItem('az305_review_data')||'{}');
+    delete data[vol+'_'+qid];
+    localStorage.setItem('az305_review_data', JSON.stringify(data));
+  } else {
+    reviewSet.add(qid);
+    const q = QUESTIONS.find(x=>x.id===qid);
+    if(q) {
+      const data = JSON.parse(localStorage.getItem('az305_review_data')||'{}');
+      const volNum = vol.replace('vol','');
+      data[vol+'_'+qid] = {
+        vol: vol,
+        volNum: volNum,
+        id: qid,
+        num: q.num,
+        domain: q.domain,
+        question_text: q.question_text,
+        choices: q.choices,
+        correct_indices: q.correct_indices,
+        n_correct: q.n_correct || q.n || 1,
+        exp_html: q.exp_html || '',
+        svg: q.svg || ''
+      };
+      localStorage.setItem('az305_review_data', JSON.stringify(data));
+    }
+  }
+  localStorage.setItem('az305_review_ids', JSON.stringify([...reviewSet]));
+  const btn = document.getElementById('rbtn_'+qid);
+  if(btn) btn.classList.toggle('review-active', reviewSet.has(qid));
+  if(window.updateReviewBadge) updateReviewBadge();
+}
 function renderQ(q){
   const isMulti=q.n_correct>1;
   const mbadge=isMulti?`<span class="mbadge">複数選択 (${q.n_correct}つ)</span>`:'';
   const mhint=isMulti?`<div class="multi-hint"><span class="mk-ok" style="background:#e8f0ff;color:#2563eb;border-color:#93b4f5">!</span> ${q.n_correct}つの選択肢を選んでください</div>`:'';
   const choices=(displayChoices[q.id]||q.choices).map((c,i)=>`<button class="cbtn" id="c_${q.id}_${i}" onclick="onChoice('${q.id}',${i})"><span class="cltr">${LTR[i]}</span><span>${escH(c.text)}</span></button>`).join('');
   const sub=isMulti?`<button class="submit-btn" id="sub_${q.id}" onclick="submitMulti('${q.id}')">回答を確定する</button>`:'';
-  return `<div class="qcard" id="card_${q.id}"><div class="qh"><span class="qnum">問 ${q.num}</span><span class="dbadge" style="background:${q.domain_color||'#0072C6'}">${q.domain}</span>${mbadge}</div><div class="qbody"><p class="qtext">${escH(q.question_text)}</p></div>${mhint}<div class="choices">${choices}</div>${sub}<div class="expanel" id="exp_${q.id}"><div id="rbadge_${q.id}"></div>${q.exp_html}</div></div>`;
+  const arch4=q.svg?`<div class="arch-wrap arch-hidden" id="arch_${q.id}">${q.svg}<div class="arch-reveal-overlay"><span class="arch-reveal-hint">回答後にアーキテクチャ図が表示されます</span></div></div>`:'';
+  return `<div class="qcard" id="card_${q.id}"><div class="qh"><span class="qnum">問 ${q.num}</span><span class="dbadge" style="background:${q.domain_color||'#0072C6'}">${q.domain}</span>${mbadge}<button class="review-btn ${reviewSet.has(q.id)?'review-active':''}" id="rbtn_${q.id}" onclick="toggleReview('${q.id}','vol4',${q.num})" title="復習リストに追加">★</button></div><div class="qbody"><p class="qtext">${escH(q.question_text)}</p></div>${arch4}${mhint}<div class="choices">${choices}</div>${sub}<div class="expanel" id="exp_${q.id}"><div id="rbadge_${q.id}"></div>${q.exp_html}</div></div>`;
 }
 function onChoice(qid,idx){
   if(state[qid]?.answered)return;
@@ -209,6 +345,8 @@ function applyAnswer(q,sel){
     if(c.is_correct&&!sset.has(i))btn.classList.add('reveal');
   });
   document.getElementById(`card_${q.id}`).classList.add(isOk?(q.n_correct>1?'multi-ok':'ok'):'ng');
+  const archEl4 = document.getElementById('arch_'+q.id);
+  if(archEl4) archEl4.classList.add('arch-revealed');
   document.getElementById(`rbadge_${q.id}`).innerHTML=isOk
     ?`<div class="rbadge ${q.n_correct>1?'multi-ok':'ok'}">${q.n_correct>1?'正解！（複数選択）':'正解！'}</div>`
     :'<div class="rbadge ng">不正解 — 解説で正解・理由を確認しましょう</div>';
@@ -273,6 +411,23 @@ function modalClose(e){if(!e||e.target.id==='modal')document.getElementById('mod
 function resetAll(){document.getElementById('modal').classList.remove('show');initState();render();window.scrollTo({top:0,behavior:'smooth'});}
 window.addEventListener('scroll',()=>document.getElementById('scrollTop').classList.toggle('show',window.scrollY>400));
 initState();render();
+
+// Highlight active vol nav link
+(function(){
+  const path = location.pathname;
+  const m = path.match(/vol(\d)\.html/);
+  if(m) {
+    const el = document.getElementById('vj'+m[1]);
+    if(el) el.classList.add('vj-active');
+  }
+  function updateReviewBadge(){
+    const ids = JSON.parse(localStorage.getItem('az305_review_ids')||'[]');
+    const badge = document.getElementById('vj-review-count');
+    if(badge) badge.textContent = ids.length > 0 ? ids.length : '';
+  }
+  updateReviewBadge();
+  window.updateReviewBadge = updateReviewBadge;
+})();
 </script>
 </body>
 </html>

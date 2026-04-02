@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>復習用問題集 — AZ-305</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700;9..40,800&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #edf0f7; --card-bg: #ffffff; --text: #151c2c; --sub: #3d4966;
+  --muted: #7c879c; --border: #cdd3e2; --accent: #3f52c4; --accent-lt: #eceffe;
+  --header: #151c2c; --az: #0078d4; --az-lt: #e8f3fb;
+  --ok: #2d7a4f; --ok-lt: #e8f5ee; --ng: #b03535; --ng-lt: #fdf0f0;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Noto Sans JP', -apple-system, sans-serif; background-color: var(--bg); background-image: radial-gradient(circle, #bcc3d6 1px, transparent 1px); background-size: 24px 24px; color: var(--text); min-height: 100vh; -webkit-font-smoothing: antialiased; }
+header { background-color: var(--header); background-image: linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px); background-size: 36px 36px; height: 54px; padding: 0 20px; display: flex; align-items: center; gap: 10px; position: sticky; top: 0; z-index: 100; }
+.back-link { display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 5px; text-decoration: none; transition: background 0.15s; flex-shrink: 0; }
+.back-link:hover { background: rgba(255,255,255,0.1); }
+.logo-text { display: flex; flex-direction: column; gap: 1px; }
+.logo-sub { font-family: 'DM Sans', sans-serif; font-size: 0.5rem; color: rgba(255,255,255,0.32); letter-spacing: 3.5px; text-transform: uppercase; font-weight: 500; }
+.logo-main { font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 800; color: #ffffff; letter-spacing: -0.5px; }
+.az-badge { margin-left: auto; font-family: 'DM Sans', sans-serif; font-size: 0.6rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(240,192,0,0.9); background: rgba(240,192,0,0.15); border: 1px solid rgba(240,192,0,0.3); border-radius: 3px; padding: 3px 9px; }
+.vol-jump-nav { background: #1a2640; display: flex; align-items: center; gap: 0; padding: 0 16px; border-bottom: 1px solid rgba(255,255,255,0.08); overflow-x: auto; -ms-overflow-style: none; scrollbar-width: none; }
+.vol-jump-nav::-webkit-scrollbar { display: none; }
+.vj-link { font-family: 'DM Sans', sans-serif; font-size: 0.72rem; font-weight: 600; color: rgba(255,255,255,0.45); text-decoration: none; padding: 7px 10px; border-bottom: 2px solid transparent; transition: color 0.15s, border-color 0.15s; white-space: nowrap; letter-spacing: 0.3px; display: flex; align-items: center; gap: 4px; }
+.vj-link:hover { color: rgba(255,255,255,0.8); }
+.vj-link.vj-active { color: #f0c000; border-bottom-color: #f0c000; }
+.vj-home { padding: 7px 12px 7px 4px; }
+.vj-review { margin-left: auto; color: rgba(255,200,0,0.7); }
+.vj-badge { background: rgba(255,200,0,0.2); color: rgba(255,200,0,0.9); border-radius: 10px; font-size: 0.6rem; font-weight: 700; padding: 1px 5px; }
+main { max-width: 740px; margin: 0 auto; padding: 36px 16px 60px; }
+.hero { margin-bottom: 32px; }
+.hero-eyebrow { font-family: 'DM Sans', sans-serif; font-size: 0.58rem; font-weight: 700; letter-spacing: 4px; text-transform: uppercase; color: #f0c000; display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.hero-eyebrow::before { content: ''; display: block; width: 18px; height: 1.5px; background: #f0c000; flex-shrink: 0; }
+.hero-title { font-family: 'DM Sans', sans-serif; font-size: 1.8rem; font-weight: 800; letter-spacing: -0.03em; color: var(--text); line-height: 1.2; margin-bottom: 8px; }
+.hero-sub { font-size: 0.85rem; color: var(--muted); line-height: 1.7; }
+.empty-state { text-align: center; padding: 60px 20px; color: var(--muted); }
+.empty-state svg { margin-bottom: 16px; opacity: 0.4; }
+.empty-state h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; color: var(--sub); }
+.empty-state p { font-size: 0.85rem; line-height: 1.7; }
+.empty-state a { color: var(--az); text-decoration: none; font-weight: 600; }
+.qcard { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+.qcard.correct { border-left: 3px solid #2d7a4f; }
+.qcard.wrong { border-left: 3px solid #b03535; }
+.qh { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+.qnum { font-family: 'DM Sans', sans-serif; font-size: 0.7rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); background: var(--bg); border: 1px solid var(--border); border-radius: 4px; padding: 2px 8px; }
+.dbadge { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.3px; padding: 2px 8px; border-radius: 3px; color: #fff; white-space: nowrap; }
+.remove-btn { margin-left: auto; background: none; border: 1px solid rgba(180,30,30,0.2); cursor: pointer; font-size: 0.65rem; color: #b03535; padding: 3px 8px; border-radius: 4px; font-family: 'DM Sans', sans-serif; font-weight: 600; transition: background 0.15s; }
+.remove-btn:hover { background: rgba(180,30,30,0.08); }
+.qbody { margin-bottom: 16px; }
+.qtext { font-size: 0.88rem; line-height: 1.75; white-space: pre-line; color: var(--text); }
+.choices { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+.cbtn { display: flex; align-items: flex-start; gap: 10px; background: var(--bg); border: 1.5px solid var(--border); border-radius: 8px; padding: 11px 14px; font-size: 0.85rem; cursor: pointer; text-align: left; transition: border-color 0.15s, background 0.12s; font-family: inherit; color: var(--text); line-height: 1.5; }
+.cbtn:hover:not(:disabled) { border-color: var(--az); background: var(--az-lt); }
+.cbtn:disabled { cursor: default; }
+.cbtn.correct { border-color: var(--ok); background: var(--ok-lt); color: var(--ok); }
+.cbtn.wrong { border-color: var(--ng); background: var(--ng-lt); color: var(--ng); }
+.cbtn.reveal { border-color: var(--ok); background: var(--ok-lt); color: var(--ok); opacity: 0.7; }
+.cbtn.multi-sel { border-color: var(--az); background: var(--az-lt); }
+.cltr { font-family: 'DM Sans', monospace; font-size: 0.7rem; font-weight: 800; width: 18px; height: 18px; border-radius: 4px; background: var(--border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; letter-spacing: 0; color: var(--muted); }
+.cbtn.correct .cltr { background: var(--ok); color: #fff; }
+.cbtn.wrong .cltr { background: var(--ng); color: #fff; }
+.cbtn.reveal .cltr { background: var(--ok); color: #fff; }
+.expanel { display: none; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
+.expanel.shown { display: block; }
+.exp-block { padding: 12px 14px; border-radius: 8px; margin-bottom: 10px; }
+.exp-block-label { font-size: 0.65rem; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
+.exp-block-body { font-size: 0.84rem; line-height: 1.7; }
+.exp-block-body ul { padding-left: 20px; }
+.exp-block-body li { margin-bottom: 4px; }
+.exp-block-body p { margin-bottom: 8px; }
+.exp-correct { background: var(--ok-lt); border: 1px solid rgba(45,122,79,0.15); }
+.exp-correct .exp-block-label { color: var(--ok); }
+.exp-wrong { background: var(--ng-lt); border: 1px solid rgba(176,53,53,0.12); }
+.exp-wrong .exp-block-label { color: var(--ng); }
+.exp-tip { background: #fffde8; border: 1px solid rgba(160,112,0,0.2); }
+.exp-tip .exp-block-label { color: #a07000; }
+.exp-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin: 10px 0; border: 1px solid rgba(0,0,0,0.08); border-radius: 6px; overflow: hidden; }
+.exp-table th { background: rgba(0,0,0,0.05); font-weight: 700; padding: 7px 10px; text-align: left; font-size: 0.75rem; color: #3d4966; border-bottom: 1px solid rgba(0,0,0,0.08); }
+.exp-table td { padding: 7px 10px; border-bottom: 1px solid rgba(0,0,0,0.05); vertical-align: top; line-height: 1.55; }
+.exp-table tr:last-child td { border-bottom: none; }
+.exp-table tr:nth-child(even) td { background: rgba(0,0,0,0.015); }
+.arch-svg-wrap { margin: 0 -4px 16px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: #f8f9fc; }
+.arch-svg-wrap svg { width: 100%; height: auto; display: block; }
+.stats-bar { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; align-items: center; }
+.stat-chip { background: var(--card-bg); border: 1px solid var(--border); border-radius: 6px; padding: 7px 14px; display: flex; align-items: baseline; gap: 4px; }
+.stat-chip .num { font-family: 'DM Sans', monospace; font-size: 1.1rem; font-weight: 800; color: #f0c000; }
+.stat-chip .lbl { font-size: 0.65rem; color: var(--muted); font-weight: 500; text-transform: uppercase; }
+.correct-chip .num { color: #2d7a4f; }
+.clear-btn { background: rgba(180,30,30,0.08); border: 1px solid rgba(180,30,30,0.2); color: #b03535; font-family: 'DM Sans', sans-serif; font-size: 0.75rem; font-weight: 600; padding: 6px 14px; border-radius: 6px; cursor: pointer; transition: background 0.15s; }
+.clear-btn:hover { background: rgba(180,30,30,0.15); }
+.sub-btn { display: none; width: 100%; padding: 10px; background: var(--az); color: #fff; border: none; border-radius: 8px; font-size: 0.88rem; font-weight: 700; cursor: pointer; margin-top: 8px; transition: background 0.15s; font-family: inherit; }
+.sub-btn:hover { background: #0069ba; }
+.multi-hint { font-size: 0.75rem; color: var(--muted); padding: 4px 0 8px; }
+.mbadge { font-size: 0.6rem; font-weight: 700; padding: 2px 7px; border-radius: 3px; background: #f0f4ff; color: #3f52c4; border: 1px solid rgba(63,82,196,0.2); }
+</style>
+</head>
+<body>
+<header>
+  <a href="index.html" class="back-link" title="AZ-305トップへ">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+  </a>
+  <div class="logo-text">
+    <div class="logo-sub">Microsoft Azure</div>
+    <div class="logo-main">AZ-305</div>
+  </div>
+  <div class="az-badge">復習用問題集</div>
+</header>
+
+<nav class="vol-jump-nav">
+  <a href="index.html" class="vj-link vj-home" title="ホームへ">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+  </a>
+  <a href="vol1.html" class="vj-link">Vol.1</a>
+  <a href="vol2.html" class="vj-link">Vol.2</a>
+  <a href="vol3.html" class="vj-link">Vol.3</a>
+  <a href="vol4.html" class="vj-link">Vol.4</a>
+  <a href="vol5.html" class="vj-link">Vol.5</a>
+  <a href="review.html" class="vj-link vj-review vj-active">
+    ★ 復習 <span id="vj-review-count" class="vj-badge"></span>
+  </a>
+</nav>
+
+<main>
+  <div class="hero">
+    <div class="hero-eyebrow">復習用問題集</div>
+    <h1 class="hero-title">チェックした問題のみ</h1>
+    <p class="hero-sub">各ボリュームで ★ をつけた問題をまとめて演習できます。チェックを外すと問題が削除されます。</p>
+  </div>
+  <div class="stats-bar">
+    <div class="stat-chip"><span class="num" id="total-count">0</span><span class="lbl">問</span></div>
+    <div class="stat-chip correct-chip"><span class="num" id="correct-count">0</span><span class="lbl">正解</span></div>
+    <button class="clear-btn" onclick="clearAll()">復習リストをクリア</button>
+  </div>
+  <div id="qwrap"></div>
+</main>
+
+<script>
+const DOMAIN_COLOR = {'DS':'#0072C6','IS':'#107C10','ID':'#5C2D91','BC':'#D83B01'};
+const DOMAIN_CODE = {'データストレージ設計':'DS','インフラストラクチャ設計':'IS','ID・ガバナンス・監視':'ID','ビジネス継続性設計':'BC'};
+const LTR = ['A','B','C','D','E','F','G','H','I','J'];
+let reviewData = {};
+let state = {};
+let multiSel = {};
+
+function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function loadReviewData(){
+  reviewData = JSON.parse(localStorage.getItem('az305_review_data')||'{}');
+  return Object.values(reviewData);
+}
+
+function renderAll(){
+  const qs = loadReviewData();
+  document.getElementById('total-count').textContent = qs.length;
+  if(qs.length === 0){
+    document.getElementById('qwrap').innerHTML = `
+      <div class="empty-state">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        <h2>復習リストは空です</h2>
+        <p>各ボリュームの問題で <strong>★</strong> ボタンをクリックすると<br>ここに問題が追加されます。</p>
+        <p style="margin-top:12px"><a href="index.html">問題集に戻る →</a></p>
+      </div>`;
+    return;
+  }
+  document.getElementById('qwrap').innerHTML = qs.map(q => renderQ(q)).join('');
+}
+
+function renderQ(q){
+  const qid = q.id;
+  const multi = q.n_correct > 1;
+  const dc = DOMAIN_CODE[q.domain] || 'IS';
+  const color = DOMAIN_COLOR[dc] || '#0072C6';
+  const mBadge = multi ? `<span class="mbadge">複数選択 (${q.n_correct}つ)</span>` : '';
+  const mHint = multi ? `<div class="multi-hint">${q.n_correct}つ選択してください</div>` : '';
+  const choices = q.choices.map((c,i) => `
+    <button class="cbtn" id="rc_${qid}_${i}" onclick="onChoice('${qid}',${i})">
+      <span class="cltr">${LTR[i]}</span>
+      <span>${esc(c.text)}</span>
+    </button>`).join('');
+  const subBtn = multi ? `<button class="sub-btn" id="rsub_${qid}" onclick="submitQ('${qid}')">回答を確定する</button>` : '';
+  const arch = q.svg ? `<div class="arch-svg-wrap">${q.svg}</div>` : '';
+  return `<div class="qcard" id="rcard_${qid}">
+    <div class="qh">
+      <span class="qnum">Vol.${q.volNum} — 問 ${q.num}</span>
+      <span class="dbadge" style="background:${color}">${esc(q.domain)}</span>
+      ${mBadge}
+      <button class="remove-btn" onclick="removeQuestion('${q.vol}','${qid}')">★ 外す</button>
+    </div>
+    <div class="qbody"><p class="qtext">${esc(q.question_text)}</p></div>
+    ${arch}
+    ${mHint}
+    <div class="choices">${choices}</div>
+    ${subBtn}
+    <div class="expanel" id="rexp_${qid}">
+      ${q.exp_html||''}
+    </div>
+  </div>`;
+}
+
+function onChoice(qid, idx){
+  if(state[qid]?.answered) return;
+  const q = Object.values(reviewData).find(x => x.id === qid);
+  if(!q) return;
+  if(q.n_correct > 1){
+    if(!multiSel[qid]) multiSel[qid] = new Set();
+    const btn = document.getElementById(`rc_${qid}_${idx}`);
+    if(multiSel[qid].has(idx)){
+      multiSel[qid].delete(idx);
+      btn.classList.remove('multi-sel');
+    } else {
+      if(multiSel[qid].size >= q.n_correct) return;
+      multiSel[qid].add(idx);
+      btn.classList.add('multi-sel');
+    }
+    const sub = document.getElementById('rsub_'+qid);
+    if(sub) sub.style.display = multiSel[qid].size >= q.n_correct ? 'block' : 'none';
+  } else {
+    const ok = q.choices[idx].is_correct;
+    state[qid] = {answered:true, correct:ok};
+    applyAnswer(q, qid, [idx], ok);
+  }
+}
+
+function submitQ(qid){
+  if(state[qid]?.answered) return;
+  const q = Object.values(reviewData).find(x => x.id === qid);
+  if(!q) return;
+  const sel = [...(multiSel[qid]||new Set())];
+  const cset = new Set(q.choices.map((c,i) => c.is_correct ? i : -1).filter(i => i >= 0));
+  const ok = sel.length === cset.size && sel.every(i => cset.has(i));
+  state[qid] = {answered:true, correct:ok};
+  applyAnswer(q, qid, sel, ok);
+}
+
+function applyAnswer(q, qid, selIdxs, ok){
+  const sset = new Set(selIdxs);
+  q.choices.forEach((c,i) => {
+    const btn = document.getElementById(`rc_${qid}_${i}`);
+    if(!btn) return;
+    btn.disabled = true;
+    btn.classList.remove('multi-sel');
+    if(sset.has(i)) btn.classList.add(c.is_correct ? 'correct' : 'wrong');
+    if(c.is_correct && !sset.has(i)) btn.classList.add('reveal');
+  });
+  const card = document.getElementById('rcard_'+qid);
+  if(card) card.classList.add(ok ? 'correct' : 'wrong');
+  const exp = document.getElementById('rexp_'+qid);
+  if(exp) exp.classList.add('shown');
+  const sub = document.getElementById('rsub_'+qid);
+  if(sub) sub.style.display = 'none';
+  // Update correct count
+  const corrects = Object.values(state).filter(s => s.correct).length;
+  document.getElementById('correct-count').textContent = corrects;
+}
+
+function removeQuestion(vol, qid){
+  const data = JSON.parse(localStorage.getItem('az305_review_data')||'{}');
+  delete data[vol+'_'+qid];
+  localStorage.setItem('az305_review_data', JSON.stringify(data));
+  const ids = JSON.parse(localStorage.getItem('az305_review_ids')||'[]');
+  const newIds = ids.filter(id => id !== qid);
+  localStorage.setItem('az305_review_ids', JSON.stringify(newIds));
+  state = {};
+  multiSel = {};
+  renderAll();
+}
+
+function clearAll(){
+  if(!confirm('復習リストをすべてクリアしますか？')) return;
+  localStorage.removeItem('az305_review_data');
+  localStorage.removeItem('az305_review_ids');
+  state = {};
+  multiSel = {};
+  renderAll();
+}
+
+// Init
+renderAll();
+// Update badge
+(function(){
+  const ids = JSON.parse(localStorage.getItem('az305_review_ids')||'[]');
+  const badge = document.getElementById('vj-review-count');
+  if(badge) badge.textContent = ids.length > 0 ? ids.length : '';
+})();
+</script>
+</body>
+</html>

@@ -192,6 +192,64 @@ main {
 }
 .vol-card:hover .vol-arrow { color: var(--az); transform: translateX(2px); }
 
+/* ===== VOL JUMP NAV ===== */
+.vol-jump-nav {
+  background: #1a2640;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 0 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  overflow-x: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.vol-jump-nav::-webkit-scrollbar { display: none; }
+.vj-link {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.45);
+  text-decoration: none;
+  padding: 7px 10px;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+  letter-spacing: 0.3px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.vj-link:hover { color: rgba(255,255,255,0.8); }
+.vj-link.vj-active {
+  color: #50e6ff;
+  border-bottom-color: #50e6ff;
+}
+.vj-home { padding: 7px 12px 7px 4px; }
+.vj-review {
+  margin-left: auto;
+  color: rgba(255,200,0,0.7);
+}
+.vj-review:hover { color: rgba(255,200,0,1); }
+.vj-badge {
+  background: rgba(255,200,0,0.2);
+  color: rgba(255,200,0,0.9);
+  border-radius: 10px;
+  font-size: 0.6rem;
+  font-weight: 700;
+  padding: 1px 5px;
+  min-width: 16px;
+  text-align: center;
+}
+
+/* ===== REVIEW CARD ===== */
+.review-card {
+  border-left-color: rgba(240,192,0,0.5);
+}
+.review-card::after {
+  background: linear-gradient(to left, rgba(240,192,0,0.04), transparent) !important;
+}
+
 /* ===== DARK MODE ===== */
 [data-dark] {
   --bg: #0a0a0a; --card-bg: #161616; --text: #f5f5f5;
@@ -220,6 +278,20 @@ main {
   </div>
   <div class="az-badge">Solutions Architect</div>
 </header>
+
+<nav class="vol-jump-nav">
+  <a href="index.html" class="vj-link vj-home vj-active" title="ホームへ">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+  </a>
+  <a href="vol1.html" class="vj-link">Vol.1</a>
+  <a href="vol2.html" class="vj-link">Vol.2</a>
+  <a href="vol3.html" class="vj-link">Vol.3</a>
+  <a href="vol4.html" class="vj-link">Vol.4</a>
+  <a href="vol5.html" class="vj-link">Vol.5</a>
+  <a href="review.html" class="vj-link vj-review">
+    ★ 復習 <span id="vj-review-count" class="vj-badge"></span>
+  </a>
+</nav>
 
 <main>
   <div class="hero">
@@ -321,10 +393,32 @@ main {
       </div>
     </a>
 
+    <a href="review.html" class="vol-card review-card">
+      <div class="vol-num" style="color: rgba(240,192,0,0.4)">★</div>
+      <div class="vol-body">
+        <div class="vol-title">復習用問題集</div>
+        <div class="vol-domains">
+          <span class="domain-tag" style="background:#fffde8;color:#a07000;border-color:rgba(160,112,0,0.2)">チェックした問題のみ</span>
+        </div>
+      </div>
+      <div class="vol-meta">
+        <div class="vol-count"><span id="review-count-badge">0</span> <span>問</span></div>
+        <svg class="vol-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+    </a>
+
   </div>
 </main>
 
 <script>
+// レビューカウント更新
+const reviewIds = JSON.parse(localStorage.getItem('az305_review_ids')||'[]');
+const badge = document.getElementById('review-count-badge');
+if(badge) badge.textContent = reviewIds.length;
+// レビューバッジ更新
+const vjBadge = document.getElementById('vj-review-count');
+if(vjBadge) vjBadge.textContent = reviewIds.length > 0 ? reviewIds.length : '';
+
 // テーマ同期
 const saved = localStorage.getItem('studydeck-theme');
 if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
