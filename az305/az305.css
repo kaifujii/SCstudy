@@ -547,23 +547,38 @@ body {
   background: var(--blue-lt);
   border: 1px solid #c5d8f0;
   border-radius: var(--radius);
-  padding: 14px;
-  margin-bottom: 12px;
+  padding: 8px 10px;
+  margin-bottom: 10px;
   overflow-x: auto;
 }
 .arch-title {
   font-family: 'DM Sans', sans-serif;
-  font-size: .6rem;
+  font-size: .55rem;
   font-weight: 700;
   color: var(--blue);
   text-transform: uppercase;
   letter-spacing: 1px;
-  margin-bottom: 10px;
+  margin-bottom: 6px;
 }
-.arch-box svg, .arch-svg-wrap svg { width: 100%; height: auto; display: block; overflow: hidden; }
+.arch-box img, .arch-svg-wrap img {
+  display: block;
+  max-height: 220px;
+  width: 100%;
+  object-fit: contain;
+  object-position: center top;
+}
+.arch-box svg, .arch-svg-wrap svg {
+  display: block;
+  width: 100%;
+  max-height: 220px;
+  height: auto;
+  overflow: hidden;
+  font-size: 9px;
+}
 .arch-box svg text, .arch-svg-wrap svg text,
 .arch-box svg tspan, .arch-svg-wrap svg tspan {
   font-family: 'DM Sans', 'Noto Sans JP', Arial, sans-serif !important;
+  font-size: 9px !important;
 }
 
 /* ================================================================
