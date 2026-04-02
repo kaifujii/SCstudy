@@ -2,11 +2,55 @@
 import re, json
 
 PATH = "az305/vol2.html"
+ICON_BASE = "/Users/fujiikai/Downloads/Azure_Public_Service_Icons/Icons"
 
 BG    = "#0d1b2e"; NAVY  = "#152844"; BLUE  = "#2563eb"; LBLUE = "#93c5fd"
 GRAY  = "#64748b"; LGRAY = "#94a3b8"; GREEN = "#22c55e"; LGREEN= "#86efac"
 RED   = "#ef4444"; LRED  = "#fca5a5"; ARROW = "#4a9fd4"; REGION= "#1e5a8a"
 ORANGE= "#f59e0b"
+
+# ── icon helpers ────────────────────────────────────────────────────────────────
+def _load_icon_inner(path, uid):
+    with open(path) as f:
+        raw = f.read()
+    inner = re.sub(r'^<svg[^>]*>', '', raw.strip())
+    inner = re.sub(r'</svg>\s*$', '', inner)
+    inner = re.sub(r'id="([^"]+)"', lambda m: f'id="{uid}_{m.group(1)}"', inner)
+    inner = re.sub(r'url\(#([^)]+)\)', lambda m: f'url(#{uid}_{m.group(1)})', inner)
+    inner = re.sub(r'href="#([^"]+)"', lambda m: f'href="#{uid}_{m.group(1)}"', inner)
+    return inner
+
+_icon_cache = {}
+def icon(rel_path, uid):
+    """Return inner SVG content with unique IDs for the given icon file."""
+    if rel_path not in _icon_cache:
+        _icon_cache[rel_path] = open(f"{ICON_BASE}/{rel_path}").read()
+    raw = _icon_cache[rel_path]
+    inner = re.sub(r'^<svg[^>]*>', '', raw.strip())
+    inner = re.sub(r'</svg>\s*$', '', inner)
+    inner = re.sub(r'id="([^"]+)"', lambda m: f'id="{uid}_{m.group(1)}"', inner)
+    inner = re.sub(r'url\(#([^)]+)\)', lambda m: f'url(#{uid}_{m.group(1)})', inner)
+    inner = re.sub(r'href="#([^"]+)"', lambda m: f'href="#{uid}_{m.group(1)}"', inner)
+    return inner
+
+def embed_icon(cx, y, size, icon_inner):
+    """Embed a 18x18-viewBox icon centered at cx, top at y."""
+    x = cx - size // 2
+    return f'<svg x="{x}" y="{y}" width="{size}" height="{size}" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">{icon_inner}</svg>'
+
+def inode(x, y, w, h, icon_inner, label, sub="", tc=LBLUE, fill=NAVY, stroke=BLUE):
+    """Node with icon on top, label below, optional sub-label."""
+    mx = x + w // 2
+    out = f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="4" fill="{fill}" stroke="{stroke}" stroke-width="1.2"/>'
+    icon_size = 14
+    if sub:
+        out += embed_icon(mx, y + 5, icon_size, icon_inner)
+        out += f'<text x="{mx}" y="{y + 5 + icon_size + 10}" text-anchor="middle" fill="{tc}" font-size="8" font-family="sans-serif" font-weight="bold">{label}</text>'
+        out += f'<text x="{mx}" y="{y + h - 5}" text-anchor="middle" fill="{GRAY}" font-size="7" font-family="sans-serif">{sub}</text>'
+    else:
+        out += embed_icon(mx, y + 5, icon_size, icon_inner)
+        out += f'<text x="{mx}" y="{y + 5 + icon_size + 11}" text-anchor="middle" fill="{tc}" font-size="8" font-family="sans-serif" font-weight="bold">{label}</text>'
+    return out
 
 # ── helpers ────────────────────────────────────────────────────────────────────
 def mk_defs(pid):
@@ -77,36 +121,45 @@ def d1():
 # ── Diagram 2: 管理グループ階層 (Q9-10) ─────────────────────────────────────────
 def d2():
     p = "d2"
-    W, H = 640, 195
+    W, H = 640, 235
+    # Icon paths
+    MG_PATH  = "general/10011-icon-service-Management-Groups.svg"
+    SUB_PATH = "general/10002-icon-service-Subscriptions.svg"
+    POL_PATH = "management + governance/10316-icon-service-Policy.svg"
+
     c = ""
-    # Root MG
-    c += node(20, 80, 100, 36, "Tenant Root MG", tc=LBLUE)
-    # MG-A cluster
-    c += clust(155, 18, 120, 95, "MG-A (Dept A)", stroke=BLUE, dash=False, fs=8)
-    c += node(165, 32, 100, 32, "MG-A")
-    # Sub-A1, Sub-A2
-    c += clust(310, 8, 100, 50, "", stroke=BLUE)
-    c += node(315, 15, 88, 28, "Sub-A1", tc=LGRAY)
-    c += clust(310, 68, 100, 50, "", stroke=BLUE)
-    c += node(315, 75, 88, 28, "Sub-A2", tc=LGRAY)
-    # MG-B cluster
-    c += clust(155, 128, 120, 55, "MG-B (Dept B)", stroke=BLUE, dash=False, fs=8)
-    c += node(165, 142, 100, 32, "MG-B")
-    # Sub-B1
-    c += clust(310, 128, 100, 55, "", stroke=BLUE)
-    c += node(315, 142, 88, 32, "Sub-B1", tc=LGRAY)
-    # Policy
-    c += node(470, 80, 100, 36, "Azure Policy", sub="ポリシー継承", stroke=ORANGE, fill="#1a1209", tc=ORANGE)
-    # Arrows: Root → MG-A, MG-B
-    c += arr(120, 95, 155, 48, p, label="", color=ARROW)
-    c += arr(120, 100, 155, 158, p, label="")
-    # MG-A → Sub-A1, Sub-A2
-    c += arr(265, 48, 315, 29, p)
-    c += arr(265, 48, 315, 89, p)
-    # MG-B → Sub-B1
-    c += arr(265, 158, 315, 158, p)
-    # Root → Policy (dashed)
-    c += arr(120, 98, 470, 98, p, dash=True, color=LGRAY, label="ポリシー継承", ly=90)
+    # ── Row 1: Tenant Root MG (center top) ──────────────────────────────────────
+    # node box: x=250, y=10, w=140, h=52  → cx=320
+    c += inode(250, 10, 140, 52, icon(MG_PATH, "mg_root"), "Tenant Root MG")
+    # ── Row 2: MG-A (left), MG-B (right) ────────────────────────────────────────
+    # MG-A cluster: x=62, y=100, w=150, h=65
+    c += clust(62, 100, 150, 65, "MG-A  (Dept A)", stroke=BLUE, fill="#0d1e35", fs=8)
+    c += inode(72, 113, 130, 48, icon(MG_PATH, "mg_a"), "MG-A")
+    # MG-B cluster: x=428, y=100, w=150, h=65
+    c += clust(428, 100, 150, 65, "MG-B  (Dept B)", stroke=BLUE, fill="#0d1e35", fs=8)
+    c += inode(438, 113, 130, 48, icon(MG_PATH, "mg_b"), "MG-B")
+    # ── Row 3: Sub-A1, Sub-A2, Sub-B1, Policy ────────────────────────────────────
+    # Sub-A1: x=20, y=200
+    c += inode(20, 197, 98, 32, icon(SUB_PATH, "sub_a1"), "Sub-A1", tc=LGRAY, stroke=GRAY, fill="#101a28")
+    # Sub-A2: x=130, y=200
+    c += inode(130, 197, 98, 32, icon(SUB_PATH, "sub_a2"), "Sub-A2", tc=LGRAY, stroke=GRAY, fill="#101a28")
+    # Sub-B1: x=388, y=200
+    c += inode(388, 197, 98, 32, icon(SUB_PATH, "sub_b1"), "Sub-B1", tc=LGRAY, stroke=GRAY, fill="#101a28")
+    # Policy: x=502, y=197
+    c += inode(502, 197, 120, 32, icon(POL_PATH, "pol"), "Azure Policy", tc=ORANGE, stroke=ORANGE, fill="#1a1205")
+    # ── Arrows ───────────────────────────────────────────────────────────────────
+    # Root(320,62) → MG-A center(137,100)
+    c += arr(295, 62, 145, 100, p)
+    # Root(320,62) → MG-B center(503,100)
+    c += arr(345, 62, 495, 100, p)
+    # MG-A(137,165) → Sub-A1 center(69,197)
+    c += arr(110, 165, 69, 197, p)
+    # MG-A(137,165) → Sub-A2 center(179,197)
+    c += arr(164, 165, 179, 197, p)
+    # MG-B(503,165) → Sub-B1 center(437,197)
+    c += arr(476, 165, 437, 197, p)
+    # Root → Policy (dashed, inheritance)
+    c += arr(390, 36, 502, 208, p, dash=True, color=LGRAY, label="ポリシー継承", lx=470, ly=105)
     return wrap(p, W, H, c)
 
 # ── Diagram 3: Front Door + マルチリージョン AKS (Q12) ─────────────────────────
