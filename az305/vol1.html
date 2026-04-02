@@ -253,6 +253,48 @@ function filtered(){
   return filter==='all'?QUESTIONS:QUESTIONS.filter(q=>(DOMAIN_CODE[q.domain]||'IS')===filter);
 }
 
+
+// ===== REVIEW SYSTEM =====
+let reviewSet = new Set(JSON.parse(localStorage.getItem('az305_review_ids')||'[]'));
+
+function toggleReview(qid, vol, num) {
+  if(reviewSet.has(qid)) {
+    reviewSet.delete(qid);
+    // Remove from stored data
+    const data = JSON.parse(localStorage.getItem('az305_review_data')||'{}');
+    delete data[vol+'_'+qid];
+    localStorage.setItem('az305_review_data', JSON.stringify(data));
+  } else {
+    reviewSet.add(qid);
+    // Save question data
+    const q = QUESTIONS.find(x=>x.id===qid);
+    if(q) {
+      const data = JSON.parse(localStorage.getItem('az305_review_data')||'{}');
+      data[vol+'_'+qid] = {
+        vol: vol,
+        volNum: vol.replace('vol',''),
+        id: qid,
+        num: q.num,
+        domain: q.domain,
+        question_text: q.question_text,
+        choices: q.choices,
+        correct_indices: q.correct_indices,
+        n_correct: q.n_correct,
+        exp_html: q.exp_html,
+        svg: q.svg||''
+      };
+      localStorage.setItem('az305_review_data', JSON.stringify(data));
+    }
+  }
+  localStorage.setItem('az305_review_ids', JSON.stringify([...reviewSet]));
+  const btn = document.getElementById('rbtn_'+qid);
+  if(btn) {
+    btn.classList.toggle('review-active', reviewSet.has(qid));
+  }
+  if(window.updateReviewBadge) updateReviewBadge();
+}
+
+
 function renderAll(){
   const qs=filtered();
   document.getElementById('qwrap').innerHTML=qs.map(q=>renderQ(q)).join('');
@@ -418,47 +460,6 @@ function resetAll(){
 window.addEventListener('scroll',()=>{
   document.getElementById('st').classList.toggle('show',window.scrollY>400);
 });
-
-
-// ===== REVIEW SYSTEM =====
-let reviewSet = new Set(JSON.parse(localStorage.getItem('az305_review_ids')||'[]'));
-
-function toggleReview(qid, vol, num) {
-  if(reviewSet.has(qid)) {
-    reviewSet.delete(qid);
-    // Remove from stored data
-    const data = JSON.parse(localStorage.getItem('az305_review_data')||'{}');
-    delete data[vol+'_'+qid];
-    localStorage.setItem('az305_review_data', JSON.stringify(data));
-  } else {
-    reviewSet.add(qid);
-    // Save question data
-    const q = QUESTIONS.find(x=>x.id===qid);
-    if(q) {
-      const data = JSON.parse(localStorage.getItem('az305_review_data')||'{}');
-      data[vol+'_'+qid] = {
-        vol: vol,
-        volNum: vol.replace('vol',''),
-        id: qid,
-        num: q.num,
-        domain: q.domain,
-        question_text: q.question_text,
-        choices: q.choices,
-        correct_indices: q.correct_indices,
-        n_correct: q.n_correct,
-        exp_html: q.exp_html,
-        svg: q.svg||''
-      };
-      localStorage.setItem('az305_review_data', JSON.stringify(data));
-    }
-  }
-  localStorage.setItem('az305_review_ids', JSON.stringify([...reviewSet]));
-  const btn = document.getElementById('rbtn_'+qid);
-  if(btn) {
-    btn.classList.toggle('review-active', reviewSet.has(qid));
-  }
-  if(window.updateReviewBadge) updateReviewBadge();
-}
 
 initState();
 renderAll();
