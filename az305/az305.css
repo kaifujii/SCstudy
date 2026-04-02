@@ -544,12 +544,9 @@ body {
    ARCHITECTURE DIAGRAMS
    ================================================================ */
 .arch-box, .arch-svg-wrap {
-  background: var(--blue-lt);
-  border: 1px solid #c5d8f0;
   border-radius: var(--radius);
-  padding: 8px 10px;
   margin-bottom: 10px;
-  overflow-x: auto;
+  overflow: hidden;
 }
 .arch-title {
   font-family: 'DM Sans', sans-serif;
@@ -558,27 +555,12 @@ body {
   color: var(--blue);
   text-transform: uppercase;
   letter-spacing: 1px;
-  margin-bottom: 6px;
-}
-.arch-box img, .arch-svg-wrap img {
-  display: block;
-  max-height: 220px;
-  width: 100%;
-  object-fit: contain;
-  object-position: center top;
+  margin-bottom: 4px;
 }
 .arch-box svg, .arch-svg-wrap svg {
   display: block;
   width: 100%;
-  max-height: 220px;
   height: auto;
-  overflow: hidden;
-  font-size: 9px;
-}
-.arch-box svg text, .arch-svg-wrap svg text,
-.arch-box svg tspan, .arch-svg-wrap svg tspan {
-  font-family: 'DM Sans', 'Noto Sans JP', Arial, sans-serif !important;
-  font-size: 9px !important;
 }
 
 /* ================================================================
