@@ -99,23 +99,50 @@ def wrap(pid, W, H, content):
             f'<rect width="{W}" height="{H}" rx="8" fill="{BG}"/>'
             + mk_defs(pid) + content + '</svg>')
 
+# icon path constants
+P_SQL    = "databases/10132-icon-service-SQL-Server.svg"
+P_STOR   = "storage/10086-icon-service-Storage-Accounts.svg"
+P_BLOB   = "general/10780-icon-service-Blob-Block.svg"
+P_MG     = "general/10011-icon-service-Management-Groups.svg"
+P_SUB    = "general/10002-icon-service-Subscriptions.svg"
+P_POL    = "management + governance/10316-icon-service-Policy.svg"
+P_FD     = "networking/10073-icon-service-Front-Door-and-CDN-Profiles.svg"
+P_AKS    = "compute/10023-icon-service-Kubernetes-Services.svg"
+P_ACR    = "containers/10105-icon-service-Container-Registries.svg"
+P_SB     = "integration/10836-icon-service-Azure-Service-Bus.svg"
+P_APP    = "web/10035-icon-service-App-Services.svg"
+P_FUNC   = "compute/10029-icon-service-Function-Apps.svg"
+P_LOGIC  = "integration/02631-icon-service-Logic-Apps.svg"
+P_AGW    = "networking/10076-icon-service-Application-Gateways.svg"
+P_KV     = "security/10245-icon-service-Key-Vaults.svg"
+P_ADF    = "integration/10126-icon-service-Data-Factories.svg"
+P_SYNAPSE= "analytics/00606-icon-service-Azure-Synapse-Analytics.svg"
+P_BASTION= "networking/02422-icon-service-Bastions.svg"
+P_APIM   = "integration/10042-icon-service-API-Management-Services.svg"
+P_ENTRA  = "identity/10227-icon-service-Entra-Managed-Identities.svg"
+P_LAW    = "monitor/00009-icon-service-Log-Analytics-Workspaces.svg"
+P_APPINS = "monitor/00012-icon-service-Application-Insights.svg"
+P_MON    = "monitor/00001-icon-service-Monitor.svg"
+P_PE     = "other/02579-icon-service-Private-Endpoints.svg"
+
+def _ic(path, uid): return icon(path, uid)
+
 # ── Diagram 1: SQL監査ログ (Q1-3) ──────────────────────────────────────────────
 def d1():
     p = "d1"
-    W, H = 640, 165
+    W, H = 640, 185
     c = ""
     # OK cluster (East US)
-    c += clust(8, 22, 295, 130, "East US — 同一リージョン", stroke=GREEN, fill="#091a10", lc=LGREEN, dash=True)
-    c += node(25, 65, 100, 36, "SQL Server", "East US")
-    c += node(175, 65, 100, 36, "Storage Acct", "East US")
-    c += arr(125, 83, 175, 83, p, "g", color=GREEN, label="監査ログ保存", ly=58)
+    c += clust(8, 18, 295, 155, "East US — 同一リージョン", stroke=GREEN, fill="#091a10", lc=LGREEN, dash=True)
+    c += inode(25,  48, 110, 52, _ic(P_SQL,  "d1sq1"), "SQL Server",    sub="East US",    tc=LBLUE)
+    c += inode(170, 48, 110, 52, _ic(P_STOR, "d1st1"), "Storage Acct",  sub="East US",    tc=LBLUE)
+    c += arr(135, 74, 170, 74, p, "g", color=GREEN, label="監査ログ保存", ly=44)
     # NG cluster (West/Central US)
-    c += clust(337, 22, 295, 130, "West US / Central US — 異なるリージョン", stroke=RED, fill="#1a0909", lc=LRED, dash=True)
-    c += node(355, 65, 100, 36, "SQL Server", "West US")
-    c += node(505, 65, 100, 36, "Storage Acct", "Central US")
-    c += arr(455, 83, 505, 83, p, "r", color=RED, dash=True, label="設定不可", ly=58)
-    # X mark
-    c += f'<text x="480" y="80" text-anchor="middle" fill="{RED}" font-size="14" font-family="sans-serif" font-weight="bold">×</text>'
+    c += clust(337, 18, 295, 155, "West US / Central US — 異なるリージョン", stroke=RED, fill="#1a0909", lc=LRED, dash=True)
+    c += inode(355, 48, 110, 52, _ic(P_SQL,  "d1sq2"), "SQL Server",    sub="West US",    tc=LGRAY,  stroke=GRAY, fill="#1a100a")
+    c += inode(500, 48, 110, 52, _ic(P_STOR, "d1st2"), "Storage Acct",  sub="Central US", tc=LGRAY,  stroke=GRAY, fill="#1a100a")
+    c += arr(465, 74, 500, 74, p, "r", color=RED, dash=True, label="設定不可", ly=44)
+    c += f'<text x="482" y="72" text-anchor="middle" fill="{RED}" font-size="13" font-family="sans-serif" font-weight="bold">×</text>'
     return wrap(p, W, H, c)
 
 # ── Diagram 2: 管理グループ階層 (Q9-10) ─────────────────────────────────────────
@@ -165,168 +192,139 @@ def d2():
 # ── Diagram 3: Front Door + マルチリージョン AKS (Q12) ─────────────────────────
 def d3():
     p = "d3"
-    W, H = 640, 175
+    W, H = 640, 210
     c = ""
-    # Front Door
-    c += node(20, 70, 115, 36, "Azure Front Door", sub="グローバル LB")
-    # East US cluster + AKS
-    c += clust(215, 15, 160, 65, "East US", stroke=REGION, fill="#0a1520", lc="#4a9fd4", dash=True)
-    c += node(225, 30, 140, 36, "AKS Cluster", sub="East US")
-    # West US cluster + AKS
-    c += clust(215, 95, 160, 65, "West US", stroke=REGION, fill="#0a1520", lc="#4a9fd4", dash=True)
-    c += node(225, 110, 140, 36, "AKS Cluster", sub="West US")
-    # Container Registry
-    c += node(440, 70, 130, 36, "Container", sub="Registry (共有)")
-    # Arrows: FD → AKS East, West
-    c += arr(135, 82, 225, 48, p, label="ルーティング", lx=178, ly=28)
-    c += arr(135, 88, 225, 128, p)
-    # ACR → AKS (dashed)
-    c += arr(440, 80, 365, 48, p, dash=True, color=LGRAY, label="Image Pull", lx=405, ly=28)
-    c += arr(440, 90, 365, 128, p, dash=True, color=LGRAY)
+    c += inode(15, 80, 130, 52, _ic(P_FD,  "d3fd"),  "Azure Front Door", sub="グローバル LB")
+    c += clust(220, 12, 170, 82, "East US",  stroke=REGION, fill="#0a1520", lc="#4a9fd4", dash=True)
+    c += inode(230, 26, 150, 52, _ic(P_AKS, "d3ak1"), "AKS Cluster",      sub="East US")
+    c += clust(220, 110, 170, 82, "West US", stroke=REGION, fill="#0a1520", lc="#4a9fd4", dash=True)
+    c += inode(230, 124, 150, 52, _ic(P_AKS,"d3ak2"), "AKS Cluster",      sub="West US")
+    c += inode(455, 80, 150, 52, _ic(P_ACR, "d3acr"), "Container",        sub="Registry (共有)")
+    c += arr(145, 100, 230, 52, p,  label="ルーティング", lx=185, ly=36)
+    c += arr(145, 108, 230, 150, p)
+    c += arr(455, 90,  380, 52, p,  dash=True, color=LGRAY, label="Image Pull", lx=418, ly=36)
+    c += arr(455, 100, 380, 150, p, dash=True, color=LGRAY)
     return wrap(p, W, H, c)
 
 # ── Diagram 4: Service Bus Pub/Sub (Q17) ───────────────────────────────────────
 def d4():
     p = "d4"
-    W, H = 640, 185
+    W, H = 640, 220
     c = ""
-    # Publisher
-    c += node(20, 75, 100, 36, "Publisher", sub="App Service")
-    # Service Bus Topic cluster
-    c += clust(175, 55, 120, 75, "Service Bus", stroke=BLUE, fill="#0d1e35", fs=8)
-    c += node(185, 72, 100, 36, "Topic")
-    # Subscribers
-    c += clust(370, 18, 140, 145, "Subscribers", stroke=BLUE, fill="#0d1e35", fs=8)
-    c += node(380, 32, 120, 32, "Sub 1", sub="Functions")
-    c += node(380, 80, 120, 32, "Sub 2", sub="Logic Apps")
-    c += node(380, 128, 120, 32, "Sub 3", sub="App Service")
-    # Arrows
-    c += arr(120, 93, 185, 90, p, label="Publish", ly=82)
-    c += arr(285, 82, 380, 48, p, label="各サブへ配信", lx=330, ly=38)
-    c += arr(285, 90, 380, 96, p)
-    c += arr(285, 98, 380, 144, p)
+    c += inode(15, 84, 115, 52, _ic(P_APP, "d4pub"), "Publisher", sub="App Service")
+    c += clust(182, 60, 130, 100, "Service Bus", stroke=BLUE, fill="#0d1e35", fs=8)
+    c += inode(192, 76, 110, 52,  _ic(P_SB,   "d4sb"),  "Topic")
+    c += clust(380, 18, 155, 185, "Subscribers", stroke=BLUE, fill="#0d1e35", fs=8)
+    c += inode(390, 32,  135, 50, _ic(P_FUNC,  "d4f1"),  "Sub 1", sub="Functions")
+    c += inode(390, 95,  135, 50, _ic(P_LOGIC, "d4l1"),  "Sub 2", sub="Logic Apps")
+    c += inode(390, 158, 135, 50, _ic(P_APP,   "d4a1"),  "Sub 3", sub="App Service")
+    c += arr(130, 110, 192, 102, p, label="Publish", ly=94)
+    c += arr(312, 94,  390, 57, p, label="各サブへ配信", lx=348, ly=44)
+    c += arr(312, 102, 390, 120, p)
+    c += arr(312, 110, 390, 183, p)
     return wrap(p, W, H, c)
 
 # ── Diagram 5: App Gateway + WAF (Q23-24) ──────────────────────────────────────
 def d5():
     p = "d5"
-    W, H = 640, 175
+    W, H = 640, 210
     c = ""
-    c += node(15, 68, 90, 36, "Internet", tc=LGRAY, fill="#0a0f1a", stroke=GRAY)
-    c += node(175, 68, 120, 36, "App Gateway", sub="WAF v2", stroke="#a855f7", tc="#d8b4fe", fill="#1a0d2e")
-    c += node(380, 35, 110, 36, "App Service 1")
-    c += node(380, 100, 110, 36, "App Service 2")
-    c += node(175, 128, 100, 32, "Key Vault", sub="SSL 証明書", stroke="#f59e0b", tc=ORANGE, fill="#1a1205")
-    # Arrows
-    c += arr(105, 86, 175, 86, p, label="HTTPS", ly=78)
-    c += arr(295, 76, 380, 53, p, label="L7 ルーティング", lx=335, ly=40)
-    c += arr(295, 86, 380, 118, p)
-    c += arr(225, 128, 235, 104, p, dash=True, color=ORANGE, suf="o", label="証明書", lx=270, ly=118)
+    c += inode(10,  80, 100, 52, _ic(P_FD,  "d5inet"), "Internet",       tc=LGRAY, fill="#0a0f1a", stroke=GRAY)
+    c += inode(175, 55, 130, 52, _ic(P_AGW, "d5agw"),  "App Gateway",    sub="WAF v2", stroke="#a855f7", tc="#d8b4fe", fill="#1a0d2e")
+    c += inode(175,130, 115, 52, _ic(P_KV,  "d5kv"),   "Key Vault",      sub="SSL 証明書", stroke=ORANGE, tc=ORANGE, fill="#1a1205")
+    c += inode(390, 40, 130, 52, _ic(P_APP, "d5ap1"),  "App Service 1")
+    c += inode(390,120, 130, 52, _ic(P_APP, "d5ap2"),  "App Service 2")
+    c += arr(110, 106, 175, 81, p, label="HTTPS", ly=82)
+    c += arr(305,  81, 390, 66, p, label="L7 ルーティング", lx=344, ly=52)
+    c += arr(305,  92, 390, 146, p)
+    c += arr(235, 145, 240, 107, p, dash=True, color=ORANGE, suf="o", label="証明書", lx=278, ly=136)
     return wrap(p, W, H, c)
 
 # ── Diagram 6: ADF パイプライン (Q28) ──────────────────────────────────────────
 def d6():
     p = "d6"
-    W, H = 640, 148
+    W, H = 640, 170
     c = ""
-    # OnPrem cluster
-    c += clust(8, 20, 130, 108, "On-premises", stroke=GRAY, fill="#10100a", lc=LGRAY, dash=True)
-    c += node(18, 50, 110, 36, "SQL Server", sub="オンプレミス", fill="#1a160a", stroke=GRAY, tc=LGRAY)
-    # ADF
-    c += node(210, 55, 100, 36, "ADF", sub="Self-hosted IR")
-    # Azure cluster
-    c += clust(368, 20, 260, 108, "Azure", stroke=BLUE, fill="#0d1e35", dash=False)
-    c += node(378, 50, 100, 36, "Blob Storage", sub="Staging")
-    c += node(530, 50, 88, 36, "Synapse DW")
-    # Arrows
-    c += arr(128, 68, 210, 73, p, label="Copy via IR", ly=58)
-    c += arr(310, 73, 378, 68, p, label="Stage", ly=58)
-    c += arr(478, 68, 530, 68, p, label="Load", ly=58)
+    c += clust(8, 15, 145, 138, "On-premises", stroke=GRAY, fill="#10100a", lc=LGRAY, dash=True)
+    c += inode(18, 46, 125, 52, _ic(P_SQL,    "d6sq"),  "SQL Server",   sub="オンプレミス", fill="#1a160a", stroke=GRAY, tc=LGRAY)
+    c += inode(215, 60, 115, 52, _ic(P_ADF,   "d6adf"), "ADF",          sub="Self-hosted IR")
+    c += clust(385, 15, 248, 138, "Azure", stroke=BLUE, fill="#0d1e35")
+    c += inode(395, 46, 110, 52, _ic(P_BLOB,   "d6bl"),  "Blob Storage", sub="Staging")
+    c += inode(520, 46, 105, 52, _ic(P_SYNAPSE,"d6sy"),  "Synapse DW")
+    c += arr(143, 72, 215, 86, p, label="Copy via IR", ly=62)
+    c += arr(330, 86, 395, 72, p, label="Stage",       ly=62)
+    c += arr(505, 72, 520, 72, p, label="Load",        ly=62)
     return wrap(p, W, H, c)
 
 # ── Diagram 7: Azure Bastion (Q42-43) ──────────────────────────────────────────
 def d7():
     p = "d7"
-    W, H = 640, 195
+    W, H = 640, 225
     c = ""
-    c += node(15, 80, 90, 36, "管理者", sub="HTTPS ブラウザ", fill="#0a0f1a", stroke=GRAY, tc=LGRAY)
-    # VNet outer cluster
-    c += clust(145, 15, 480, 165, "Azure VNet", stroke=BLUE, fill="#0a1520", dash=False)
-    # Bastion Subnet
-    c += clust(160, 35, 160, 70, "AzureBastionSubnet", stroke=REGION, fill="#0a1020", lc="#4a9fd4", dash=True, fs=7)
-    c += node(168, 52, 144, 36, "Azure Bastion")
-    # VM Subnet
-    c += clust(355, 35, 255, 135, "VM Subnet (Private)", stroke=BLUE, fill="#0d1e35", fs=7)
-    c += node(370, 55, 120, 36, "Windows VM", sub="パブリックIP なし")
-    c += node(370, 110, 120, 36, "Linux VM", sub="パブリックIP なし")
-    # Arrows
-    c += arr(105, 98, 168, 70, p, label="HTTPS:443", lx=135, ly=72)
-    c += arr(312, 62, 370, 73, p, label="RDP", lx=340, ly=58)
-    c += arr(312, 72, 370, 128, p, label="SSH", lx=337, ly=115)
+    c += inode(10, 86, 105, 52, _ic(P_APP,    "d7adm"), "管理者",     sub="HTTPS ブラウザ", fill="#0a0f1a", stroke=GRAY, tc=LGRAY)
+    c += clust(150, 12, 480, 200, "Azure VNet", stroke=BLUE, fill="#0a1520")
+    c += clust(165, 32, 175, 100, "AzureBastionSubnet", stroke=REGION, fill="#0a1020", lc="#4a9fd4", dash=True, fs=7)
+    c += inode(172, 50, 160, 52, _ic(P_BASTION,"d7bas"), "Azure Bastion")
+    c += clust(370, 32, 248, 168, "VM Subnet (Private)", stroke=BLUE, fill="#0d1e35", fs=7)
+    c += inode(382, 50,  120, 52, _ic(P_APP,   "d7vm1"), "Windows VM",  sub="パブリックIP なし")
+    c += inode(382, 130, 120, 52, _ic(P_APP,   "d7vm2"), "Linux VM",    sub="パブリックIP なし")
+    c += arr(115, 112, 172, 76, p, label="HTTPS:443", lx=140, ly=76)
+    c += arr(340,  76, 382, 76,  p, label="RDP", lx=360, ly=66)
+    c += arr(340,  90, 382, 156, p, label="SSH", lx=356, ly=140)
     return wrap(p, W, H, c)
 
 # ── Diagram 8: Front Door グローバル負荷分散 (Q44) ──────────────────────────────
 def d8():
     p = "d8"
-    W, H = 640, 175
+    W, H = 640, 210
     c = ""
-    c += node(20, 70, 130, 36, "Azure Front Door", sub="Anycast / Edge POP")
-    # 3 regions
-    c += clust(260, 12, 155, 55, "East US", stroke=REGION, fill="#0a1520", lc="#4a9fd4", dash=True)
-    c += node(270, 25, 135, 35, "App Service", sub="East US")
-    c += clust(260, 77, 155, 55, "West Europe", stroke=REGION, fill="#0a1520", lc="#4a9fd4", dash=True)
-    c += node(270, 90, 135, 35, "App Service", sub="West Europe")
-    c += clust(260, 142, 155, 55, "SE Asia", stroke=REGION, fill="#0a1520", lc="#4a9fd4", dash=True)
-    c += node(270, 155, 135, 35, "App Service", sub="SE Asia")
-    # Arrow labels
-    c += arr(150, 85, 270, 42, p, label="最低レイテンシ", lx=208, ly=32)
-    c += arr(150, 88, 270, 107, p)
-    c += arr(150, 92, 270, 172, p)
-    # Note
-    c += txt(450, 170, "レイテンシ最小リージョンへ自動ルーティング", GRAY, 8)
+    c += inode(15, 80, 145, 52, _ic(P_FD,  "d8fd"),  "Azure Front Door", sub="Anycast / Edge POP")
+    c += clust(260, 8,  185, 72, "East US",    stroke=REGION, fill="#0a1520", lc="#4a9fd4", dash=True)
+    c += inode(270, 22, 165, 50, _ic(P_APP, "d8ap1"), "App Service",      sub="East US")
+    c += clust(260, 90, 185, 72, "West Europe", stroke=REGION, fill="#0a1520", lc="#4a9fd4", dash=True)
+    c += inode(270,104, 165, 50, _ic(P_APP, "d8ap2"), "App Service",      sub="West Europe")
+    c += clust(260,172, 185, 72, "SE Asia",     stroke=REGION, fill="#0a1520", lc="#4a9fd4", dash=True)
+    c += inode(270,186, 165, 50, _ic(P_APP, "d8ap3"), "App Service",      sub="SE Asia")
+    c += arr(160, 100, 270, 47,  p, label="最低レイテンシ", lx=212, ly=36)
+    c += arr(160, 106, 270, 129, p)
+    c += arr(160, 112, 270, 211, p)
     return wrap(p, W, H, c)
 
 # ── Diagram 9: APIM + Entra ID (Q46-47) ────────────────────────────────────────
 def d9():
     p = "d9"
-    W, H = 640, 195
+    W, H = 640, 230
     c = ""
-    c += node(15, 88, 90, 36, "Client", sub="SPA / Mobile")
-    c += node(185, 18, 100, 36, "Entra ID", stroke="#8b5cf6", tc="#c4b5fd", fill="#13082e")
-    c += node(185, 88, 120, 36, "API Management")
-    # Backend cluster
-    c += clust(400, 55, 230, 110, "Backend", stroke=BLUE, fill="#0d1e35")
-    c += node(415, 70, 120, 36, "API 1", sub="App Service")
-    c += node(415, 125, 120, 36, "API 2", sub="Functions")
-    # Arrows numbered
-    c += arr(60, 82, 185, 36, p, label="① 認証要求", lx=120, ly=46)
-    c += arr(185, 54, 70, 88, p, dash=True, color="#8b5cf6", suf="a", label="② JWT Token", lx=115, ly=60)
-    c += arr(105, 106, 185, 106, p, label="③ Bearer", ly=97)
-    c += arr(305, 93, 415, 88, p, label="④ 転送", ly=82)
-    c += arr(305, 106, 415, 143, p)
+    c += inode(10,  95, 105, 52, _ic(P_APP,   "d9cli"),  "Client",         sub="SPA / Mobile")
+    c += inode(195, 15, 115, 52, _ic(P_ENTRA, "d9eid"),  "Entra ID",       stroke="#8b5cf6", tc="#c4b5fd", fill="#13082e")
+    c += inode(185, 95, 135, 52, _ic(P_APIM,  "d9apim"), "API Management")
+    c += clust(408, 60, 225, 140, "Backend", stroke=BLUE, fill="#0d1e35")
+    c += inode(418, 74,  120, 52, _ic(P_APP,  "d9ap1"),  "API 1",          sub="App Service")
+    c += inode(418, 142, 120, 52, _ic(P_FUNC, "d9fn1"),  "API 2",          sub="Functions")
+    c += arr(72,  89,  210, 41, p, label="① 認証要求",  lx=138, ly=52)
+    c += arr(195, 67,  78, 107, p, dash=True, color="#8b5cf6", suf="a", label="② JWT Token", lx=130, ly=72)
+    c += arr(115, 121, 185, 121, p, label="③ Bearer",  ly=112)
+    c += arr(320, 108, 418, 100, p, label="④ 転送",    ly=94)
+    c += arr(320, 121, 418, 168, p)
     return wrap(p, W, H, c)
 
 # ── Diagram 10: AMPLS (Q55) ────────────────────────────────────────────────────
 def d10():
     p = "d10"
-    W, H = 640, 175
+    W, H = 640, 210
     c = ""
-    # VNet cluster
-    c += clust(8, 20, 280, 135, "Azure VNet (Private)", stroke=BLUE, fill="#0a1520", dash=False)
-    c += node(22, 65, 90, 36, "Azure VM", sub="監視対象")
-    c += node(150, 65, 120, 36, "Private Endpoint")
-    # AMPLS cluster
-    c += clust(330, 12, 210, 150, "AMPLS", stroke=REGION, fill="#0a1020", lc="#4a9fd4", dash=True)
-    c += node(345, 35, 175, 36, "Log Analytics WS")
-    c += node(345, 90, 175, 36, "Application Insights")
-    # Monitor
-    c += node(560, 65, 72, 36, "Azure Monitor", tc=LGRAY, fill="#0d1020", stroke=GRAY)
-    # Arrows
-    c += arr(112, 83, 150, 83, p, label="", )
-    c += arr(270, 76, 345, 53, p, label="Private 通信", lx=305, ly=42)
-    c += arr(270, 90, 345, 108, p)
-    c += arr(520, 53, 560, 76, p)
-    c += arr(520, 108, 560, 90, p)
+    c += clust(8, 18, 308, 172, "Azure VNet (Private)", stroke=BLUE, fill="#0a1520")
+    c += inode(20,  68, 110, 52, _ic(P_APP, "d10vm"), "Azure VM",        sub="監視対象")
+    c += inode(155, 68, 148, 52, _ic(P_PE,  "d10pe"), "Private Endpoint")
+    c += clust(340, 10, 230, 188, "AMPLS", stroke=REGION, fill="#0a1020", lc="#4a9fd4", dash=True)
+    c += inode(350, 28,  210, 52, _ic(P_LAW,    "d10law"), "Log Analytics WS")
+    c += inode(350, 100, 210, 52, _ic(P_APPINS, "d10ai"),  "Application Insights")
+    c += inode(550, 80,  85,  52, _ic(P_MON,    "d10mon"), "Azure Monitor",  tc=LGRAY, fill="#0d1020", stroke=GRAY)
+    c += arr(130,  94, 155, 94, p)
+    c += arr(303,  84, 350, 54, p, label="Private 通信", lx=324, ly=44)
+    c += arr(303,  98, 350, 126, p)
+    c += arr(560,  80, 595, 104, p)
+    c += arr(560, 100, 595, 108, p)
     return wrap(p, W, H, c)
 
 SVGS = {
