@@ -1226,8 +1226,8 @@ initState();render();
 </body>
 </html>"""
 
-with open('az305/vol6.html', 'w', encoding='utf-8') as f:
-    f.write(HTML)
-
-print(f"Generated az305/vol6.html with {TOTAL} questions")
-print("Domain distribution:", dict(domain_counts))
+if __name__ == '__main__':
+    with open('az305/vol6.html', 'w', encoding='utf-8') as f:
+        f.write(HTML)
+    print(f"Generated az305/vol6.html with {TOTAL} questions")
+    print("Domain distribution:", dict(domain_counts))
