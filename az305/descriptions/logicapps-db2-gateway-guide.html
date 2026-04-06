@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Logic Apps × オンプレミス DB2 接続 | AZ-305</title>
+<style>
+  :root {
+    --blue:#0078D4; --dark:#003A6C; --teal:#00B294; --green:#107C10;
+    --orange:#D83B01; --purple:#5C2D91; --red:#A4262C; --gray:#605E5C;
+    --bg:#F3F2F1; --white:#fff; --border:#EDEBE9; --text:#201F1E;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Segoe UI',system-ui,sans-serif; background:var(--bg); color:var(--text); line-height:1.65; }
+
+  .hero { background:linear-gradient(135deg,#003A6C,#0078D4 60%,#5C2D91); color:white; padding:44px 40px; }
+  .hero-badge { display:inline-block; background:rgba(255,255,255,0.18); border:1px solid rgba(255,255,255,0.4); border-radius:20px; padding:3px 14px; font-size:11px; font-weight:700; letter-spacing:.8px; margin-bottom:12px; }
+  .hero h1 { font-size:1.75rem; font-weight:700; margin-bottom:8px; }
+  .hero p { font-size:.93rem; opacity:.88; max-width:700px; }
+
+  .container { max-width:1000px; margin:0 auto; padding:36px 24px; }
+
+  .card { background:var(--white); border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,.1); margin-bottom:28px; overflow:hidden; }
+  .card-header { display:flex; align-items:center; gap:12px; padding:18px 26px; }
+  .ch-blue   { border-bottom:3px solid var(--blue);   background:linear-gradient(90deg,rgba(0,120,212,.07),transparent); }
+  .ch-green  { border-bottom:3px solid var(--green);  background:linear-gradient(90deg,rgba(16,124,16,.07),transparent); }
+  .ch-orange { border-bottom:3px solid var(--orange); background:linear-gradient(90deg,rgba(216,59,1,.07),transparent); }
+  .ch-purple { border-bottom:3px solid var(--purple); background:linear-gradient(90deg,rgba(92,45,145,.07),transparent); }
+  .card-header h2 { font-size:1.15rem; font-weight:700; color:var(--dark); }
+  .dot { width:16px; height:16px; border-radius:4px; flex-shrink:0; }
+  .card-body { padding:26px; }
+
+  p.note { font-size:.88rem; margin-bottom:14px; color:#323130; }
+  h3.sub { font-size:.97rem; font-weight:700; color:var(--dark); margin:22px 0 10px; }
+
+  /* ダイアグラム */
+  .diagram { background:#FAFAFA; border:1px solid var(--border); border-radius:8px; padding:20px; margin:16px 0; overflow-x:auto; }
+  .dtitle { font-size:.78rem; font-weight:700; color:var(--gray); margin-bottom:14px; text-transform:uppercase; letter-spacing:.5px; }
+
+  .box { border-radius:7px; padding:10px 14px; font-size:.82rem; font-weight:600; line-height:1.35; text-align:center; }
+  .box small { display:block; font-size:.72rem; font-weight:400; opacity:.8; margin-top:2px; }
+  .box.blue   { background:#EFF6FC; border:2px solid var(--blue);   color:var(--dark); }
+  .box.green  { background:#DFF6DD; border:2px solid var(--green);  color:#0A4A0A; }
+  .box.orange { background:#FFF0EB; border:2px solid var(--orange); color:#7A2000; }
+  .box.purple { background:#F4F0FF; border:2px solid var(--purple); color:#3B0E7A; }
+  .box.gray   { background:#F3F2F1; border:2px solid var(--gray);   color:#323130; }
+  .box.dark   { background:var(--dark); border:2px solid var(--dark); color:white; }
+  .box.teal   { background:#E8FBF8; border:2px solid var(--teal);   color:#00695C; }
+  .box.red    { background:#FDE7E9; border:2px solid var(--red);    color:var(--red); }
+
+  .flow { display:flex; align-items:center; flex-wrap:wrap; gap:6px; margin:6px 0; }
+  .arr { font-size:1.2rem; color:var(--gray); padding:0 2px; align-self:center; flex-shrink:0; }
+  .arr.blue { color:var(--blue); }
+  .arr.green { color:var(--green); }
+  .arr.orange { color:var(--orange); }
+
+  /* ゾーン */
+  .zone { border-radius:10px; padding:14px 16px; margin:8px 0; }
+  .zone-onprem { background:#FFF9F0; border:2px dashed #E8A600; }
+  .zone-azure  { background:#EFF6FC; border:2px dashed var(--blue); }
+  .zone-label  { font-size:.78rem; font-weight:700; letter-spacing:.5px; margin-bottom:10px; }
+  .zone-onprem .zone-label { color:#7A4F01; }
+  .zone-azure  .zone-label { color:var(--dark); }
+
+  /* 答えボックス */
+  .answer-box { background:linear-gradient(135deg,#DFF6DD,#E8FBF8); border:2px solid var(--green); border-radius:10px; padding:18px 22px; margin:16px 0; }
+  .answer-box .label { font-size:.8rem; font-weight:700; color:var(--green); margin-bottom:8px; letter-spacing:.5px; }
+  .answer-box h3 { font-size:1.2rem; font-weight:700; color:#0A4A0A; }
+  .answer-box p { font-size:.88rem; color:#0A4A0A; margin-top:6px; }
+
+  table { width:100%; border-collapse:collapse; font-size:.85rem; margin:12px 0; }
+  thead th { background:var(--blue); color:white; padding:10px 14px; text-align:left; }
+  thead th:first-child { border-radius:6px 0 0 0; } thead th:last-child { border-radius:0 6px 0 0; }
+  tbody td { padding:9px 14px; border-bottom:1px solid var(--border); vertical-align:top; }
+  tbody tr:nth-child(even) td { background:#F8F8F8; }
+  tbody tr:hover td { background:#EFF6FC; }
+
+  .badge { display:inline-block; padding:2px 9px; border-radius:12px; font-size:.75rem; font-weight:600; }
+  .b-blue   { background:#EFF6FC; color:var(--blue);   border:1px solid #C7E0F4; }
+  .b-green  { background:#DFF6DD; color:var(--green);  border:1px solid #A7D8A4; }
+  .b-orange { background:#FFF4CE; color:#7A4F01;        border:1px solid #F7E28B; }
+  .b-red    { background:#FDE7E9; color:var(--red);    border:1px solid #F4A9AD; }
+  .b-purple { background:#F4F0FF; color:var(--purple); border:1px solid #C8A9FA; }
+
+  .alert { border-radius:8px; padding:14px 18px; margin-top:16px; }
+  .al-yellow { background:#FFF4CE; border:1.5px solid #F7E28B; border-left:5px solid #E8A600; }
+  .al-yellow .t { font-weight:700; color:#7A4F01; font-size:.9rem; margin-bottom:5px; }
+  .al-yellow ul { padding-left:18px; font-size:.84rem; color:#4A3200; }
+  .al-yellow li { margin-bottom:3px; }
+  .al-blue { background:#EFF6FC; border:1.5px solid #C7E0F4; border-left:5px solid var(--blue); }
+  .al-blue .t { font-weight:700; color:var(--dark); font-size:.9rem; margin-bottom:5px; }
+  .al-blue ul { padding-left:18px; font-size:.84rem; color:#1A3A5C; }
+  .al-blue li { margin-bottom:3px; }
+
+  .steps { display:flex; flex-direction:column; gap:4px; margin:14px 0; }
+  .step  { display:flex; align-items:flex-start; gap:12px; }
+  .step-num { width:28px; height:28px; border-radius:50%; background:var(--blue); color:white; font-weight:700; font-size:.82rem; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px; }
+  .step-body { background:#F8F8F8; border:1px solid var(--border); border-radius:6px; padding:9px 14px; flex:1; font-size:.85rem; }
+  .step-body strong { color:var(--dark); }
+  .step-conn { width:28px; display:flex; justify-content:center; }
+  .step-conn::after { content:''; display:block; width:2px; height:14px; background:#C7E0F4; margin:2px auto; }
+
+  code { font-family:'Consolas',monospace; background:#F3F2F1; padding:1px 6px; border-radius:4px; font-size:.81rem; color:#A4262C; }
+
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:14px; }
+  @media(max-width:620px){ .grid2{ grid-template-columns:1fr; } }
+  .box2 { background:#F8F8F8; border:1px solid var(--border); border-radius:8px; padding:14px 16px; }
+  .box2 h4 { font-size:.88rem; font-weight:700; color:var(--dark); margin-bottom:7px; padding-bottom:5px; border-bottom:2px solid #EFF6FC; }
+  .box2 ul { padding-left:16px; }
+  .box2 li { font-size:.82rem; margin-bottom:4px; color:#323130; }
+
+  /* 引っかかり選択肢 */
+  .wrong { background:#FDE7E9; border:2px solid var(--red); border-radius:8px; padding:14px 18px; margin:8px 0; }
+  .wrong .wl { font-weight:700; color:var(--red); font-size:.9rem; margin-bottom:5px; }
+  .wrong p, .wrong li { font-size:.84rem; color:#6B1A1E; }
+  .wrong ul { padding-left:18px; margin-top:4px; }
+  .wrong li { margin-bottom:3px; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">🎓 AZ-305 | Integration & Hybrid</div>
+  <h1>Azure Logic Apps × オンプレミス DB2<br>必要な Azure リソースとは</h1>
+  <p>ハイブリッド環境でオンプレミスの DB2 データベースに Logic Apps からアクセスするための構成を徹底解説します。</p>
+</div>
+
+<div class="container">
+
+<!-- ══════ SECTION 1: シナリオ整理 ══════ -->
+<div class="card">
+  <div class="card-header ch-blue">
+    <div class="dot" style="background:var(--blue)"></div>
+    <h2>① シナリオの整理</h2>
+  </div>
+  <div class="card-body">
+
+    <div class="diagram">
+      <div class="dtitle">現在の環境と課題</div>
+
+      <div class="zone zone-onprem">
+        <div class="zone-label">🏢 オンプレミス環境</div>
+        <div class="flow">
+          <div class="box gray">🗄️ DB2 データベース<small>オンプレミスに存在<br>プライベートネットワーク内</small></div>
+        </div>
+      </div>
+
+      <div style="text-align:center; padding:10px 0; font-size:.88rem; color:var(--red); font-weight:600;">
+        ❓ Logic Apps は Azure 上にある → そのままでは DB2 に届かない
+      </div>
+
+      <div class="zone zone-azure">
+        <div class="zone-label">☁️ Azure 環境（Sub1）</div>
+        <div class="flow">
+          <div class="box blue">⚙️ Azure Logic Apps<small>ワークフロー・統合サービス</small></div>
+          <div class="arr red">↔?</div>
+          <div class="box red">🚫 直接接続不可<small>Azure → オンプレミス DB2<br>ファイアウォール・NAT の壁</small></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="alert al-blue">
+      <div class="t">📌 問題の本質</div>
+      <ul>
+        <li>Logic Apps は Azure 上のクラウドサービス。オンプレミスのリソースへは<strong>直接アクセスできない</strong></li>
+        <li>オンプレミスの DB2 はプライベートネットワーク内にあり、インターネット経由でのアクセスはセキュリティ上不可</li>
+        <li>Azure と オンプレミスの間に「安全な橋渡し役」が必要 → これが今回の答え</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════ SECTION 2: 答え ══════ -->
+<div class="card">
+  <div class="card-header ch-green">
+    <div class="dot" style="background:var(--green)"></div>
+    <h2>② 答え：作成すべき Azure リソース</h2>
+  </div>
+  <div class="card-body">
+
+    <div class="answer-box">
+      <div class="label">✅ 正解</div>
+      <h3>オンプレミスデータゲートウェイ<br>（On-premises Data Gateway）</h3>
+      <p>Azure リソースとして「オンプレミスデータゲートウェイ」を作成し、オンプレミスサーバーにゲートウェイソフトウェアをインストールすることで、Logic Apps からオンプレミスの DB2 に安全にアクセスできます。</p>
+    </div>
+
+    <h3 class="sub">🏗️ 正解構成のアーキテクチャ</h3>
+    <div class="diagram">
+      <div class="dtitle">オンプレミスデータゲートウェイを使った接続構成</div>
+
+      <!-- オンプレミス -->
+      <div class="zone zone-onprem">
+        <div class="zone-label">🏢 オンプレミス環境</div>
+        <div class="flow">
+          <div class="box gray">🗄️ DB2 データベース<small>IBM DB2</small></div>
+          <div class="arr">↔</div>
+          <div class="box orange">🔌 ゲートウェイソフトウェア<small>オンプレミスサーバーに<br>インストールするエージェント</small></div>
+          <div class="arr orange">↑↓ アウトバウンド接続<br>（HTTPS: 443）</div>
+        </div>
+      </div>
+
+      <div style="text-align:center; padding:6px 0; font-size:.82rem; color:var(--gray);">
+        ↕ Azure Service Bus 経由（アウトバウンド通信のみ・ファイアウォール開放不要）
+      </div>
+
+      <!-- Azure -->
+      <div class="zone zone-azure">
+        <div class="zone-label">☁️ Azure 環境（Sub1）</div>
+        <div class="flow">
+          <div class="box blue">⚙️ Azure Logic Apps<small>IBM DB2 コネクタを使用</small></div>
+          <div class="arr blue">→ ゲートウェイ指定</div>
+          <div class="box teal">🌉 オンプレミスデータ<br>ゲートウェイ（Azure リソース）<small>ゲートウェイのクラウド側窓口</small></div>
+          <div class="arr blue">↔</div>
+          <div class="box green">☁️ Azure Service Bus<small>中継リレーサービス<br>（Microsoft 管理）</small></div>
+        </div>
+      </div>
+
+      <div style="margin-top:12px; background:#E8FBF8; border-radius:6px; padding:10px 14px; font-size:.83rem; color:#00695C;">
+        ⚡ <strong>重要な通信の特徴：</strong>ゲートウェイソフトウェアはオンプレミスから Azure Service Bus へ<strong>アウトバウンド</strong>で接続します。インバウンドのポート開放やファイアウォールの穴あけが不要なため、セキュリティリスクが低い設計です。
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════ SECTION 3: 仕組みの詳細 ══════ -->
+<div class="card">
+  <div class="card-header ch-blue">
+    <div class="dot" style="background:var(--blue)"></div>
+    <h2>③ オンプレミスデータゲートウェイの仕組み</h2>
+  </div>
+  <div class="card-body">
+
+    <p class="note">オンプレミスデータゲートウェイは「Azure リソース」と「オンプレミスのソフトウェア」の2つがセットで機能します。</p>
+
+    <div class="grid2">
+      <div class="box2">
+        <h4>☁️ Azure 側（Azure リソース）</h4>
+        <ul>
+          <li>Azure Portal でリソースとして作成する</li>
+          <li>リソースの種類：<strong>オンプレミスデータゲートウェイ</strong></li>
+          <li>Logic Apps のコネクタ設定でこのリソースを指定する</li>
+          <li>リソース自体は「窓口の定義」のみ。実際の処理はソフトウェア側が行う</li>
+        </ul>
+      </div>
+      <div class="box2">
+        <h4>🏢 オンプレミス側（ソフトウェア）</h4>
+        <ul>
+          <li>Microsoft のサイトからゲートウェイソフトウェアをダウンロード・インストール</li>
+          <li>DB2 サーバーにアクセスできるオンプレミスのマシンに配置</li>
+          <li>インストール後に Azure の Entra ID アカウントでサインインして Azure リソースと紐付ける</li>
+          <li>常時起動しておく必要がある（サービスとして動作）</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 class="sub">🔢 データアクセスのリクエストフロー</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">Logic Apps のワークフローが DB2 コネクタを使ってデータ取得リクエストを発行</div>
+      </div>
+      <div class="step-conn"></div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">Logic Apps が指定されたオンプレミスデータゲートウェイ（Azure リソース）を経由して <strong>Azure Service Bus</strong> にリクエストをキューイング</div>
+      </div>
+      <div class="step-conn"></div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">オンプレミスのゲートウェイソフトウェアが Service Bus を<strong>ポーリング</strong>してリクエストを検出（アウトバウンド通信のみ）</div>
+      </div>
+      <div class="step-conn"></div>
+      <div class="step">
+        <div class="step-num" style="background:var(--orange);">4</div>
+        <div class="step-body">ゲートウェイソフトウェアがオンプレミスの <strong>DB2 データベース</strong>にクエリを実行してデータを取得</div>
+      </div>
+      <div class="step-conn"></div>
+      <div class="step">
+        <div class="step-num" style="background:var(--green);">5</div>
+        <div class="step-body">取得したデータを Service Bus 経由で Logic Apps に返す → ワークフローが結果を受け取る ✅</div>
+      </div>
+    </div>
+
+    <h3 class="sub">🔌 Logic Apps の IBM DB2 コネクタ</h3>
+    <p class="note">Logic Apps には IBM DB2 専用のコネクタが用意されています。オンプレミスデータゲートウェイと組み合わせることでオンプレミスの DB2 に接続できます。</p>
+
+    <table>
+      <thead><tr><th>設定項目</th><th>値</th></tr></thead>
+      <tbody>
+        <tr><td>コネクタ名</td><td>IBM DB2</td></tr>
+        <tr><td>接続方法</td><td>オンプレミスデータゲートウェイ経由</td></tr>
+        <tr><td>認証情報</td><td>DB2 のユーザー名・パスワード</td></tr>
+        <tr><td>ゲートウェイ選択</td><td>作成した Azure リソース（オンプレミスデータゲートウェイ）を指定</td></tr>
+        <tr><td>対応操作</td><td>テーブル取得・行の取得・行の挿入・行の更新・行の削除・ストアドプロシージャ実行</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══════ SECTION 4: 間違いやすい選択肢 ══════ -->
+<div class="card">
+  <div class="card-header ch-orange">
+    <div class="dot" style="background:var(--orange)"></div>
+    <h2>④ 間違いやすい選択肢と理由</h2>
+  </div>
+  <div class="card-body">
+
+    <div class="wrong">
+      <div class="wl">❌ VPN ゲートウェイ（Virtual Network Gateway）</div>
+      <ul>
+        <li>VNET とオンプレミスをネットワークレベルで接続するリソース</li>
+        <li>Logic Apps（従量課金・マルチテナント）は VNET に統合されないため VPN ゲートウェイだけでは DB2 に届かない</li>
+        <li>ISE（統合サービス環境）や Standard Logic Apps と VNET 統合を組み合わせれば可能だが、今回のシナリオで最もシンプルな答えではない</li>
+      </ul>
+    </div>
+
+    <div class="wrong">
+      <div class="wl">❌ Azure API Management（APIM）</div>
+      <ul>
+        <li>API の公開・管理・保護のためのサービス</li>
+        <li>オンプレミスの DB2 への接続機能は持っていない</li>
+        <li>DB2 の前に API を置く構成も一般的ではなく、今回の要件には合わない</li>
+      </ul>
+    </div>
+
+    <div class="wrong">
+      <div class="wl">❌ Azure Data Factory</div>
+      <ul>
+        <li>データ統合・ETL サービス。DB2 コネクタも存在する</li>
+        <li>ただしリアルタイムのワークフロー統合（Logic Apps の用途）には不向き</li>
+        <li>Data Factory もオンプレミス接続には「セルフホスト統合ランタイム」が必要で、オンプレミスデータゲートウェイとは別のもの</li>
+      </ul>
+    </div>
+
+    <div class="wrong">
+      <div class="wl">❌ Azure Relay</div>
+      <ul>
+        <li>オンプレミスデータゲートウェイが内部的に使う Azure Service Bus の機能の一部</li>
+        <li>直接 Azure リソースとして作成・設定するものではなく、ゲートウェイの内部実装として使われる</li>
+        <li>Relay を直接使う構成は複雑でオーバースペック</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════ SECTION 5: 類似サービスとの使い分け ══════ -->
+<div class="card">
+  <div class="card-header ch-purple">
+    <div class="dot" style="background:var(--purple)"></div>
+    <h2>⑤ 類似サービスとの使い分け・試験頻出ポイント</h2>
+  </div>
+  <div class="card-body">
+
+    <h3 class="sub">📊 オンプレミス接続方式の比較</h3>
+    <table>
+      <thead><tr><th>方式</th><th>主な用途</th><th>Logic Apps との相性</th><th>特徴</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>オンプレミスデータゲートウェイ</strong></td>
+          <td>Logic Apps・Power BI・Power Automate からオンプレミス DB へのアクセス</td>
+          <td><span class="badge b-green">✅ 最適</span></td>
+          <td>ソフトウェアをインストールするだけ。ファイアウォール開放不要</td>
+        </tr>
+        <tr>
+          <td><strong>VPN Gateway（サイト間VPN）</strong></td>
+          <td>VNET とオンプレミスのネットワーク全体の接続</td>
+          <td><span class="badge b-orange">△ 追加設定が必要</span></td>
+          <td>Standard Logic Apps + VNET 統合が別途必要。大規模構成向け</td>
+        </tr>
+        <tr>
+          <td><strong>ExpressRoute</strong></td>
+          <td>高帯域・低遅延の専用線接続</td>
+          <td><span class="badge b-orange">△ 追加設定が必要</span></td>
+          <td>VPN より高信頼性・高コスト。エンタープライズ向け</td>
+        </tr>
+        <tr>
+          <td><strong>セルフホスト統合ランタイム</strong></td>
+          <td>Azure Data Factory からオンプレミス DB へのアクセス</td>
+          <td><span class="badge b-red">❌ Logic Apps では使わない</span></td>
+          <td>Data Factory 専用のオンプレミス接続コンポーネント</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 class="sub">🎯 試験で問われやすいポイント</h3>
+
+    <div class="alert al-yellow">
+      <div class="t">⚠️ 引っかかりやすいポイント</div>
+      <ul>
+        <li><strong>「Azure リソースを作成する」= オンプレミスデータゲートウェイ</strong>：ただしソフトウェアのインストール（オンプレミス側）とセットで初めて機能する</li>
+        <li><strong>VPN Gateway と混同しない</strong>：VPN は「ネットワーク接続」。ゲートウェイは「アプリケーション接続」。用途が異なる</li>
+        <li><strong>Logic Apps の種類に注意</strong>：消費（従量課金）プランの Logic Apps はゲートウェイ方式が標準。Standard プランは VNET 統合も選択肢になる</li>
+        <li><strong>対応サービス</strong>：オンプレミスデータゲートウェイは Logic Apps だけでなく Power BI・Power Automate・Analysis Services でも共用できる</li>
+        <li><strong>「ハイブリッド Entra テナント」</strong>という条件は認証方式（Entra ID でゲートウェイを認証登録する）に関係するが、リソースの選択自体には直接影響しない</li>
+      </ul>
+    </div>
+
+    <div class="alert al-blue" style="margin-top:12px;">
+      <div class="t">📌 最終まとめ</div>
+      <ul>
+        <li>Logic Apps からオンプレミス DB2 にアクセスするには <strong>オンプレミスデータゲートウェイ（Azure リソース）</strong>を作成する</li>
+        <li>あわせてオンプレミスサーバーに<strong>ゲートウェイソフトウェアをインストール</strong>する（試験では「Azure リソース」を問う問題が多い）</li>
+        <li>Logic Apps 側では <strong>IBM DB2 コネクタ</strong>を使い、ゲートウェイリソースを指定して接続する</li>
+        <li>通信はオンプレミス側からの<strong>アウトバウンドのみ（ポート 443）</strong>で完結するためセキュア</li>
+        <li>「セルフホスト統合ランタイム」は Data Factory 専用であり Logic Apps では使わない</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+</div>
+</body>
+</html>

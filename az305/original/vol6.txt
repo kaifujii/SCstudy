@@ -1,0 +1,1223 @@
+問題1
+You have a Microsoft Entra tenant that is synchronized with an on-premises Active Directory environment.
+An internal web application named WebApp1 is hosted on-premises and uses Integrated Windows Authentication (IWA) for user sign-in.
+Some users work remotely and do not have VPN connectivity to the on-premises network. These users must still be able to access WebApp1 using single sign-on (SSO).
+Which two Microsoft Entra features should be included in the solution to meet this requirement?
+
+Microsoft Entra Identity Management (PIM)
+Microsoft Entra enterprise applications
+Conditional Access policies
+Microsoft Entra Application Proxy
+Azure Application Gateway
+Azure Arc
+
+Microsoft Entra enterprise applications is correct because enterprise applications in Microsoft Entra ID are used to configure and publish on-premises or cloud-based apps for single sign-on (SSO), user assignment, and conditional access. Publishing WebApp1 as an enterprise application enables its integration with Microsoft Entra ID and allows remote users to authenticate seamlessly using their cloud identity.
+Microsoft Entra Application Proxy is ccorrect because it allows secure remote access to on-premises applications without requiring VPN. It works by installing a lightweight connector on the on-premises network that communicates with Microsoft Entra ID, enabling remote users to access internal apps like WebApp1 using SSO while off-network.
+Microsoft Entra Identity Management (PIM) is incorrect because Privileged Identity Management (PIM) is used to manage, control, and monitor access to important resources by providing just-in-time privileged access. It is not related to enabling SSO or publishing on-premises applications to remote users.
+Conditional Access policies is incorrect because although Conditional Access can enforce access controls (like MFA or device compliance), it does not enable application publishing or SSO functionality. It can enhance security once access is possible but doesn't solve the core problem of making WebApp1 available for remote users.
+Reference Link(s):
+https://learn.microsoft.com/en-us/entra/identity/app-proxy/overview-what-is-app-proxy
+https://learn.microsoft.com/en-us/entra/identity/app-proxy/application-proxy-add-on-premises-application
+https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/what-is-application-management
+https://learn.microsoft.com/en-us/entra/id-governance/privileged-identity-management/pim-configure
+https://learn.microsoft.com/en-us/entra/identity/conditional-access/overview
+
+問題2
+You are planning to automate resource deployments across one or more Azure subscriptions.
+You are evaluating whether to use Azure Blueprints or Azure Resource Manager (ARM) templates as part of your deployment strategy.
+Which statement accurately describes a key difference between Azure Blueprints and ARM templates?
+
+Azure Blueprints are the only option that supports defining Azure Policy definitions.
+Blueprints remain connected to the deployed resources.
+Azure Blueprints maintain an ongoing association with the resources they deploy.
+Azure Policy definitions can only be included when using ARM templates.
+
+Blueprints remain connected to the deployed resources is correct because Azure Blueprints provide a way to define and assign a set of resource configurations, policies, and role assignments across multiple subscriptions. Unlike ARM templates, blueprints maintain a connection to deployed resources, allowing ongoing updates and compliance tracking. This ensures that resources remain in alignment with the defined blueprint.
+Azure Blueprints are the only option that supports defining Azure Policy definitions is incorrect because both Azure Blueprints and ARM templates can contain policy definitions. ARM templates can include Azure Policy assignments, and blueprints can reference existing policy definitions to enforce governance.
+Azure Blueprints maintain an ongoing association with the resources they deploy is incorrect because ARM templates are used to deploy infrastructure as code, but once the deployment is completed, there is no direct connection between the template and the deployed resources. Changes to the template do not automatically update the deployed resources.
+Azure Policy definitions can only be included when using ARM templates is incorrect because blueprints can also contain policy definitions. Blueprints can include role assignments, policy assignments, and resource 
+Reference Link(s):
+https://learn.microsoft.com/en-us/azure/governance/blueprints/overview
+https://learn.microsoft.com/en-us/azure/governance/blueprints/overview#how-its-different-from-azure-policy
+https://learn.microsoft.com/en-us/azure/governance/policy/overview
+https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/overview
+
+問題3
+Note: This question is part of a set of related questions that use the same scenario. Each question proposes a different solution that may or may not satisfy the stated requirement.
+
+You manage an Azure subscription that contains the following resources, all deployed in the East US region:
+StoreAcctA -> Azure Storage account (general-purpose v1)
+StoreAcctB -> Azure Storage account (general-purpose v2)
+LogWS-A -> Azure Log Analytics workspace
+LogWS-B -> Azure Log Analytics workspace
+EventHub-A -> Azure Event Hub
+You deploy an Azure SQL Database named SalesDB in East US.
+
+For SalesDB, you configure a diagnostic setting named DiagConfig1 with the following behavior:
+SQLInsights logs are archived to StoreAcctA
+SQLInsights logs are sent to LogWS-A
+True or False:
+“You can create an additional diagnostic setting for SalesDB that sends SQLInsights logs to EventHub-A.”
+True
+False
+
+True is correct because Azure diagnostic settings allow up to five different destinations for logs and metrics, including Storage Accounts, Log Analytics Workspaces, and Event Hubs. Since EventHub-A is an Azure Event Hub, it is a valid destination for diagnostic logs. This means that a new diagnostic setting can be created that sends SQLInsights logs from SalesDB to EventHub-A, provided that the Event Hub is properly configured to receive logs.
+
+Reference Link(s):
+https://learn.microsoft.com/en-us/azure/azure-monitor/essentials/diagnostic-settings
+https://learn.microsoft.com/en-us/azure/azure-monitor/essentials/diagnostic-settings?tabs=CMD#destination-limitations
+https://learn.microsoft.com/en-us/azure/event-hubs/event-hubs-diagnostic-logs
+https://learn.microsoft.com/en-us/azure/azure-monitor/logs/data-platform-logs
+
+問題4
+You are planning to move a business-critical on-premises application to Azure. The application relies on a Microsoft SQL Server backend, and the database engine will be hosted on Azure virtual machines after migration.
+You must design a highly available SQL Server architecture that satisfies the following constraints:
+Operational costs should be kept as low as possible
+If an individual SQL Server instance becomes unavailable, failover should occur with minimal delay
+Which option should you recommend as part of the target architecture?
+
+Deploy an Always On failover cluster instance that uses a virtual network name (VNN) and relies on a premium Azure file share for cluster storage.
+Deploy an Always On availability group that uses premium managed disks and is configured with a distributed network name (DNN).
+Deploy an Always On failover cluster instance that uses a virtual network name (VNN) and a standard Azure file share for shared storage.
+Deploy an Always On availability group that uses premium managed disks and is accessed through a virtual network name (VNN).
+
+Deploy an Always On availability group that uses premium managed disks and is configured with a distributed network name (DNN) is correct because using an Always On Availability Group (AG) with a Distributed Network Name (DNN) eliminates the dependency on an Azure Load Balancer, reducing failover time. When a DNN resource is created, the cluster binds the DNS name to the IP addresses of all the nodes in the cluster. This means the client can try all IP addresses in parallel when MultiSubnetFailover=True is specified in the connection string, resulting in a faster failover process. Unlike a Virtual Network Name (VNN), which requires a load balancer and health probes that introduce additional failover delays, DNN simplifies provisioning and minimizes failover time while maintaining high availability.
+Deploy an Always On failover cluster instance that uses a virtual network name (VNN) and relies on a premium Azure file share for cluster storage is incorrect because while an Always On Failover Cluster Instance (FCI) does provide high availability, using VNN requires an Azure Load Balancer, which introduces additional failover delays. The load balancer health probes take extra time to detect failures and reroute traffic, increasing failover duration.
+Deploy an Always On failover cluster instance that uses a virtual network name (VNN) and a standard Azure file share for shared storage is incorrect because although this reduces costs compared to a premium file share, the VNN still requires a load balancer, adding to the failover time.
+Deploy an Always On availability group that uses premium managed disks and is accessed through a virtual network name (VNN) is incorrect because while an Always On AG with premium storage provides high performance, the VNN still introduces failover delays due to the load balancer requirement. Failover time is significantly improved when using DNN instead of VNN, making the DNN option the better choice.
+Reference Link(s):
+https://learn.microsoft.com/en-us/azure/azure-sql/virtual-machines/windows/hadr-windows-server-failover-cluster-overview?view=azuresql#virtual-network-name-vnn
+https://learn.microsoft.com/en-us/azure/azure-sql/virtual-machines/windows/hadr-windows-server-failover-cluster-overview?view=azuresql#distributed-network-name-dnn
+https://learn.microsoft.com/en-us/azure/azure-sql/virtual-machines/windows/availability-group-overview?view=azuresql
+https://learn.microsoft.com/en-us/azure/azure-sql/virtual-machines/windows/failover-cluster-instance-overview?view=azuresql
+
+問題5
+Note: This question is part of a set of related questions that use the same scenario. Each question proposes a different solution that may or may not satisfy the stated requirement.
+You are planning to move Microsoft SQL Server databases from an on-premises environment to Azure.
+You need to determine a deployment solution that meets the following requirements:
+Allows user-initiated backups
+Provides automatic replication to multiple instances across different Azure regions
+Reduces the operational overhead required to configure and manage business continuity features
+What should you recommend as the solution?
+
+Azure SQL Managed Instance
+SQL Server on Azure Virtual Machines
+An Azure SQL Database single database
+
+Azure SQL Managed Instance is the correct choice because it supports user-initiated backups, which Azure SQL Database does not. For cross-region resiliency with minimal administrative effort, Managed Instance uses Auto-failover groups, which provide automatic replication and failover between regions as a fully managed service. Active geo-replication is not applicable here because it is only supported by Azure SQL Database, not Managed Instance.
+SQL Server on Azure Virtual Machines is incorrect because while it allows user-initiated backups and supports high availability configurations, it requires significant administrative effort to configure and maintain failover clusters or Always On availability groups across regions. Business continuity features, such as geo-replication, are not automated and require manual setup.
+An Azure SQL Database single database is incorrect because while it supports automatic replication via geo-replication and minimizes administrative effort, it does not support user-initiated backups. Azure SQL Database uses automatic backups managed by Azure, but users cannot manually trigger or customize backup schedules.
+
+Reference Link(s):
+https://learn.microsoft.com/en-us/azure/azure-sql/managed-instance/sql-managed-instance-paas-overview
+https://learn.microsoft.com/en-us/azure/azure-sql/managed-instance/automated-backups-overview
+https://learn.microsoft.com/en-us/azure/azure-sql/database/active-geo-replication-overview
+
+問題6
+Note: This question is part of a set of related questions that use the same scenario. Each question proposes a different solution that may or may not satisfy the stated requirement.
+You are planning to move Microsoft SQL Server databases from an on-premises environment to Azure.
+You need to determine a resiliency solution that meets the following requirements:
+Allows user-initiated backups
+Provides automatic replication to multiple instances across different Azure regions
+Reduces the operational overhead required to configure and manage business continuity features
+What should you recommend as the solution?
+
+Auto-failover group
+Active geo-replication
+Zone-redundant deployment
+
+Auto-failover group is correct because it supports user-initiated backups, provides automatic replication across Azure regions, and minimizes administrative effort. Auto-failover groups allow for automatic failover of multiple databases, making it an ideal solution for business continuity. It also integrates with Azure SQL Managed Instance and Azure SQL Database, reducing manual intervention and ensuring high availability.
+Active geo-replication is incorrect because while it supports multiple automatically replicated instances across Azure regions, it requires manual failover. This increases administrative overhead, as failover must be manually initiated, making it less suitable for minimizing effort.
+Zone-redundant deployment is incorrect because it provides high availability within a single Azure region by distributing replicas across availability zones. However, it does not support replication across multiple regions, meaning it does not fulfill the requirement for business continuity across regions.
+
+Reference Link(s):
+https://learn.microsoft.com/en-us/azure/azure-sql/database/auto-failover-group-overview
+https://learn.microsoft.com/en-us/azure/azure-sql/managed-instance/failover-group-sql-mi?view=azuresql&tabs=azure-powershell#terminology-and-capabilities
+https://learn.microsoft.com/en-us/azure/azure-sql/database/active-geo-replication-overview
+https://learn.microsoft.com/en-us/azure/azure-sql/database/high-availability-sla
+
+問題7
+Note: This question is part of a set of related questions that use the same scenario. Each question proposes a different solution that may or may not satisfy the stated requirement.
+
+You are designing an Azure Storage account strategy for two workloads named WorkloadA and WorkloadB. Each workload has different performance and cost requirements, and both must remain accessible even if a single Azure datacenter becomes unavailable.
+The storage design must meet the following conditions:
+Storage used by WorkloadA must deliver the highest possible throughput with the lowest achievable latency.
+Storage used by WorkloadB must be optimized for the lowest cost per gigabyte.
+Data for both workloads must remain available during a datacenter outage.
+Storage access for both workloads must be optimized for frequent upload and download operations.
+Which storage configuration should you recommend for WorkloadA?
+
+A Blob Storage account using standard performance, the Hot access tier, and read-access geo-redundant storage (RA-GRS) replication.
+A Block Blob Storage account using premium performance with zone-redundant storage (ZRS) replication.
+A general-purpose v1 storage account using premium performance and locally redundant storage (LRS) replication.
+A general-purpose v2 storage account using standard performance, the Hot access tier, and locally redundant storage (LRS) replication.
+
+A Block Blob Storage account using premium performance with zone-redundant storage (ZRS) replication is correct because BlockBlobStorage accounts are optimized for high transaction rates and low latency, making them ideal for workloads requiring the fastest possible performance. Premium performance further ensures minimal latency, while ZRS replication ensures availability even in the event of a data center failure within an Azure region. This combination is best suited for applications requiring rapid data access and frequent transactions, such as Application1.
+A Blob Storage account using standard performance, the Hot access tier, and read-access geo-redundant storage (RA-GRS) replication is incorrect because standard performance does not provide the lowest possible latency. While RA-GRS ensures high availability by replicating data across regions, it is primarily designed for disaster recovery rather than high-performance workloads.
+A general-purpose v1 storage account using premium performance and locally redundant storage (LRS) replication is incorrect because General Purpose v1 storage accounts are legacy and not optimized for modern workloads. Additionally, LRS does not provide the required data center failure resilience since it only replicates within a single data center.
+A general-purpose v2 storage account using standard performance, the Hot access tier, and locally redundant storage (LRS) replication is incorrect because while General Purpose v2 is a cost-effective option, it does not provide the highest transaction rates and lowest latency. Standard performance does not match the speed of premium performance, and LRS does not protect against data center failures.
+
+Reference Link(s):
+https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blob-block-blob-premium
+https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy
+https://learn.microsoft.com/en-us/azure/storage/blobs/access-tiers-overview
+
+問題8
+Note: This question is part of a set of related questions that use the same scenario. Each question proposes a different solution that may or may not satisfy the stated requirement.
+
+You are designing an Azure Storage account strategy for two workloads named WorkloadA and WorkloadB. Each workload has different performance and cost requirements, and both must remain accessible even if a single Azure datacenter becomes unavailable.
+The storage design must meet the following conditions:
+Storage used by WorkloadA must deliver the highest possible throughput with the lowest achievable latency.
+Storage used by WorkloadB must be optimized for the lowest cost per gigabyte.
+Data for both workloads must remain available during a datacenter outage.
+Storage access for both workloads must be optimized for frequent upload and download operations.
+Which storage configuration should you recommend for WorkloadB?
+
+A BlobStorage using Standard performance, the Cool access tier, and Geo-redundant (GRS) replication.
+A BlockBlobStorage using Premium performance and Zone-redundant storage (ZRS) replication.
+A General purpose v1 using Standard performance and Read-access geo-redundant storage (RA-GRS) replication.
+A General purpose v2 using Standard performance, the Cool access tier, and Read-access geo-redundant storage (RA-GRS) replication.
+
+A General purpose v2 using Standard performance, the Cool access tier, and Read-access geo-redundant storage (RA-GRS) replication is correct because General Purpose v2 accounts offer the lowest possible storage cost per GB, especially when using the Cool access tier, which is optimized for infrequent access with lower storage costs. RA-GRS replication ensures data availability even if a data center fails by maintaining a secondary read-access copy in a separate region, while Standard performance helps keep costs low. This makes it the best choice for Application2, which prioritizes cost-efficiency while ensuring resilience.
+A BlobStorage using Standard performance, the Cool access tier, and Geo-redundant (GRS) replication is incorrect because BlobStorage accounts are not as flexible as General Purpose v2 accounts. While GRS ensures redundancy, RA-GRS is preferable as it provides read-access to the secondary region, improving availability in case of failure.
+A BlockBlobStorage using Premium performance and Zone-redundant storage (ZRS) replication is incorrect because Premium performance significantly increases costs, contradicting the requirement to minimize storage expenses. Additionally, ZRS does not provide cross-region availability, making it less suitable for disaster recovery.
+A General purpose v1 using Standard performance and Read-access geo-redundant storage (RA-GRS) replication is incorrect because General Purpose v1 is a legacy account type that lacks cost optimization features found in General Purpose v2. Additionally, GPv1 storage accounts typically incur higher costs for operations compared to GPv2 accounts.
+
+Reference Link(s):
+https://learn.microsoft.com/en-us/azure/storage/blobs/access-tiers-overview
+https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy
+https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blob-storage-tiers
+
+問題9
+You are managing an Azure environment that includes a Basic-tier Azure Virtual WAN named CoreWan01.
+The Virtual WAN is associated with the following virtual hubs:
+EastHubA deployed in the East US Azure region
+WestHubB deployed in the West US Azure region
+An ExpressRoute circuit already exists in the East US region. You plan to associate this ExpressRoute circuit with CoreWan01.
+Before the ExpressRoute circuit can be connected to the Virtual WAN, which action must be performed first?
+
+Upgrade CoreWan01 from the Basic tier to the Standard tier.
+Deploy an ExpressRoute gateway in EastHubA.
+Create a hub virtual network in the East US region.
+Enable the ExpressRoute premium add-on for the ExpressRoute circuit.
+
+Upgrade CoreWan01 from the Basic tier to the Standard tier is correct because ExpressRoute is not supported in a Basic Virtual WAN. To associate an ExpressRoute circuit with VirtualWan1, the Virtual WAN must be upgraded to Standard. In Standard mode, Virtual WAN supports ExpressRoute, VPN, and inter-hub connectivity across regions.
+Deploy an ExpressRoute gateway in EastHubA is incorrect because before creating a gateway, Virtual WAN must be upgraded to Standard to support ExpressRoute. Without this upgrade, a gateway cannot be created for ExpressRoute connectivity.
+Create a hub virtual network in the East US region is incorrect because the hub already exists (Hub1 in US East). Instead of creating a new hub, the focus should be on ensuring that the existing Virtual WAN can support ExpressRoute, which requires an upgrade to Standard.
+Enable the ExpressRoute premium add-on for the ExpressRoute circuit is incorrect because the ExpressRoute premium add-on is only required for connecting more than 10 VNet connections or global reach scenarios. It does not enable ExpressRoute integration with a Basic Virtual WAN, which is the primary requirement in this scenario.
+
+Reference Link(s):
+https://learn.microsoft.com/en-us/azure/virtual-wan/virtual-wan-about
+https://learn.microsoft.com/en-us/azure/virtual-wan/virtual-wan-expressroute-portal
+https://learn.microsoft.com/en-us/azure/virtual-wan/virtual-wan-faq
+
+問題10
+You are designing an event-driven solution in Azure that must run custom C# code whenever an event is delivered through Azure Event Grid.
+The solution must meet the following requirements:
+The code execution environment must be able to connect to a Microsoft SQL Server instance that is hosted on an Azure virtual machine by using the private IP address of the VM.
+The solution must minimize overall operational and compute costs.
+Which Azure service and hosting option should you use?
+
+Azure Functions in the Consumption plan
+Azure Functions in the Premium plan
+Azure Logic Apps in the integrated service environment
+Azure Functions in the Dedicated plan and the Basic Azure App Service plan
+Azure Logic Apps in the Consumption plan
+
+Azure Functions in the Premium plan is correct because the Premium plan supports virtual network (VNet) integration, allowing the function to access resources on a private IP address, such as an Azure SQL Server instance running on a virtual machine. Additionally, it offers scalability while keeping costs lower than a Dedicated plan when continuous execution is not required. The Premium plan is optimized for scenarios requiring private networking and higher performance while maintaining cost efficiency.
+Azure Functions in the Consumption plan is incorrect because the Consumption plan does not support VNet integration, meaning it cannot access a private IP address. It is cost-effective but does not meet the requirement to connect to the private SQL Server instance.
+Azure Logic Apps in the integrated service environment is incorrect because while an Integrated Service Environment (ISE) allows access to private networks, it is significantly more expensive compared to Azure Functions in the Premium plan. This contradicts the requirement to minimize costs.
+Azure Functions in the Dedicated plan and the Basic Azure App Service plan is incorrect because while the Dedicated plan allows VNet integration, combining it with the Basic App Service plan is not cost-effective. The Basic tier does not provide auto-scaling or optimal performance, making the Premium plan a better choice for cost-efficient scalability.
+Azure Logic Apps in the Consumption plan is incorrect because Logic Apps Consumption does not support VNet integration and cannot access private IP addresses. Additionally, Logic Apps are more suited for workflow automation rather than executing custom C# code.
+
+Reference Link(s):
+https://learn.microsoft.com/en-us/azure/azure-functions/functions-premium-plan
+https://learn.microsoft.com/en-us/azure/azure-functions/functions-networking-options
+https://learn.microsoft.com/en-us/azure/azure-functions/functions-create-vnet
+
+問題11
+You are designing an Azure-based storage solution to handle high-throughput workloads. The solution must meet the following requirements:
+Sustain at least 800 requests per second
+Store and deliver large multimedia content, including images, videos, and audio files
+Which Azure storage account type should you deploy?
+
+premium file shares
+standard general-purpose v2
+premium block blobs
+premium page blobs
+
+premium block blobs is correct because block blobs are optimized for large-scale data storage and streaming workloads, such as images, videos, and audio files. The premium performance tier ensures high throughput and low latency, which is necessary to support at least 800 requests per second. Premium block blob storage is specifically designed for workloads requiring high transaction rates and is ideal for media streaming.
+premium file shares is incorrect because Azure Premium File Shares are designed for SMB-based workloads and are not optimized for handling high-performance blob storage or streaming scenarios. They are more suitable for file-based applications rather than large media content storage and delivery.
+standard general-purpose v2 is incorrect because while General-Purpose v2 (GPv2) accounts provide cost-effective blob storage, standard performance does not guarantee low latency or high transaction rates. It is not the best option for workloads requiring high throughput and real-time streaming.
+premium page blobs is incorrect because Page Blobs are used for virtual machine disks (VHDs) and workloads requiring random read/write access to large files. They are not optimized for sequential streaming of large images, videos, or audio files.
+
+Reference Link(s):
+https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blob-block-blob-premium
+https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction
+https://learn.microsoft.com/en-us/azure/storage/files/storage-files-introduction
+
+問題12
+You are designing a storage solution for a mission-critical application that stores operational records.
+The solution must meet the following requirements:
+Provide a guaranteed SLA for write latency
+Provide a guaranteed SLA for throughput
+What should be included in the recommended storage solution?
+
+Azure SQL
+Azure Cosmos DB
+Azure Blob Storage
+Azure Data Lake Storage Gen2
+
+Azure Cosmos DB is correct because it provides an SLA for both write latency and throughput, making it ideal for mission-critical applications that require consistent performance and low-latency operations. Azure Cosmos DB guarantees single-digit millisecond writes with 99.999% availability when configured with multi-region replication. Additionally, it offers provisioned throughput, ensuring predictable performance even under high-load conditions.
+Azure SQL is incorrect because while Azure SQL provides SLAs for availability, it does not provide an SLA for write latency or throughput. Performance can vary based on workload, and scaling throughput requires adjusting database configurations, which might introduce additional costs or complexity.
+Azure Blob Storage is incorrect because Blob Storage is designed for unstructured data storage rather than transactional workloads. It does not offer an SLA for write latency or throughput, making it unsuitable for mission-critical applications requiring guaranteed performance.
+Azure Data Lake Storage Gen2 is incorrect because it is optimized for big data analytics rather than low-latency transactional processing. It lacks an SLA for write latency and throughput, making it less suitable for mission-critical applications that require guaranteed responsiveness.
+
+Reference Link(s):
+https://learn.microsoft.com/en-us/azure/cosmos-db/introduction
+https://www.microsoft.com/licensing/docs/view/Service-Level-Agreements-SLA-for-Online-Services?lang=1
+https://learn.microsoft.com/en-us/azure/azure-sql/database/service-tiers-general-purpose-business-critical
+https://learn.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-introduction
+
+問題13
+You are designing a storage solution for a new application that will store business-critical data.
+The solution must meet the following requirements:
+Newly written data must not be modified for one year
+Data resiliency must be maximized
+Read latency must be minimized
+Which storage solution should you recommend for the application?
+
+Storage Account type: Standard general-purpose v1Redundancy: Zone-redundant storage (ZRS)
+Storage Account type: Standard general-purpose v1Redundancy: Locally-redundant storage (LRS)
+Storage Account type: Standard general-purpose v2Redundancy: Zone-redundant storage (ZRS)
+Storage Account type: Standard general-purpose v2Redundancy: Locally-redundant storage (LRS)
+Storage Account type: Premium block blobs Redundancy: Zone-redundant storage (ZRS)
+Storage Account type: Premium block blobs Redundancy: Locally-redundant storage (LRS)
+
+Storage Account type: Premium block blobs     
+Redundancy: Zone-redundant storage (ZRS)
+is correct because Premium block blob storage provides the lowest read latency, making it the best choice for minimizing read latency. Zone-redundant storage (ZRS) ensures data resiliency by replicating data synchronously across multiple availability zones, protecting against data center failures. Additionally, Azure immutable blob storage policies can be configured to prevent data modification for one year, ensuring compliance with the requirement to keep data unaltered.
+
+Reference Link(s):
+https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy
+https://learn.microsoft.com/en-us/azure/storage/common/storage-account-overview
+https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blobs-latency
+
+問題14
+You have 50 devices that continuously write performance metrics to Azure Blob Storage.
+You plan to store this data in an Azure SQL database and analyze it on an ongoing basis.
+You need to recommend a solution that can continuously transfer the performance data from Blob Storage into the Azure SQL database.
+What should you include in the recommendation?
+
+Azure Data Factory
+Data Migration Assistant (DMA)
+Azure Data Box
+Azure Database Migration Service
+
+Azure Data Factory is correct because Azure Data Factory (ADF) provides a scalable, automated ETL (Extract, Transform, Load) solution that can continuously copy performance data from Azure Blob Storage to an Azure SQL database. ADF supports incremental data movement, scheduling, and transformation using data flows, making it the best choice for ongoing data ingestion and analysis.
+Data Migration Assistant (DMA) is incorrect because DMA is used for assessing and migrating databases to Azure SQL, but it does not support ongoing or continuous data movement from blob storage. It is designed for one-time migrations rather than continuous ETL processing.
+Azure Data Box is incorrect because it is a physical device solution used for bulk offline data transfer from on-premises environments to Azure. It does not support ongoing data integration or automated copying of blob storage data to an Azure SQL database.
+Azure Database Migration Service is incorrect because it is designed to migrate full databases to Azure SQL but does not facilitate continuous data ingestion from blob storage. It is used for one-time or near-zero downtime migrations, not for real-time or scheduled data transfers.
+
+Reference Link(s):
+https://learn.microsoft.com/en-us/azure/data-factory/introduction
+https://learn.microsoft.com/en-us/azure/data-factory/copy-activity-overview
+https://learn.microsoft.com/en-us/sql/dma/dma-overview
+https://learn.microsoft.com/en-us/azure/databox/data-box-overview
+
+問題15
+You are planning to deploy an Azure SQL database that will contain Personally Identifiable Information (PII).
+The solution must ensure that only authorized users are able to view the sensitive data.
+What should you include in the solution?
+
+Data Discovery and Classification
+Transparent Data Encryption (TDE)
+dynamic data masking
+role-based access control (RBAC)
+
+dynamic data masking is correct because it restricts the exposure of sensitive data (such as Personally Identifiable Information) by masking the data at the query level. This ensures that non-privileged users cannot see the actual values of PII fields while still allowing queries to be executed. Privileged users with the necessary permissions can be granted access to view unmasked data.
+Data Discovery and Classification is incorrect because it helps identify and classify sensitive data but does not restrict access to PII. It is a data governance tool, not an access control mechanism.
+Transparent Data Encryption (TDE) is incorrect because it encrypts data at rest but does not prevent users from seeing sensitive data when querying the database. TDE is designed for protecting data from physical theft or breaches, not for controlling access within the database.
+role-based access control (RBAC) is incorrect because RBAC manages access at the database level, but it does not provide fine-grained control over PII visibility. RBAC can restrict access to the entire database or specific tables, but it does not dynamically mask data for non-privileged users.
+
+Reference Link(s):
+https://learn.microsoft.com/en-us/azure/azure-sql/database/dynamic-data-masking-overview
+https://learn.microsoft.com/en-us/azure/azure-sql/database/transparent-data-encryption-tde-overview
+https://learn.microsoft.com/en-us/azure/role-based-access-control/overview
+
+問題16
+You are preparing to deploy an application that will use Azure Storage.
+The storage account must meet these requirements:
+Store data for multiple users
+Encrypt each user’s data by using a different encryption key
+Encrypt all stored data by using customer-managed keys
+What should you deploy?
+
+blobs in an Azure Data Lake Storage Gen2 account
+files in a premium file share storage account
+blobs in a general-purpose v2 storage account
+files in a general-purpose v2 storage account
+
+blobs in a general-purpose v2 storage account is correct because blobs support customer-managed key (CMK) encryption through integration with Azure Key Vault, and they also support encryption scopes. Encryption scopes allow different encryption keys to be used for different containers or blobs, making it possible to encrypt each user's data with a separate key. This fully satisfies the requirement to use separate keys per user and customer-managed keys at the storage account level.
+blobs in an Azure Data Lake Storage Gen2 account is incorrect as Data Lake Storage Gen2 is designed for analytics workloads and structured hierarchical storage, not general-purpose storage for application user data. It is optimized for scenarios like big data analytics using tools such as Azure Synapse or HDInsight, not for storing isolated data for multiple users in an application.
+files in a premium file share storage account is incorrect because Azure Files does not support using a separate encryption key for each file or user. While it supports customer-managed keys for the entire file share, it does not meet the requirement for per-user encryption.
+files in a general-purpose v2 storage account is incorrect because, like premium file shares, standard Azure Files in a general-purpose v2 storage account do not support using different CMKs for individual users or files. Additionally, Azure Files is optimized for VM-based file sharing, not per-user isolated storage.
+
+Reference Link(s):
+https://learn.microsoft.com/en-us/azure/storage/blobs/encryption-scope-overview
+https://learn.microsoft.com/en-us/azure/security/fundamentals/encryption-models#supporting-services
+https://learn.microsoft.com/en-us/azure/security/fundamentals/encryption-atrest
+https://learn.microsoft.com/en-us/azure/storage/common/customer-managed-keys-overview
+https://learn.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-introduction
+https://learn.microsoft.com/en-us/azure/storage/blobs/encryption-scope-manage?tabs=portal
+
+問題17
+You are building a sales application that consists of multiple Azure-based services, where each service is responsible for a different part of a transaction, such as order processing, billing, payments, inventory management, and shipping.
+The services must exchange transaction details asynchronously, and the messages must use XML format.
+What Azure service should you recommend to support this communication model?
+
+Azure Service Fabric
+Azure Notification Hubs
+Azure Service Bus
+Azure Traffic Manager
+
+Azure Service Bus is correct because it provides a reliable messaging platform for asynchronous communication between distributed components and services. It supports structured message formats like XML, and is ideal for enterprise scenarios that involve order processing, billing, inventory, and shipping workflows. Azure Service Bus ensures message delivery even in the case of temporary unavailability of one or more services, making it suitable for transaction-based applications.
+Azure Service Fabric is incorrect because it is a distributed systems platform used to build and manage scalable microservices, but it does not serve as a messaging service for asynchronous communication between services.
+Azure Notification Hubs is incorrect because it is used for pushing notifications to mobile devices and is not suitable for exchanging XML messages or coordinating backend transaction workflows.
+Azure Traffic Manager is incorrect because it is a DNS-based traffic load balancer and does not provide messaging capabilities. It is used for routing user traffic across different regions, not for service-to-service communication.
+
+Reference Link(s):
+https://learn.microsoft.com/en-us/azure/service-bus-messaging/service-bus-messaging-overview
+https://learn.microsoft.com/en-us/azure/service-fabric/service-fabric-overview
+https://learn.microsoft.com/en-us/azure/notification-hubs/notification-hubs-push-notification-overview
+https://learn.microsoft.com/en-us/azure/traffic-manager/traffic-manager-overview
+
+問題18
+Note: This question is part of a set of related questions that use the same scenario. Each question proposes a different solution that may or may not satisfy the stated requirement.
+
+Your organization runs multiple virtual machines both on-premises and in Azure.
+Connectivity between the on-premises environment and Azure is established by using ExpressRoute.
+Some of the virtual machines are experiencing network connectivity problems. You need to inspect network traffic to determine whether packets are being permitted or blocked when reaching the virtual machines.
+Proposed Solution: Use Azure Traffic Analytics in Azure Network Watcher to analyze the network traffic.
+Does this approach satisfy the requirement?
+
+Yes
+No
+
+No is correct because Azure Traffic Analytics provides high-level insights based on NSG flow logs but does not offer packet-level visibility or detailed VM-level allow/deny decisions. It is designed for aggregated analysis at the virtual network level, not for troubleshooting individual VM connectivity issues. Since the scenario involves identifying whether packets are being specifically allowed or denied to individual virtual machines, a more appropriate tool would be IP Flow Verify in Azure Network Watcher. IP Flow Verify evaluates effective NSG rules for a given VM and can determine whether specific traffic is allowed or denied.
+
+Reference Link(s):
+https://learn.microsoft.com/en-us/azure/network-watcher/network-watcher-ip-flow-verify-overview
+https://learn.microsoft.com/en-us/azure/network-watcher/traffic-analytics?tabs=Americas
+https://learn.microsoft.com/en-us/azure/network-watcher/network-watcher-overview
+
+問題19
+Note: This question is part of a set of related questions that use the same scenario. Each question proposes a different solution that may or may not satisfy the stated requirement.
+Your organization runs multiple virtual machines both on-premises and in Azure.
+Connectivity between the on-premises environment and Azure is established by using ExpressRoute.
+Some of the virtual machines are experiencing network connectivity problems. You need to inspect network traffic to determine whether packets are being permitted or blocked when reaching the virtual machines.
+Proposed Solution: Use Azure Advisor to analyze the network traffic.
+Does this approach satisfy the requirement?
+
+Yes
+No
+全体的な説明
+
+No is correct because Azure Advisor is a recommendation engine that provides high-level best practices across cost, performance, availability, and security. It does not provide packet-level network traffic analysis or detailed insights into whether packets are being allowed or denied to specific virtual machines. To analyze network traffic and determine the effect of NSG rules, tools like IP Flow Verify in Azure Network Watcher are required. Azure Advisor cannot be used to inspect or troubleshoot actual traffic flows or NSG-level access decisions.
+
+Reference Link(s):
+https://learn.microsoft.com/en-us/azure/advisor/advisor-overview
+https://learn.microsoft.com/en-us/azure/network-watcher/network-watcher-ip-flow-verify-overview
+https://learn.microsoft.com/en-us/azure/network-watcher/network-watcher-overview
+ドメイン
+Design Infrastructure Solutions
+
+問題20
+Note: This question is part of a set of related questions that use the same scenario. Each question proposes a different solution that may or may not satisfy the stated requirement.
+
+Your organization runs multiple virtual machines both on-premises and in Azure.
+Connectivity between the on-premises environment and Azure is established by using ExpressRoute.
+Some of the virtual machines are experiencing network connectivity problems. You need to inspect network traffic to determine whether packets are being permitted or blocked when reaching the virtual machines.
+Proposed Solution: Install and configure the Azure Monitoring agent and the Dependency Agent on all the virtual machines. Use VM insights in Azure Monitor to analyze the network traffic.
+Does this approach satisfy the requirement?
+
+Yes
+No
+
+No is correct because while VM insights in Azure Monitor (enabled via the Azure Monitor Agent and Dependency Agent) provides performance monitoring, health metrics, and dependency maps between services, it does not analyze packet-level network traffic or show NSG-level allow/deny decisions. It helps in understanding process-level and connection-level dependencies but is not designed to evaluate network security group rules or identify whether specific packets are being blocked or allowed. To determine this, IP Flow Verify in Azure Network Watcher should be used.
+
+Reference Link(s):
+https://learn.microsoft.com/en-us/azure/azure-monitor/vm/vminsights-overview
+https://learn.microsoft.com/en-us/azure/network-watcher/network-watcher-ip-flow-verify-overview
+https://learn.microsoft.com/en-us/azure/network-watcher/network-watcher-overview
+
+問題21
+Note: This question is part of a set of related questions that use the same scenario. Each question proposes a different solution that may or may not satisfy the stated requirement.
+
+Your organization runs multiple virtual machines both on-premises and in Azure.
+Connectivity between the on-premises environment and Azure is established by using ExpressRoute.
+Some of the virtual machines are experiencing network connectivity problems. You need to inspect network traffic to determine whether packets are being permitted or blocked when reaching the virtual machines.
+Proposed Solution: Use Azure Network Watcher to run IP flow verify to analyze the network traffic.
+Does this approach satisfy the requirement?
+Yes
+No
+
+Yes is correct because IP flow verify is a feature in Azure Network Watcher specifically designed to determine whether packets are being allowed or denied to or from a virtual machine based on effective Network Security Group (NSG) rules. It allows you to test traffic flow scenarios by specifying source and destination IPs, ports, and protocols. This tool is ideal for diagnosing network connectivity issues and confirms whether traffic is permitted or blocked, satisfying the goal of the scenario.
+
+Reference Link(s):
+https://learn.microsoft.com/en-us/azure/network-watcher/network-watcher-ip-flow-verify-overview
+https://learn.microsoft.com/en-us/azure/network-watcher/network-watcher-overview
+https://learn.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview
+
+問題22
+Note: This question is part of a set of related questions that use the same scenario. Each question proposes a different solution that may or may not satisfy the stated requirement.
+
+You are designing an environment to run a stateless web application in Azure. The solution must satisfy these conditions:
+Support the full .NET Framework
+Continue to operate if a single Azure region becomes unavailable
+Allow administrators to access the operating system to install custom dependencies
+Proposed Solution: You deploy two Azure virtual machines to two Azure regions, and you deploy an Azure Application Gateway.
+Does this design meet the requirement?
+
+Yes
+No
+
+No is correct because Azure Application Gateway is a regional service and cannot span multiple Azure regions. It is designed to route traffic between backend pools within the same region, such as across different Availability Zones, but not across different regions. Therefore, deploying two virtual machines in separate Azure regions and fronting them with a single Application Gateway will not provide regional redundancy as required. To achieve cross-region redundancy, a global load balancing solution like Azure Front Door or Traffic Manager should be used instead of Application Gateway.
+
+Reference Link(s):
+https://learn.microsoft.com/en-us/azure/application-gateway/overview
+
+問題23
+Note: This question is part of a set of related questions that use the same scenario. Each question proposes a different solution that may or may not satisfy the stated requirement.
+
+You are designing an environment to run a stateless web application in Azure. The solution must satisfy these conditions:
+Support the full .NET Framework
+Continue to operate if a single Azure region becomes unavailable
+Allow administrators to access the operating system to install custom dependencies
+Proposed Solution: You deploy two Azure virtual machines to two Azure regions, and you create an Azure Traffic Manager profile.
+Does this design meet the requirement?
+Yes
+No
+
+Yes is correct because deploying two Azure virtual machines across two Azure regions provides regional redundancy, which ensures the application remains available in case one region fails. Azure virtual machines offer full access to the operating system, allowing administrators to install custom application dependencies and run applications that require the full .NET Framework. Adding an Azure Traffic Manager profile enables DNS-based global load balancing between the VMs in different regions, effectively routing user traffic to the healthy endpoint and achieving the required failover capability across regions.
+
+Reference Link(s):
+https://learn.microsoft.com/en-us/azure/traffic-manager/traffic-manager-overview
+
+問題24
+Note: This question is part of a set of related questions that use the same scenario. Each question proposes a different solution that may or may not satisfy the stated requirement.
+
+You are designing an environment to run a stateless web application in Azure. The solution must satisfy these conditions:
+Support the full .NET Framework
+Continue to operate if a single Azure region becomes unavailable
+Allow administrators to access the operating system to install custom dependencies
+Proposed Solution: You deploy an Azure virtual machine scale set that uses autoscaling.
+Does this design meet the requirement?
+
+Yes
+No
+
+No is correct because while an Azure virtual machine scale set with autoscaling can provide redundancy and access to the operating system, it does not provide regional redundancy by itself. Virtual machine scale sets operate within a single region, and without additional configuration such as geographically distributed deployments or Traffic Manager, they cannot withstand a regional outage. Therefore, the solution does not meet the requirement to provide redundancy if an Azure region fails.
+To meet the goal, the deployment would need to include VMs or VM scale sets in multiple regions, paired with a global load balancing service like Azure Traffic Manager or Azure Front Door.
+
+Reference Link(s):
+https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/overview
+https://learn.microsoft.com/en-us/azure/https://learn.microsoft.com/en-us/azure/reliability/overview
+https://learn.microsoft.com/en-us/azure/traffic-manager/traffic-manager-overview
+
+問題25
+Note: This question is part of a set of related questions that use the same scenario. Each question proposes a different solution that may or may not satisfy the stated requirement.
+
+You are designing an environment to run a stateless web application in Azure. The solution must satisfy these conditions:
+Support the full .NET Framework
+Continue to operate if a single Azure region becomes unavailable
+Allow administrators to access the operating system to install custom dependencies
+Proposed Solution: You deploy a web app in an isolated App Service plan.
+Does this design meet the requirement?
+
+Yes
+No
+
+No is correct because although an isolated App Service plan provides enhanced network isolation and high scalability, it does not grant administrators access to the underlying operating system, which is required to install custom application dependencies.
+Additionally, App Service plans, including the isolated tier, do not support the full .NET Framework; they support only .NET Core and supported versions of .NET. Also, while the isolated tier offers better isolation and VNet integration, it does not provide automatic cross-region redundancy; that would need to be implemented manually using services like Azure Front Door or Traffic Manager. Therefore, this solution does not meet all the stated requirements.
+
+Reference Link(s):
+https://learn.microsoft.com/en-us/azure/app-service/overview
+https://learn.microsoft.com/en-us/azure/app-service/overview-hosting-plans
+
+問題26
+You have a Microsoft Entra tenant named ironclad.com that contains a security group called SecGroupA.
+SecGroupA uses assigned membership and currently has 50 users, including 20 guest users.
+You need to recommend a method to regularly review and manage the membership of SecGroupA. The solution must meet the following conditions:
+The review process must run automatically every three months.
+Each group member must be able to confirm whether they still require membership in SecGroupA.
+Members who state that they no longer require access must be removed automatically.
+Members who do not respond to the review request must also be removed automatically.
+What should you include in the recommendation?
+
+Enable Microsoft Entra Identity Protection.
+Convert SecGroupA to a Dynamic User group.
+Configure an access review for SecGroupA.
+Enable Microsoft Entra Privileged Identity Management (PIM).
+
+Configure an access review for SecGroupA is correct because Microsoft Entra Access Reviews allow you to periodically review group memberships, including for assigned groups like Group1. You can configure the review to occur every three months, allow members to self-attest whether they still need access, and set rules to automatically remove users who either indicate they no longer need access or fail to respond. This fully meets all four stated requirements.
+Enable Microsoft Entra Identity Protection is incorrect because Identity Protection focuses on risk-based conditional access and user risk detection, not membership review or access attestation workflows.
+Convert SecGroupA to a Dynamic User group is incorrect because dynamic membership is based on rules and user attributes, not on user self-attestation or access reviews. It also does not support periodic revalidation or member-initiated removal.
+Enable Microsoft Entra Privileged Identity Management (PIM) is incorrect because PIM is primarily for managing just-in-time access to privileged roles, not for recurring reviews of group membership for regular security groups like Group1.
+
+Reference Link(s):
+https://learn.microsoft.com/en-us/entra/id-governance/access-reviews-overview
+https://learn.microsoft.com/en-us/entra/id-governance/create-access-review
+https://learn.microsoft.com/en-us/entra/id-protection/overview-identity-protection
+https://learn.microsoft.com/en-us/entra/id-governance/privileged-identity-management/pim-configure
+
+問題27
+Note: This question is part of a set of related questions that use the same scenario. Each question proposes a different solution that may or may not satisfy the stated requirement.
+
+You are planning to deploy Azure Databricks for a machine learning workload.
+Data engineers will mount an Azure Data Lake Storage account to the Databricks File System (DBFS). Folder-level permissions in the storage account are assigned directly to individual data engineers.
+You need to design the Databricks deployment. The design must meet the following requirements:
+Data engineers must only be able to access the storage folders for which they are explicitly permitted.
+The solution should require minimal development effort.
+The solution should keep costs as low as possible.
+Which Databricks SKU should you select?
+Premium
+Standard
+
+Premium is correct because in order to enforce fine-grained access control (such as restricting data engineers to only the folders they have permission to access) in Azure Databricks when working with Azure Data Lake Storage, you need Access Control Lists (ACLs) and credential passthrough, both of which are only available in the Databricks Premium SKU. This allows Databricks to respect the individual user’s identity and permissions as defined in Azure Data Lake Storage, ensuring secure, role-based access without requiring custom code or additional development effort.
+Standard is incorrect because the Standard SKU does not support credential passthrough or fine-grained access control features like ACLs, which are necessary to ensure users only access permitted folders. Using the Standard SKU would require custom access control logic in notebooks or scripts, increasing development effort and potentially compromising security.
+
+Reference Link(s):
+https://learn.microsoft.https://azure.microsoft.com/en-us/pricing/details/databricks/
+https://learn.microsoft.com/en-us/azure/databricks/admin/account-settings/account
+
+問題28
+Note: This question is part of a set of related questions that use the same scenario. Each question proposes a different solution that may or may not satisfy the stated requirement.
+
+You are planning to deploy Azure Databricks for a machine learning workload.
+Data engineers will mount an Azure Data Lake Storage account to the Databricks File System (DBFS). Folder-level permissions in the storage account are assigned directly to individual data engineers.
+You need to design the Databricks deployment. The design must meet the following requirements:
+Data engineers must only be able to access the storage folders for which they are explicitly permitted.
+The solution should require minimal development effort.
+The solution should keep costs as low as possible.
+What should you include in the recommendation for “Cluster Configuration”?
+
+Credential passthrough
+Managed Identities
+MLflow
+A runtime that contains Photon
+Secret Scope
+
+Credential passthrough is correct because it allows Azure Databricks clusters to access Azure Data Lake Storage using the identity of the user who is logged in. This means access control is enforced at the storage layer based on the user’s Microsoft Entra ID permissions, ensuring that data engineers can only access folders they are authorized for. It also minimizes development effort because there is no need to implement custom access logic in code, and it integrates natively with Databricks Premium SKU.
+Managed Identities is incorrect because it provides access at the cluster or workspace level, not per-user. All users would share the same identity when accessing storage, which does not allow enforcing per-user folder permissions.
+MLflow is incorrect because it is a tool used to track machine learning experiments and models, and it does not handle storage access or permission enforcement.
+A runtime that contains Photon is incorrect because Photon is an execution engine that enhances query performance. It does not provide any functionality related to authentication or folder-level access control.
+Secret Scope is incorrect because it is used to store and manage secrets, such as credentials and API keys. It does not enforce per-user access permissions to folders in Azure Data Lake Storage.
+
+Reference Link(s):
+https://learn.microsoft.com/en-us/azure/databricks/admin/account-settings/account
+https://learn.microsoft.com/en-us/azure/databricks/security/credential-passthrough/adls-passthrough
+
+問題31
+You have an Azure subscription that includes two applications named SalesApp and ShippingApp.
+SalesApp processes sales transactions. When a transaction requires shipping, SalesApp places a message into an Azure Storage queue. ShippingApp monitors this queue and processes the relevant shipping requests.
+In the future, additional applications will be introduced. Each new application will handle only specific shipping requests based on transaction details.
+You need to recommend a replacement for the existing storage queue so that each application can independently receive and process only the messages that apply to it.
+What should you recommend?
+
+one Azure Data Factory pipeline
+multiple storage account queues
+one Azure Service Bus queue
+one Azure Service Bus topic
+
+one Azure Service Bus topic is correct because Azure Service Bus topics support a publish-subscribe (pub-sub) pattern, which allows multiple applications to independently subscribe to the same message stream and filter messages based on specific criteria. This fits the requirement for supporting multiple future applications, each processing relevant transactions based on transaction details. With subscriptions and filters, each application can receive only the messages it needs without interfering with other consumers.
+one Azure Data Factory pipeline is incorrect because Data Factory is used for data integration and transformation workflows, not for real-time messaging or event-driven communication between applications. It does not offer message queueing or pub-sub behavior.
+multiple storage account queues is incorrect because this would require duplicating messages manually to each queue for every application, increasing complexity and management overhead. It also lacks routing and filtering capabilities, making it inefficient for scaling to multiple consumers.
+one Azure Service Bus queue is incorrect because Service Bus queues follow a one-to-one consumer model. Only one application can receive and process each message, which does not support the requirement of having multiple applications processing based on different criteria.
+
+Reference Link(s):
+https://learn.microsoft.com/en-us/azure/service-bus-messaging/service-bus-queues-topics-subscriptions
+https://learn.microsoft.com/en-us/azure/service-bus-messaging/topic-filters
+https://learn.microsoft.com/en-us/azure/storage/queues/storage-queues-introduction
+
+問題32
+You have an Azure subscription that includes the following storage accounts:
+StoreAlpha
+Account type: StorageV2
+Performance tier: Standard
+StoreBeta
+Account type: StorageV2
+Performance tier: Premium
+StoreGamma
+Account type: BlobStorage
+Performance tier: Standard
+StoreDelta
+Account type: FileStorage
+Performance tier: Premium
+You are planning to deploy two new applications with these requirements:
+AppOne
+Requires lifecycle management rules to move application data between different storage access tiers.
+AppTwo
+Requires application data to be stored in an Azure file share.
+Which storage accounts should you recommend for AppOne?
+
+Storage1 and storage2 only
+Storage1 and storage3 only
+Storage1, storage2, and storage3 only
+Storage1, storage2, storage3, storage4
+
+Storage1 and storage3 only is the correct answer. App1 requires the use of lifecycle management to automatically move data between storage tiers (Hot, Cool, Archive). This capability is only supported in StorageV2 (Standard performance) and BlobStorage (Standard performance) accounts.
+Storage1 is a StorageV2 account with Standard performance, so it fully supports lifecycle management.
+Storage3 is a BlobStorage account with Standard performance, which also supports lifecycle management for blobs.
+Storage2 is a StorageV2 account but with Premium performance, and Premium-tier accounts do not support lifecycle management policies.
+Storage4 is a FileStorage account, which is intended for Azure file shares, not blob storage, and does not support lifecycle management.
+
+Reference Link(s):
+https://learn.microsoft.com/en-us/azure/storage/blobs/lifecycle-management-overview
+https://learn.microsoft.com/en-us/azure/storage/common/storage-account-overview
+https://learn.microsoft.com/en-us/azure/storage/blobs/access-tiers-overview
+https://learn.microsoft.com/en-us/azure/storage/files/storage-files-introduction
+
+問題33
+You have an Azure subscription that includes the following storage accounts:
+StoreAlpha
+Account type: StorageV2
+Performance tier: Standard
+StoreBeta
+Account type: StorageV2
+Performance tier: Premium
+StoreGamma
+Account type: BlobStorage
+Performance tier: Standard
+StoreDelta
+Account type: FileStorage
+Performance tier: Premium
+You are planning to deploy two new applications with these requirements:
+AppOne
+Requires lifecycle management rules to move application data between different storage access tiers.
+AppTwo
+Requires application data to be stored in an Azure file share.
+Which storage accounts should you recommend for AppTwo?
+
+Storage4 only
+Storage1 and storage4 only
+Storage1, storage2, and storage4 only
+Storage1, storage2, storage3, storage4
+
+Storage1 and Storage4 only is correct.
+App2 needs to store data in an Azure file share, which is supported by:
+Storage1, a StorageV2 (Standard) account that supports standard Azure Files.
+Storage4, a FileStorage (Premium) account that supports premium Azure Files, optimized for low-latency and high-performance workloads.
+Storage2, although it is a StorageV2 account, has a Premium performance tier, which does not support Azure Files—premium file shares are only supported via the FileStorage type.
+Storage3 is a BlobStorage account and does not support file shares at all.
+Reference Link(s.):
+https://learn.microsoft.com/en-us/azure/storage/files/storage-files-introduction
+https://learn.microsoft.com/en-us/azure/storage/common/storage-account-overview
+https://learn.microsoft.com/en-us/azure/storage/blobs/lifecycle-management-overview
+
+問題34
+You are planning an Azure-hosted application that will store video content ranging from 50 MB up to 15 GB per file. The application will be accessed over the internet and will use certificate-based authentication.
+You need to choose a storage option for the video files that meets the following requirements:
+Delivers the fastest possible read performance
+Keeps storage costs as low as possible
+What storage solution should you select?
+
+Azure Files
+Azure Data Lake Storage Gen2
+Azure Blob Storage
+Azure SQL Database
+
+Azure Blob Storage is correct because it is optimized for storing large unstructured data, such as video files, and provides fast read performance through hot access tiering, CDN integration, and high scalability. It supports public access over HTTPS, integrates with certificate-based authentication using Azure Active Directory (AAD) or shared access signatures (SAS), and offers cost-effective storage through tiering (hot, cool, and archive storage) to minimize costs for less frequently accessed videos.
+Azure Files is incorrect because Azure Files is a managed SMB/NFS file share service designed for enterprise applications, not for large-scale internet-facing content delivery. It lacks cost-efficient tiering and direct public access.
+Azure Data Lake Storage Gen2 is incorrect because it is designed for big data analytics workloads, not high-speed content delivery for video streaming. While it provides hierarchical namespace for structured file storage, it does not offer performance benefits for video content serving compared to Blob Storage.
+Azure SQL Database is incorrect because SQL databases are not meant for storing large unstructured files like videos. Using SQL for storing 50MB to 12GB files would be highly inefficient in terms of performance and cost.
+
+Reference Link(s):
+https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction
+https://learn.microsoft.com/en-us/azure/storage/blobs/access-tiers-overview
+https://learn.microsoft.com/en-us/azure/storage/files/storage-files-introduction
+https://learn.microsoft.com/en-us/azure/data-lake-store/data-lake-store-overview
+
+問題35
+You are planning to move an existing on-premises database to Azure.
+The database platform must be designed to meet these requirements:
+Allow the database to scale up and scale down as needed
+Provide backups that are replicated across geographic regions
+Support a maximum database size of up to 75 TB
+Be suitable for online transaction processing (OLTP) workloads
+Which Azure service should you choose as part of the database design?
+
+Azure SQL Database
+Azure SQL Managed Instance
+Azure Synapse Analytics
+SQL Server on Azure Virtual Machines
+
+Azure SQL Database is correct because it meets all the specified requirements:
+Scaling up and down: Azure SQL Database supports dynamic scaling of compute resources with minimal downtime.
+Geo-redundant backups: Azure SQL Database has built-in geo-redundant backup capabilities that automatically store backups in paired regions.
+Support for 75 TB: While most Azure SQL Database tiers have lower size limits, the Hyperscale tier supports databases up to 100 TB, which meets the 75 TB requirement.
+Optimized for OLTP: Azure SQL Database is a fully managed PaaS solution designed for transactional workloads, with features like automatic performance tuning and indexing.
+Azure SQL Managed Instance is incorrect because the maximum database size is limited to 16 TB, which does not meet the requirement for supporting up to 75 TB.
+Azure Synapse Analytics is incorrect because it is optimized for Online Analytical Processing (OLAP), not Online Transaction Processing (OLTP). Synapse is built for data warehousing and analytics, making it unsuitable for high-throughput transactional workloads.
+SQL Server on Azure Virtual Machines is incorrect because while it supports large database sizes, geo-replication is not natively available like in Azure SQL Database. Geo-redundancy would require custom backup and replication configurations, increasing administrative overhead.
+Reference Link(s.):
+https://learn.microsoft.com/en-us/azure/azure-sql/database/active-geo-replication-overview?view=azuresql&tabs=tsql
+https://learn.microsoft.com/en-us/azure/azure-sql/database/high-availability-sla
+https://learn.microsoft.com/en-us/azure/azure-sql/managed-instance/sql-managed-instance-paas-overview
+https://learn.microsoft.com/en-us/azure/azure-sql/database/service-tier-hyperscale?view=azuresql
+
+問題36
+You are planning to move an existing on-premises database to Azure.
+The database platform must be designed to meet these requirements:
+Allow the database to scale up and scale down as needed
+Provide backups that are replicated across geographic regions
+Support a maximum database size of up to 75 TB
+Be suitable for online transaction processing (OLTP) workloads
+Which Azure Service tier should you choose as part of the database design?
+
+Basic
+Business Critica
+General Purpose
+Hyperscale
+Premium
+Standard
+
+Hyperscale is correct because it meets all the specified requirements:
+Support scaling up and down: The Hyperscale tier provides instantaneous scaling with rapid auto-grow storage. Compute and storage scale independently, allowing for flexible up/down scaling.
+Support geo-redundant backups: Hyperscale supports active geo-replication and geo-redundant backups for disaster recovery and compliance needs.
+Support a database of up to 75 TB: Hyperscale is the only service tier in Azure SQL Database that supports up to 100 TB, exceeding the 75 TB requirement.
+Optimized for OLTP: Hyperscale is designed for high-performance OLTP workloads, leveraging fast log-based storage architecture and caching mechanisms for low-latency transactions.
+
+The rest of the options are incorrect because none of these tiers support the size of 75TB.
+
+Reference Link(s):
+https://learn.microsoft.com/en-us/azure/azure-sql/database/service-tier-hyperscale?view=azuresql
+
+問題37
+You are building an application that collects and serves content to users from a central data store.
+You must choose a database platform that meets these requirements:
+Allows data access by using SQL-based queries
+Supports write operations from multiple regions at the same time
+Ensures consistently low latency for read operations
+Which database solution should you recommend?
+
+Azure Cosmos DB for NoSQL
+Azure SQL Database that uses active geo-replication
+Azure SQL Database Hyperscale
+Azure Cosmos DB for PostgreSQL
+
+Azure Cosmos DB for NoSQL is correct because it meets all the specified requirements. It supports SQL commands through the Azure Cosmos DB SQL API, enables multi-master writes across multiple regions for high availability, and guarantees low-latency read operations with single-digit millisecond performance. Cosmos DB is optimized for globally distributed applications, making it an ideal choice for content aggregation scenarios.
+Azure SQL Database that uses active geo-replication is incorrect because active geo-replication only provides read-only replicas, meaning it does not support multi-master writes. Writes must be directed to the primary database, making it unsuitable for a distributed write-heavy workload.
+Azure SQL Database Hyperscale is incorrect because while it offers high scalability and performance, it does not provide multi-master writes or global low-latency reads. Hyperscale is designed for large transactional workloads but does not match the distributed nature of Cosmos DB.
+Azure Cosmos DB for PostgreSQL is incorrect because while it supports multi-region writes, it is optimized for PostgreSQL workloads rather than NoSQL-based applications. It lacks the SQL API and JSON document store flexibility that Cosmos DB for NoSQL offers, making it less ideal for content aggregation.
+
+Reference Link(s):
+https://learn.microsoft.com/en-us/azure/cosmos-db/introduction
+https://learn.microsoft.com/en-us/azure/cosmos-db/consistency-levels
+https://learn.microsoft.com/en-us/azure/azure-sql/database/active-geo-replication-overview
+https://learn.microsoft.com/en-us/azure/cosmos-db/distribute-data-globally
+https://learn.microsoft.com/en-us/azure/cosmos-db/postgresql/introduction
+
+問題38
+You have SQL Server on an Azure virtual machine. The databases are written to nightly as part of a scheduled batch job.
+You need to choose a disaster recovery approach for the database data that meets these requirements:
+Allows recovery if an entire Azure region becomes unavailable
+Support a recovery time objective (RTO) of 15 minutes.
+Support a recovery point objective (RPO) of 24 hours.
+Performs recovery automatically without manual intervention
+Keeps costs as low as possible
+What should you include in the recommendation?
+
+Azure virtual machine availability sets
+Azure Disk Backup
+an Always On availability group
+Azure Site Recovery
+
+Azure Site Recovery is correct because it provides disaster recovery for Azure virtual machines, including SQL Server, in the event of a regional outage. It supports automated recovery, meeting the RTO requirement of 15 minutes, and allows for scheduled replication to achieve an RPO of 24 hours while keeping costs lower than high-availability solutions like Always On availability groups.
+Azure virtual machine availability sets is incorrect because availability sets provide high availability within a single region, protecting against hardware failures but not regional outages. This does not meet the requirement for regional disaster recovery.
+Azure Disk Backup is incorrect because it provides snapshot-based protection but does not support automated recovery. Restoring from backups is a manual process, and it may not meet the 15-minute RTO requirement.
+An Always On availability group is incorrect because, while it offers low RTO and RPO, it is a high-cost solution requiring SQL Server Enterprise edition. This does not align with the cost-minimization requirement. Additionally, Always On is more suited for high availability rather than disaster recovery across Azure regions.
+
+Reference Link(s):
+https://learn.microsoft.com/en-us/azure/site-recovery/azure-to-azure-quickstart
+https://learn.microsoft.com/en-us/azure/virtual-machines/availability-set-overview
+https://learn.microsoft.com/en-us/azure/site-recovery/site-recovery-overview
+https://learn.microsoft.com/en-us/azure/backup/backup-azure-vms-introduction
+https://learn.microsoft.com/en-us/sql/database-engine/availability-groups/windows/overview-of-always-on-availability-groups-sql-server
+
+問題39
+You are planning to deploy an Azure Storage account that will host file shares. The file shares will be accessed by transaction-intensive on-premises applications.
+The storage design must meet the following requirements:
+Minimize latency when accessing the file shares
+Provide the highest level of resiliency available for the chosen storage tier
+What should you recommend for the storage tier?
+
+Hot
+Premium
+Transaction optimized
+
+Premium is correct because it offers the lowest latency and highest IOPS, making it the best choice for transaction-intensive workloads that require fast and consistent performance. Premium file shares are backed by SSD-based storage, which is ideal for on-premises applications with high transaction rates. Additionally, Premium tier supports zone-redundant storage (ZRS), which provides the highest level of resiliency by replicating data synchronously across three availability zones in a region.
+Hot is incorrect because it is designed for Blob storage, not for Azure Files. It is also optimized for frequently accessed blob data rather than transaction-intensive file operations.
+Transaction optimized is incorrect because although it is designed for file shares with frequent access and low latency requirements, it provides lower performance compared to Premium. It also does not support ZRS, so it offers a lower level of resiliency.
+
+Reference Link(s):
+https://learn.microsoft.com/en-us/azure/storage/files/storage-files-planning
+https://learn.microsoft.com/en-us/azure/storage/files/storage-how-to-create-file-share?tabs=azure-portal
+https://learn.microsoft.com/en-us/azure/storage/blobs/access-tiers-overview
+
+問題40
+You are planning to deploy an Azure Storage account that will host file shares. The file shares will be accessed by transaction-intensive on-premises applications.
+The storage design must meet the following requirements:
+Minimize latency when accessing the file shares
+Provide the highest level of resiliency available for the chosen storage tier
+What should you recommend for  redundancy?
+
+Geo-redundant storage (GRS)
+Zone-redundant storage (ZRS)
+Locally-redundant storage (LRS)
+
+Zone-redundant storage (ZRS) is correct because it provides the highest level of resiliency for storage tiers that require low latency and high availability, especially for transaction-intensive workloads. ZRS replicates data synchronously across three separate availability zones within a region, ensuring high durability and protection against zone-level failures while maintaining low latency access.
+This makes ZRS the ideal redundancy option when combined with the Premium tier for Azure Files, which is SSD-backed and optimized for performance-critical scenarios accessed from on-premises.
+Geo-redundant storage (GRS) is incorrect because, while it provides cross-region replication, it introduces higher latency and does not support read access in all configurations. GRS is designed more for disaster recovery than for active, low-latency, transaction-heavy access.
+Locally-redundant storage (LRS) is incorrect because it replicates data within a single data center, which provides the lowest level of resiliency. It does not protect against data center-level failures, making it unsuitable when maximum resiliency is required.
+
+Reference Link(s):
+https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy
+https://learn.microsoft.com/en-us/azure/storage/files/storage-files-planning
+https://learn.microsoft.com/en-us/azure/storage/blobs/access-tiers-overview
+
+問題41
+You are designing a software-as-a-service (SaaS) solution that allows Microsoft Entra ID users to create and publish online surveys. The solution consists of a front-end web application and a back-end web API, where the web application calls the API to manage survey updates.
+You need to define an authorization model for this architecture. The design must meet the following requirements:
+The web application must call the back-end API by using OAuth 2.0 bearer tokens.
+The web application must authenticate by using the individual identities of signed-in users, not an application-only identity.
+Based on these requirements, complete the following statement with the most appropriate option:
+The access tokens will be generated by ___________________.
+
+Microsoft Entra
+A web app
+Web API
+Azure Site Recovery
+
+Microsoft Entra is correct because in an OAuth 2.0 authorization flow using Microsoft Entra ID (formerly Azure Active Directory), the authorization server (Microsoft Entra ID) is responsible for issuing access tokens. In this SaaS scenario, the web app authenticates on behalf of the signed-in user, and obtains an OAuth 2.0 bearer token from Microsoft Entra ID. This token is then used to authorize access to the back-end web API.
+The process involves:
+The user signs into the web app using Microsoft Entra ID.
+The web app requests an access token for the API from Microsoft Entra ID.
+Microsoft Entra ID issues the access token, which the web app uses to call the API.
+
+2025-03-21_17-25-09-fe93d448b6736e73653cc289fe823385.png.webp
+
+A web app is incorrect because the web app acts as the client in the OAuth 2.0 flow. It requests tokens but does not issue them.
+Web API is incorrect because the web API is the resource server, not the issuer. It validates tokens but does not generate them.
+
+Reference Link(s):
+https://learn.microsoft.com/en-us/entra/identity-platform/v2-oauth2-auth-code-flow
+https://learn.microsoft.com/en-us/entra/identity-platform/access-tokens
+https://learn.microsoft.com/en-us/entra/identity-platform/scenario-web-app-call-api-app-registration
+
+問題42
+You are designing a software-as-a-service (SaaS) solution that allows Microsoft Entra ID users to create and publish online surveys. The solution consists of a front-end web application and a back-end web API, where the web application calls the API to manage survey updates.
+You need to define an authorization model for this architecture. The design must meet the following requirements:
+The web application must call the back-end API by using OAuth 2.0 bearer tokens.
+The web application must authenticate by using the individual identities of signed-in users, not an application-only identity.
+Based on these requirements, complete the following statement with the most appropriate option:
+Authorization decisions will be performed by ___________________.
+
+Microsoft Entra
+A web app
+Web API
+
+Web API is correct because in an OAuth 2.0-based architecture, the resource server (in this case, the web API) is responsible for authorization decisions. After the web app obtains an OAuth 2 bearer token from Microsoft Entra ID on behalf of the user, it includes that token in the request to the web API.
+The web API validates the token, examines its claims (e.g., roles, scopes, user identity), and then makes an authorization decision based on the token contents and any internal logic (such as user permissions, roles, or access rules).
+Microsoft Entra is incorrect because it is the identity provider and token issuer. It does not make resource-level authorization decisions—it simply issues tokens based on authentication and consented scopes.
+A web app is incorrect because while it authenticates users and may perform UI-level access control, it does not control access to the back-end API resources. That responsibility lies with the web API, which is the protected resource in this flow.
+
+Reference Link(s):
+https://learn.microsoft.com/en-us/azure/active-directory/develop/scenario-web-api-call-api-overview
+https://learn.microsoft.com/en-us/entra/identity-platform/access-tokens
+https://learn.microsoft.com/lb-lu/azure/architecture/guide/multitenant/considerations/identity
+https://learn.microsoft.com/en-us/entra/architecture/auth-oauth2
+
+問題43
+You manage an Azure subscription that includes a blob container with multiple blobs.
+Fifteen users from the HR department require access to the blobs, but only for the duration of the month of September.
+You need to recommend a security approach that allows access for this limited time period and automatically prevents access outside of September.
+Which security solution should you include in the recommendation?
+
+Conditional Access policies
+shared access signatures (SAS)
+access keys
+certificates
+
+shared access signatures (SAS) is correct because it allows you to grant limited access to Azure Blob Storage resources for a specific time window—in this case, during the month of September. With SAS, you can configure permissions (e.g., read, write), scope (specific containers or blobs), and start and expiry times, providing a secure and flexible way to allow temporary access without exposing storage account access keys.
+Conditional Access policies is incorrect because they apply to user sign-in conditions in Microsoft Entra ID and are not used for Azure Storage access control. They cannot restrict blob access based on time windows for shared data.
+Access keys is incorrect because they grant full access to the storage account and do not provide granular or time-limited access. Sharing access keys is less secure and not recommended for temporary user access.
+Certificates is incorrect because they are typically used for client authentication in application or API scenarios and not for temporary or granular access to Azure Storage resources.
+Reference Link(s):
+https://learn.microsoft.com/en-us/azure/storage/common/storage-sas-overview
+https://learn.microsoft.com/en-us/azure/storage/blobs/authorize-access-azure-storage
+https://learn.microsoft.com/en-us/rest/api/storageservices/delegate-access-with-shared-access-signature
+https://learn.microsoft.com/en-us/azure/storage/common/storage-account-keys-manage?tabs=azure-portal
+
+問題44
+You are planning to use an Azure Storage account to store data assets.
+The storage solution must meet the following requirements:
+Prevent stored data from being modified after it is written
+Ensure that anonymous access to the storage account is not allowed
+Support access control list (ACL)–based permissions that integrate with Microsoft Entra
+What should you include in the recommendation?
+
+Azure Blob Storage
+Azure Data Lake Storage
+Azure NetApp Files
+Azure Files
+
+Azure Data Lake Storage is correct. Azure Data Lake Storage is the most suitable option to address the requirements. Firstly, to support immutable storage, Azure Data Lake Storage offers robust features such as "soft delete" and "immutable storage." This means that once data is written, it becomes non-erasable and non-modifiable. You can set a retention period, ensuring that files can't be deleted until after that period has elapsed. Secondly, in terms of access control, Azure Data Lake Storage, by default, restricts anonymous access to the storage account. This enhances the overall security posture, ensuring that only authenticated users with the appropriate credentials can access the stored data. Lastly, Azure Data Lake Storage supports Access Control Lists (ACLs), offering a fine-grained approach to managing permissions at both the directory and file levels. This includes the ability to grant specific permissions to Microsoft Entra users or groups, aligning seamlessly with the requirement for ACL-based Microsoft Entra permissions. This ensures that access to data is controlled with precision, providing a secure solution for storing valuable data assets.
+Azure Blob Storage is incorrect. Azure Blob Storage, a key component in Microsoft's cloud offerings, supports immutability with versioning to maintain data integrity over time. It does not inherently support fine-grained access control using Access Control Lists (ACLs) for Microsoft Entra permissions. Access management relies on Azure role-based access control (Azure RBAC), providing effective permissions control across various levels. While Azure RBAC differs from the control of ACLs in Azure Data Lake Storage, Azure Blob Storage supports access control through shared access signatures and Microsoft Entra. This solution is well-suited for efficiently storing large volumes of unstructured data, making it the preferred choice for managing varied and unorganized information in the cloud.
+Azure NetApp Files is incorrect. Azure NetApp Files is specifically designed to deliver high-performance file storage customized for enterprise workloads. Its key features include high performance, high availability, and data protection. It also integrates built-in security features, including Role-Based Access Control (RBAC)/Identity and Access Management (IAM), Active Directory Domain Services (AD DS), Microsoft Enterprise Domain Services, and LDAP integration. These security measures are in place to prevent unauthorized access, breaches, and configuration errors. The combination of high performance and strong security makes Azure NetApp Files well-suited for enterprise scenarios where both speed and data protection are crucial. However, considering the requirement "Supports access control list (ACL)-based Microsoft Entra permissions," Azure NetApp Files may not offer full support for Access Control Lists (ACLs) based on Microsoft Entra permissions.
+Azure Files is incorrect. Azure Files is a fully managed file share service compatible with Windows, Linux, and macOS, accessible through SMB, NFS, and Azure Files REST API. While it is user-friendly and suitable for general-purpose file storage, it may not fully support immutable storage compared to Azure Data Lake Storage. Additionally, its precise control over Microsoft Entra permissions using ACLs might be limited compared to Azure Data Lake Storage. Azure Files is designed for ease of use and may not provide specific features required for managing data assets in an immutable and highly controlled manner. Azure file shares can be used to replace or enhance on-premises file servers and "lift and shift" applications.
+
+Read More:
+https://learn.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-introduction#finer-grain-security-model
+https://learn.microsoft.com/en-us/azure/data-lake-store/data-lake-store-comparison-with-blob-storage
+https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction
+https://learn.microsoft.com/en-us/azure/azure-netapp-files/azure-netapp-files-introduction
+https://learn.microsoft.com/en-us/azure/storage/files/storage-files-introduction
+
+問題45
+You are responsible for protecting data on 20 on-premises servers running Windows Server by backing them up to Azure.
+The backup solution must satisfy these conditions:
+Capture all files and directories on each server
+Keep three replicated copies of the backup data within Azure
+Keep overall backup costs as low as possible
+What should you configure on the servers to meet these requirements?
+
+The Azure Site Recovery Mobility service
+The Microsoft Azure Recovery Services (MARS) agent
+Volume Shadow Copy Service (VSS)
+
+The Microsoft Azure Recovery Services (MARS) agent is correct. To ensure that your 20 on-premises servers running Windows Server are backed up daily and that all files and folders are included in these backups, while also maintaining three copies of the backups in Azure it's best to set up the Microsoft Azure Recovery Services (MARS) agent on your servers. The MARS agent is like a dedicated backup assistant for your servers. It allows you to plan daily backups, making sure all your important files, folders, and even the system state from on-premises machines and Azure VMs are securely saved. This provides an additional level of protection for your data.It also supports keeping multiple copies of these backups in Azure, and it's cost-effective.
+The Azure Site Recovery Mobility service is incorrect. It is primarily used for disaster recovery and migration scenarios. Its main role is to efficiently replicate entire virtual machines and physical servers to Azure, which is essential for maintaining business continuity during major disasters. However, when it comes to routine tasks like backing up individual files and folders every day, it lacks the level of control. For your daily backup needs, where the focus is on protecting all your files and folders, maintaining multiple copies, and doing so cost-effectively, the Microsoft Azure Recovery Services (MARS) agent is the better-suited option.
+Volume Shadow Copy Service (VSS) is incorrect. VSS is like a tool in Windows that helps to take snapshots of your files and folders. These snapshots are like pictures of your data at a specific moment. You can recover items if you accidentally delete something by going back to that snapshot and retrieving what you lost. While VSS is helpful for backups, it doesn't offer the same level of automation, integration with Azure services and cost-effectiveness as the Microsoft Azure Recovery Services (MARS) agent. Using VSS for daily backups would require more manual effort and scripting to fulfill the specified requirements.
+
+Read More:
+https://learn.microsoft.com/en-us/azure/backup/install-mars-agent#about-the-mars-agent
+https://learn.microsoft.com/en-us/azure/site-recovery/vmware-physical-manage-mobility-service
+https://learn.microsoft.com/en-us/azure/backup/backup-azure-recovery-services-vault-overview
+https://learn.microsoft.com/en-us/windows-server/storage/file-server/volume-shadow-copy-service
+
+問題46
+You are responsible for protecting data on 20 on-premises servers running Windows Server by backing them up to Azure.
+The backup solution must satisfy these conditions:
+Capture all files and directories on each server
+Keep three replicated copies of the backup data within Azure
+Keep overall backup costs as low as possible
+What should you configure for the storage?
+
+Geo-redundant storage (GRS)
+Locally-redundant storage (LRS)
+Zone-redundant storage (ZRS)
+
+Locally-redundant storage (LRS) is correct. To meet the specific requirements of the question, where you need to perform daily backups of 20 on-premises servers to a Recovery Services vault while ensuring that three copies of backups are maintained in Azure and costs are minimized, it is recommended to configure the storage with Locally-redundant storage (LRS). LRS provides at least 99.999999999% (11 nines) durability of objects over a given year.
+Geo-Redundant Storage (GRS) is incorrect. It is designed for high data availability and disaster recovery. It replicates data to a secondary Azure region, which can be expensive, especially if the primary goal is to minimize costs. In the scenario of daily backups for on-premises servers, it may result in higher costs. GRS offers durability for storage resources of at least 99.99999999999999% (16 9's) over a given year.
+Zone-redundant storage (ZRS) is incorrect. It improves data availability by storing it across multiple availability zones within a region. It's particularly useful for high-availability scenarios where system uptime is crucial. However, it's generally more expensive than Locally-Redundant Storage (LRS). When focusing on cost savings, especially in scenarios like daily backups for on-premises servers, LRS is the preferred economical option. ZRS offers durability for storage resources of at least 99.9999999999% (12 9's) over a given year.
+
+
+問題47
+You are designing an access authorization approach for multiple Azure Storage accounts within a single subscription.
+The plan includes:
+Five storage accounts used to store block blobs
+Five storage accounts used to host file shares that are accessed over the SMB protocol
+The access solution must meet these requirements:
+Provide the highest possible level of security
+Disallow shared access keys
+Support time-bound access whenever feasible
+What should you include in the solution specifically for blob access?
+
+A user delegation shared access signature (SAS) only
+A shared access signature (SAS) and a stored access policy
+A user delegation shared access signature (SAS) and a stored access policy
+
+A user delegation shared access signature (SAS) only is correct. To maximize security, prevent the use of shared keys, and support time-limited access for the storage accounts storing block blobs in Azure, it is recommended to implement a user delegation shared access signature (SAS) only. This approach improves security by combining access permissions with Microsoft Entra identities, reducing the risk associated with shared keys. Additionally, a user delegation SAS meets the requirement for time-limited access, allowing you to define the validity period of the SAS token. It ensures a secure and controlled access mechanism for block blob storage in Azure.
+A shared access signature (SAS) only and a stored access policy is incorrect. Combining a Shared Access Signature (SAS) and Stored Access Policy will introduce security risks. This is generally not recommended, especially in scenarios where a maximum security is required. Additionally, it is essential to consider that stored access policies may not always be universally supported to all types of SAS, making it less suitable. Therefore, while implementing an access authorization solution for the storage accounts, it is important to check the security conditions and select the most appropriate SAS options like user delegation shared access signature.
+A user delegation shared access signature (SAS) and a stored access policy is incorrect. User Delegation SAS alone is simple and sufficient for the given scenario for the specified requirements, because It already provides secure delegation through Microsoft Entra and also it supports time-limited access. Also Stored access policies are not supported for a user delegation SAS.
+
+Read More:
+https://learn.microsoft.com/en-us/rest/api/storageservices/define-stored-access-policy
+https://learn.microsoft.com/en-us/rest/api/storageservices/create-user-delegation-sas
+
+問題48
+You are designing an access authorization approach for multiple Azure Storage accounts within a single subscription.
+The plan includes:
+Five storage accounts used to store block blobs
+Five storage accounts used to host file shares that are accessed over the SMB protocol
+The access solution must meet these requirements:
+Provide the highest possible level of security
+Disallow shared access keys
+Support time-bound access whenever feasible
+What should you include in the solution specifically for file shares?
+
+Microsoft Entra credentials
+A user delegation shared access signature (SAS) only
+A user delegation shared access signature (SAS) and a stored access policy
+
+Microsoft Entra credentials is correct. To enhance security, avoid using shared keys, and enable time-limited access for your Azure file shares, it's best to go with Microsoft Entra credentials. These credentials provide a secure and user-focused way to access and manage resources through Microsoft Entra identities. Microsoft Entra offers a strong authentication process, and choosing Microsoft Entra credentials fits well with security practices. Moreover, Microsoft Entra comes with user-friendly features like Multi-Factor Authentication (MFA) and conditional access policies, adding extra security to your storage accounts.
+A user delegation shared access signature (SAS) and a stored access policy is incorrect. Stored access policies are not supported for a user delegation SAS. add this to below A user delegation SAS alone lacks the identity-based security that Microsoft Entra ID credentials provide. It relies on a shared key, posing a potential security risk and not aligning with the goal of maximizing security and avoiding shared keys.
+A user delegation shared access signature (SAS) only is incorrect. Choosing only a user delegation shared access signature (SAS) for file shares is not recommended, as it lacks the identity-based security provided by Microsoft Entra credentials. Relying on a user delegation SAS, which uses a shared key, may involve security risks. Considering the requirement to maximize security and avoid shared keys, Microsoft Entra credentials offer a strong and identity-centric approach to securely access and manage file shares securely without relying on shared keys.
+
+Read More:
+https://learn.microsoft.com/en-us/rest/api/storageservices/define-stored-access-policy
+https://learn.microsoft.com/en-us/rest/api/storageservices/create-user-delegation-sas
+
+問題49
+You are architecting a data analytics solution that uses Azure Synapse Analytics together with Azure Data Lake Storage Gen2.
+As part of the design, you need to select the appropriate Azure Synapse pool type to meet the following requirement:
+Load data from Azure Data Lake Storage into hash-distributed tables
+What should you recommend for this requirement?
+
+A dedicated SQL pool
+A serverless Apache Spark pool
+A serverless SQL pool
+
+A dedicated SQL pool is correct. When ingesting data from Azure Data Lake Storage Gen2 into hash-distributed tables in Azure Synapse Analytics, it is recommended to use a dedicated SQL pool. This pool, previously named SQL Data Warehouse, its purpose is to be built for substantial data warehousing and analytical tasks. With hash-distributed tables, data is distributed across multiple nodes using a hash function, boosting query performance for operations such as joins and aggregations. This makes the dedicated SQL pool well-suited for efficiently handling large-scale data analytics workloads.
+A serverless Apache Spark pool is incorrect. A serverless Apache Spark pool in Azure Synapse Analytics is designed for on-demand data processing and analytics using the Apache Spark engine. While it allows you to interact with and analyze data stored in various data sources, including Azure Data Lake Storage Gen2, it is not specifically designed for the direct ingestion of data into hash-distributed tables. Considering the requirements of Azure Synapse Analytics, the concept of hash-distributed tables is more closely associated with dedicated SQL pools (formerly SQL Data Warehouse). In comparison, dedicated SQL pools support the creation of hash-distributed tables, where data is distributed across multiple nodes based on a hash function. The serverless Apache Spark pool, on the other hand, is better suited for ad-hoc querying, exploration, and processing of data using the Spark engine.
+A serverless SQL pool is incorrect. In every Azure Synapse Analytics workspace comes with serverless SQL pool endpoints that you can use to query data in the Azure Data Lake. This distributed data processing system is designed for large-scale data and computational tasks, enabling rapid analysis of Big Data within seconds to minutes, depending on the workload. The system's built-in query execution fault-tolerance ensures high reliability and success rates, even for extensive and long-running queries involving large datasets. The key advantage lies in its serverless nature, eliminating the need for infrastructure setup or maintenance. Each Azure Synapse workspace includes a default endpoint, so you can start querying data as soon as the workspace is created. Importantly, the serverless SQL pool doesn't support local storage or ingestion capabilities. Apparently, there is no charge for reserved resources, you are only billed for the data processed by the queries you run. This model enables seamless querying of files in your Azure Storage accounts, but it's important to note that, according to the specified requirements, it doesn't support data ingestion functionalities.
+
+Read More:
+https://learn.microsoft.com/en-us/azure/synapse-analytics/sql-data-warehouse/sql-data-warehouse-overview-what-is
+https://learn.microsoft.com/en-us/azure/synapse-analytics/sql/on-demand-workspace-overview
+https://learn.microsoft.com/en-us/azure/synapse-analytics/sql/best-practices-serverless-sql-pool
+https://learn.microsoft.com/en-us/azure/synapse-analytics/sql/best-practices-dedicated-sql-pool
+
+問題50
+You are architecting a data analytics solution that uses Azure Synapse Analytics together with Azure Data Lake Storage Gen2.
+As part of the design, you need to select the appropriate Azure Synapse pool type to meet the following requirement:
+Implement, query, and update data in Delta Lake
+What should you recommend for this requirement?
+
+A dedicated SQL pool
+A serverless Apache Spark pool
+A serverless SQL pool
+
+A serverless Apache Spark pool is correct. To implement query and update data in delta lake using Azure Synapse Analytics with Azure Data Lake Storage Gen2, a serverless Apache Spark pool is well-suited for the given scenario. Among the given options, only a serverless Apache Spark pool is capable of handling both querying and updating data. Apache Spark pools in Azure Synapse helps data engineers to seamlessly modify Delta Lake files using popular programming languages such as Scala, PySpark, and .NET.
+A serverless SQL pool is incorrect. The serverless SQL pool in the Synapse workspace allows you to easily access and retrieve data stored in the Delta Lake format, making it handy for reporting tools. This pool is flexible and capable of reading Delta Lake files generated by Apache Spark, Azure Databricks, or any other platform using the Delta Lake format. This flexibility makes it the best option for querying and serving data from Delta Lake across different data processing and analytics environments. However, it's important to note that, considering the specified requirement of updating data, it may not be suitable.
+A dedicated SQL pool is incorrect. A dedicated SQL pool (formerly known as SQL Data Warehouse in Azure Synapse Analytics) does support querying data and it is optimized for analytical queries and substantial data warehousing tasks. However, dedicated SQL pools are not typically used for directly updating or modifying data. When it comes to updating data, especially for scenarios like Delta Lake where ACID (atomicity, consistency, isolation, and durability) transactions are involved, tools like serverless Apache Spark or serverless SQL pools are more suitable. These tools are designed to handle big data workloads and provide greater flexibility for both querying and updating data. In summary, a dedicated SQL pool is well-suited for analytics and querying tasks, but it is not the best choice for scenarios that require both querying and updating data.
+
+Read More:
+https://learn.microsoft.com/en-us/azure/synapse-analytics/overview-what-is
+https://learn.microsoft.com/en-us/azure/synapse-analytics/sql/resources-self-help-sql-on-demand?tabs=x80070002#delta-lake
+https://learn.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-introduction
+https://learn.microsoft.com/en-us/azure/synapse-analytics/sql/query-delta-lake-format
+
+問題51
+You manage an Azure subscription that includes an Azure SQL managed instance containing employee records. The data includes sensitive fields such as social security numbers and phone numbers.
+You must configure the database to meet these requirements:
+Members of the helpdesk team should be able to view only the last four digits of an employee’s phone number.
+Cloud administrators must not be able to view employees’ social security numbers.
+Which feature should you enable on the social security numbers column in the managed instance?
+
+Always Encrypted
+Column encryption
+Dynamic data masking
+Transparent Data Encryption (TDE)
+
+Always Encrypted is correct. To prevent cloud administrators from accessing employees' social security numbers, Always Encrypted is the correct choice. Always Encrypted ensures that sensitive data, such as social security numbers remain encrypted when stored and even during query processing. By implementing Always Encrypted, you can guarantee that even administrators with access to the underlying database cannot view the plain text social security numbers. The encryption and decryption of the data are transparently handled by the client application by using the keys managed by the application, adds an extra level of security. If a cloud administrator gains access to the database, they won't be able to see the actual social security numbers without the appropriate keys managed by the application. It is always recommended to securely manage and store the keys using a service like Azure Key Vault.
+Column encryption is incorrect. Column Encryption is a method primarily used to encrypt entire columns of data. However, when the goal is to control access to specific sensitive data, such as social security numbers, Column Encryption may lack the necessary granularity. It is indeed possible to encrypt specific columns using Column Encryption. But the encryption process involves the management of encryption keys. Considering Always Encrypted is the best choice by enabling the application to manage the keys. While Column Encryption is effective for various use cases, considering requirements, such as preventing cloud administrators from accessing certain sensitive data, may not be the ideal choice.
+Dynamic data masking is incorrect. Dynamic Data Masking is not the suitable option according to the requirement. It is designed to control the exposure of sensitive data by masking it in query results and helps in preventing unauthorized access to the sensitive data by enabling customers to specify how much data they need to be revealed on the application. However, it doesn't provide encryption on the data during the rest and querying process. The main purpose of the DDM is to limit exposure to the sensitive data and prevent users who shouldn’t have access to the data from viewing it. DDM also allows you to mask data on specific parts of a column based on rules.
+Transparent Data Encryption (TDE) is incorrect. Transparent Data Encryption (TDE) is not the most suitable choice when the goal is to prevent cloud administrators from viewing specific column data, such as social security numbers. TDE operates at the page level, encrypting the entire database, including all tables and columns, rather than encrypting specific columns. Enabling TDE would encrypt the entire database, including both sensitive and non-sensitive information. However, it doesn't allow the encryption of specific columns, like social security numbers, which is crucial for limiting access to specific sensitive data. In the given scenario, Always Encrypted is more suitable as it provides column-level encryption, enabling the selective encryption of particular columns.
+
+Read More:
+https://learn.microsoft.com/en-us/sql/relational-databases/security/encryption/always-encrypted-database-engine?view=sql-server-ver16
+https://learn.microsoft.com/en-us/sql/relational-databases/security/encryption/encrypt-a-column-of-data?view=sql-server-ver16
+https://learn.microsoft.com/en-us/sql/relational-databases/security/encryption/transparent-data-encryption?view=sql-server-ver16
+https://learn.microsoft.com/en-us/sql/relational-databases/security/dynamic-data-masking?view=sql-server-ver16
+https://learn.microsoft.com/en-us/sql/relational-databases/security/encryption/always-encrypted-database-engine?view=sql-server-ver15#configure-always-encrypted
+
+問題52
+You manage an Azure subscription that includes an Azure SQL managed instance containing employee records. The data includes sensitive fields such as social security numbers and phone numbers.
+You must configure the database to meet these requirements:
+Members of the helpdesk team should be able to view only the last four digits of an employee’s phone number.
+Cloud administrators must not be able to view employees’ social security numbers.
+Which feature should you enable on the phone numbers column in the managed instance?
+
+Always Encrypted
+Column encryption
+Dynamic data masking
+Transparent Data Encryption (TDE)
+
+Dynamic data masking is correct because it is designed to limit exposure of sensitive data by masking it to non-privileged users. This feature can be used to mask specific data within a table column, such as showing only the last four digits of an employee's phone number. It does not require changes to the application as the data masking rules are applied in the SQL Database layer. Dynamic data masking is particularly useful in scenarios where certain users, like the helpdesk team, need restricted views of sensitive data.
+Always Encrypted is incorrect for this requirement because it is primarily designed to protect sensitive data at rest and in transit, encrypting data within the client application and storing it in an encrypted state in the database. It does not provide the functionality to partially reveal data, such as showing only the last four digits of a phone number.
+Column encryption is incorrect in this context. While it might refer to encrypting individual columns, in Azure SQL, the specific feature referred to is Always Encrypted, which, as mentioned above, is not suitable for partially revealing data.
+Transparent Data Encryption (TDE) is also incorrect because it encrypts the storage of an entire database, the associated backups, and transaction log files at rest. It does not provide any means to mask or partially reveal individual data elements within a database column.
+
+Read More:
+https://learn.microsoft.com/en-us/sql/relational-databases/security/encryption/always-encrypted-database-engine?view=sql-server-ver16
+https://learn.microsoft.com/en-us/sql/relational-databases/security/encryption/encrypt-a-column-of-data?view=sql-server-ver16
+https://learn.microsoft.com/en-us/sql/relational-databases/security/encryption/transparent-data-encryption?view=sql-server-ver16
+https://learn.microsoft.com/en-us/sql/relational-databases/security/dynamic-data-masking?view=sql-server-ver16
+https://learn.microsoft.com/en-us/sql/relational-databases/security/encryption/always-encrypted-database-engine?view=sql-server-ver15#configure-always-encrypted
+
+問題53
+You are working in an Azure subscription that includes an Azure Key Vault named KV1 and a Windows Server 2022: Azure Edition virtual machine named VM1.
+You plan to deploy an ASP.NET Core application called App1 on VM1. The application must use a system-assigned managed identity to access secrets stored in KV1, and the configuration should require as little custom development as possible.
+What action should you take to configure App1 to authenticate by using OAuth 2.0?
+
+Authorization code grant flows
+Client credentials grant flows
+Implicit grant flows
+
+Client credentials grant flows is correct. To configure App1 on VM1 to securely retrieve secrets from Azure Key Vault (KV1) using a system-assigned managed identity and minimize development effort, the appropriate choice is to utilize the Client Credentials Grant Flow using OAuth 2.0. By enabling a system-assigned managed identity on VM1, This managed identity will serve as authentication between the application and Azure. By Granting the necessary permissions in Azure Key Vault (KV1) to the managed identity of VM1, it enables access to the stored secrets. Lastly, Configuring App1 to use the managed identity for authentication, enables access to Azure services and retrieving necessary secrets without explicit handling of OAuth 2.0 flows in the application code. By using the Client Credentials Grant Flow, App1 securely interacts with Azure Key Vault. The system-assigned managed identity simplifies authentication, minimizing development effort for secure secrets management.
+Authorization code grant flows is incorrect. Authorization code grant flows are typically utilized in scenarios where a user is involved in the authentication process. In this flow, App1 redirects the user to an authorization server, where they log in and grant necessary permissions. After authentication, the server provides an authorization code to App1, which is then exchanged for an access token. However, in scenarios involving system-assigned managed identities on a VM, introducing a user interaction is unnecessary, as the focus is on leveraging the system-assigned managed identity. Authorization code grant flows are better suited for interactive applications like web applications where user authentication is mandatory.
+Implicit grant flows is incorrect. Implicit grant flows are primarily used for applications that interact with APIs exclusively when the user is actively using the application. These flows are typically employed for client-side applications, especially those running in web browsers without the capability to securely store client secrets. This flow involves user-agent redirection and is more suitable for browser-based applications. For applications like App1 running on VM1, using implicit grant flows leads to security risks.
+
+Read More:
+https://learn.microsoft.com/en-us/entra/identity-platform/v2-oauth2-client-creds-grant-flow
+https://learn.microsoft.com/en-us/entra/identity-platform/v2-oauth2-auth-code-flow
+https://learn.microsoft.com/en-us/entra/identity-platform/v2-oauth2-implicit-grant-flow
+https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/how-managed-identities-work-vm#system-assigned-managed-identity
+
+問題54
+You are working in an Azure subscription that includes an Azure Key Vault named KV1 and a Windows Server 2022: Azure Edition virtual machine named VM1.
+You plan to deploy an ASP.NET Core application called App1 on VM1. The application must use a system-assigned managed identity to access secrets stored in KV1, and the configuration should require as little custom development as possible.
+From where should you retrieve the authentication token to configure App1 to use a REST API call?
+
+Azure Instance Metadata Service (IMDS) endpoint
+OAuth 2.0 access token endpoint of Microsoft Entra
+OAuth 2.0 access token endpoint of Microsoft Identity Platform
+
+Azure Instance Metadata Service (IMDS) endpoint is correct. The Azure Instance Metadata Service (IMDS) is a RESTful web service accessible at the standard non-routable IP address (169.254.169.254) on Azure virtual machines. It provides information about the VM, including identity details. One of its key functionalities is enabling the VM to request tokens for Azure services.In the given scenario, VM1 has a system-assigned managed identity, managed by Azure, it gains the ability to authenticate itself to Azure services without the need for explicit credential storage. When App1, operating on VM1, requires access to Azure Key Vault (KV1) to retrieve secrets, it can use the IMDS endpoint to get an authentication token. In summary, the authentication token, obtained through the managed identity of VM1, acts as a secure key associated with specific permissions. This allows App1 to securely access Azure Key Vault without the need for explicit authentication.
+OAuth 2.0 access token endpoint of Microsoft Entra is incorrect because this is typically used when performing user or service principal authentication, not for managed identities. It requires more development work such as handling client credentials or certificates, which contradicts the requirement to minimize development effort.
+OAuth 2.0 access token endpoint of Microsoft Identity Platform is incorrect. The OAuth 2.0 Access Token Endpoint of the Microsoft Identity Platform includes a wider range of Microsoft identity services, in addition to Microsoft Entra. It is a key component of the OAuth 2.0 protocol, commonly used in user-centric scenarios for processes like generating access tokens tied to user-specific permissions. While its primary focus is on user authentication and authorization, it may be less suitable for scenarios requiring machine-to-machine authentication. In situations where App1 operates on VM1 with a system-assigned managed identity, demanding machine-to-machine authentication, the OAuth 2.0 Access Token Endpoint of the Microsoft Identity Platform might not be the best choice.
+
+Read More:
+https://learn.microsoft.com/en-us/azure/virtual-machines/instance-metadata-service?tabs=windows
+https://learn.microsoft.com/en-us/azure/virtual-machines/instance-metadata-service?tabs=windows#managed-identity
+https://learn.microsoft.com/en-us/entra/identity-platform/v2-oauth2-auth-code-flow
+https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/how-to-use-vm-token#get-a-token-using-http
+
+問題55
+You manage a Microsoft Entra tenant that is synchronized with an on-premises Active Directory environment.
+Your organization uses an internally developed line-of-business (LOB) application.
+You need to design an authentication solution that meets the following requirements:
+Enable SAML-based single sign-on (SSO) for the application
+Require multi-factor authentication (MFA) when users sign in from an unrecognized or unfamiliar location
+Which two Microsoft Entra features should you include in the solution?
+
+Microsoft Entra enterprise applications
+Azure Application Gateway
+Microsoft Entra Privileged Identity Management (PIM)
+Microsoft Entra ID Protection
+Conditional Access policies
+
+Microsoft Entra enterprise applications is correct because enterprise applications in Microsoft Entra ID provide a framework for enabling SAML-based single sign-on (SSO). By integrating your line-of-business (LOB) application as an enterprise application, you can enable SAML SSO to authenticate users seamlessly using their Entra credentials. Enterprise applications allow you to configure SSO and manage access to cloud or on-premises applications.
+Conditional Access policies is correct because Conditional Access policies allow you to enforce multi-factor authentication (MFA) based on specific conditions, such as access attempts from unknown locations. Conditional Access policies evaluate signals like user location, device compliance, and risk level to enforce security controls. In this scenario, enforcing MFA for users accessing the application from unknown locations can be easily implemented through Conditional Access.
+Azure Application Gateway is incorrect because Azure Application Gateway is a Layer 7 load balancer that manages application traffic and web application firewall (WAF) features. It does not provide SAML SSO or enforce MFA. It is used for load balancing, not identity management or access control.
+Microsoft Entra Privileged Identity Management (PIM) is incorrect because PIM is designed to manage and secure privileged access to resources. It focuses on assigning and monitoring privileged roles, not enabling SAML SSO or enforcing MFA for users accessing an application.
+Microsoft Entra ID Protection is incorrect because Entra ID Protection identifies and mitigates risky sign-in attempts and user accounts. While it provides risk-based Conditional Access features, it is not directly responsible for enforcing SAML SSO or configuring MFA based on location-specific conditions. Conditional Access policies are more appropriate for the described use case.
+
+Read More:
+https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/what-is-application-management
+https://learn.microsoft.com/en-us/entra/identity/conditional-access/overview
+https://learn.microsoft.com/en-us/entra/id-protection/overview-identity-protection
+https://learn.microsoft.com/en-us/entra/id-governance/privileged-identity-management/pim-configure
+https://learn.microsoft.com/en-us/azure/application-gateway/overview

@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>アプリロール・APIアクセス許可・トークン構成 | AZ-305</title>
+<style>
+  :root {
+    --blue:#0078D4; --dark:#003A6C; --teal:#00B294; --green:#107C10;
+    --orange:#D83B01; --purple:#5C2D91; --gray:#605E5C;
+    --bg:#F3F2F1; --white:#fff; --border:#EDEBE9; --text:#201F1E;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Segoe UI',system-ui,sans-serif; background:var(--bg); color:var(--text); line-height:1.65; }
+
+  .hero { background:linear-gradient(135deg,#003A6C,#0078D4 60%,#5C2D91); color:white; padding:44px 40px; }
+  .hero-badge { display:inline-block; background:rgba(255,255,255,0.18); border:1px solid rgba(255,255,255,0.4); border-radius:20px; padding:3px 14px; font-size:11px; font-weight:700; letter-spacing:.8px; margin-bottom:12px; }
+  .hero h1 { font-size:1.8rem; font-weight:700; margin-bottom:8px; }
+  .hero p { font-size:.95rem; opacity:.88; max-width:640px; }
+
+  .container { max-width:1000px; margin:0 auto; padding:36px 24px; }
+
+  .card { background:var(--white); border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,.1); margin-bottom:28px; overflow:hidden; }
+  .card-header { display:flex; align-items:center; gap:10px; padding:18px 26px; border-bottom:3px solid var(--blue); }
+  .card-header.purple { border-bottom-color:var(--purple); }
+  .card-header.green  { border-bottom-color:var(--green); }
+  .card-header.teal   { border-bottom-color:var(--teal); }
+  .card-header.orange { border-bottom-color:var(--orange); }
+  .card-header h2 { font-size:1.15rem; font-weight:700; color:var(--dark); }
+  .dot { width:18px; height:18px; border-radius:4px; flex-shrink:0; }
+  .dot-blue   { background:var(--blue); }
+  .dot-purple { background:var(--purple); }
+  .dot-green  { background:var(--green); }
+  .dot-teal   { background:var(--teal); }
+  .dot-orange { background:var(--orange); }
+  .card-body { padding:26px; }
+
+  /* シンプルイラスト共通 */
+  .diagram { display:flex; align-items:center; gap:0; flex-wrap:wrap; margin:18px 0; background:#FAFAFA; border:1px solid var(--border); border-radius:8px; padding:20px; overflow-x:auto; }
+  .dbox { border-radius:8px; padding:12px 16px; text-align:center; min-width:120px; font-size:.82rem; font-weight:600; line-height:1.4; }
+  .dbox.blue   { background:#EFF6FC; border:2px solid var(--blue); color:var(--dark); }
+  .dbox.purple { background:#F4F0FF; border:2px solid var(--purple); color:#3B0E7A; }
+  .dbox.green  { background:#DFF6DD; border:2px solid var(--green); color:#0A4A0A; }
+  .dbox.orange { background:#FFF0EB; border:2px solid var(--orange); color:#7A2000; }
+  .dbox.gray   { background:#F3F2F1; border:2px solid var(--gray); color:#323130; }
+  .dbox.dark   { background:var(--dark); color:white; }
+  .dbox small  { display:block; font-size:.74rem; font-weight:400; margin-top:3px; opacity:.8; }
+  .arrow { font-size:1.5rem; color:var(--blue); padding:0 8px; align-self:center; }
+  .arrow.purple { color:var(--purple); }
+  .arrow.green  { color:var(--green); }
+
+  .concept { background:linear-gradient(135deg,#EFF6FC,#F3F9FF); border-left:5px solid var(--blue); border-radius:6px; padding:16px 20px; margin-bottom:18px; font-size:.9rem; }
+  .concept strong { color:var(--dark); }
+
+  table { width:100%; border-collapse:collapse; font-size:.85rem; margin:12px 0; }
+  thead th { background:var(--blue); color:white; padding:10px 14px; text-align:left; }
+  thead th:first-child { border-radius:6px 0 0 0; } thead th:last-child { border-radius:0 6px 0 0; }
+  tbody td { padding:10px 14px; border-bottom:1px solid var(--border); vertical-align:top; }
+  tbody tr:nth-child(even) td { background:#F8F8F8; }
+  tbody tr:hover td { background:#EFF6FC; }
+  .card-header.purple + .card-body table thead th,
+  table.purple thead th { background:var(--purple); }
+
+  .badge { display:inline-block; padding:2px 9px; border-radius:12px; font-size:.76rem; font-weight:600; }
+  .b-blue   { background:#EFF6FC; color:var(--blue); border:1px solid #C7E0F4; }
+  .b-green  { background:#DFF6DD; color:var(--green); border:1px solid #A7D8A4; }
+  .b-orange { background:#FFF4CE; color:#7A4F01; border:1px solid #F7E28B; }
+  .b-purple { background:#F4F0FF; color:var(--purple); border:1px solid #C8A9FA; }
+  .b-red    { background:#FDE7E9; color:#A4262C; border:1px solid #F4A9AD; }
+
+  .alert { border-radius:8px; padding:14px 18px; margin-top:16px; }
+  .alert-yellow { background:#FFF4CE; border:1.5px solid #F7E28B; border-left:5px solid #E8A600; }
+  .alert-yellow .t { font-weight:700; color:#7A4F01; font-size:.9rem; margin-bottom:5px; }
+  .alert-yellow ul { padding-left:16px; font-size:.84rem; color:#4A3200; }
+  .alert-yellow li { margin-bottom:3px; }
+  .alert-blue { background:#EFF6FC; border:1.5px solid #C7E0F4; border-left:5px solid var(--blue); }
+  .alert-blue .t { font-weight:700; color:var(--dark); font-size:.9rem; margin-bottom:5px; }
+  .alert-blue ul { padding-left:16px; font-size:.84rem; color:#1A3A5C; }
+  .alert-blue li { margin-bottom:3px; }
+
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:14px; }
+  @media(max-width:600px){ .grid2{grid-template-columns:1fr;} }
+  .box { background:#F8F8F8; border:1px solid var(--border); border-radius:8px; padding:14px 16px; }
+  .box h4 { font-size:.88rem; font-weight:700; color:var(--dark); margin-bottom:7px; padding-bottom:5px; border-bottom:2px solid #EFF6FC; }
+  .box ul { padding-left:16px; }
+  .box li { font-size:.82rem; margin-bottom:3px; color:#323130; }
+
+  pre { background:#1E1E1E; color:#D4D4D4; padding:16px 18px; border-radius:8px; overflow-x:auto; font-family:'Consolas','Courier New',monospace; font-size:.79rem; line-height:1.7; margin:12px 0; }
+  .kw{color:#569CD6;} .str{color:#CE9178;} .prop{color:#9CDCFE;} .val{color:#B5CEA8;} .cmt{color:#6A9955;}
+  code { font-family:'Consolas',monospace; background:#F3F2F1; padding:1px 6px; border-radius:4px; font-size:.81rem; color:#A4262C; }
+
+  h3.sub { font-size:.97rem; font-weight:700; color:var(--dark); margin:20px 0 10px; }
+  p.note { font-size:.88rem; margin-bottom:12px; color:#323130; }
+
+  /* 縦並びフロー */
+  .vflow { display:flex; flex-direction:column; align-items:flex-start; gap:0; margin:16px 0; }
+  .vflow .step { display:flex; align-items:center; gap:12px; width:100%; margin-bottom:4px; }
+  .vflow .num { width:28px; height:28px; border-radius:50%; background:var(--blue); color:white; font-weight:700; font-size:.82rem; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .vflow .content { background:#F8F8F8; border:1px solid var(--border); border-radius:6px; padding:8px 14px; flex:1; font-size:.85rem; }
+  .vflow .content strong { color:var(--dark); }
+  .vflow .vdash { width:28px; height:20px; display:flex; justify-content:center; }
+  .vflow .vdash::after { content:''; display:block; width:2px; height:100%; background:#C7E0F4; }
+
+  .tag-row { display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">🎓 AZ-305 | Identity &amp; Governance</div>
+  <h1>アプリロール・APIアクセス許可・トークン構成</h1>
+  <p>Microsoft Entra ID のアプリ認証・認可の核心を、具体例と図解でわかりやすく解説します。</p>
+</div>
+
+<div class="container">
+
+<!-- ══════ SECTION 1: 全体像 ══════ -->
+<div class="card">
+  <div class="card-header">
+    <div class="dot dot-blue"></div>
+    <h2>① 3つの概念の全体像と関係</h2>
+  </div>
+  <div class="card-body">
+    <div class="concept">
+      <strong>「定義 → 付与 → 証明」という一連の流れです。</strong><br>
+      アプリロールで権限の種類を定義し、APIアクセス許可でその権限を要求し、トークン構成でその情報をJWTトークンに含めて証明します。
+    </div>
+
+    <!-- シンプル全体フロー -->
+    <div class="diagram">
+      <div class="dbox blue">① アプリロール<small>権限の種類を定義<br>（API側）</small></div>
+      <div class="arrow">→</div>
+      <div class="dbox purple">② APIアクセス許可<small>使う権限を宣言<br>（クライアント側）</small></div>
+      <div class="arrow">→</div>
+      <div class="dbox green">③ トークン構成<small>JWTに権限情報を<br>埋め込む設定</small></div>
+      <div class="arrow green">→</div>
+      <div class="dbox dark">JWT トークン発行<small>roles/groups クレーム入り</small></div>
+    </div>
+
+    <table>
+      <thead><tr><th>概念</th><th>設定者</th><th>設定場所</th><th>役割</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>アプリロール</strong></td>
+          <td>API提供側の開発者</td>
+          <td>API側のアプリ登録</td>
+          <td>「この権限があります」という権限カタログの定義</td>
+        </tr>
+        <tr>
+          <td><strong>APIアクセス許可</strong></td>
+          <td>クライアント側の開発者</td>
+          <td>クライアント側のアプリ登録</td>
+          <td>「この権限を使います」という宣言・要求</td>
+        </tr>
+        <tr>
+          <td><strong>トークン構成</strong></td>
+          <td>開発者 / 管理者</td>
+          <td>どちらのアプリ登録でも可</td>
+          <td>「JWTにどのクレームを含めるか」の設定</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══════ SECTION 2: アプリロール ══════ -->
+<div class="card">
+  <div class="card-header purple">
+    <div class="dot dot-purple"></div>
+    <h2>② アプリロール（App Roles）</h2>
+  </div>
+  <div class="card-body">
+    <p class="note">アプリロールとは、アプリケーション独自のロールを定義する仕組みです。Entra ID の組み込みロール（全体管理者など）とは<strong>別物</strong>で、アプリ固有のアクセス制御に使います。</p>
+
+    <h3 class="sub">🏢 具体例：経費申請システム</h3>
+
+    <!-- API側でロール定義 -->
+    <div class="diagram" style="flex-direction:column; align-items:stretch;">
+      <div style="font-size:.82rem; font-weight:700; color:var(--purple); margin-bottom:10px;">【API側アプリ登録】で定義するアプリロール</div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <div class="dbox purple" style="flex:1; min-width:150px;">Expense.Submit<small>経費申請者<br>allowedMemberTypes: User</small></div>
+        <div class="dbox purple" style="flex:1; min-width:150px;">Expense.Approve<small>経費承認者<br>allowedMemberTypes: User</small></div>
+        <div class="dbox purple" style="flex:1; min-width:150px;">Expense.Admin<small>管理者<br>allowedMemberTypes: Both</small></div>
+        <div class="dbox purple" style="flex:1; min-width:150px;">Expense.ReadAll<small>全データ読取<br>allowedMemberTypes: Application</small></div>
+      </div>
+      <div style="text-align:center; font-size:1.4rem; color:var(--purple); margin:8px 0;">↓ ユーザー/グループ/サービスプリンシパルに割り当て</div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <div class="dbox blue" style="flex:1; min-width:150px;">👤 山田 太郎<small>→ Expense.Submit</small></div>
+        <div class="dbox blue" style="flex:1; min-width:150px;">👤 鈴木 課長<small>→ Expense.Approve</small></div>
+        <div class="dbox blue" style="flex:1; min-width:150px;">👥 IT管理者G<small>→ Expense.Admin</small></div>
+        <div class="dbox gray" style="flex:1; min-width:150px;">⚙ バッチサービス<small>→ Expense.ReadAll</small></div>
+      </div>
+      <div style="text-align:center; font-size:1.4rem; color:var(--green); margin:8px 0;">↓ ログイン時のJWTトークンに反映</div>
+      <div class="dbox green" style="width:100%;">JWT roles クレーム：<code>"roles": ["Expense.Submit"]</code><small>山田さんがログインした際のトークンに自動で含まれる</small></div>
+    </div>
+
+    <h3 class="sub">📝 マニフェスト（JSON）</h3>
+    <pre><span class="prop">"appRoles"</span>: [
+  {
+    <span class="prop">"allowedMemberTypes"</span>: [<span class="str">"User"</span>],       <span class="cmt">// User / Application / Both</span>
+    <span class="prop">"displayName"</span>: <span class="str">"経費申請者"</span>,
+    <span class="prop">"id"</span>: <span class="str">"xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"</span>,  <span class="cmt">// 一意のGUID（必須）</span>
+    <span class="prop">"isEnabled"</span>: <span class="val">true</span>,
+    <span class="prop">"description"</span>: <span class="str">"経費申請の提出が可能"</span>,
+    <span class="prop">"value"</span>: <span class="str">"Expense.Submit"</span>   <span class="cmt">// ← トークンの roles クレームに入る値</span>
+  }
+]</pre>
+
+    <div class="grid2">
+      <div class="box">
+        <h4>allowedMemberTypes の使い分け</h4>
+        <ul>
+          <li><strong>User</strong>：人間ユーザー・グループへの割り当て</li>
+          <li><strong>Application</strong>：デーモン・バッチ・サービスへの割り当て</li>
+          <li><strong>Both</strong>：どちらにも割り当て可能</li>
+        </ul>
+      </div>
+      <div class="box">
+        <h4>割り当て方法</h4>
+        <ul>
+          <li>Portal → エンタープライズアプリ → ユーザーとグループ</li>
+          <li>Microsoft Graph API での一括割り当て</li>
+          <li>Applicationロールはサービスプリンシパルに割り当て</li>
+          <li>割り当て後、次回ログイン時のトークンに反映</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ SECTION 3: APIアクセス許可 ══════ -->
+<div class="card">
+  <div class="card-header">
+    <div class="dot dot-blue"></div>
+    <h2>③ APIアクセス許可（API Permissions）</h2>
+  </div>
+  <div class="card-body">
+    <p class="note">クライアントアプリが「どのAPIの、どの権限を使うか」を宣言するのがAPIアクセス許可です。<strong>Delegated（委任）</strong>と<strong>Application（アプリケーション）</strong>の2種類があります。</p>
+
+    <h3 class="sub">🔑 Delegated vs Application の違い</h3>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:16px 0;">
+      <!-- Delegated -->
+      <div>
+        <div style="background:var(--blue); color:white; padding:10px 14px; border-radius:8px 8px 0 0; font-weight:700; font-size:.9rem;">Delegated（委任）</div>
+        <div class="diagram" style="border-radius:0 0 8px 8px; border-top:none; flex-direction:column; gap:6px; padding:14px;">
+          <div class="dbox blue" style="width:100%;">👤 ユーザーがログイン</div>
+          <div style="text-align:center; color:var(--blue);">↓</div>
+          <div class="dbox blue" style="width:100%;">📱 クライアントApp<small>ユーザーの代わりにAPIを呼ぶ</small></div>
+          <div style="text-align:center; color:var(--blue);">↓</div>
+          <div class="dbox green" style="width:100%;">🎫 トークン（ユーザー情報入り）</div>
+          <div style="text-align:center; color:var(--blue);">↓</div>
+          <div class="dbox gray" style="width:100%;">⚙ API（ユーザー権限で応答）</div>
+        </div>
+        <div style="font-size:.82rem; padding:10px 14px; background:#EFF6FC; border-radius:0 0 8px 8px; border:1px solid #C7E0F4; border-top:none;">
+          ・有効なユーザーが必要<br>
+          ・ユーザーの同意（Consent）が必要<br>
+          ・例：ログインユーザーのメール一覧取得
+        </div>
+      </div>
+      <!-- Application -->
+      <div>
+        <div style="background:var(--purple); color:white; padding:10px 14px; border-radius:8px 8px 0 0; font-weight:700; font-size:.9rem;">Application（アプリケーション）</div>
+        <div class="diagram" style="border-radius:0 0 8px 8px; border-top:none; flex-direction:column; gap:6px; padding:14px;">
+          <div class="dbox purple" style="width:100%;">⚙ サービス/デーモン<small>ユーザー不在で動作</small></div>
+          <div style="text-align:center; color:var(--purple);">↓ client_credentials フロー</div>
+          <div class="dbox green" style="width:100%;">🎫 トークン（アプリ情報入り）</div>
+          <div style="text-align:center; color:var(--purple);">↓</div>
+          <div class="dbox gray" style="width:100%;">⚙ API（アプリ権限で応答）</div>
+        </div>
+        <div style="font-size:.82rem; padding:10px 14px; background:#F4F0FF; border-radius:0 0 8px 8px; border:1px solid #C8A9FA; border-top:none;">
+          ・ユーザー不在で動作<br>
+          ・管理者の同意のみ必要（ユーザー同意不要）<br>
+          ・例：夜間バッチが全ユーザーのデータ処理
+        </div>
+      </div>
+    </div>
+
+    <table>
+      <thead><tr><th>比較項目</th><th>Delegated（委任）</th><th>Application（アプリ）</th></tr></thead>
+      <tbody>
+        <tr><td>ユーザーの有無</td><td>必要（対話型）</td><td>不要（非対話型・バックグラウンド）</td></tr>
+        <tr><td>認証フロー</td><td>Authorization Code / Implicit 等</td><td>Client Credentials</td></tr>
+        <tr><td>同意（Consent）</td><td>ユーザー同意 or 管理者同意</td><td>管理者同意のみ</td></tr>
+        <tr><td>トークンの主体</td><td>ユーザー（sub クレーム = ユーザーID）</td><td>アプリ（sub クレーム = アプリID）</td></tr>
+        <tr><td>典型的ユースケース</td><td>Webアプリ・モバイルアプリ・SPA</td><td>バックグラウンドサービス・デーモン・バッチ</td></tr>
+        <tr><td>Graph API の例</td><td>User.Read（自分のプロフィール読取）</td><td>User.Read.All（全ユーザー読取）</td></tr>
+      </tbody>
+    </table>
+
+    <div class="alert alert-yellow" style="margin-top:16px;">
+      <div class="t">⚠️ 試験頻出：Application パーミッションは必ず管理者同意が必要</div>
+      <ul>
+        <li>Application パーミッションは強力な権限のため、必ず<strong>テナント管理者の同意</strong>が必要</li>
+        <li>Delegated でも <code>User.Read.All</code> など高権限のものは管理者同意が必要</li>
+        <li>管理者同意なしでは 403 エラーになる（よくある試験のひっかけ）</li>
+      </ul>
+    </div>
+
+    <h3 class="sub">📝 具体例：Microsoft Graph APIの許可設定</h3>
+    <table>
+      <thead><tr><th>許可名</th><th>種類</th><th>できること</th><th>管理者同意</th></tr></thead>
+      <tbody>
+        <tr><td><code>User.Read</code></td><td><span class="badge b-blue">Delegated</span></td><td>ログインユーザー自身のプロフィール読取</td><td>不要</td></tr>
+        <tr><td><code>User.Read.All</code></td><td><span class="badge b-blue">Delegated</span></td><td>全ユーザーのプロフィール読取（代理）</td><td><span class="badge b-orange">必要</span></td></tr>
+        <tr><td><code>User.Read.All</code></td><td><span class="badge b-purple">Application</span></td><td>全ユーザーのプロフィール読取（アプリ）</td><td><span class="badge b-orange">必要</span></td></tr>
+        <tr><td><code>Mail.Send</code></td><td><span class="badge b-blue">Delegated</span></td><td>ログインユーザーとしてメール送信</td><td>不要</td></tr>
+        <tr><td><code>Mail.Send</code></td><td><span class="badge b-purple">Application</span></td><td>任意ユーザーとしてメール送信</td><td><span class="badge b-orange">必要</span></td></tr>
+        <tr><td><code>Calendars.ReadWrite</code></td><td><span class="badge b-blue">Delegated</span></td><td>ログインユーザーの予定読み書き</td><td>不要</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══════ SECTION 4: トークン構成 ══════ -->
+<div class="card">
+  <div class="card-header green">
+    <div class="dot dot-green"></div>
+    <h2>④ トークン構成（Token Configuration）</h2>
+  </div>
+  <div class="card-body">
+    <p class="note">JWTトークンに「どのクレームを含めるか」を設定する機能です。アプリケーションがユーザー情報やロール情報を取得するために必要な設定です。</p>
+
+    <h3 class="sub">🎫 JWTトークンの構造</h3>
+    <div class="diagram" style="flex-direction:column; gap:8px;">
+      <div style="display:flex; gap:8px; flex-wrap:wrap; width:100%;">
+        <div class="dbox gray" style="flex:1; min-width:100px;">Header<small>署名アルゴリズム<br>トークン種類</small></div>
+        <div style="align-self:center; font-size:1.2rem;">+</div>
+        <div class="dbox blue" style="flex:3; min-width:200px;">Payload（クレーム）<small>ユーザー情報・権限・有効期限など → <strong>ここが重要</strong></small></div>
+        <div style="align-self:center; font-size:1.2rem;">+</div>
+        <div class="dbox gray" style="flex:1; min-width:100px;">Signature<small>改ざん防止の<br>デジタル署名</small></div>
+      </div>
+    </div>
+
+    <h3 class="sub">📋 主要クレーム一覧</h3>
+    <table>
+      <thead><tr><th>クレーム名</th><th>内容</th><th>設定方法</th><th>用途</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code>roles</code></td>
+          <td>ユーザーに割り当てられたアプリロール</td>
+          <td>アプリロール割り当てで自動付与</td>
+          <td>アプリ内のロールベースアクセス制御</td>
+        </tr>
+        <tr>
+          <td><code>groups</code></td>
+          <td>ユーザーが所属するグループのID</td>
+          <td>トークン構成でオプショナルクレーム追加</td>
+          <td>グループベースのアクセス制御</td>
+        </tr>
+        <tr>
+          <td><code>email</code></td>
+          <td>ユーザーのメールアドレス</td>
+          <td>オプショナルクレームで追加</td>
+          <td>アプリでのユーザー識別</td>
+        </tr>
+        <tr>
+          <td><code>upn</code></td>
+          <td>ユーザープリンシパル名</td>
+          <td>オプショナルクレームで追加</td>
+          <td>ユーザー名表示</td>
+        </tr>
+        <tr>
+          <td><code>oid</code></td>
+          <td>ユーザーのオブジェクトID（変わらない）</td>
+          <td>デフォルトで含まれる</td>
+          <td>ユーザーの一意識別</td>
+        </tr>
+        <tr>
+          <td><code>sub</code></td>
+          <td>サブジェクト（アプリ固有のユーザーID）</td>
+          <td>デフォルトで含まれる</td>
+          <td>アプリ内ユーザー識別</td>
+        </tr>
+        <tr>
+          <td><code>scp</code></td>
+          <td>Delegatedパーミッションのスコープ</td>
+          <td>APIアクセス許可の設定で自動付与</td>
+          <td>Delegated権限の確認</td>
+        </tr>
+        <tr>
+          <td><code>aud</code></td>
+          <td>トークンの対象（クライアントID）</td>
+          <td>デフォルトで含まれる</td>
+          <td>トークンの正当性確認</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 class="sub">⚙️ トークン構成の設定方法（Portal）</h3>
+    <div class="vflow">
+      <div class="step"><div class="num">1</div><div class="content">Azure Portal → <strong>Microsoft Entra ID</strong> → アプリの登録</div></div>
+      <div class="vdash"><div class="vdash"></div></div>
+      <div class="step"><div class="num">2</div><div class="content">対象アプリを選択 → 左メニュー <strong>「トークン構成」</strong> をクリック</div></div>
+      <div class="vdash"><div class="vdash"></div></div>
+      <div class="step"><div class="num">3</div><div class="content"><strong>「オプションの要求を追加する」</strong> → トークン種類（ID/Access/SAML）を選択</div></div>
+      <div class="vdash"><div class="vdash"></div></div>
+      <div class="step"><div class="num">4</div><div class="content">追加したいクレーム（email, upn, groups 等）を選択して保存</div></div>
+      <div class="vdash"><div class="vdash"></div></div>
+      <div class="step"><div class="num">5</div><div class="content">グループクレームの場合は <strong>「グループ要求を追加する」</strong> から別途設定</div></div>
+    </div>
+
+    <h3 class="sub">📝 JWTトークンの実例（経費申請システム）</h3>
+    <pre><span class="cmt">// 山田太郎さんがログインした際のアクセストークン（Payload部分）</span>
+{
+  <span class="prop">"iss"</span>: <span class="str">"https://login.microsoftonline.com/{tenant}/v2.0"</span>,
+  <span class="prop">"aud"</span>: <span class="str">"api://expense-app"</span>,           <span class="cmt">// このトークンの対象API</span>
+  <span class="prop">"oid"</span>: <span class="str">"a1b2c3d4-..."</span>,              <span class="cmt">// 山田さんのオブジェクトID（不変）</span>
+  <span class="prop">"name"</span>: <span class="str">"山田 太郎"</span>,
+  <span class="prop">"upn"</span>: <span class="str">"yamada@contoso.com"</span>,        <span class="cmt">// オプションクレームで追加</span>
+  <span class="prop">"email"</span>: <span class="str">"yamada@contoso.com"</span>,       <span class="cmt">// オプションクレームで追加</span>
+  <span class="prop">"roles"</span>: [<span class="str">"Expense.Submit"</span>],       <span class="cmt">// アプリロール割り当ての結果</span>
+  <span class="prop">"groups"</span>: [<span class="str">"grp-id-1"</span>, <span class="str">"grp-id-2"</span>], <span class="cmt">// グループクレームで追加</span>
+  <span class="prop">"scp"</span>: <span class="str">"Expense.Submit"</span>,           <span class="cmt">// Delegatedスコープ</span>
+  <span class="prop">"exp"</span>: <span class="val">1700000000</span>,                <span class="cmt">// 有効期限（Unixtime）</span>
+  <span class="prop">"iat"</span>: <span class="val">1699996400</span>                 <span class="cmt">// 発行時刻</span>
+}</pre>
+
+    <h3 class="sub">⚠️ groups クレームの注意点</h3>
+    <div class="alert alert-yellow">
+      <div class="t">グループ数が多い場合のオーバーフロー問題（試験頻出）</div>
+      <ul>
+        <li>ユーザーが所属するグループが <strong>200個を超える</strong> と groups クレームはトークンに含まれなくなる</li>
+        <li>代わりに <code>"_claim_names": {"groups": "src1"}</code> という超過通知クレームが入る</li>
+        <li>対処法：Microsoft Graph API の <code>/me/memberOf</code> を呼び出してグループ情報を取得する</li>
+        <li>または <strong>アプリロール</strong> を使用してグループクレームへの依存を減らすことを検討する</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ SECTION 5: 試験ポイント ══════ -->
+<div class="card">
+  <div class="card-header orange">
+    <div class="dot dot-orange"></div>
+    <h2>⑤ 試験で問われやすいポイントと間違いやすい箇所</h2>
+  </div>
+  <div class="card-body">
+
+    <table>
+      <thead><tr><th>問われる内容</th><th>正解</th><th>間違いやすいポイント</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>アプリロールはどこに定義するか</td>
+          <td><span class="badge b-purple">API側のアプリ登録</span></td>
+          <td>クライアント側に定義すると誤解しがち。APIが「自分はこんな権限を持っている」と定義する</td>
+        </tr>
+        <tr>
+          <td>Applicationパーミッションの同意</td>
+          <td><span class="badge b-orange">管理者同意のみ</span></td>
+          <td>「ユーザーが同意できる」と誤解しがち。Applicationパーミッションは必ず管理者同意が必要</td>
+        </tr>
+        <tr>
+          <td>groupsクレームのオーバーフロー閾値</td>
+          <td><span class="badge b-orange">200グループ超</span></td>
+          <td>150や100と誤解しがち。200超でクレームがトークンから除外される</td>
+        </tr>
+        <tr>
+          <td>roles クレームと scp クレームの違い</td>
+          <td>roles = アプリロール<br>scp = Delegatedスコープ</td>
+          <td>混同しがち。rolesはアプリロール割り当ての結果。scpはDelegatedパーミッションのスコープ</td>
+        </tr>
+        <tr>
+          <td>サービス間通信に使うパーミッション</td>
+          <td><span class="badge b-purple">Application</span></td>
+          <td>デーモン・バッチにDelegatedを使おうとする。ユーザー不在の処理はApplicationパーミッション</td>
+        </tr>
+        <tr>
+          <td>アプリロールとEntra IDロールの違い</td>
+          <td>アプリロール = アプリ固有<br>Entra IDロール = テナント全体</td>
+          <td>「全体管理者」などのEntra IDロールとアプリロールは別物。アプリロールはアプリだけに効果がある</td>
+        </tr>
+        <tr>
+          <td>トークン構成でgroupsを追加する方法</td>
+          <td>「グループ要求を追加する」から別途設定</td>
+          <td>「オプションの要求を追加する」のgroupsとは別の設定項目。混同に注意</td>
+        </tr>
+        <tr>
+          <td>IDトークン vs アクセストークン</td>
+          <td>IDトークン = 認証（誰か）<br>アクセストークン = 認可（何ができるか）</td>
+          <td>どちらにrolesが含まれるかを問われる。どちらも含まれるが、APIは<strong>アクセストークン</strong>のrolesを検証する</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 class="sub">🎯 シナリオ別の選択指針</h3>
+    <div class="grid2">
+      <div>
+        <div style="font-weight:700; font-size:.9rem; color:var(--purple); margin-bottom:8px;">📌 このシナリオならアプリロール</div>
+        <div class="vflow">
+          <div class="step"><div class="num" style="background:var(--purple);">✓</div><div class="content">「一般ユーザー」と「管理者」でUI表示を変えたい</div></div>
+          <div class="step"><div class="num" style="background:var(--purple);">✓</div><div class="content">アプリ内で細かいロールベース制御をしたい</div></div>
+          <div class="step"><div class="num" style="background:var(--purple);">✓</div><div class="content">バッチサービスに特定の権限を与えたい</div></div>
+          <div class="step"><div class="num" style="background:var(--purple);">✓</div><div class="content">グループ数が多くgroupsクレームが使えない</div></div>
+        </div>
+      </div>
+      <div>
+        <div style="font-weight:700; font-size:.9rem; color:var(--blue); margin-bottom:8px;">📌 このシナリオならDelegatedパーミッション</div>
+        <div class="vflow">
+          <div class="step"><div class="num">✓</div><div class="content">ユーザーが自分のデータにアクセスするWebアプリ</div></div>
+          <div class="step"><div class="num">✓</div><div class="content">ユーザーの代わりにGraph APIを呼ぶSPA</div></div>
+          <div class="step"><div class="num">✓</div><div class="content">ユーザーが自分のメール・予定を操作するアプリ</div></div>
+          <div class="step"><div class="num">✓</div><div class="content">モバイルアプリでのユーザーログイン操作</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="alert alert-blue" style="margin-top:16px;">
+      <div class="t">📌 最重要まとめ</div>
+      <ul>
+        <li><strong>アプリロール</strong>はAPI側のアプリ登録で定義し、ユーザー/グループ/サービスプリンシパルに割り当てる。JWTの <code>roles</code> クレームに反映される</li>
+        <li><strong>APIアクセス許可</strong>は Delegated（ユーザー代理）と Application（サービス単独）の2種類。Applicationは必ず管理者同意が必要</li>
+        <li><strong>トークン構成</strong>でオプショナルクレーム（email・upn・groups等）を追加できる。groupsは200超でオーバーフローする</li>
+        <li><strong>roles と scp は別物</strong>：rolesはアプリロール、scpはDelegatedスコープのパーミッション一覧</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+</div><!-- /container -->
+</body>
+</html>

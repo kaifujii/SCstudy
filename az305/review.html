@@ -150,6 +150,12 @@ function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').repla
 
 function loadReviewData(){
   reviewData = JSON.parse(localStorage.getItem('az305_review_data')||'{}');
+  // Normalize vol5 choices format {t, c} → {text, is_correct}
+  Object.values(reviewData).forEach(q => {
+    if(q.choices && q.choices.length > 0 && q.choices[0].t !== undefined) {
+      q.choices = q.choices.map(c => ({text: c.t, is_correct: c.c}));
+    }
+  });
   return Object.values(reviewData);
 }
 
@@ -261,9 +267,7 @@ function removeQuestion(vol, qid){
   const data = JSON.parse(localStorage.getItem('az305_review_data')||'{}');
   delete data[vol+'_'+qid];
   localStorage.setItem('az305_review_data', JSON.stringify(data));
-  const ids = JSON.parse(localStorage.getItem('az305_review_ids')||'[]');
-  const newIds = ids.filter(id => id !== qid);
-  localStorage.setItem('az305_review_ids', JSON.stringify(newIds));
+  localStorage.setItem('az305_review_ids', JSON.stringify(Object.keys(data)));
   state = {};
   multiSel = {};
   renderAll();

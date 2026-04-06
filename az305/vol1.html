@@ -121,6 +121,25 @@
 }
 .exp-table tr:last-child td { border-bottom: none; }
 .exp-table tr:nth-child(even) td { background: rgba(0,0,0,0.015); }
+
+/* ── Description reference link ── */
+.desc-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #0072C6;
+  text-decoration: none;
+  padding: 3px 10px 3px 8px;
+  border: 1px solid #c4dff6;
+  border-radius: 4px;
+  background: #e8f3fb;
+  transition: background 0.12s;
+}
+.desc-link:hover { background: #c4dff6; }
 </style>
 </head>
 <body>
@@ -256,7 +275,7 @@ function filtered(){
 
 
 // ===== REVIEW SYSTEM =====
-let reviewSet = new Set(JSON.parse(localStorage.getItem('az305_review_ids')||'[]'));
+let reviewSet = new Set(Object.keys(JSON.parse(localStorage.getItem('az305_review_data')||'{}')).filter(k=>k.startsWith('vol1_')).map(k=>k.slice(5)));
 
 function toggleReview(qid, vol, num) {
   if(reviewSet.has(qid)) {
@@ -287,7 +306,7 @@ function toggleReview(qid, vol, num) {
       localStorage.setItem('az305_review_data', JSON.stringify(data));
     }
   }
-  localStorage.setItem('az305_review_ids', JSON.stringify([...reviewSet]));
+  localStorage.setItem('az305_review_ids', JSON.stringify(Object.keys(JSON.parse(localStorage.getItem('az305_review_data')||'{}'))));  // sync badge count
   const btn = document.getElementById('rbtn_'+qid);
   if(btn) {
     btn.classList.toggle('review-active', reviewSet.has(qid));
@@ -464,6 +483,17 @@ window.addEventListener('scroll',()=>{
 
 initState();
 renderAll();
+
+const DESC_LINKS_VOL1 = {"q15": "descriptions/entra-appreg-delegated-guide.html", "q16": "descriptions/entra-appreg-delegated-guide.html", "q32": "descriptions/flux-dapr-istio-guide.html", "q33": "descriptions/flux-dapr-istio-guide.html", "q34": "descriptions/flux-dapr-istio-guide.html"};
+(function(){
+  Object.entries(DESC_LINKS_VOL1).forEach(([qid, url]) => {
+    const card = document.getElementById('card_'+qid);
+    if(!card) return;
+    const qbody = card.querySelector('.qbody');
+    if(!qbody) return;
+    qbody.insertAdjacentHTML('beforeend', '<a href="' + url + '" target="_blank" class="desc-link"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>参考解説を読む</a>');
+  });
+})();
 </script>
 </body>
 </html>

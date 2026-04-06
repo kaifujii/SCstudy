@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flux・Dapr・Istio 完全解説 | AZ-305</title>
+<style>
+  :root {
+    --blue:#0078D4; --dark:#003A6C; --teal:#00B294; --green:#107C10;
+    --orange:#D83B01; --purple:#5C2D91; --red:#A4262C; --gray:#605E5C;
+    --flux:#FF6B35; --dapr:#0078D4; --istio:#466BB0;
+    --bg:#F3F2F1; --white:#fff; --border:#EDEBE9; --text:#201F1E;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Segoe UI',system-ui,sans-serif; background:var(--bg); color:var(--text); line-height:1.65; }
+
+  .hero { background:linear-gradient(135deg,#003A6C,#0078D4 50%,#466BB0); color:white; padding:44px 40px; }
+  .hero-badge { display:inline-block; background:rgba(255,255,255,0.18); border:1px solid rgba(255,255,255,0.4); border-radius:20px; padding:3px 14px; font-size:11px; font-weight:700; letter-spacing:.8px; margin-bottom:12px; }
+  .hero h1 { font-size:1.9rem; font-weight:700; margin-bottom:8px; }
+  .hero p { font-size:.95rem; opacity:.88; max-width:680px; }
+
+  .container { max-width:1040px; margin:0 auto; padding:36px 24px; }
+
+  .card { background:var(--white); border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,.1); margin-bottom:28px; overflow:hidden; }
+  .card-header { display:flex; align-items:center; gap:12px; padding:18px 26px; }
+  .card-header h2 { font-size:1.2rem; font-weight:700; }
+  .ch-flux   { border-bottom:3px solid var(--flux);   background:linear-gradient(90deg,rgba(255,107,53,.08),transparent); }
+  .ch-flux h2 { color:#8B3A1A; }
+  .ch-dapr   { border-bottom:3px solid var(--dapr);   background:linear-gradient(90deg,rgba(0,120,212,.08),transparent); }
+  .ch-dapr h2 { color:var(--dark); }
+  .ch-istio  { border-bottom:3px solid var(--istio);  background:linear-gradient(90deg,rgba(70,107,176,.08),transparent); }
+  .ch-istio h2 { color:#1E3A6A; }
+  .ch-blue   { border-bottom:3px solid var(--blue);   background:linear-gradient(90deg,rgba(0,120,212,.07),transparent); }
+  .ch-blue h2 { color:var(--dark); }
+  .ch-green  { border-bottom:3px solid var(--green);  background:linear-gradient(90deg,rgba(16,124,16,.07),transparent); }
+  .ch-green h2 { color:#0A4A0A; }
+
+  .dot { width:16px; height:16px; border-radius:4px; flex-shrink:0; }
+
+  .card-body { padding:26px; }
+
+  /* ── シンプルダイアグラム ── */
+  .diagram { background:#FAFAFA; border:1px solid var(--border); border-radius:8px; padding:20px; margin:16px 0; overflow-x:auto; }
+  .diagram-title { font-size:.8rem; font-weight:700; color:var(--gray); margin-bottom:12px; text-transform:uppercase; letter-spacing:.5px; }
+
+  .flow { display:flex; align-items:center; flex-wrap:wrap; gap:4px; margin:8px 0; }
+  .flow.col { flex-direction:column; align-items:flex-start; }
+  .box { border-radius:7px; padding:9px 14px; font-size:.82rem; font-weight:600; line-height:1.35; text-align:center; white-space:nowrap; }
+  .box small { display:block; font-size:.72rem; font-weight:400; opacity:.8; margin-top:2px; }
+  .box.flux   { background:#FFF0EB; border:2px solid var(--flux); color:#8B3A1A; }
+  .box.dapr   { background:#EFF6FC; border:2px solid var(--dapr); color:var(--dark); }
+  .box.istio  { background:#EEF2FF; border:2px solid var(--istio); color:#1E3A6A; }
+  .box.green  { background:#DFF6DD; border:2px solid var(--green); color:#0A4A0A; }
+  .box.purple { background:#F4F0FF; border:2px solid var(--purple); color:#3B0E7A; }
+  .box.gray   { background:#F3F2F1; border:2px solid var(--gray); color:#323130; }
+  .box.dark   { background:var(--dark); color:white; border:2px solid var(--dark); }
+  .box.orange { background:#FFF0EB; border:2px solid var(--orange); color:#7A2000; }
+  .box.teal   { background:#E8FBF8; border:2px solid var(--teal); color:#00695C; }
+  .box.white  { background:white; border:1.5px solid var(--border); color:var(--text); }
+
+  .arr { font-size:1.2rem; padding:0 4px; color:var(--gray); align-self:center; flex-shrink:0; }
+  .arr.flux   { color:var(--flux); }
+  .arr.dapr   { color:var(--dapr); }
+  .arr.istio  { color:var(--istio); }
+  .arr.green  { color:var(--green); }
+  .arr.down   { transform:rotate(90deg); }
+  .arr.up     { transform:rotate(-90deg); }
+
+  .row-wrap { display:flex; gap:10px; flex-wrap:wrap; margin:8px 0; }
+  .row-wrap .box { flex:1; min-width:120px; }
+
+  /* ── Tables ── */
+  table { width:100%; border-collapse:collapse; font-size:.85rem; margin:14px 0; }
+  thead th { background:var(--blue); color:white; padding:10px 14px; text-align:left; }
+  thead th:first-child { border-radius:6px 0 0 0; } thead th:last-child { border-radius:0 6px 0 0; }
+  .th-flux   thead th { background:var(--flux); }
+  .th-dapr   thead th { background:var(--dapr); }
+  .th-istio  thead th { background:var(--istio); }
+  tbody td { padding:9px 14px; border-bottom:1px solid var(--border); vertical-align:top; }
+  tbody tr:nth-child(even) td { background:#F8F8F8; }
+  tbody tr:hover td { background:#EFF6FC; }
+
+  .badge { display:inline-block; padding:2px 9px; border-radius:12px; font-size:.75rem; font-weight:600; }
+  .b-blue   { background:#EFF6FC; color:var(--blue);   border:1px solid #C7E0F4; }
+  .b-green  { background:#DFF6DD; color:var(--green);  border:1px solid #A7D8A4; }
+  .b-orange { background:#FFF4CE; color:#7A4F01;        border:1px solid #F7E28B; }
+  .b-purple { background:#F4F0FF; color:var(--purple); border:1px solid #C8A9FA; }
+  .b-red    { background:#FDE7E9; color:var(--red);    border:1px solid #F4A9AD; }
+  .b-flux   { background:#FFF0EB; color:#8B3A1A;        border:1px solid #FFCBB5; }
+  .b-istio  { background:#EEF2FF; color:#1E3A6A;        border:1px solid #B3C3E8; }
+  .b-gray   { background:#F3F2F1; color:var(--gray);   border:1px solid var(--border); }
+
+  .alert { border-radius:8px; padding:14px 18px; margin-top:16px; }
+  .al-yellow { background:#FFF4CE; border:1.5px solid #F7E28B; border-left:5px solid #E8A600; }
+  .al-yellow .t { font-weight:700; color:#7A4F01; font-size:.9rem; margin-bottom:5px; }
+  .al-yellow ul { padding-left:16px; font-size:.84rem; color:#4A3200; }
+  .al-yellow li { margin-bottom:3px; }
+  .al-blue { background:#EFF6FC; border:1.5px solid #C7E0F4; border-left:5px solid var(--blue); }
+  .al-blue .t { font-weight:700; color:var(--dark); font-size:.9rem; margin-bottom:5px; }
+  .al-blue ul { padding-left:16px; font-size:.84rem; color:#1A3A5C; }
+  .al-blue li { margin-bottom:3px; }
+
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:14px; }
+  @media(max-width:620px){ .grid2{ grid-template-columns:1fr; } }
+  .box2 { background:#F8F8F8; border:1px solid var(--border); border-radius:8px; padding:14px 16px; }
+  .box2 h4 { font-size:.88rem; font-weight:700; color:var(--dark); margin-bottom:7px; padding-bottom:5px; border-bottom:2px solid #EFF6FC; }
+  .box2 ul { padding-left:16px; }
+  .box2 li { font-size:.82rem; margin-bottom:3px; color:#323130; }
+
+  pre { background:#1E1E1E; color:#D4D4D4; padding:16px 18px; border-radius:8px; overflow-x:auto; font-family:'Consolas','Courier New',monospace; font-size:.79rem; line-height:1.7; margin:12px 0; }
+  .kw{color:#569CD6;} .str{color:#CE9178;} .prop{color:#9CDCFE;} .val{color:#B5CEA8;} .cmt{color:#6A9955;}
+  code { font-family:'Consolas',monospace; background:#F3F2F1; padding:1px 6px; border-radius:4px; font-size:.81rem; color:#A4262C; }
+
+  h3.sub { font-size:.97rem; font-weight:700; color:var(--dark); margin:22px 0 10px; }
+  p.note { font-size:.88rem; margin-bottom:14px; color:#323130; }
+
+  .concept { border-left:5px solid var(--blue); background:#EFF6FC; border-radius:6px; padding:14px 18px; margin-bottom:16px; font-size:.9rem; }
+  .concept.flux  { border-left-color:var(--flux);  background:#FFF0EB; }
+  .concept.dapr  { border-left-color:var(--dapr);  background:#EFF6FC; }
+  .concept.istio { border-left-color:var(--istio); background:#EEF2FF; }
+  .concept strong { color:var(--dark); }
+
+  /* layer diagram */
+  .layer { border-radius:7px; padding:10px 16px; margin:4px 0; font-size:.83rem; font-weight:600; }
+  .layer-flux  { background:#FFF0EB; border:1.5px solid var(--flux); color:#8B3A1A; }
+  .layer-dapr  { background:#EFF6FC; border:1.5px solid var(--dapr); color:var(--dark); }
+  .layer-istio { background:#EEF2FF; border:1.5px solid var(--istio); color:#1E3A6A; }
+  .layer-k8s   { background:#DFF6DD; border:1.5px solid var(--green); color:#0A4A0A; }
+  .layer small { font-weight:400; font-size:.76rem; opacity:.8; margin-left:8px; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">🎓 AZ-305 | Container & Kubernetes</div>
+  <h1>Flux・Dapr・Istio 完全解説</h1>
+  <p>Kubernetes エコシステムの重要コンポーネント。それぞれの役割・できること・Azure との関係を整理します。</p>
+</div>
+
+<div class="container">
+
+<!-- ══════════════════════ 全体像 ══════════════════════ -->
+<div class="card">
+  <div class="card-header ch-blue">
+    <div class="dot" style="background:var(--blue)"></div>
+    <h2>① 3つの役割の全体像と違い</h2>
+  </div>
+  <div class="card-body">
+    <p class="note">3つはすべて「Kubernetes 上で使うツール」ですが、担当レイヤーがまったく異なります。競合ではなく<strong>共存して使うもの</strong>です。</p>
+
+    <div class="diagram">
+      <div class="diagram-title">Kubernetes クラスターの担当レイヤーイメージ</div>
+
+      <div class="layer layer-flux">
+        🔄 Flux（GitOps）<small>— Git の状態をクラスターに自動同期する「デプロイ自動化レイヤー」</small>
+      </div>
+      <div style="text-align:center; color:var(--gray); font-size:.85rem; margin:2px 0;">↕ デプロイ管理</div>
+      <div class="layer layer-istio">
+        🕸️ Istio（Service Mesh）<small>— サービス間通信を制御・観測する「ネットワーク管理レイヤー」</small>
+      </div>
+      <div style="text-align:center; color:var(--gray); font-size:.85rem; margin:2px 0;">↕ 通信制御</div>
+      <div class="layer layer-dapr">
+        🧩 Dapr（分散アプリランタイム）<small>— アプリに共通機能（状態管理・メッセージング等）を提供する「アプリSDKレイヤー」</small>
+      </div>
+      <div style="text-align:center; color:var(--gray); font-size:.85rem; margin:2px 0;">↕ アプリ実行</div>
+      <div class="layer layer-k8s">
+        ☸️ Kubernetes / AKS<small>— コンテナのスケジューリング・実行基盤</small>
+      </div>
+    </div>
+
+    <table>
+      <thead><tr><th>ツール</th><th>一言で言うと</th><th>担当</th><th>誰が使うか</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>🔄 Flux</strong></td>
+          <td>Git の内容をクラスターに自動反映する</td>
+          <td>デプロイ自動化・GitOps</td>
+          <td>インフラエンジニア・DevOps チーム</td>
+        </tr>
+        <tr>
+          <td><strong>🧩 Dapr</strong></td>
+          <td>アプリに分散システムの共通機能を提供する</td>
+          <td>アプリの実装支援</td>
+          <td>アプリ開発者</td>
+        </tr>
+        <tr>
+          <td><strong>🕸️ Istio</strong></td>
+          <td>サービス間の通信を透過的に制御・監視する</td>
+          <td>ネットワーク・セキュリティ</td>
+          <td>インフラエンジニア・SRE</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══════════════════════ FLUX ══════════════════════ -->
+<div class="card">
+  <div class="card-header ch-flux">
+    <div class="dot" style="background:var(--flux)"></div>
+    <h2>② Flux（GitOps）</h2>
+  </div>
+  <div class="card-body">
+
+    <div class="concept flux">
+      <strong>一言：「Git が唯一の真実（Single Source of Truth）」</strong><br>
+      Git リポジトリに push したマニフェストを、Flux が自動的に Kubernetes クラスターへ適用します。kubectl コマンドを手動で叩く運用から脱却できます。
+    </div>
+
+    <h3 class="sub">🔄 基本的な動作フロー（Pull 型）</h3>
+    <div class="diagram">
+      <div class="flow" style="flex-wrap:wrap; gap:6px; align-items:center;">
+        <div class="box gray">👨‍💻 開発者<small>コードをpush</small></div>
+        <div class="arr flux">→</div>
+        <div class="box flux">📁 Git リポジトリ<small>YAML マニフェスト</small></div>
+        <div class="arr flux">←</div>
+        <div class="box flux">🔄 Flux Controller<small>定期的に差分チェック（Pull）</small></div>
+        <div class="arr flux">→</div>
+        <div class="box green">☸️ Kubernetes<small>差分を自動適用</small></div>
+      </div>
+      <div style="margin-top:12px; font-size:.82rem; color:#8B3A1A; background:#FFF0EB; border-radius:6px; padding:8px 12px;">
+        ⚡ ポイント：Flux は「Push型」ではなく<strong>「Pull型」</strong>。クラスター側から Git を監視して引き取る構造のため、クラスターへの直接アクセス権が Git 側に不要でセキュア。
+      </div>
+    </div>
+
+    <h3 class="sub">✅ できること</h3>
+    <div class="grid2">
+      <div class="box2">
+        <h4>デプロイ自動化</h4>
+        <ul>
+          <li>Git push → 自動デプロイ（CD パイプライン）</li>
+          <li>複数クラスターへの一括デプロイ管理</li>
+          <li>Helm Chart の自動アップグレード</li>
+          <li>Kustomize によるマニフェストの環境差分管理</li>
+        </ul>
+      </div>
+      <div class="box2">
+        <h4>ドリフト検出・自動修復</h4>
+        <ul>
+          <li>手動で kubectl 変更した場合に Git の状態に戻す</li>
+          <li>「あるべき状態」からのズレを自動検知・修正</li>
+          <li>変更履歴はすべて Git に残る</li>
+          <li>監査・コンプライアンスへの対応</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 class="sub">☁️ Azure との関係（AKS + Flux 拡張機能）</h3>
+    <div class="diagram">
+      <div class="flow" style="flex-wrap:wrap; gap:6px;">
+        <div class="box dark">Azure AKS<small>マネージド K8s</small></div>
+        <div class="arr">+</div>
+        <div class="box flux">Flux 拡張機能<small>AKS クラスター拡張</small></div>
+        <div class="arr flux">→</div>
+        <div class="box green">GitOps 構成<small>Azure Policy で強制適用可</small></div>
+      </div>
+    </div>
+    <p class="note" style="margin-top:10px;">AKS では <strong>Flux v2 がクラスター拡張機能</strong>として提供されています。Azure Portal または Azure CLI から有効化でき、Azure Policy で「全クラスターに Flux を必須化」することも可能です。これが AZ-305 で問われる <strong>GitOps with AKS</strong> の実装方法です。</p>
+
+    <h3 class="sub">📝 Flux の主要リソース（CRD）</h3>
+    <table class="th-flux">
+      <thead><tr><th>リソース</th><th>役割</th></tr></thead>
+      <tbody>
+        <tr><td><code>GitRepository</code></td><td>監視する Git リポジトリと対象ブランチを定義</td></tr>
+        <tr><td><code>Kustomization</code></td><td>GitRepository のどのパスを、どのクラスターに適用するかを定義</td></tr>
+        <tr><td><code>HelmRelease</code></td><td>Helm Chart の自動デプロイ設定</td></tr>
+        <tr><td><code>HelmRepository</code></td><td>監視する Helm リポジトリを定義</td></tr>
+        <tr><td><code>ImageRepository</code></td><td>コンテナレジストリのイメージタグを監視して自動更新</td></tr>
+      </tbody>
+    </table>
+
+    <div class="alert al-yellow">
+      <div class="t">⚠️ 試験頻出：Flux と ArgoCD の違い</div>
+      <ul>
+        <li>どちらも GitOps ツールだが、Flux は <strong>AKS の公式クラスター拡張機能</strong>として統合されており Azure 環境での推奨ツール</li>
+        <li>ArgoCD は UI が充実しているが、Azure ネイティブの統合は Flux の方が深い</li>
+        <li>試験では「AKS で GitOps を実現する」シナリオなら <strong>Flux</strong> が答えになることが多い</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════ DAPR ══════════════════════ -->
+<div class="card">
+  <div class="card-header ch-dapr">
+    <div class="dot" style="background:var(--dapr)"></div>
+    <h2>③ Dapr（Distributed Application Runtime）</h2>
+  </div>
+  <div class="card-body">
+
+    <div class="concept dapr">
+      <strong>一言：「分散システムの共通機能をアプリから切り離してサイドカーで提供する」</strong><br>
+      メッセージング・状態管理・サービス呼び出し・シークレット管理などの面倒な実装を、アプリから分離してサイドカーコンテナが肩代わりします。アプリ側は HTTP や gRPC で Dapr を呼ぶだけでよくなります。
+    </div>
+
+    <h3 class="sub">🧩 サイドカーパターンの仕組み</h3>
+    <div class="diagram">
+      <div style="display:grid; grid-template-columns:1fr auto 1fr auto 1fr; gap:8px; align-items:center;">
+        <!-- Service A -->
+        <div style="border:2px solid var(--dapr); border-radius:8px; padding:10px;">
+          <div style="font-size:.8rem; font-weight:700; color:var(--dark); margin-bottom:6px; text-align:center;">Pod A</div>
+          <div class="box dapr" style="margin-bottom:4px;">📦 App A<small>任意の言語</small></div>
+          <div style="text-align:center; font-size:.75rem; color:var(--dapr);">↕ localhost:3500</div>
+          <div class="box dapr">🧩 Dapr Sidecar<small>daprd プロセス</small></div>
+        </div>
+        <div style="text-align:center;">
+          <div class="arr dapr">→</div>
+          <div style="font-size:.72rem; color:var(--dapr); white-space:nowrap;">サービス呼び出し</div>
+        </div>
+        <!-- Service B -->
+        <div style="border:2px solid var(--dapr); border-radius:8px; padding:10px;">
+          <div style="font-size:.8rem; font-weight:700; color:var(--dark); margin-bottom:6px; text-align:center;">Pod B</div>
+          <div class="box dapr" style="margin-bottom:4px;">📦 App B<small>任意の言語</small></div>
+          <div style="text-align:center; font-size:.75rem; color:var(--dapr);">↕ localhost:3500</div>
+          <div class="box dapr">🧩 Dapr Sidecar<small>daprd プロセス</small></div>
+        </div>
+        <div style="text-align:center;">
+          <div class="arr dapr">↔</div>
+          <div style="font-size:.72rem; color:var(--dapr); white-space:nowrap;">パブサブ</div>
+        </div>
+        <!-- External -->
+        <div style="border:1.5px solid var(--border); border-radius:8px; padding:10px;">
+          <div style="font-size:.8rem; font-weight:700; color:var(--gray); margin-bottom:6px; text-align:center;">外部サービス</div>
+          <div class="box gray" style="margin-bottom:4px;">📨 Service Bus<small>メッセージング</small></div>
+          <div class="box gray" style="margin-bottom:4px;">🗄️ Redis / CosmosDB<small>状態管理</small></div>
+          <div class="box gray">🔑 Key Vault<small>シークレット</small></div>
+        </div>
+      </div>
+      <div style="margin-top:10px; font-size:.82rem; color:var(--dark); background:#EFF6FC; border-radius:6px; padding:8px 12px;">
+        ⚡ ポイント：App は「localhost:3500 の Dapr API」を叩くだけでよい。Service Bus や Redis の接続文字列・SDK をアプリ内に書く必要がなくなる。
+      </div>
+    </div>
+
+    <h3 class="sub">✅ Dapr の Building Blocks（主要機能）</h3>
+    <table class="th-dapr">
+      <thead><tr><th>機能ブロック</th><th>役割</th><th>使えるバックエンド例（Azure）</th></tr></thead>
+      <tbody>
+        <tr><td><strong>サービス呼び出し</strong></td><td>サービス間のHTTP/gRPC呼び出し（リトライ・タイムアウト付き）</td><td>—</td></tr>
+        <tr><td><strong>状態管理</strong></td><td>Key-Value ストアへの読み書きを抽象化</td><td>Azure Cosmos DB・Azure Cache for Redis</td></tr>
+        <tr><td><strong>Pub/Sub メッセージング</strong></td><td>イベント発行・購読を抽象化</td><td>Azure Service Bus・Event Hubs</td></tr>
+        <tr><td><strong>バインディング</strong></td><td>外部サービスのトリガー・出力を抽象化</td><td>Blob Storage・Event Grid・Queue Storage</td></tr>
+        <tr><td><strong>シークレット管理</strong></td><td>シークレット取得を抽象化</td><td>Azure Key Vault</td></tr>
+        <tr><td><strong>アクター</strong></td><td>Virtual Actor パターンの実装支援</td><td>Redis（状態管理）</td></tr>
+        <tr><td><strong>ワークフロー</strong></td><td>長時間実行処理・サガパターン</td><td>—（内部で管理）</td></tr>
+        <tr><td><strong>設定管理</strong></td><td>アプリ設定の読み取りと変更通知</td><td>Azure App Configuration</td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="sub">☁️ Azure Container Apps（ACA）との深い統合</h3>
+    <div class="diagram">
+      <div class="flow" style="flex-wrap:wrap; gap:6px;">
+        <div class="box dark">Azure Container Apps<small>サーバーレスコンテナ</small></div>
+        <div class="arr">+</div>
+        <div class="box dapr">Dapr<small>組み込みでサポート</small></div>
+        <div class="arr dapr">→</div>
+        <div class="box teal">有効化するだけで<small>サイドカーが自動注入</small></div>
+      </div>
+    </div>
+    <p class="note" style="margin-top:10px;"><strong>Azure Container Apps は Dapr をファーストクラスでサポート</strong>しています。ACA のポータルで Dapr を有効にするだけでサイドカーが自動注入され、Service Bus・Cosmos DB との統合が設定ベースで完結します。AZ-305 では「マイクロサービスの通信・状態管理を簡略化したい」という要件で ACA + Dapr の組み合わせが頻出です。</p>
+
+    <pre><span class="cmt"># Dapr を有効にした Azure Container Apps のデプロイ例</span>
+az containerapp create \
+  --name myapp \
+  --resource-group myRG \
+  --environment myEnv \
+  --image myimage:latest \
+  --<span class="prop">dapr-enabled</span> <span class="val">true</span> \
+  --<span class="prop">dapr-app-id</span> <span class="str">"myapp"</span> \
+  --<span class="prop">dapr-app-port</span> <span class="val">8080</span></pre>
+
+    <div class="alert al-yellow">
+      <div class="t">⚠️ 試験頻出：Dapr と Istio の違い</div>
+      <ul>
+        <li>Dapr はアプリ開発者向け：<strong>ビジネスロジックの実装を支援する</strong>（状態管理・メッセージング等）</li>
+        <li>Istio はインフラ担当向け：<strong>通信の制御・監視をアプリ透過的に行う</strong>（mTLS・トラフィック管理等）</li>
+        <li>どちらもサイドカーを使うが目的が異なるため<strong>共存可能</strong>（実際に併用されるケースもある）</li>
+        <li>ACA 環境では Istio ではなく Dapr が推奨統合ツール</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════ ISTIO ══════════════════════ -->
+<div class="card">
+  <div class="card-header ch-istio">
+    <div class="dot" style="background:var(--istio)"></div>
+    <h2>④ Istio（Service Mesh）</h2>
+  </div>
+  <div class="card-body">
+
+    <div class="concept istio">
+      <strong>一言：「サービス間通信をアプリに触れずに制御・監視する透明なネットワーク層」</strong><br>
+      すべての Pod にサイドカー（Envoy Proxy）を自動注入し、アプリ間の通信を横断的にコントロールします。アプリのコード変更は一切不要です。
+    </div>
+
+    <h3 class="sub">🕸️ アーキテクチャ（Data Plane と Control Plane）</h3>
+    <div class="diagram">
+      <!-- Control Plane -->
+      <div style="border:2px solid var(--istio); border-radius:8px; padding:12px; margin-bottom:10px;">
+        <div style="font-size:.8rem; font-weight:700; color:#1E3A6A; margin-bottom:8px;">Control Plane（Istiod）</div>
+        <div class="flow" style="flex-wrap:wrap; gap:6px;">
+          <div class="box istio">Pilot<small>ルーティングルール配信</small></div>
+          <div class="box istio">Citadel<small>証明書・mTLS管理</small></div>
+          <div class="box istio">Galley<small>設定検証・配布</small></div>
+        </div>
+        <div style="text-align:center; color:var(--istio); font-size:.8rem; margin-top:6px;">↓ プロキシ設定を各サイドカーに配信</div>
+      </div>
+      <!-- Data Plane -->
+      <div style="border:2px solid var(--border); border-radius:8px; padding:12px;">
+        <div style="font-size:.8rem; font-weight:700; color:var(--gray); margin-bottom:8px;">Data Plane（各 Pod の Envoy Sidecar）</div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <div style="border:1.5px solid var(--istio); border-radius:8px; padding:8px; flex:1; min-width:130px;">
+            <div class="box gray" style="margin-bottom:4px; font-size:.78rem;">📦 App A</div>
+            <div class="box istio" style="font-size:.78rem;">🔀 Envoy Proxy<small>自動注入</small></div>
+          </div>
+          <div class="arr istio" style="align-self:center;">⟺<br><span style="font-size:.72rem;">mTLS</span></div>
+          <div style="border:1.5px solid var(--istio); border-radius:8px; padding:8px; flex:1; min-width:130px;">
+            <div class="box gray" style="margin-bottom:4px; font-size:.78rem;">📦 App B</div>
+            <div class="box istio" style="font-size:.78rem;">🔀 Envoy Proxy<small>自動注入</small></div>
+          </div>
+          <div class="arr istio" style="align-self:center;">⟺<br><span style="font-size:.72rem;">mTLS</span></div>
+          <div style="border:1.5px solid var(--istio); border-radius:8px; padding:8px; flex:1; min-width:130px;">
+            <div class="box gray" style="margin-bottom:4px; font-size:.78rem;">📦 App C</div>
+            <div class="box istio" style="font-size:.78rem;">🔀 Envoy Proxy<small>自動注入</small></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="sub">✅ できること</h3>
+    <table class="th-istio">
+      <thead><tr><th>機能カテゴリ</th><th>具体的な機能</th><th>ユースケース</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>トラフィック管理</strong></td>
+          <td>カナリアデプロイ・A/Bテスト・重み付けルーティング・サーキットブレーカー・リトライ</td>
+          <td>新バージョンを10%のトラフィックに先行リリース</td>
+        </tr>
+        <tr>
+          <td><strong>セキュリティ</strong></td>
+          <td>サービス間 mTLS（相互TLS）の自動化・認証ポリシー・認可ポリシー</td>
+          <td>「サービスBからサービスAへのアクセスのみ許可」</td>
+        </tr>
+        <tr>
+          <td><strong>可観測性</strong></td>
+          <td>分散トレーシング・メトリクス・ログ収集（Jaeger・Prometheus連携）</td>
+          <td>どのサービス間の呼び出しでレイテンシが高いか可視化</td>
+        </tr>
+        <tr>
+          <td><strong>フォルトインジェクション</strong></td>
+          <td>意図的な遅延・エラーをテスト目的で注入</td>
+          <td>カオスエンジニアリング・障害テスト</td>
+        </tr>
+        <tr>
+          <td><strong>ゲートウェイ制御</strong></td>
+          <td>Ingress/Egress ゲートウェイによる入出力トラフィック制御</td>
+          <td>クラスターへの入口・出口を一元管理</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 class="sub">☁️ AKS での Istio 統合（AKS アドオン）</h3>
+    <div class="diagram">
+      <div class="flow" style="flex-wrap:wrap; gap:6px;">
+        <div class="box dark">AKS クラスター</div>
+        <div class="arr">+</div>
+        <div class="box istio">Istio アドオン<small>az aks mesh enable</small></div>
+        <div class="arr istio">→</div>
+        <div class="box green">マネージド Istio<small>Microsoft が管理・更新</small></div>
+      </div>
+    </div>
+    <p class="note" style="margin-top:10px;">AKS では <strong>Istio ベースのサービスメッシュアドオン</strong>が提供されています（2023年 GA）。自前で Istio をインストール・管理する手間なく、Azure が Istio の更新・管理を担います。AZ-305 では「AKS でサービスメッシュが必要」なシナリオでこのアドオンが答えになります。</p>
+
+    <div class="alert al-yellow">
+      <div class="t">⚠️ 試験頻出：Istio vs Linkerd vs Open Service Mesh（OSM）</div>
+      <ul>
+        <li>Istio：最も機能が豊富だが複雑・重量級。AKS のアドオンとして正式サポート</li>
+        <li>Linkerd：軽量でシンプル。Rust 製で高パフォーマンス。AKS の公式アドオンではない</li>
+        <li>OSM（Open Service Mesh）：Microsoft が開発したが <strong>2023年に非推奨</strong>。代替は Istio アドオン</li>
+        <li>試験では「AKS でサービスメッシュ」= <strong>Istio アドオン</strong>が正解になるケースが多い</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════ 比較まとめ ══════════════════════ -->
+<div class="card">
+  <div class="card-header ch-green">
+    <div class="dot" style="background:var(--green)"></div>
+    <h2>⑤ 3ツール 総合比較と使い分け</h2>
+  </div>
+  <div class="card-body">
+
+    <table>
+      <thead><tr><th>比較項目</th><th>🔄 Flux</th><th>🧩 Dapr</th><th>🕸️ Istio</th></tr></thead>
+      <tbody>
+        <tr><td><strong>担当領域</strong></td><td>デプロイ自動化</td><td>アプリ機能提供</td><td>ネットワーク制御</td></tr>
+        <tr><td><strong>主なユーザー</strong></td><td>DevOps・インフラ担当</td><td>アプリ開発者</td><td>インフラ・SRE</td></tr>
+        <tr><td><strong>アプリコード変更</strong></td><td>不要</td><td>必要（API呼び出し追加）</td><td>不要</td></tr>
+        <tr><td><strong>サイドカー</strong></td><td>なし</td><td>あり（daprd）</td><td>あり（Envoy Proxy）</td></tr>
+        <tr><td><strong>言語非依存</strong></td><td>✅（K8sマニフェスト）</td><td>✅（HTTP/gRPC API）</td><td>✅（透過的）</td></tr>
+        <tr><td><strong>Azure 統合</strong></td><td>AKS 拡張機能（Flux v2）</td><td>ACA 組み込みサポート / AKS アドオン</td><td>AKS アドオン（Istio）</td></tr>
+        <tr><td><strong>主な設定方法</strong></td><td>Git リポジトリの YAML</td><td>Component YAML + API呼び出し</td><td>VirtualService / DestinationRule YAML</td></tr>
+        <tr><td><strong>学習コスト</strong></td><td>中</td><td>中</td><td>高</td></tr>
+        <tr><td><strong>競合・類似</strong></td><td>ArgoCD</td><td>なし（独自ポジション）</td><td>Linkerd・Consul Connect</td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="sub">🎯 シナリオ別の選択指針</h3>
+    <table>
+      <thead><tr><th>シナリオ</th><th>採用すべきツール</th><th>理由</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>「Git push で自動デプロイしたい」</td>
+          <td><span class="badge b-flux">Flux</span></td>
+          <td>GitOps の実装。AKS 拡張機能で簡単に導入できる</td>
+        </tr>
+        <tr>
+          <td>「マイクロサービス間でイベント駆動通信したい」</td>
+          <td><span class="badge b-blue">Dapr</span></td>
+          <td>Pub/Sub ビルディングブロックで Service Bus 等を抽象化できる</td>
+        </tr>
+        <tr>
+          <td>「サービス間通信を自動的に mTLS で暗号化したい」</td>
+          <td><span class="badge b-istio">Istio</span></td>
+          <td>コード変更なしで全通信を mTLS 化できる</td>
+        </tr>
+        <tr>
+          <td>「新バージョンを段階的にリリース（カナリア）したい」</td>
+          <td><span class="badge b-istio">Istio</span></td>
+          <td>VirtualService の重み付けルーティングで実現</td>
+        </tr>
+        <tr>
+          <td>「各サービスが Redis や Cosmos DB を使いたいが接続先を切り替えたい」</td>
+          <td><span class="badge b-blue">Dapr</span></td>
+          <td>状態管理 Component を差し替えるだけでバックエンドを変更できる</td>
+        </tr>
+        <tr>
+          <td>「サービス間の依存関係とレイテンシを可視化したい」</td>
+          <td><span class="badge b-istio">Istio</span></td>
+          <td>Kiali・Jaeger 連携でサービスマップと分散トレーシングを提供</td>
+        </tr>
+        <tr>
+          <td>「複数環境（dev/staging/prod）を一元管理したい」</td>
+          <td><span class="badge b-flux">Flux</span></td>
+          <td>Kustomize + パラメーター分離で環境差分を Git で管理</td>
+        </tr>
+        <tr>
+          <td>「Azure Container Apps でマイクロサービスを構築したい」</td>
+          <td><span class="badge b-blue">Dapr</span></td>
+          <td>ACA は Dapr をネイティブサポート。設定だけで有効化できる</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="alert al-blue">
+      <div class="t">📌 AZ-305 最重要まとめ</div>
+      <ul>
+        <li><strong>Flux</strong>：「GitOps」「デプロイ自動化」「ドリフト検出」「AKS 拡張機能」がキーワード。ArgoCD との違いは Azure ネイティブ統合</li>
+        <li><strong>Dapr</strong>：「Building Blocks」「サイドカー」「言語非依存」「ACA との統合」がキーワード。Istio との違いはアプリ機能の提供（コード変更あり）</li>
+        <li><strong>Istio</strong>：「Service Mesh」「mTLS」「カナリアデプロイ」「可観測性」「AKS アドオン」がキーワード。OSM は非推奨で代替が Istio</li>
+        <li>3つは競合ではなく<strong>共存・補完関係</strong>。実際のエンタープライズ環境では3つすべて使うケースも多い</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+</div>
+</body>
+</html>

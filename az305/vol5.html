@@ -2842,7 +2842,7 @@ function renderAll(){
 }
 
 // ===== REVIEW SYSTEM =====
-let reviewSet = new Set(JSON.parse(localStorage.getItem('az305_review_ids')||'[]'));
+let reviewSet = new Set(Object.keys(JSON.parse(localStorage.getItem('az305_review_data')||'{}')).filter(k=>k.startsWith('vol5_')).map(k=>k.slice(5)));
 
 function toggleReview(qid, vol, num) {
   if(reviewSet.has(qid)) {
@@ -2872,7 +2872,7 @@ function toggleReview(qid, vol, num) {
       localStorage.setItem('az305_review_data', JSON.stringify(data));
     }
   }
-  localStorage.setItem('az305_review_ids', JSON.stringify([...reviewSet]));
+  localStorage.setItem('az305_review_ids', JSON.stringify(Object.keys(JSON.parse(localStorage.getItem('az305_review_data')||'{}'))));  // sync badge count
   const btn = document.getElementById('rbtn_'+qid);
   if(btn) btn.classList.toggle('review-active', reviewSet.has(qid));
   if(window.updateReviewBadge) updateReviewBadge();

@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Entra ID アプリ登録と委任された権限 | AZ-305</title>
+<style>
+  :root {
+    --blue:#0078D4; --dark:#003A6C; --teal:#00B294; --green:#107C10;
+    --orange:#D83B01; --purple:#5C2D91; --gray:#605E5C;
+    --bg:#F3F2F1; --white:#fff; --border:#EDEBE9; --text:#201F1E;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Segoe UI',system-ui,sans-serif; background:var(--bg); color:var(--text); line-height:1.65; }
+
+  .hero { background:linear-gradient(135deg,#003A6C,#0078D4 60%,#5C2D91); color:white; padding:44px 40px; }
+  .hero-badge { display:inline-block; background:rgba(255,255,255,0.18); border:1px solid rgba(255,255,255,0.4); border-radius:20px; padding:3px 14px; font-size:11px; font-weight:700; letter-spacing:.8px; margin-bottom:12px; }
+  .hero h1 { font-size:1.75rem; font-weight:700; margin-bottom:8px; }
+  .hero p { font-size:.93rem; opacity:.88; max-width:700px; }
+
+  .container { max-width:1000px; margin:0 auto; padding:36px 24px; }
+
+  .card { background:var(--white); border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,.1); margin-bottom:28px; overflow:hidden; }
+  .card-header { display:flex; align-items:center; gap:12px; padding:18px 26px; }
+  .ch-blue   { border-bottom:3px solid var(--blue);   background:linear-gradient(90deg,rgba(0,120,212,.07),transparent); }
+  .ch-purple { border-bottom:3px solid var(--purple); background:linear-gradient(90deg,rgba(92,45,145,.07),transparent); }
+  .ch-green  { border-bottom:3px solid var(--green);  background:linear-gradient(90deg,rgba(16,124,16,.07),transparent); }
+  .ch-orange { border-bottom:3px solid var(--orange); background:linear-gradient(90deg,rgba(216,59,1,.07),transparent); }
+  .ch-blue h2   { color:var(--dark); }
+  .ch-purple h2 { color:#3B0E7A; }
+  .ch-green h2  { color:#0A4A0A; }
+  .ch-orange h2 { color:#7A2000; }
+  .card-header h2 { font-size:1.15rem; font-weight:700; }
+  .dot { width:16px; height:16px; border-radius:4px; flex-shrink:0; }
+
+  .card-body { padding:26px; }
+  p.note { font-size:.88rem; margin-bottom:14px; color:#323130; }
+
+  /* ── ダイアグラム ── */
+  .diagram { background:#FAFAFA; border:1px solid var(--border); border-radius:8px; padding:20px; margin:16px 0; overflow-x:auto; }
+  .dtitle { font-size:.78rem; font-weight:700; color:var(--gray); margin-bottom:14px; text-transform:uppercase; letter-spacing:.5px; }
+
+  .flow { display:flex; align-items:center; flex-wrap:wrap; gap:6px; margin:6px 0; }
+  .box { border-radius:7px; padding:10px 14px; font-size:.82rem; font-weight:600; line-height:1.35; text-align:center; }
+  .box small { display:block; font-size:.72rem; font-weight:400; opacity:.8; margin-top:2px; }
+  .box.blue   { background:#EFF6FC; border:2px solid var(--blue);   color:var(--dark); }
+  .box.purple { background:#F4F0FF; border:2px solid var(--purple); color:#3B0E7A; }
+  .box.green  { background:#DFF6DD; border:2px solid var(--green);  color:#0A4A0A; }
+  .box.orange { background:#FFF0EB; border:2px solid var(--orange); color:#7A2000; }
+  .box.gray   { background:#F3F2F1; border:2px solid var(--gray);   color:#323130; }
+  .box.dark   { background:var(--dark); border:2px solid var(--dark); color:white; }
+  .box.white  { background:white; border:1.5px solid var(--border); color:var(--text); }
+  .box.teal   { background:#E8FBF8; border:2px solid var(--teal);   color:#00695C; }
+
+  .arr { font-size:1.3rem; color:var(--gray); padding:0 2px; align-self:center; flex-shrink:0; }
+  .arr.blue   { color:var(--blue); }
+  .arr.purple { color:var(--purple); }
+  .arr.green  { color:var(--green); }
+  .arr.orange { color:var(--orange); }
+
+  /* ── ステップ番号 ── */
+  .steps { display:flex; flex-direction:column; gap:4px; margin:14px 0; }
+  .step  { display:flex; align-items:flex-start; gap:12px; }
+  .step-num { width:28px; height:28px; border-radius:50%; background:var(--blue); color:white; font-weight:700; font-size:.82rem; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px; }
+  .step-num.purple { background:var(--purple); }
+  .step-num.green  { background:var(--green); }
+  .step-num.orange { background:var(--orange); }
+  .step-body { background:#F8F8F8; border:1px solid var(--border); border-radius:6px; padding:9px 14px; flex:1; font-size:.85rem; }
+  .step-body strong { color:var(--dark); }
+  .step-conn { width:28px; display:flex; justify-content:center; }
+  .step-conn::after { content:''; display:block; width:2px; height:16px; background:#C7E0F4; margin:2px auto; }
+
+  /* ── Tables ── */
+  table { width:100%; border-collapse:collapse; font-size:.85rem; margin:12px 0; }
+  thead th { background:var(--blue); color:white; padding:10px 14px; text-align:left; }
+  thead th:first-child { border-radius:6px 0 0 0; } thead th:last-child { border-radius:0 6px 0 0; }
+  .th-purple thead th { background:var(--purple); }
+  tbody td { padding:9px 14px; border-bottom:1px solid var(--border); vertical-align:top; }
+  tbody tr:nth-child(even) td { background:#F8F8F8; }
+  tbody tr:hover td { background:#EFF6FC; }
+
+  .badge { display:inline-block; padding:2px 9px; border-radius:12px; font-size:.75rem; font-weight:600; }
+  .b-blue   { background:#EFF6FC; color:var(--blue);   border:1px solid #C7E0F4; }
+  .b-green  { background:#DFF6DD; color:var(--green);  border:1px solid #A7D8A4; }
+  .b-orange { background:#FFF4CE; color:#7A4F01;        border:1px solid #F7E28B; }
+  .b-purple { background:#F4F0FF; color:var(--purple); border:1px solid #C8A9FA; }
+  .b-red    { background:#FDE7E9; color:#A4262C;        border:1px solid #F4A9AD; }
+  .b-gray   { background:#F3F2F1; color:var(--gray);   border:1px solid var(--border); }
+
+  .alert { border-radius:8px; padding:14px 18px; margin-top:16px; }
+  .al-yellow { background:#FFF4CE; border:1.5px solid #F7E28B; border-left:5px solid #E8A600; }
+  .al-yellow .t { font-weight:700; color:#7A4F01; font-size:.9rem; margin-bottom:5px; }
+  .al-yellow ul, .al-yellow p { padding-left:16px; font-size:.84rem; color:#4A3200; }
+  .al-yellow ul { padding-left:20px; }
+  .al-yellow li { margin-bottom:3px; }
+  .al-blue { background:#EFF6FC; border:1.5px solid #C7E0F4; border-left:5px solid var(--blue); }
+  .al-blue .t { font-weight:700; color:var(--dark); font-size:.9rem; margin-bottom:5px; }
+  .al-blue ul { padding-left:20px; font-size:.84rem; color:#1A3A5C; }
+  .al-blue li { margin-bottom:3px; }
+  .al-green { background:#DFF6DD; border:1.5px solid #A7D8A4; border-left:5px solid var(--green); }
+  .al-green .t { font-weight:700; color:#0A4A0A; font-size:.9rem; margin-bottom:5px; }
+  .al-green ul { padding-left:20px; font-size:.84rem; color:#0A4A0A; }
+  .al-green li { margin-bottom:3px; }
+
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:14px; }
+  @media(max-width:620px){ .grid2{ grid-template-columns:1fr; } }
+  .box2 { background:#F8F8F8; border:1px solid var(--border); border-radius:8px; padding:14px 16px; }
+  .box2 h4 { font-size:.88rem; font-weight:700; color:var(--dark); margin-bottom:7px; padding-bottom:5px; border-bottom:2px solid #EFF6FC; }
+  .box2 ul { padding-left:16px; }
+  .box2 li { font-size:.82rem; margin-bottom:4px; color:#323130; }
+
+  code { font-family:'Consolas',monospace; background:#F3F2F1; padding:1px 6px; border-radius:4px; font-size:.81rem; color:#A4262C; }
+  h3.sub { font-size:.97rem; font-weight:700; color:var(--dark); margin:22px 0 10px; }
+
+  /* 強調ボックス */
+  .key-box { background:var(--dark); color:white; border-radius:8px; padding:14px 20px; margin:16px 0; font-size:.9rem; }
+  .key-box strong { color:#7EC8F5; }
+
+  /* 区切り */
+  .vs-row { display:grid; grid-template-columns:1fr 40px 1fr; gap:0; margin:16px 0; align-items:stretch; }
+  .vs-label { display:flex; align-items:center; justify-content:center; font-weight:700; color:var(--gray); font-size:.9rem; }
+  .vs-box { border-radius:8px; padding:14px 16px; }
+  .vs-box h4 { font-size:.88rem; font-weight:700; margin-bottom:8px; }
+  .vs-box ul { padding-left:16px; }
+  .vs-box li { font-size:.82rem; margin-bottom:4px; }
+  .vs-left  { background:#EFF6FC; border:2px solid var(--blue);   }
+  .vs-left h4  { color:var(--dark); }
+  .vs-right { background:#F4F0FF; border:2px solid var(--purple); }
+  .vs-right h4 { color:#3B0E7A; }
+  @media(max-width:620px){ .vs-row{ grid-template-columns:1fr; } .vs-label{ padding:6px 0; } }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">🎓 AZ-305 | Identity & Governance</div>
+  <h1>Entra ID アプリ登録 ＋ 委任された権限<br>Azure Functions サービス間認証の解説</h1>
+  <p>「クライアントシークレット不要のサービス間認証」を実現するための推奨構成を、全体像から権限の違いまで丁寧に解説します。</p>
+</div>
+
+<div class="container">
+
+<!-- ══════ SECTION 1: シナリオ整理 ══════ -->
+<div class="card">
+  <div class="card-header ch-blue">
+    <div class="dot" style="background:var(--blue)"></div>
+    <h2>① シナリオの整理</h2>
+  </div>
+  <div class="card-body">
+
+    <div class="diagram">
+      <div class="dtitle">前提となる環境</div>
+      <div class="flow" style="flex-wrap:wrap; gap:10px;">
+        <div class="box dark" style="min-width:180px;">
+          🏢 apexcore.com<br>
+          <small>Microsoft Entra テナント</small>
+        </div>
+        <div class="arr blue">⊃</div>
+        <div class="box blue" style="min-width:160px;">
+          📦 Sub1<br>
+          <small>Azure サブスクリプション</small>
+        </div>
+        <div class="arr blue">⊃</div>
+        <div style="display:flex; flex-direction:column; gap:6px;">
+          <div class="box blue">⚡ Functions App A<small>API を提供・呼び出す</small></div>
+          <div class="box blue">⚡ Functions App B<small>API を提供・呼び出す</small></div>
+          <div class="box blue">⚡ Functions App C<small>API を提供・呼び出す</small></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="key-box">
+      🎯 <strong>目標：</strong>クライアントシークレットを一切管理せずに、Functions 同士が Entra ID ベースで認証し合う構成を作る<br>
+      ✅ <strong>最初のステップ：</strong>Entra ID にアプリケーション登録を行う
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════ SECTION 2: なぜアプリ登録が最初のステップか ══════ -->
+<div class="card">
+  <div class="card-header ch-purple">
+    <div class="dot" style="background:var(--purple)"></div>
+    <h2>② なぜ「アプリ登録」が最初のステップなのか</h2>
+  </div>
+  <div class="card-body">
+
+    <p class="note">Entra ID で認証を行うには、まず「このアプリは存在する」と Entra ID に登録して<strong>認証の主体（アイデンティティ）</strong>を作る必要があります。アプリ登録なしでは、Entra ID はそのアプリが誰なのか判断できません。</p>
+
+    <div class="diagram">
+      <div class="dtitle">アプリ登録で何が作られるか</div>
+
+      <!-- アプリ登録 -->
+      <div class="flow" style="gap:10px; flex-wrap:wrap;">
+        <div class="box purple" style="min-width:170px;">
+          📋 アプリ登録<br>
+          <small>（App Registration）<br>テナント全体の定義</small>
+        </div>
+        <div class="arr purple">→ 自動生成</div>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <div class="box blue">
+            🆔 アプリケーション ID（クライアントID）<small>アプリを一意に識別するGUID</small>
+          </div>
+          <div class="box blue">
+            👤 サービスプリンシパル<small>テナント内での「実行主体」の実体</small>
+          </div>
+          <div class="box blue">
+            📜 権限設定（APIアクセス許可）<small>このアプリが使える権限の定義</small>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:14px; background:#F4F0FF; border-radius:6px; padding:10px 14px; font-size:.83rem; color:#3B0E7A;">
+        <strong>📌 アプリ登録 ≠ サービスプリンシパル</strong><br>
+        アプリ登録は「設計図（blueprint）」。サービスプリンシパルはその設計図から作られる「テナント内での実行インスタンス」。<br>
+        同じアプリ登録を別テナントで使う場合、そのテナントに別のサービスプリンシパルが作成されます。
+      </div>
+    </div>
+
+    <h3 class="sub">🏗️ Functions ごとのアプリ登録構成</h3>
+    <div class="diagram">
+      <div class="dtitle">apexcore.com テナント内の構成イメージ</div>
+
+      <div style="border:2px solid var(--dark); border-radius:10px; padding:16px; background:#EFF6FC;">
+        <div style="font-weight:700; font-size:.85rem; color:var(--dark); margin-bottom:12px; text-align:center;">🏢 Entra ID（apexcore.com）</div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;">
+          <div style="border:2px solid var(--purple); border-radius:8px; padding:10px; background:white;">
+            <div style="font-weight:700; font-size:.8rem; color:#3B0E7A; margin-bottom:6px; text-align:center;">📋 App登録 A</div>
+            <div class="box purple" style="font-size:.75rem; margin-bottom:4px;">Client ID: aaa-111</div>
+            <div class="box blue"   style="font-size:.75rem; margin-bottom:4px;">SP: Functions-A</div>
+            <div class="box green"  style="font-size:.75rem;">権限設定 →</div>
+          </div>
+          <div style="border:2px solid var(--purple); border-radius:8px; padding:10px; background:white;">
+            <div style="font-weight:700; font-size:.8rem; color:#3B0E7A; margin-bottom:6px; text-align:center;">📋 App登録 B</div>
+            <div class="box purple" style="font-size:.75rem; margin-bottom:4px;">Client ID: bbb-222</div>
+            <div class="box blue"   style="font-size:.75rem; margin-bottom:4px;">SP: Functions-B</div>
+            <div class="box green"  style="font-size:.75rem;">権限設定 →</div>
+          </div>
+          <div style="border:2px solid var(--purple); border-radius:8px; padding:10px; background:white;">
+            <div style="font-weight:700; font-size:.8rem; color:#3B0E7A; margin-bottom:6px; text-align:center;">📋 App登録 C</div>
+            <div class="box purple" style="font-size:.75rem; margin-bottom:4px;">Client ID: ccc-333</div>
+            <div class="box blue"   style="font-size:.75rem; margin-bottom:4px;">SP: Functions-C</div>
+            <div class="box green"  style="font-size:.75rem;">権限設定 →</div>
+          </div>
+        </div>
+
+        <div style="text-align:center; font-size:.8rem; color:var(--gray); margin-top:10px;">
+          ↑ 各 Functions アプリに対して1つずつアプリ登録を作成する
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════ SECTION 3: 委任された権限 vs アプリケーション権限 ══════ -->
+<div class="card">
+  <div class="card-header ch-blue">
+    <div class="dot" style="background:var(--blue)"></div>
+    <h2>③ 「委任された権限」とは何か ─ アプリケーション権限との違い</h2>
+  </div>
+  <div class="card-body">
+
+    <p class="note">APIアクセス許可には2種類あります。今回のシナリオで使うのは<strong>「委任された権限（Delegated Permissions）」</strong>です。</p>
+
+    <div class="vs-row">
+      <div class="vs-box vs-left">
+        <h4>✅ 委任された権限（Delegated）← 今回</h4>
+        <ul>
+          <li>ログインユーザーの<strong>代わりに</strong> API を呼ぶ</li>
+          <li>「ユーザーが持っている権限の範囲内」で動作</li>
+          <li>トークンに<strong>ユーザー情報が含まれる</strong></li>
+          <li>ユーザーまたは管理者の同意が必要</li>
+          <li>Functions が EasyAuth でユーザーを認証して後続 API を呼ぶ場合に使用</li>
+        </ul>
+      </div>
+      <div class="vs-label">VS</div>
+      <div class="vs-box vs-right">
+        <h4>アプリケーション権限（Application）</h4>
+        <ul>
+          <li>ユーザー不在でアプリ自身として API を呼ぶ</li>
+          <li>バッチ・デーモン・完全自律サービス向け</li>
+          <li>トークンに<strong>ユーザー情報が含まれない</strong></li>
+          <li>必ず管理者同意が必要</li>
+          <li>マネージド ID による client_credentials フロー</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 class="sub">🔄 委任された権限の認証フロー（図解）</h3>
+    <div class="diagram">
+      <div class="dtitle">Functions A → Functions B を呼び出すフロー（委任された権限）</div>
+
+      <!-- Step 1 -->
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px; flex-wrap:wrap;">
+        <div style="background:#0078D4; color:white; border-radius:50%; width:24px; height:24px; display:flex; align-items:center; justify-content:center; font-size:.75rem; font-weight:700; flex-shrink:0;">1</div>
+        <div class="box gray" style="min-width:120px;">👤 ユーザー</div>
+        <div class="arr blue">→ ログイン</div>
+        <div class="box blue" style="min-width:140px;">⚡ Functions A<small>EasyAuth 有効</small></div>
+        <div class="arr blue">→ 認証コード</div>
+        <div class="box dark" style="min-width:140px;">🏢 Entra ID<small>apexcore.com</small></div>
+      </div>
+
+      <!-- Step 2 -->
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px; flex-wrap:wrap;">
+        <div style="background:#0078D4; color:white; border-radius:50%; width:24px; height:24px; display:flex; align-items:center; justify-content:center; font-size:.75rem; font-weight:700; flex-shrink:0;">2</div>
+        <div class="box dark" style="min-width:140px;">🏢 Entra ID</div>
+        <div class="arr blue">→ トークン発行</div>
+        <div class="box blue" style="min-width:200px;">🎫 アクセストークン<small>ユーザー情報 + 委任された権限</small></div>
+        <div class="arr blue">→ 返却</div>
+        <div class="box blue" style="min-width:120px;">⚡ Functions A</div>
+      </div>
+
+      <!-- Step 3 -->
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px; flex-wrap:wrap;">
+        <div style="background:#0078D4; color:white; border-radius:50%; width:24px; height:24px; display:flex; align-items:center; justify-content:center; font-size:.75rem; font-weight:700; flex-shrink:0;">3</div>
+        <div class="box blue" style="min-width:120px;">⚡ Functions A</div>
+        <div class="arr blue">→ On-Behalf-Of フロー</div>
+        <div class="box dark" style="min-width:140px;">🏢 Entra ID</div>
+        <div class="arr blue">→ Functions B 用トークン</div>
+        <div class="box green" style="min-width:140px;">🎫 新トークン<small>B向け + ユーザー委任</small></div>
+      </div>
+
+      <!-- Step 4 -->
+      <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+        <div style="background:#107C10; color:white; border-radius:50%; width:24px; height:24px; display:flex; align-items:center; justify-content:center; font-size:.75rem; font-weight:700; flex-shrink:0;">4</div>
+        <div class="box blue" style="min-width:120px;">⚡ Functions A</div>
+        <div class="arr green">→ Bearer Token 付き API 呼び出し</div>
+        <div class="box green" style="min-width:120px;">⚡ Functions B<small>トークン検証後に応答</small></div>
+      </div>
+
+      <div style="margin-top:14px; background:#DFF6DD; border-radius:6px; padding:10px 14px; font-size:.83rem; color:#0A4A0A;">
+        <strong>⚡ ポイント：On-Behalf-Of（OBO）フロー</strong><br>
+        Functions A がユーザーから受け取ったトークンを使って、Entra ID に「ユーザーの代わりに Functions B を呼びたい」と新しいトークンを要求する仕組みです。ユーザーの委任が連鎖します。
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════ SECTION 4: 設定手順 ══════ -->
+<div class="card">
+  <div class="card-header ch-green">
+    <div class="dot" style="background:var(--green)"></div>
+    <h2>④ 具体的な設定手順</h2>
+  </div>
+  <div class="card-body">
+
+    <div class="diagram">
+      <div class="dtitle">設定の全体ステップ</div>
+
+      <div class="steps">
+        <!-- Step 1 -->
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <strong>【最初のステップ】各 Functions のアプリ登録を Entra ID に作成する</strong><br>
+            Portal → Microsoft Entra ID → アプリの登録 → 新規登録<br>
+            Functions A・B・C それぞれに1つずつ作成する。これで Client ID が払い出される。
+          </div>
+        </div>
+        <div class="step-conn"></div>
+
+        <!-- Step 2 -->
+        <div class="step">
+          <div class="step-num step-num" style="background:var(--purple);">2</div>
+          <div class="step-body">
+            <strong>呼び出される側（Functions B）の「スコープ（scope）」を定義する</strong><br>
+            Functions B のアプリ登録 → 「API の公開」→ スコープを追加<br>
+            例：<code>api://functions-b/API.Call</code> というスコープを定義する。
+          </div>
+        </div>
+        <div class="step-conn"></div>
+
+        <!-- Step 3 -->
+        <div class="step">
+          <div class="step-num" style="background:var(--purple);">3</div>
+          <div class="step-body">
+            <strong>呼び出す側（Functions A）に「委任された権限」を付与する</strong><br>
+            Functions A のアプリ登録 → 「APIのアクセス許可」→ アクセス許可の追加<br>
+            → 「自分のAPI」から Functions B のスコープ（<code>API.Call</code>）を選択<br>
+            → 種類は「<strong>委任されたアクセス許可（Delegated）</strong>」を選択する。
+          </div>
+        </div>
+        <div class="step-conn"></div>
+
+        <!-- Step 4 -->
+        <div class="step">
+          <div class="step-num" style="background:var(--green);">4</div>
+          <div class="step-body">
+            <strong>各 Functions で EasyAuth（組み込み認証）を有効化する</strong><br>
+            Functions アプリ → 認証 → ID プロバイダーの追加 → Microsoft<br>
+            作成済みのアプリ登録を紐付けることで、コード変更なしでトークン検証が有効になる。
+          </div>
+        </div>
+        <div class="step-conn"></div>
+
+        <!-- Step 5 -->
+        <div class="step">
+          <div class="step-num" style="background:var(--green);">5</div>
+          <div class="step-body">
+            <strong>Functions A のコードで On-Behalf-Of フローを使って Functions B を呼ぶ</strong><br>
+            ユーザーから受け取ったトークンを使い、Entra ID から Functions B 向けの新トークンを取得して呼び出す。
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="sub">📋 アプリ登録の設定マッピング</h3>
+    <table>
+      <thead><tr><th>Functions</th><th>アプリ登録での設定</th><th>内容</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Functions A</strong><br>（呼び出す側）</td>
+          <td>APIのアクセス許可<br>→ <span class="badge b-blue">委任されたアクセス許可</span></td>
+          <td>Functions B のスコープ（<code>api://functions-b/API.Call</code>）を追加する</td>
+        </tr>
+        <tr>
+          <td><strong>Functions B</strong><br>（呼び出される側）</td>
+          <td>APIの公開<br>→ スコープの定義</td>
+          <td><code>API.Call</code> などのスコープを定義し、A からの呼び出しを許可する</td>
+        </tr>
+        <tr>
+          <td><strong>Functions A・B・C</strong><br>（全員）</td>
+          <td>認証（EasyAuth）の有効化</td>
+          <td>各アプリ登録を紐付けて、受け取ったトークンを自動検証させる</td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+</div>
+
+<!-- ══════ SECTION 5: なぜシークレット不要か ══════ -->
+<div class="card">
+  <div class="card-header ch-orange">
+    <div class="dot" style="background:var(--orange)"></div>
+    <h2>⑤ なぜクライアントシークレットが不要になるのか</h2>
+  </div>
+  <div class="card-body">
+
+    <div class="grid2">
+      <div>
+        <div style="background:#FDE7E9; border:2px solid #A4262C; border-radius:8px; padding:14px; margin-bottom:0;">
+          <div style="font-weight:700; color:#A4262C; margin-bottom:8px; font-size:.9rem;">❌ 従来構成（シークレットあり）</div>
+          <div class="flow" style="flex-direction:column; gap:6px; align-items:stretch;">
+            <div class="box gray" style="font-size:.8rem;">Functions A がアプリ登録でシークレット発行</div>
+            <div style="text-align:center; color:var(--gray);">↓</div>
+            <div class="box orange" style="font-size:.8rem;">シークレットをコードや設定に記載<br>⚠️ 漏洩リスク・有効期限管理が必要</div>
+            <div style="text-align:center; color:var(--gray);">↓</div>
+            <div class="box gray" style="font-size:.8rem;">Entra ID に client_credentials で認証</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div style="background:#DFF6DD; border:2px solid var(--green); border-radius:8px; padding:14px;">
+          <div style="font-weight:700; color:#0A4A0A; margin-bottom:8px; font-size:.9rem;">✅ 今回の構成（シークレットなし）</div>
+          <div class="flow" style="flex-direction:column; gap:6px; align-items:stretch;">
+            <div class="box green" style="font-size:.8rem;">ユーザーがログイン → Entra ID がトークン発行</div>
+            <div style="text-align:center; color:var(--green);">↓</div>
+            <div class="box green" style="font-size:.8rem;">Functions A はユーザーのトークンを使って<br>OBO フローで B 用トークンを取得</div>
+            <div style="text-align:center; color:var(--green);">↓</div>
+            <div class="box green" style="font-size:.8rem;">シークレット不要・EasyAuth が自動処理<br>✅ 漏洩リスクなし・管理コストゼロ</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="alert al-blue" style="margin-top:16px;">
+      <div class="t">📌 まとめ：なぜ「委任された権限」なのか</div>
+      <ul>
+        <li>今回のシナリオは「ユーザーが操作する → Functions A → Functions B」という<strong>ユーザーの操作起点</strong>のフロー</li>
+        <li>ユーザーの認証情報を起点にして、OBO フローで連鎖的にトークンを取得するため「委任された権限」が適切</li>
+        <li>委任された権限はユーザーのトークンに乗っかるため、<strong>アプリ自身のシークレットが不要</strong></li>
+        <li>もしユーザー不在のバックグラウンド処理（バッチ・デーモン）なら「アプリケーション権限」＋マネージド ID になる</li>
+      </ul>
+    </div>
+
+    <div class="alert al-yellow">
+      <div class="t">⚠️ 試験頻出の引っかかりポイント</div>
+      <ul>
+        <li>「最初のステップ = マネージド ID を有効化」→ <strong>△</strong>：マネージド ID はシークレット不要だが、ユーザー委任フローではなくアプリ権限（Application）で動作する。ユーザー起点のフローには委任された権限が必要</li>
+        <li>「アプリ登録は1つでよい」→ <strong>❌</strong>：呼び出す側・呼び出される側それぞれにアプリ登録が必要</li>
+        <li>「委任された権限はユーザー同意だけで使える」→ <strong>△</strong>：スコープの内容によっては管理者同意が必要な場合もある</li>
+        <li>「EasyAuth を使えばコードを書かなくていい」→ <strong>△</strong>：トークン検証はコードレスだが、OBO フロー（B を呼ぶ処理）はコード実装が必要</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+</div>
+</body>
+</html>
