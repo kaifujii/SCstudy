@@ -1086,6 +1086,7 @@ function toggleReview(qid, vol, num) {{
       const volNum = vol.replace('vol','');
       data[vol+'_'+qid] = {{
         vol: vol, volNum: volNum, id: qid, num: q.num, domain: q.domain,
+        domain_code: q.domain_code || '', domain_color: q.domain_color || '',
         question_text: q.question_text, choices: q.choices,
         correct_indices: q.correct_indices, n_correct: q.n_correct || 1,
         exp_html: q.exp_html || '', svg: q.svg || ''

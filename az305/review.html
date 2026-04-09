@@ -66,16 +66,21 @@ main { max-width: 740px; margin: 0 auto; padding: 36px 16px 60px; }
 .cbtn.reveal .cltr { background: var(--ok); color: #fff; }
 .expanel { display: none; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
 .expanel.shown { display: block; }
-.exp-block { padding: 12px 14px; border-radius: 8px; margin-bottom: 10px; }
+/* exp-block styles (must match vol CSS) */
+.exp-sections { display: flex; flex-direction: column; gap: 10px; }
+.exp-block { padding: 12px 14px; border-radius: 8px; margin-bottom: 0; }
 .exp-block-label { font-size: 0.65rem; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
 .exp-block-body { font-size: 0.84rem; line-height: 1.7; }
 .exp-block-body ul { padding-left: 20px; }
 .exp-block-body li { margin-bottom: 4px; }
 .exp-block-body p { margin-bottom: 8px; }
+.exp-block-body code { background: rgba(0,0,0,0.07); padding: 1px 5px; border-radius: 3px; font-size: 0.8em; }
 .exp-correct { background: var(--ok-lt); border: 1px solid rgba(45,122,79,0.15); }
 .exp-correct .exp-block-label { color: var(--ok); }
 .exp-wrong { background: var(--ng-lt); border: 1px solid rgba(176,53,53,0.12); }
 .exp-wrong .exp-block-label { color: var(--ng); }
+.exp-key { background: #fffde8; border: 1px solid rgba(160,112,0,0.2); }
+.exp-key .exp-block-label { color: #a07000; }
 .exp-tip { background: #fffde8; border: 1px solid rgba(160,112,0,0.2); }
 .exp-tip .exp-block-label { color: #a07000; }
 .exp-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin: 10px 0; border: 1px solid rgba(0,0,0,0.08); border-radius: 6px; overflow: hidden; }
@@ -83,6 +88,8 @@ main { max-width: 740px; margin: 0 auto; padding: 36px 16px 60px; }
 .exp-table td { padding: 7px 10px; border-bottom: 1px solid rgba(0,0,0,0.05); vertical-align: top; line-height: 1.55; }
 .exp-table tr:last-child td { border-bottom: none; }
 .exp-table tr:nth-child(even) td { background: rgba(0,0,0,0.015); }
+/* arch diagram in review: dark bg */
+.expanel svg[viewBox] { width: 100%; height: auto; display: block; margin: 8px auto; border-radius: 8px; }
 .arch-svg-wrap { margin: 0 -4px 16px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: #f8f9fc; }
 .arch-svg-wrap svg { width: 100%; height: auto; display: block; }
 .stats-bar { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; align-items: center; }
@@ -96,6 +103,9 @@ main { max-width: 740px; margin: 0 auto; padding: 36px 16px 60px; }
 .sub-btn:hover { background: #0069ba; }
 .multi-hint { font-size: 0.75rem; color: var(--muted); padding: 4px 0 8px; }
 .mbadge { font-size: 0.6rem; font-weight: 700; padding: 2px 7px; border-radius: 3px; background: #f0f4ff; color: #3f52c4; border: 1px solid rgba(63,82,196,0.2); }
+.exp-loading { font-size: 0.8rem; color: var(--muted); padding: 8px 0; }
+/* dark-bg exp-block compat from vol pages */
+.arch-hidden > svg { opacity:1 !important; filter:none !important; pointer-events:auto !important; }
 </style>
 </head>
 <body>
@@ -119,6 +129,7 @@ main { max-width: 740px; margin: 0 auto; padding: 36px 16px 60px; }
   <a href="vol3.html" class="vj-link">Vol.3</a>
   <a href="vol4.html" class="vj-link">Vol.4</a>
   <a href="vol5.html" class="vj-link">Vol.5</a>
+  <a href="vol6.html" class="vj-link">Vol.6</a>
   <a href="review.html" class="vj-link vj-review vj-active">
     ★ 復習 <span id="vj-review-count" class="vj-badge"></span>
   </a>
@@ -139,30 +150,75 @@ main { max-width: 740px; margin: 0 auto; padding: 36px 16px 60px; }
 </main>
 
 <script>
-const DOMAIN_COLOR = {'DS':'#0072C6','IS':'#107C10','ID':'#5C2D91','BC':'#D83B01'};
-const DOMAIN_CODE = {'データストレージ設計':'DS','インフラストラクチャ設計':'IS','ID・ガバナンス・監視':'ID','ビジネス継続性設計':'BC'};
 const LTR = ['A','B','C','D','E','F','G','H','I','J'];
-let reviewData = {};
-let state = {};
-let multiSel = {};
 
-function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+// ── state ──────────────────────────────────────────────────────────────────────
+let reviewData = {};   // keyed by "vol_qid"
+let state = {};        // keyed by uid = "vol_qid"
+let multiSel = {};     // keyed by uid
 
-function loadReviewData(){
-  reviewData = JSON.parse(localStorage.getItem('az305_review_data')||'{}');
-  // Normalize vol5 choices format {t, c} → {text, is_correct}
-  Object.values(reviewData).forEach(q => {
-    if(q.choices && q.choices.length > 0 && q.choices[0].t !== undefined) {
-      q.choices = q.choices.map(c => ({text: c.t, is_correct: c.c}));
-    }
-  });
-  return Object.values(reviewData);
+// ── vol questions cache (for fetching fresh exp_html) ─────────────────────────
+const volCache = {};   // vol -> Promise<{id -> exp_html}>
+
+async function fetchVolExp(vol) {
+  if (volCache[vol]) return volCache[vol];
+  volCache[vol] = (async () => {
+    try {
+      const r = await fetch(vol + '.html');
+      if (!r.ok) return {};
+      const text = await r.text();
+      // Extract QUESTIONS JSON robustly using bracket matching
+      // vol5 uses 'const QS = ', others use 'const QUESTIONS = '
+      let prefix = 'const QUESTIONS = ';
+      let pi = text.indexOf(prefix);
+      if (pi === -1) { prefix = 'const QS = '; pi = text.indexOf(prefix); }
+      if (pi === -1) return {};
+      const jsonStart = text.indexOf('[', pi + prefix.length);
+      if (jsonStart === -1) return {};
+      // Find the matching closing bracket
+      let depth = 0, inStr = false, escape = false, jsonEnd = -1;
+      for (let i = jsonStart; i < text.length; i++) {
+        const ch = text[i];
+        if (escape) { escape = false; continue; }
+        if (ch === '\\' && inStr) { escape = true; continue; }
+        if (ch === '"') { inStr = !inStr; continue; }
+        if (!inStr) {
+          if (ch === '[' || ch === '{') depth++;
+          else if (ch === ']' || ch === '}') { depth--; if (depth === 0) { jsonEnd = i; break; } }
+        }
+      }
+      if (jsonEnd === -1) return {};
+      const qs = JSON.parse(text.slice(jsonStart, jsonEnd + 1));
+      const map = {};
+      qs.forEach(q => { map[q.id] = q.exp_html || ''; });
+      return map;
+    } catch(e) { return {}; }
+  })();
+  return volCache[vol];
 }
 
-function renderAll(){
+// ── data loading ───────────────────────────────────────────────────────────────
+function loadReviewData() {
+  const raw = JSON.parse(localStorage.getItem('az305_review_data') || '{}');
+  // Normalize choices format {t, c} → {text, is_correct} (vol5 compat)
+  Object.values(raw).forEach(q => {
+    if (q.choices && q.choices.length > 0 && q.choices[0].t !== undefined) {
+      q.choices = q.choices.map(c => ({ text: c.t, is_correct: c.c }));
+    }
+  });
+  reviewData = raw;
+  return Object.values(raw);
+}
+
+function esc(s) {
+  return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+// ── render ─────────────────────────────────────────────────────────────────────
+function renderAll() {
   const qs = loadReviewData();
   document.getElementById('total-count').textContent = qs.length;
-  if(qs.length === 0){
+  if (qs.length === 0) {
     document.getElementById('qwrap').innerHTML = `
       <div class="empty-state">
         <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
@@ -173,123 +229,174 @@ function renderAll(){
     return;
   }
   document.getElementById('qwrap').innerHTML = qs.map(q => renderQ(q)).join('');
+  // Fetch fresh exp_html from source vol files and inject
+  injectFreshExp(qs);
 }
 
-function renderQ(q){
-  const qid = q.id;
-  const multi = q.n_correct > 1;
-  const dc = DOMAIN_CODE[q.domain] || 'IS';
-  const color = DOMAIN_COLOR[dc] || '#0072C6';
+function renderQ(q) {
+  // uid is globally unique: "vol1_q3" etc.
+  const uid = q.vol + '_' + q.id;
+  const multi = (q.n_correct || 1) > 1;
+  const color = q.domain_color || getDomainColor(q.domain, q.domain_code);
   const mBadge = multi ? `<span class="mbadge">複数選択 (${q.n_correct}つ)</span>` : '';
   const mHint = multi ? `<div class="multi-hint">${q.n_correct}つ選択してください</div>` : '';
-  const choices = q.choices.map((c,i) => `
-    <button class="cbtn" id="rc_${qid}_${i}" onclick="onChoice('${qid}',${i})">
+  const choices = q.choices.map((c, i) => `
+    <button class="cbtn" id="rc_${uid}_${i}" onclick="onChoice('${uid}',${i})">
       <span class="cltr">${LTR[i]}</span>
       <span>${esc(c.text)}</span>
     </button>`).join('');
-  const subBtn = multi ? `<button class="sub-btn" id="rsub_${qid}" onclick="submitQ('${qid}')">回答を確定する</button>` : '';
+  const subBtn = multi ? `<button class="sub-btn" id="rsub_${uid}" onclick="submitQ('${uid}')">回答を確定する</button>` : '';
   const arch = q.svg ? `<div class="arch-svg-wrap">${q.svg}</div>` : '';
-  return `<div class="qcard" id="rcard_${qid}">
+  const volLabel = q.vol ? q.vol.replace('vol', 'Vol.') : '';
+  return `<div class="qcard" id="rcard_${uid}">
     <div class="qh">
-      <span class="qnum">Vol.${q.volNum} — 問 ${q.num}</span>
+      <span class="qnum">${volLabel} — 問 ${q.num}</span>
       <span class="dbadge" style="background:${color}">${esc(q.domain)}</span>
       ${mBadge}
-      <button class="remove-btn" onclick="removeQuestion('${q.vol}','${qid}')">★ 外す</button>
+      <button class="remove-btn" onclick="removeQuestion('${q.vol}','${q.id}')">★ 外す</button>
     </div>
     <div class="qbody"><p class="qtext">${esc(q.question_text)}</p></div>
     ${arch}
     ${mHint}
     <div class="choices">${choices}</div>
     ${subBtn}
-    <div class="expanel" id="rexp_${qid}">
-      ${q.exp_html||''}
+    <div class="expanel" id="rexp_${uid}">
+      <div class="exp-loading">解説を読み込み中…</div>
     </div>
   </div>`;
 }
 
-function onChoice(qid, idx){
-  if(state[qid]?.answered) return;
-  const q = Object.values(reviewData).find(x => x.id === qid);
-  if(!q) return;
-  if(q.n_correct > 1){
-    if(!multiSel[qid]) multiSel[qid] = new Set();
-    const btn = document.getElementById(`rc_${qid}_${idx}`);
-    if(multiSel[qid].has(idx)){
-      multiSel[qid].delete(idx);
-      btn.classList.remove('multi-sel');
-    } else {
-      if(multiSel[qid].size >= q.n_correct) return;
-      multiSel[qid].add(idx);
-      btn.classList.add('multi-sel');
-    }
-    const sub = document.getElementById('rsub_'+qid);
-    if(sub) sub.style.display = multiSel[qid].size >= q.n_correct ? 'block' : 'none';
-  } else {
-    const ok = q.choices[idx].is_correct;
-    state[qid] = {answered:true, correct:ok};
-    applyAnswer(q, qid, [idx], ok);
+function getDomainColor(domain, code) {
+  const byCode = { DS: '#0072C6', IS: '#107C10', ID: '#5C2D91', BC: '#D83B01' };
+  if (code && byCode[code]) return byCode[code];
+  if (domain) {
+    if (domain.includes('データ')) return '#0072C6';
+    if (domain.includes('インフラ')) return '#107C10';
+    if (domain.includes('ID') || domain.includes('ガバナンス')) return '#5C2D91';
+    if (domain.includes('継続') || domain.includes('BC')) return '#D83B01';
+  }
+  return '#0072C6';
+}
+
+// ── fetch fresh explanations from source vol files ────────────────────────────
+async function injectFreshExp(qs) {
+  // Group by vol
+  const byVol = {};
+  qs.forEach(q => {
+    if (!byVol[q.vol]) byVol[q.vol] = [];
+    byVol[q.vol].push(q);
+  });
+
+  for (const [vol, vqs] of Object.entries(byVol)) {
+    const expMap = await fetchVolExp(vol);
+    vqs.forEach(q => {
+      const uid = q.vol + '_' + q.id;
+      const panel = document.getElementById('rexp_' + uid);
+      if (!panel) return;
+      const freshHtml = expMap[q.id];
+      if (freshHtml) {
+        panel.innerHTML = freshHtml;
+      } else if (q.exp_html) {
+        // fallback to stored exp_html
+        panel.innerHTML = q.exp_html;
+      } else {
+        panel.innerHTML = '<p style="color:var(--muted);font-size:0.82rem">解説データがありません。</p>';
+      }
+      // If panel is already shown (answered), keep shown
+      if (state[uid]?.answered) panel.classList.add('shown');
+    });
   }
 }
 
-function submitQ(qid){
-  if(state[qid]?.answered) return;
-  const q = Object.values(reviewData).find(x => x.id === qid);
-  if(!q) return;
-  const sel = [...(multiSel[qid]||new Set())];
-  const cset = new Set(q.choices.map((c,i) => c.is_correct ? i : -1).filter(i => i >= 0));
-  const ok = sel.length === cset.size && sel.every(i => cset.has(i));
-  state[qid] = {answered:true, correct:ok};
-  applyAnswer(q, qid, sel, ok);
+// ── interaction ────────────────────────────────────────────────────────────────
+function onChoice(uid, idx) {
+  if (state[uid]?.answered) return;
+  const q = reviewData[uid];
+  if (!q) return;
+  const nCorrect = q.n_correct || 1;
+  if (nCorrect > 1) {
+    if (!multiSel[uid]) multiSel[uid] = new Set();
+    const btn = document.getElementById(`rc_${uid}_${idx}`);
+    if (multiSel[uid].has(idx)) {
+      multiSel[uid].delete(idx);
+      btn.classList.remove('multi-sel');
+    } else {
+      if (multiSel[uid].size >= nCorrect) return;
+      multiSel[uid].add(idx);
+      btn.classList.add('multi-sel');
+    }
+    const sub = document.getElementById('rsub_' + uid);
+    if (sub) sub.style.display = multiSel[uid].size >= nCorrect ? 'block' : 'none';
+  } else {
+    const ok = q.choices[idx].is_correct;
+    state[uid] = { answered: true, correct: ok };
+    applyAnswer(q, uid, [idx], ok);
+  }
 }
 
-function applyAnswer(q, qid, selIdxs, ok){
+function submitQ(uid) {
+  if (state[uid]?.answered) return;
+  const q = reviewData[uid];
+  if (!q) return;
+  const sel = [...(multiSel[uid] || new Set())];
+  const cset = new Set(q.choices.map((c, i) => c.is_correct ? i : -1).filter(i => i >= 0));
+  const ok = sel.length === cset.size && sel.every(i => cset.has(i));
+  state[uid] = { answered: true, correct: ok };
+  applyAnswer(q, uid, sel, ok);
+}
+
+function applyAnswer(q, uid, selIdxs, ok) {
   const sset = new Set(selIdxs);
-  q.choices.forEach((c,i) => {
-    const btn = document.getElementById(`rc_${qid}_${i}`);
-    if(!btn) return;
+  q.choices.forEach((c, i) => {
+    const btn = document.getElementById(`rc_${uid}_${i}`);
+    if (!btn) return;
     btn.disabled = true;
     btn.classList.remove('multi-sel');
-    if(sset.has(i)) btn.classList.add(c.is_correct ? 'correct' : 'wrong');
-    if(c.is_correct && !sset.has(i)) btn.classList.add('reveal');
+    if (sset.has(i)) btn.classList.add(c.is_correct ? 'correct' : 'wrong');
+    if (c.is_correct && !sset.has(i)) btn.classList.add('reveal');
   });
-  const card = document.getElementById('rcard_'+qid);
-  if(card) card.classList.add(ok ? 'correct' : 'wrong');
-  const exp = document.getElementById('rexp_'+qid);
-  if(exp) exp.classList.add('shown');
-  const sub = document.getElementById('rsub_'+qid);
-  if(sub) sub.style.display = 'none';
+  const card = document.getElementById('rcard_' + uid);
+  if (card) card.classList.add(ok ? 'correct' : 'wrong');
+  const exp = document.getElementById('rexp_' + uid);
+  if (exp) exp.classList.add('shown');
+  const sub = document.getElementById('rsub_' + uid);
+  if (sub) sub.style.display = 'none';
   // Update correct count
   const corrects = Object.values(state).filter(s => s.correct).length;
   document.getElementById('correct-count').textContent = corrects;
 }
 
-function removeQuestion(vol, qid){
-  const data = JSON.parse(localStorage.getItem('az305_review_data')||'{}');
-  delete data[vol+'_'+qid];
+// ── remove / clear ─────────────────────────────────────────────────────────────
+function removeQuestion(vol, qid) {
+  const data = JSON.parse(localStorage.getItem('az305_review_data') || '{}');
+  delete data[vol + '_' + qid];
   localStorage.setItem('az305_review_data', JSON.stringify(data));
   localStorage.setItem('az305_review_ids', JSON.stringify(Object.keys(data)));
   state = {};
   multiSel = {};
   renderAll();
+  updateBadge();
 }
 
-function clearAll(){
-  if(!confirm('復習リストをすべてクリアしますか？')) return;
+function clearAll() {
+  if (!confirm('復習リストをすべてクリアしますか？')) return;
   localStorage.removeItem('az305_review_data');
   localStorage.removeItem('az305_review_ids');
   state = {};
   multiSel = {};
   renderAll();
+  updateBadge();
 }
 
-// Init
-renderAll();
-// Update badge
-(function(){
-  const ids = JSON.parse(localStorage.getItem('az305_review_ids')||'[]');
+function updateBadge() {
+  const ids = JSON.parse(localStorage.getItem('az305_review_ids') || '[]');
   const badge = document.getElementById('vj-review-count');
-  if(badge) badge.textContent = ids.length > 0 ? ids.length : '';
-})();
+  if (badge) badge.textContent = ids.length > 0 ? ids.length : '';
+}
+
+// ── init ───────────────────────────────────────────────────────────────────────
+renderAll();
+updateBadge();
 </script>
 </body>
 </html>
