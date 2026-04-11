@@ -43,7 +43,7 @@ const CH01_CARDS = [
   </div>
 </div>
 <div class="ds-section">
-  <div class="ds-section-title">📋 主要概念の解説</div>
+  <div class="ds-section-title"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="9" y="2" width="6" height="4" rx="1"/><path d="M9 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2h-2"/></svg> 主要概念の解説</div>
   <div class="ds-compare col2">
     <div class="ds-compare-head"><div>用語</div><div>内容・ポイント</div></div>
     <div class="ds-compare-row"><div>アカウンティング</div><div>誰がいつ何にアクセスしたかのログ記録。課金・監査・インシデント調査に使用</div></div>
@@ -178,7 +178,7 @@ const CH01_CARDS = [
   </div>
 </div>
 <div class="ds-section">
-  <div class="ds-section-title">🔬 認証方式の比較</div>
+  <div class="ds-section-title"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg> 認証方式の比較</div>
   <div class="ds-compare">
     <div class="ds-compare-head"><div>種類</div><div>精度</div><div>特徴・注意点</div></div>
     <div class="ds-compare-row"><div>虹彩認証</div><div>最高</div><div>個人差が最大、眼鏡・コンタクト影響あり</div></div>
@@ -212,7 +212,7 @@ const CH01_CARDS = [
 </div>
 
 <div class="ds-section">
-  <div class="ds-section-title">📡 通信の流れ（シーケンス図）</div>
+  <div class="ds-section-title"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> 通信の流れ（シーケンス図）</div>
   <div class="ds-diagram-card">
     <div class="ds-actors">
       <div class="ds-actor">
@@ -657,7 +657,7 @@ const CH01_CARDS = [
   </div>
 </div>
 <div class="ds-section">
-  <div class="ds-section-title">⚔️ 主な攻撃の比較</div>
+  <div class="ds-section-title"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> 主な攻撃の比較</div>
   <div class="ds-compare col4">
     <div class="ds-compare-head"><div>攻撃名</div><div>対象チケット</div><div>必要な情報</div><div>影響範囲</div></div>
     <div class="ds-compare-row"><div>ゴールデン<br>チケット攻撃</div><div>TGT（偽造）</div><div>krbtgtの<br>NTLMハッシュ</div><div>全サービスへ<br>永続アクセス可能</div></div>
@@ -687,7 +687,7 @@ const CH01_CARDS = [
   </div>
 </div>
 <div class="ds-section">
-  <div class="ds-section-title">🔄 Authorization Code フロー（シーケンス図）</div>
+  <div class="ds-section-title"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> Authorization Code フロー（シーケンス図）</div>
   <div class="ds-diagram-card">
     <div class="ds-actors col4">
       <div class="ds-actor">
@@ -814,7 +814,7 @@ const CH01_CARDS = [
   </div>
 </div>
 <div class="ds-section">
-  <div class="ds-section-title">📋 主要クレームの一覧</div>
+  <div class="ds-section-title"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="9" y="2" width="6" height="4" rx="1"/><path d="M9 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2h-2"/></svg> 主要クレームの一覧</div>
   <div class="ds-compare">
     <div class="ds-compare-head"><div>クレーム</div><div>意味</div><div>値の例</div></div>
     <div class="ds-compare-row"><div>sub</div><div>Subject（主体）</div><div>ユーザID</div></div>
@@ -845,7 +845,7 @@ const CH01_CARDS = [
   </div>
 </div>
 <div class="ds-section">
-  <div class="ds-section-title">⚔️ JWT に対する主な攻撃と対策</div>
+  <div class="ds-section-title"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> JWT に対する主な攻撃と対策</div>
   <div class="ds-compare">
     <div class="ds-compare-head"><div>攻撃</div><div>内容</div><div>対策</div></div>
     <div class="ds-compare-row"><div>alg:none 攻撃</div><div>algを"none"に書き換えて署名検証をスキップ</div><div>サーバ側でnoneを拒否<br>algを強制指定</div></div>
@@ -876,7 +876,7 @@ const CH01_CARDS = [
   </div>
 </div>
 <div class="ds-section">
-  <div class="ds-section-title">🔄 SP-Initiated SSO フロー（シーケンス図）</div>
+  <div class="ds-section-title"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> SP-Initiated SSO フロー（シーケンス図）</div>
   <div class="ds-diagram-card">
     <div class="ds-actors">
       <div class="ds-actor">
@@ -996,7 +996,7 @@ const CH01_CARDS = [
   </div>
 </div>
 <div class="ds-section">
-  <div class="ds-section-title">⚔️ 攻撃手法の比較</div>
+  <div class="ds-section-title"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> 攻撃手法の比較</div>
   <div class="ds-compare col4">
     <div class="ds-compare-head"><div>攻撃名</div><div>種別</div><div>内容</div><div>対策</div></div>
     <div class="ds-compare-row"><div>辞書攻撃</div><div>オンライン</div><div>一般的なPWリストで試行</div><div>複雑なPW強制<br>アカウントロック</div></div>
