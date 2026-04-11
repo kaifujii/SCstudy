@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SC 技術解説書 — StudyDeck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700;9..40,800&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #edf0f7; --card-bg: #ffffff; --text: #151c2c; --sub: #3d4966;
+  --muted: #7c879c; --border: #cdd3e2; --accent: #3f52c4; --accent-lt: #eceffe;
+  --header: #151c2c;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Noto Sans JP', -apple-system, sans-serif;
+  background-color: var(--bg);
+  background-image: radial-gradient(circle, #bcc3d6 1px, transparent 1px);
+  background-size: 24px 24px;
+  color: var(--text);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+header {
+  background-color: var(--header);
+  background-image:
+    linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+  background-size: 36px 36px;
+  height: 54px; padding: 0 20px;
+  display: flex; align-items: center; gap: 10px;
+  position: sticky; top: 0; z-index: 100;
+}
+.back-link {
+  display: flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; border-radius: 5px;
+  text-decoration: none; transition: background 0.15s; flex-shrink: 0;
+}
+.back-link:hover { background: rgba(255,255,255,0.1); }
+.logo-text { display: flex; flex-direction: column; gap: 1px; }
+.logo-sub { font-family: 'DM Sans', sans-serif; font-size: 0.5rem; color: rgba(255,255,255,0.32); letter-spacing: 3.5px; text-transform: uppercase; font-weight: 500; }
+.logo-main { font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 800; color: #ffffff; letter-spacing: -0.5px; }
+.az-badge { margin-left: auto; font-family: 'DM Sans', sans-serif; font-size: 0.6rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(80,230,255,0.8); background: rgba(0,120,212,0.2); border: 1px solid rgba(0,120,212,0.35); border-radius: 3px; padding: 3px 9px; }
+main { max-width: 640px; margin: 0 auto; padding: 36px 16px 60px; }
+.hero { margin-bottom: 28px; }
+.hero-eyebrow { font-family: 'DM Sans', sans-serif; font-size: 0.58rem; font-weight: 700; letter-spacing: 4px; text-transform: uppercase; color: var(--accent); display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.hero-eyebrow::before { content: ''; display: block; width: 18px; height: 1.5px; background: var(--accent); flex-shrink: 0; }
+.hero-title { font-family: 'DM Sans', sans-serif; font-size: 1.8rem; font-weight: 800; letter-spacing: -0.03em; color: var(--text); line-height: 1.2; margin-bottom: 8px; }
+.hero-sub { font-size: 0.85rem; color: var(--muted); line-height: 1.7; }
+.section-label { font-family: 'DM Sans', sans-serif; font-size: 0.58rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+.desc-list { display: flex; flex-direction: column; gap: 8px; }
+.desc-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 8px;
+  padding: 16px 18px;
+  text-decoration: none; color: inherit;
+  display: flex; align-items: center; gap: 14px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  transition: box-shadow 0.18s, transform 0.18s;
+}
+.desc-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.09); transform: translateX(2px); }
+.desc-icon {
+  flex-shrink: 0; width: 36px; height: 36px; border-radius: 6px;
+  background: var(--accent-lt);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--accent);
+}
+.desc-body { flex: 1; min-width: 0; }
+.desc-title { font-family: 'DM Sans', 'Noto Sans JP', sans-serif; font-size: 0.9rem; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+.desc-sub { font-size: 0.7rem; color: var(--muted); line-height: 1.5; }
+.desc-arrow { color: var(--muted); transition: color 0.15s, transform 0.15s; flex-shrink: 0; }
+.desc-card:hover .desc-arrow { color: var(--accent); transform: translateX(2px); }
+</style>
+</head>
+<body>
+<header>
+  <a href="../../index.html" class="back-link" title="ホームへ">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+  </a>
+  <div class="logo-text">
+    <div class="logo-sub">情報処理安全確保支援士</div>
+    <div class="logo-main">SC 技術解説書</div>
+  </div>
+  <div class="az-badge">解説書</div>
+</header>
+
+<main>
+  <div class="hero">
+    <div class="hero-eyebrow">技術解説書</div>
+    <h1 class="hero-title">SC 試験対策<br>技術解説書一覧</h1>
+    <p class="hero-sub">各技術領域の仕組みを体系的にまとめた解説書です。<br>単語帳と組み合わせて理解を深めましょう。</p>
+  </div>
+
+  <div class="section-label">認証・暗号技術</div>
+  <div class="desc-list">
+
+    <a href="SC_01_PKI.html" class="desc-card">
+      <div class="desc-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
+      <div class="desc-body">
+        <div class="desc-title">PKI（公開鍵基盤）</div>
+        <div class="desc-sub">証明書・CA・署名・失効の仕組みを体系的に解説</div>
+      </div>
+      <svg class="desc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </a>
+
+    <a href="SC_01_SSL_TLS.html" class="desc-card">
+      <div class="desc-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <div class="desc-body">
+        <div class="desc-title">SSL/TLS プロトコル</div>
+        <div class="desc-sub">ハンドシェイク・暗号スイート・証明書検証の完全版解説</div>
+      </div>
+      <svg class="desc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </a>
+
+    <a href="SC_01_SSO.html" class="desc-card">
+      <div class="desc-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/></svg>
+      </div>
+      <div class="desc-body">
+        <div class="desc-title">シングルサインオン（SSO）</div>
+        <div class="desc-sub">SAML・OAuth・OpenID Connect の違いと動作フロー</div>
+      </div>
+      <svg class="desc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </a>
+
+    <a href="SC_01_FIDO.html" class="desc-card">
+      <div class="desc-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+      </div>
+      <div class="desc-body">
+        <div class="desc-title">FIDO認証</div>
+        <div class="desc-sub">パスワードレス認証の仕組み・FIDO2・WebAuthn を解説</div>
+      </div>
+      <svg class="desc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </a>
+
+    <a href="SC_01_ICcard.html" class="desc-card">
+      <div class="desc-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+      </div>
+      <div class="desc-body">
+        <div class="desc-title">ICカードによる認証</div>
+        <div class="desc-sub">接触型・非接触型の動作原理と認証プロセスを解説</div>
+      </div>
+      <svg class="desc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </a>
+
+    <a href="SC_01_SASL.html" class="desc-card">
+      <div class="desc-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </div>
+      <div class="desc-body">
+        <div class="desc-title">SASL認証方式</div>
+        <div class="desc-sub">PLAIN・CRAM-MD5・SCRAM など各メカニズムの違いを整理</div>
+      </div>
+      <svg class="desc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </a>
+
+    <a href="SC_01_IEEERADIUS.html" class="desc-card">
+      <div class="desc-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+      </div>
+      <div class="desc-body">
+        <div class="desc-title">IEEE 802規格体系 と IEEE 802.1X認証</div>
+        <div class="desc-sub">EAP・RADIUS・ポートベース認証の仕組みを解説</div>
+      </div>
+      <svg class="desc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </a>
+
+    <a href="SC_01_DNS.html" class="desc-card">
+      <div class="desc-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      </div>
+      <div class="desc-body">
+        <div class="desc-title">DNSセキュリティ</div>
+        <div class="desc-sub">DNSSEC・DNS over HTTPS・キャッシュポイズニング対策を解説</div>
+      </div>
+      <svg class="desc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </a>
+
+  </div>
+</main>
+</body>
+</html>
