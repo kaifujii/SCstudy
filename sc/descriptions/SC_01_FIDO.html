@@ -1,0 +1,1600 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FIDO認証 — 技術解説書 Ver.1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600&family=Noto+Sans+JP:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:     #141824;
+    --ink2:    #1e2d4a;
+    --accent:  #0b4a82;
+    --accent2: #1570b8;
+    --gold:    #b5821e;
+    --soft:    #e8edf5;
+    --surface: #f3f6fb;
+    --line:    #cdd7e6;
+    --success: #155f44;
+    --warn:    #7a4208;
+    --danger:  #7a1818;
+    --mono:    'JetBrains Mono', monospace;
+    --serif:   'Noto Serif JP', serif;
+    --sans:    'Noto Sans JP', sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--sans);
+    background: #edf1f8;
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.78;
+  }
+
+  /* ── Cover ── */
+  .cover {
+    background: var(--ink);
+    color: #fff;
+    padding: 72px 60px 56px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cover-geo {
+    position: absolute;
+    top: 0; right: 0;
+    width: 420px; height: 420px;
+    opacity: .06;
+  }
+  .cover-kicker {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .2em;
+    color: rgba(255,255,255,.42);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .cover-kicker::before {
+    content: '';
+    display: block;
+    width: 24px; height: 1px;
+    background: var(--gold);
+  }
+  .cover h1 {
+    font-family: var(--serif);
+    font-size: 40px;
+    font-weight: 600;
+    line-height: 1.22;
+    margin-bottom: 18px;
+  }
+  .cover h1 em { color: #6ab4f5; font-style: normal; }
+  .cover-desc {
+    font-size: 14px;
+    color: rgba(255,255,255,.58);
+    max-width: 560px;
+    margin-bottom: 36px;
+    line-height: 1.8;
+  }
+  .cover-tags { display: flex; gap: 7px; flex-wrap: wrap; }
+  .ctag {
+    font-size: 10.5px;
+    padding: 3px 11px;
+    border-radius: 3px;
+    border: 1px solid rgba(255,255,255,.16);
+    color: rgba(255,255,255,.6);
+    letter-spacing: .04em;
+    font-family: var(--mono);
+  }
+
+  /* ── Nav sidebar ── */
+  .layout { display: flex; align-items: flex-start; }
+  .sidebar {
+    position: sticky;
+    top: 0;
+    width: 220px;
+    flex-shrink: 0;
+    height: 100vh;
+    overflow-y: auto;
+    background: var(--ink2);
+    padding: 28px 0;
+  }
+  .sidebar-title {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .18em;
+    color: rgba(255,255,255,.3);
+    text-transform: uppercase;
+    padding: 0 20px 12px;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+    margin-bottom: 8px;
+  }
+  .sidebar nav a {
+    display: block;
+    padding: 8px 20px;
+    font-size: 12.5px;
+    color: rgba(255,255,255,.55);
+    text-decoration: none;
+    border-left: 2px solid transparent;
+    transition: all .15s;
+    line-height: 1.45;
+  }
+  .sidebar nav a:hover { color: #fff; background: rgba(255,255,255,.05); }
+  .sidebar nav a.active { color: #6ab4f5; border-left-color: #6ab4f5; background: rgba(100,180,245,.07); }
+  .sidebar nav .nav-num {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: rgba(255,255,255,.25);
+    display: block;
+    margin-bottom: 1px;
+  }
+
+  .main { flex: 1; min-width: 0; padding: 52px 52px 100px; }
+
+  /* ── Section ── */
+  .section { margin-bottom: 80px; scroll-margin-top: 24px; }
+  .section-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 26px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--line);
+  }
+  .s-num {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 500;
+    color: #fff;
+    background: var(--accent);
+    padding: 3px 8px;
+    border-radius: 3px;
+    margin-top: 5px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .s-num.gold-bg { background: var(--gold); }
+  .s-num.red-bg  { background: var(--danger); }
+  h2 {
+    font-family: var(--serif);
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+  h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ink2);
+    margin: 32px 0 12px;
+    padding-left: 10px;
+    border-left: 3px solid var(--accent2);
+  }
+  p { color: #3a3d52; margin-bottom: 14px; }
+
+  /* ── Cards ── */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px,1fr)); gap: 14px; margin: 22px 0; }
+  .icard {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .icard-icon { color: var(--accent2); }
+  .icard-label { font-size: 10.5px; font-weight: 700; letter-spacing: .1em; color: var(--accent); text-transform: uppercase; }
+  .icard-val { font-size: 13px; color: var(--ink); line-height: 1.55; }
+
+  /* ── Sequence ── */
+  .seq-wrap {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 28px 24px 20px;
+    margin: 24px 0;
+    overflow-x: auto;
+  }
+  .seq-cap {
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .seq-cap::after { content:''; flex:1; height:1px; background:var(--line); }
+  svg.seq { display:block; min-width: 580px; }
+
+  /* ── Step list ── */
+  .steps { display:flex; flex-direction:column; gap:8px; margin:16px 0; }
+  .step {
+    display:flex; gap:12px; align-items:flex-start;
+    padding:11px 15px;
+    border-radius:6px;
+    background: var(--surface);
+    border-left: 3px solid var(--line);
+  }
+  .step.hi  { background:#eaf3ff; border-left-color:var(--accent2); }
+  .step.ok  { background:#eaf7f1; border-left-color:var(--success); }
+  .step.wn  { background:#fdf5e6; border-left-color:var(--gold); }
+  .step.ng  { background:#fdf0f0; border-left-color:var(--danger); }
+  .sn {
+    font-family:var(--mono); font-size:10px; font-weight:500; color:#fff;
+    background:var(--accent2); min-width:22px; height:22px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0; margin-top:2px;
+  }
+  .step.ok .sn { background:var(--success); }
+  .step.wn .sn { background:var(--gold); }
+  .step.ng .sn { background:var(--danger); }
+  .sb { font-size:13.5px; color:var(--ink); line-height:1.65; }
+  .sb strong { color:var(--ink2); }
+  .sb code { font-family:var(--mono); font-size:11.5px; background:rgba(11,74,130,.08); color:var(--accent); padding:1px 5px; border-radius:3px; }
+
+  /* ── Note ── */
+  .note {
+    display:flex; gap:11px;
+    border-radius:6px;
+    padding:13px 16px;
+    margin:14px 0;
+    border: 1px solid;
+  }
+  .note-i { flex-shrink:0; margin-top:2px; }
+  .note p { margin:0; font-size:13px; line-height:1.7; }
+  .note.info  { background:#e8f3fd; border-color:#a8cef5; }
+  .note.info p { color:#0b3a6a; }
+  .note.warn  { background:#fdf5e6; border-color:#e8c97a; }
+  .note.warn p { color:#5a3200; }
+  .note.danger{ background:#fdf0f0; border-color:#e8a8a8; }
+  .note.danger p { color:#5a0000; }
+
+  /* ── Threat matrix ── */
+  .threat-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:20px 0; }
+  .threat-card {
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:8px;
+    overflow:hidden;
+  }
+  .tc-head {
+    display:flex; align-items:center; gap:10px;
+    padding:10px 14px;
+    background: var(--danger);
+    color:#fff;
+  }
+  .tc-head.warn-head { background: var(--gold); }
+  .tc-head span { font-size:12.5px; font-weight:700; }
+  .tc-body { padding:12px 14px; }
+  .tc-body p { font-size:12.5px; color:#3a3d52; margin:0 0 8px; line-height:1.6; }
+  .tc-counter {
+    font-size:11.5px; color:var(--success);
+    padding:6px 10px;
+    background:#eaf7f1;
+    border-radius:4px;
+    margin:0;
+    border-left:3px solid var(--success);
+  }
+
+  /* ── Comparison ── */
+  .cmp-table { width:100%; border-collapse:collapse; font-size:13px; margin:16px 0; }
+  .cmp-table th { background:var(--accent); color:#fff; padding:9px 13px; text-align:center; font-size:11px; font-weight:600; letter-spacing:.06em; }
+  .cmp-table th:first-child { text-align:left; background:var(--ink2); }
+  .cmp-table td { padding:9px 13px; border:1px solid var(--line); text-align:center; font-size:12.5px; vertical-align:middle; }
+  .cmp-table td:first-child { text-align:left; font-weight:600; color:var(--ink2); background:var(--surface); white-space:nowrap; }
+  .cmp-good { color:var(--success); font-weight:600; }
+  .cmp-bad  { color:var(--danger); }
+  .cmp-mid  { color:var(--warn); }
+
+  /* ── Attack table ── */
+  .atk-table { width:100%; border-collapse:collapse; font-size:13px; margin:16px 0; }
+  .atk-table th { background:var(--ink); color:#fff; padding:9px 13px; text-align:left; font-size:11px; font-weight:600; letter-spacing:.06em; }
+  .atk-table td { padding:9px 13px; border-bottom:1px solid var(--line); vertical-align:top; line-height:1.6; }
+  .atk-table tr:last-child td { border-bottom:none; }
+  .atk-table tr:nth-child(even) td { background:var(--surface); }
+  .atk-table td:first-child { font-weight:600; color:var(--danger); white-space:nowrap; }
+  .atk-table td:last-child { color:var(--success); font-size:12.5px; }
+
+  /* ── Key point ── */
+  .keypoint {
+    background:var(--ink);
+    color:#fff;
+    border-radius:8px;
+    padding:20px 26px;
+    margin:24px 0;
+  }
+  .kp-label { font-size:9.5px; font-weight:700; letter-spacing:.2em; color:rgba(181,130,30,.9); text-transform:uppercase; margin-bottom:8px; display:flex; align-items:center; gap:8px; }
+  .kp-label::before { content:''; display:block; width:16px; height:1px; background:var(--gold); }
+  .keypoint p { color:rgba(255,255,255,.82); margin:0; font-size:13.5px; line-height:1.8; }
+  .keypoint strong { color:#6ab4f5; }
+
+  /* ── Quiz ── */
+  .quiz-wrap { display:flex; flex-direction:column; gap:24px; margin:20px 0; }
+  .quiz {
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:8px;
+    overflow:hidden;
+  }
+  .quiz-q {
+    padding:14px 18px;
+    background:var(--ink2);
+    color:#fff;
+    font-size:13.5px;
+    line-height:1.65;
+    display:flex;
+    gap:12px;
+  }
+  .quiz-qn {
+    font-family:var(--mono);
+    font-size:10px;
+    background:rgba(255,255,255,.15);
+    padding:2px 8px;
+    border-radius:3px;
+    white-space:nowrap;
+    flex-shrink:0;
+    height:fit-content;
+    margin-top:2px;
+  }
+  .quiz-opts { padding:14px 18px; display:flex; flex-direction:column; gap:7px; }
+  .quiz-opt {
+    padding:8px 13px;
+    border:1px solid var(--line);
+    border-radius:5px;
+    font-size:13px;
+    color:var(--ink);
+    cursor:pointer;
+    transition:all .15s;
+    background:#fff;
+    text-align:left;
+  }
+  .quiz-opt:hover { background:var(--surface); border-color:var(--accent2); }
+  .quiz-opt.correct { background:#eaf7f1; border-color:var(--success); color:var(--success); }
+  .quiz-opt.wrong   { background:#fdf0f0; border-color:var(--danger); color:var(--danger); }
+  .quiz-opt.reveal  { background:var(--surface); color:#aaa; }
+  .quiz-exp {
+    display:none;
+    padding:12px 18px;
+    background:#f0f6ff;
+    border-top:1px solid #b8d5f5;
+    font-size:13px;
+    color:#0b3a6a;
+    line-height:1.7;
+  }
+  .quiz-exp.show { display:block; }
+
+  /* ── Term ── */
+  .term-table { width:100%; border-collapse:collapse; font-size:13px; margin:12px 0; }
+  .term-table td { padding:8px 11px; border-bottom:1px dashed var(--line); vertical-align:top; }
+  .term-table td:first-child { font-family:var(--mono); font-size:11px; color:var(--accent2); font-weight:500; white-space:nowrap; min-width:160px; }
+  .term-table tr:last-child td { border-bottom:none; }
+
+  footer {
+    background:var(--ink);
+    color:rgba(255,255,255,.35);
+    text-align:center;
+    padding:22px;
+    font-size:11.5px;
+    letter-spacing:.05em;
+    line-height:1.8;
+  }
+
+  @media (max-width: 800px) {
+    .sidebar { display:none; }
+    .main { padding:28px 20px 60px; }
+    .threat-grid { grid-template-columns:1fr; }
+    .cover { padding:48px 24px 40px; }
+    .cover h1 { font-size:28px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <svg class="cover-geo" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="200" cy="200" r="160" stroke="white" stroke-width="1"/>
+    <circle cx="200" cy="200" r="110" stroke="white" stroke-width="1"/>
+    <circle cx="200" cy="200" r="60" stroke="white" stroke-width="1"/>
+    <line x1="200" y1="40" x2="200" y2="360" stroke="white" stroke-width="0.5"/>
+    <line x1="40" y1="200" x2="360" y2="200" stroke="white" stroke-width="0.5"/>
+    <line x1="87" y1="87" x2="313" y2="313" stroke="white" stroke-width="0.5"/>
+    <line x1="313" y1="87" x2="87" y2="313" stroke="white" stroke-width="0.5"/>
+  </svg>
+  <div style="position:relative">
+    <p class="cover-kicker">技術解説書 — 情報処理安全確保支援士対応</p>
+    <h1>FIDO認証の<br><em>仕組み</em></h1>
+    <p class="cover-desc">UAF・U2F・FIDO2 の全プロトコルを網羅。登録・認証シーケンス図、パスワードレスの原理、脅威分析、類似技術との比較、試験頻出の練習問題まで収録した完全版解説書です。</p>
+    <div class="cover-tags">
+      <span class="ctag">FIDO2 / WebAuthn</span>
+      <span class="ctag">UAF</span>
+      <span class="ctag">U2F / CTAP2</span>
+      <span class="ctag">公開鍵暗号</span>
+      <span class="ctag">チャレンジ応答</span>
+      <span class="ctag">Passkeys</span>
+      <span class="ctag">パスワードレス</span>
+    </div>
+  </div>
+</div>
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <p class="sidebar-title">目次</p>
+    <nav>
+      <a href="#s1" onclick="setActive(this)"><span class="nav-num">01</span>FIDOの全体像</a>
+      <a href="#s2" onclick="setActive(this)"><span class="nav-num">02</span>UAF・U2F・FIDO2の比較</a>
+      <a href="#s3" onclick="setActive(this)"><span class="nav-num">03</span>公開鍵暗号の仕組み</a>
+      <a href="#s4" onclick="setActive(this)"><span class="nav-num">04</span>FIDO2 登録シーケンス</a>
+      <a href="#s5" onclick="setActive(this)"><span class="nav-num">05</span>FIDO2 認証シーケンス</a>
+      <a href="#s6" onclick="setActive(this)"><span class="nav-num">06</span>UAF シーケンス</a>
+      <a href="#s7" onclick="setActive(this)"><span class="nav-num">07</span>U2F シーケンス</a>
+      <a href="#s8" onclick="setActive(this)"><span class="nav-num">08</span>脅威と対策</a>
+      <a href="#s9" onclick="setActive(this)"><span class="nav-num">09</span>類似技術との比較</a>
+      <a href="#s10" onclick="setActive(this)"><span class="nav-num">10</span>練習問題</a>
+      <a href="#s11" onclick="setActive(this)"><span class="nav-num">11</span>重要用語まとめ</a>
+    </nav>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- ── 01 全体像 ── -->
+    <section class="section" id="s1">
+      <div class="section-header">
+        <span class="s-num">01</span>
+        <h2>FIDOの全体像</h2>
+      </div>
+      <p>FIDO（Fast IDentity Online）は、パスワードに依存しない強力な認証標準を策定する業界団体「FIDOアライアンス」が定めた規格群です。2012年設立で、Google・Microsoft・Apple・PayPalなどが参加しています。</p>
+      <p>パスワード認証の根本的な問題（フィッシング・使い回し・漏洩）を解決するため、<strong>公開鍵暗号方式</strong>と<strong>デバイス上での本人確認</strong>を組み合わせた構造を採用しています。たとえるならば、パスワードは「合言葉を口頭で教える」のに対し、FIDOは「本物の印鑑と印鑑証明で本人確認する」ようなものです。秘密鍵という印鑑はデバイスの外には出ず、公開鍵という印鑑証明だけをサーバに渡します。</p>
+
+      <div class="card-grid">
+        <div class="icard">
+          <div class="icard-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+          </div>
+          <div class="icard-label">FIDOアライアンス</div>
+          <div class="icard-val">2012年設立の業界標準化団体。Google・Microsoft・Apple等が参加し、パスワード不要の認証規格を策定。</div>
+        </div>
+        <div class="icard">
+          <div class="icard-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+          </div>
+          <div class="icard-label">秘密鍵非送信</div>
+          <div class="icard-val">秘密鍵はデバイスのTEE/SE/TPM内に格納され、ネットワーク越しに送信されることは絶対にない。</div>
+        </div>
+        <div class="icard">
+          <div class="icard-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+            </svg>
+          </div>
+          <div class="icard-label">チャレンジ応答</div>
+          <div class="icard-val">毎回異なる乱数（チャレンジ）に署名して返送。傍受・再送によるリプレイ攻撃を構造的に無効化。</div>
+        </div>
+        <div class="icard">
+          <div class="icard-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="2" y1="12" x2="22" y2="12"/>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+            </svg>
+          </div>
+          <div class="icard-label">Origin紐付け</div>
+          <div class="icard-val">鍵ペアはドメイン（Origin）に紐付いて生成。偽サイトには対応する秘密鍵がないためフィッシング不成立。</div>
+        </div>
+      </div>
+
+      <h3>認証エコシステム内でのFIDOの位置づけ</h3>
+      <p>認証方式はその要素数と技術方式によって大きく分類されます。FIDOは「<strong>所持（デバイス）＋生体 or PIN</strong>」による2要素認証を、サーバにパスワードを送らずに実現する点で既存方式と本質的に異なります。</p>
+
+      <!-- Authentication taxonomy diagram -->
+      <div class="seq-wrap">
+        <p class="seq-cap">図 1 — 認証方式の全体分類とFIDOの位置づけ</p>
+        <svg class="seq" viewBox="0 0 760 300" xmlns="http://www.w3.org/2000/svg">
+          <!-- Root -->
+          <rect x="300" y="12" width="160" height="36" rx="5" fill="#141824"/>
+          <text x="380" y="33" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="12" font-weight="500" fill="white">認証方式</text>
+          <!-- Branches down -->
+          <line x1="380" y1="48" x2="380" y2="66" stroke="#cdd7e6" stroke-width="1.2"/>
+          <line x1="100" y1="66" x2="660" y2="66" stroke="#cdd7e6" stroke-width="1.2"/>
+          <line x1="100" y1="66" x2="100" y2="84" stroke="#cdd7e6" stroke-width="1.2"/>
+          <line x1="380" y1="66" x2="380" y2="84" stroke="#cdd7e6" stroke-width="1.2"/>
+          <line x1="660" y1="66" x2="660" y2="84" stroke="#cdd7e6" stroke-width="1.2"/>
+          <!-- L1: 知識 -->
+          <rect x="30" y="84" width="140" height="32" rx="5" fill="#f3f6fb" stroke="#cdd7e6" stroke-width="1"/>
+          <text x="100" y="104" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="11" fill="#1e2d4a" font-weight="500">知識認証</text>
+          <!-- L1: 所持 -->
+          <rect x="310" y="84" width="140" height="32" rx="5" fill="#f3f6fb" stroke="#cdd7e6" stroke-width="1"/>
+          <text x="380" y="104" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="11" fill="#1e2d4a" font-weight="500">所持認証</text>
+          <!-- L1: 生体 -->
+          <rect x="590" y="84" width="140" height="32" rx="5" fill="#f3f6fb" stroke="#cdd7e6" stroke-width="1"/>
+          <text x="660" y="104" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="11" fill="#1e2d4a" font-weight="500">生体認証</text>
+
+          <!-- L2 under 知識 -->
+          <line x1="100" y1="116" x2="100" y2="134" stroke="#cdd7e6" stroke-width="1"/>
+          <rect x="28" y="134" width="144" height="28" rx="4" fill="#fff" stroke="#cdd7e6" stroke-width="0.8"/>
+          <text x="100" y="152" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#3a3d52">パスワード・PIN</text>
+
+          <!-- L2 under 所持 -->
+          <line x1="380" y1="116" x2="380" y2="134" stroke="#cdd7e6" stroke-width="1"/>
+          <line x1="260" y1="134" x2="500" y2="134" stroke="#cdd7e6" stroke-width="1"/>
+          <line x1="260" y1="134" x2="260" y2="152" stroke="#cdd7e6" stroke-width="1"/>
+          <line x1="380" y1="134" x2="380" y2="152" stroke="#cdd7e6" stroke-width="1"/>
+          <line x1="500" y1="134" x2="500" y2="152" stroke="#cdd7e6" stroke-width="1"/>
+          <rect x="192" y="152" width="136" height="28" rx="4" fill="#fff" stroke="#cdd7e6" stroke-width="0.8"/>
+          <text x="260" y="170" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#3a3d52">ICカード / OTP</text>
+          <rect x="312" y="152" width="136" height="28" rx="4" fill="#fff" stroke="#cdd7e6" stroke-width="0.8"/>
+          <text x="380" y="170" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#3a3d52">セキュリティキー</text>
+          <rect x="432" y="152" width="136" height="28" rx="4" fill="#fff" stroke="#cdd7e6" stroke-width="0.8"/>
+          <text x="500" y="170" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#3a3d52">スマートフォン</text>
+
+          <!-- L2 under 生体 -->
+          <line x1="660" y1="116" x2="660" y2="134" stroke="#cdd7e6" stroke-width="1"/>
+          <rect x="588" y="134" width="144" height="28" rx="4" fill="#fff" stroke="#cdd7e6" stroke-width="0.8"/>
+          <text x="660" y="152" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#3a3d52">指紋・顔・虹彩</text>
+
+          <!-- FIDO bracket -->
+          <rect x="188" y="200" width="456" height="68" rx="6" fill="#eaf3ff" stroke="#1570b8" stroke-width="1.5"/>
+          <text x="416" y="222" text-anchor="middle" font-family="'Noto Serif JP',serif" font-size="13" font-weight="600" fill="#0b4a82">FIDO認証</text>
+          <text x="416" y="242" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10.5" fill="#1e2d4a">所持（デバイス）＋ 生体 or PIN の組み合わせ</text>
+          <text x="416" y="258" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10.5" fill="#1e2d4a">秘密鍵をデバイス外に出さずに認証を完結</text>
+          <!-- Arrows up to encompass セキュリティキー・スマートフォン -->
+          <line x1="380" y1="180" x2="380" y2="200" stroke="#1570b8" stroke-width="1.2" stroke-dasharray="3 2"/>
+          <line x1="500" y1="180" x2="500" y2="200" stroke="#1570b8" stroke-width="1.2" stroke-dasharray="3 2"/>
+          <line x1="660" y1="162" x2="660" y2="190" stroke="#1570b8" stroke-width="1.2" stroke-dasharray="3 2"/>
+          <line x1="660" y1="190" x2="644" y2="200" stroke="#1570b8" stroke-width="1.2" stroke-dasharray="3 2"/>
+        </svg>
+      </div>
+
+      <div class="note info">
+        <div class="note-i">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1570b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r="1" fill="#1570b8"/>
+          </svg>
+        </div>
+        <p><strong>FIDO2の構成：</strong>FIDO2は <strong>WebAuthn</strong>（W3Cが標準化したブラウザAPI仕様）と <strong>CTAP2</strong>（Client to Authenticator Protocol 2：ブラウザ↔認証器間の通信プロトコル）の2つで構成されます。</p>
+      </div>
+    </section>
+
+    <!-- ── 02 比較 ── -->
+    <section class="section" id="s2">
+      <div class="section-header">
+        <span class="s-num gold-bg">02</span>
+        <h2>UAF・U2F・FIDO2 の比較</h2>
+      </div>
+      <p>FIDOアライアンスは段階的にプロトコルを策定してきました。UAFとU2Fは2014年に同時策定された第一世代で、FIDO2はその両機能を統合した現行世代です。</p>
+
+      <table class="cmp-table">
+        <thead>
+          <tr>
+            <th>比較項目</th>
+            <th>UAF</th>
+            <th>U2F</th>
+            <th>FIDO2（WebAuthn）</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>正式名称</td>
+            <td>Universal Authentication Framework</td>
+            <td>Universal Second Factor</td>
+            <td>WebAuthn + CTAP2</td>
+          </tr>
+          <tr>
+            <td>策定時期</td>
+            <td>2014年</td>
+            <td>2014年</td>
+            <td>2018年〜（現行）</td>
+          </tr>
+          <tr>
+            <td>パスワードレス</td>
+            <td><span class="cmp-good">対応（1要素）</span></td>
+            <td><span class="cmp-bad">非対応</span></td>
+            <td><span class="cmp-good">対応</span></td>
+          </tr>
+          <tr>
+            <td>第2要素（2FA）</td>
+            <td><span class="cmp-bad">非対応</span></td>
+            <td><span class="cmp-good">対応</span></td>
+            <td><span class="cmp-good">対応</span></td>
+          </tr>
+          <tr>
+            <td>主な認証器</td>
+            <td>スマートフォン（生体認証）</td>
+            <td>セキュリティキー（USB/NFC）</td>
+            <td>スマートフォン・PC・セキュリティキー</td>
+          </tr>
+          <tr>
+            <td>ブラウザAPI標準</td>
+            <td><span class="cmp-bad">なし</span></td>
+            <td><span class="cmp-mid">一部のみ</span></td>
+            <td><span class="cmp-good">WebAuthn API</span></td>
+          </tr>
+          <tr>
+            <td>フィッシング耐性</td>
+            <td><span class="cmp-good">高</span></td>
+            <td><span class="cmp-good">高</span></td>
+            <td><span class="cmp-good">高</span></td>
+          </tr>
+          <tr>
+            <td>秘密鍵のサーバ送信</td>
+            <td><span class="cmp-good">なし（安全）</span></td>
+            <td><span class="cmp-good">なし（安全）</span></td>
+            <td><span class="cmp-good">なし（安全）</span></td>
+          </tr>
+          <tr>
+            <td>後継・発展</td>
+            <td colspan="2" style="text-align:center;color:#3a3d52;">→ FIDO2に統合</td>
+            <td style="color:var(--accent2);font-weight:600;">Passkeys（パスキー）へ発展</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="note warn">
+        <div class="note-i">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7a4208" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/><circle cx="12" cy="17" r="1" fill="#7a4208"/>
+          </svg>
+        </div>
+        <p><strong>試験頻出：</strong>UAFは「パスワードレス（1要素で完結）」、U2Fは「パスワード＋第2要素（2FA）」と役割が明確に異なります。FIDO2はその両方を統合した最新版であることを押さえてください。</p>
+      </div>
+    </section>
+
+    <!-- ── 03 公開鍵暗号 ── -->
+    <section class="section" id="s3">
+      <div class="section-header">
+        <span class="s-num">03</span>
+        <h2>公開鍵暗号の仕組みとFIDOへの適用</h2>
+      </div>
+      <p>FIDOの核心は公開鍵暗号方式にあります。デバイスがRP（Relying Party：サービス提供者）ごとに鍵ペアを生成し、秘密鍵はデバイス内のセキュアエリアに保管、公開鍵のみをサーバに登録します。</p>
+
+      <div class="seq-wrap">
+        <p class="seq-cap">図 2 — 公開鍵暗号によるFIDO認証の原理</p>
+        <svg class="seq" viewBox="0 0 700 200" xmlns="http://www.w3.org/2000/svg">
+          <!-- Device -->
+          <rect x="20" y="30" width="150" height="140" rx="8" fill="#f3f6fb" stroke="#cdd7e6" stroke-width="1"/>
+          <text x="95" y="52" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="11" font-weight="600" fill="#1e2d4a">デバイス（認証器）</text>
+          <rect x="36" y="62" width="118" height="36" rx="5" fill="#fdf0f0" stroke="#e8a8a8" stroke-width="1"/>
+          <svg x="40" y="66" width="20" height="28" viewBox="0 0 24 24" fill="none" stroke="#7a1818" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <text x="95" y="78" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#7a1818" font-weight="600">秘密鍵</text>
+          <text x="95" y="91" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9" fill="#7a1818">TEE / SE / TPM に保管</text>
+          <rect x="36" y="108" width="118" height="28" rx="5" fill="#eaf7f1" stroke="#a8d8c0" stroke-width="1"/>
+          <text x="95" y="124" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#155f44" font-weight="600">生体認証 / PIN</text>
+          <text x="95" y="136" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9" fill="#155f44">ユーザー確認（UV）</text>
+          <text x="95" y="160" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9" fill="#6a6e8e">外部に出ない</text>
+
+          <!-- Arrow registration -->
+          <line x1="170" y1="80" x2="280" y2="80" stroke="#1570b8" stroke-width="1.5"/>
+          <polygon points="278,76 286,80 278,84" fill="#1570b8"/>
+          <rect x="173" y="64" width="104" height="15" rx="3" fill="white"/>
+          <text x="225" y="74" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9.5" fill="#0b4a82">公開鍵を送信（登録時）</text>
+
+          <!-- Arrow auth -->
+          <line x1="170" y1="130" x2="280" y2="130" stroke="#155f44" stroke-width="1.5"/>
+          <polygon points="278,126 286,130 278,134" fill="#155f44"/>
+          <rect x="173" y="115" width="104" height="15" rx="3" fill="white"/>
+          <text x="225" y="125" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9.5" fill="#155f44">署名値を送信（認証時）</text>
+
+          <!-- Arrow challenge -->
+          <line x1="280" y1="105" x2="170" y2="105" stroke="#7a4208" stroke-width="1.5" stroke-dasharray="5 3"/>
+          <polygon points="172,101 164,105 172,109" fill="#7a4208"/>
+          <rect x="173" y="89" width="104" height="15" rx="3" fill="#fff8e6"/>
+          <text x="225" y="99" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9.5" fill="#7a4208">チャレンジ送信（認証時）</text>
+
+          <!-- RP Server -->
+          <rect x="530" y="30" width="150" height="140" rx="8" fill="#f3f6fb" stroke="#cdd7e6" stroke-width="1"/>
+          <text x="605" y="52" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="11" font-weight="600" fill="#1e2d4a">RPサーバ</text>
+          <rect x="546" y="62" width="118" height="36" rx="5" fill="#eaf3ff" stroke="#a8c8f0" stroke-width="1"/>
+          <svg x="550" y="66" width="20" height="28" viewBox="0 0 24 24" fill="none" stroke="#0b4a82" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+          <text x="605" y="78" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#0b4a82" font-weight="600">公開鍵</text>
+          <text x="605" y="91" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9" fill="#0b4a82">登録時に保存</text>
+          <rect x="546" y="108" width="118" height="28" rx="5" fill="#d0f0e0" stroke="#a0d8c0" stroke-width="1"/>
+          <text x="605" y="124" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#155f44" font-weight="600">署名検証</text>
+          <text x="605" y="136" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9" fill="#155f44">公開鍵で確認</text>
+
+          <!-- Middle box -->
+          <rect x="286" y="55" width="238" height="90" rx="6" fill="#fff" stroke="#cdd7e6" stroke-width="1"/>
+          <text x="405" y="76" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10.5" font-weight="600" fill="#1e2d4a">RP ID（Origin）と紐付いた鍵ペア</text>
+          <text x="405" y="96" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#3a3d52">RPごとに独立した鍵ペアを生成</text>
+          <text x="405" y="113" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#3a3d52">→ 複数サービス間の名寄せ防止</text>
+          <text x="405" y="130" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#7a4208">→ 偽サイトには対応する鍵がない</text>
+
+          <line x1="524" y1="80" x2="548" y2="80" stroke="#1570b8" stroke-width="1.5"/>
+          <polygon points="546,76 554,80 546,84" fill="#1570b8"/>
+          <line x1="524" y1="130" x2="548" y2="130" stroke="#155f44" stroke-width="1.5"/>
+          <polygon points="546,126 554,130 546,134" fill="#155f44"/>
+          <line x1="524" y1="105" x2="548" y2="105" stroke="#7a4208" stroke-width="1.5" stroke-dasharray="5 3"/>
+          <polygon points="526,101 518,105 526,109" fill="#7a4208"/>
+        </svg>
+      </div>
+
+      <div class="steps">
+        <div class="step hi"><span class="sn">登録</span><div class="sb">デバイスがRPごとに<strong>秘密鍵・公開鍵ペアを新規生成</strong>。秘密鍵はTEE/SE等のセキュアエリアに格納。公開鍵とCredential IDをサーバに登録します。</div></div>
+        <div class="step hi"><span class="sn">認証</span><div class="sb">サーバが毎回異なる<strong>チャレンジ（乱数）</strong>を発行。デバイスが秘密鍵でチャレンジに署名して返送。サーバは登録済み公開鍵で署名を検証します。</div></div>
+        <div class="step ok"><span class="sn">核心</span><div class="sb">秘密鍵は一切ネットワークを流れません。サーバには公開鍵しか存在しないため、<strong>サーバが侵害されても認証情報は漏洩しません</strong>。</div></div>
+      </div>
+    </section>
+
+    <!-- ── 04 FIDO2登録 ── -->
+    <section class="section" id="s4">
+      <div class="section-header">
+        <span class="s-num">04</span>
+        <h2>FIDO2 登録シーケンス</h2>
+      </div>
+      <p>FIDO2の登録（Registration）は初回のみ実施するフローです。ユーザーはデバイス上で生体認証やPINを実施し、生成された公開鍵をRPサーバに登録します。</p>
+
+      <div class="seq-wrap">
+        <p class="seq-cap">シーケンス図 1 — FIDO2 登録（sd FIDO2 Registration）</p>
+        <svg class="seq" viewBox="0 0 840 560" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="arh" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+              <path d="M1 1L9 5L1 9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </marker>
+          </defs>
+          <!-- Headers: User=80, Browser=240, Authenticator=450, RP=670 -->
+          <rect x="24" y="12" width="112" height="44" rx="6" fill="#141824"/>
+          <text x="80" y="32" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="11" font-weight="500" fill="white">利用者</text>
+          <text x="80" y="48" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9" fill="rgba(255,255,255,.45)">USER</text>
+
+          <rect x="178" y="12" width="124" height="44" rx="6" fill="#0b4a82"/>
+          <text x="240" y="32" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="11" font-weight="500" fill="white">ブラウザ</text>
+          <text x="240" y="48" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9" fill="rgba(255,255,255,.45)">BROWSER</text>
+
+          <rect x="388" y="12" width="124" height="44" rx="6" fill="#1e5f3e"/>
+          <text x="450" y="28" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="11" font-weight="500" fill="white">認証器</text>
+          <text x="450" y="44" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9" fill="rgba(255,255,255,.45)">AUTHENTICATOR</text>
+
+          <rect x="608" y="12" width="124" height="44" rx="6" fill="#5a3800"/>
+          <text x="670" y="28" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="11" font-weight="500" fill="white">RPサーバ</text>
+          <text x="670" y="44" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9" fill="rgba(255,255,255,.45)">RELYING PARTY</text>
+
+          <!-- Lifelines -->
+          <line x1="80" y1="56" x2="80" y2="540" stroke="#cdd7e6" stroke-width="1" stroke-dasharray="4 4"/>
+          <line x1="240" y1="56" x2="240" y2="540" stroke="#cdd7e6" stroke-width="1" stroke-dasharray="4 4"/>
+          <line x1="450" y1="56" x2="450" y2="540" stroke="#cdd7e6" stroke-width="1" stroke-dasharray="4 4"/>
+          <line x1="670" y1="56" x2="670" y2="540" stroke="#cdd7e6" stroke-width="1" stroke-dasharray="4 4"/>
+
+          <!-- Activation bars -->
+          <rect x="73" y="90" width="14" height="378" rx="2" fill="#e4eaf5" stroke="#b0bdd0" stroke-width="0.8"/>
+          <rect x="233" y="100" width="14" height="368" rx="2" fill="#d8eaff" stroke="#0b4a82" stroke-width="0.8"/>
+          <rect x="443" y="180" width="14" height="232" rx="2" fill="#d0ead8" stroke="#1e5f3e" stroke-width="0.8"/>
+          <rect x="663" y="100" width="14" height="368" rx="2" fill="#fdf0dc" stroke="#5a3800" stroke-width="0.8"/>
+
+          <!-- 1 User→Browser -->
+          <line x1="87" y1="104" x2="232" y2="104" stroke="#141824" stroke-width="1.5" marker-end="url(#arh)"/>
+          <rect x="92" y="87" width="134" height="16" rx="3" fill="white"/>
+          <text x="159" y="98" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#141824">① 登録ボタンをクリック</text>
+
+          <!-- 2 Browser→RP -->
+          <line x1="247" y1="136" x2="662" y2="136" stroke="#0b4a82" stroke-width="1.5" marker-end="url(#arh)"/>
+          <rect x="380" y="119" width="198" height="16" rx="3" fill="white"/>
+          <text x="479" y="130" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#0b4a82">② POST /register/begin</text>
+
+          <!-- 3 RP→Browser -->
+          <line x1="663" y1="168" x2="248" y2="168" stroke="#5a3800" stroke-width="1.5" stroke-dasharray="6 3" marker-end="url(#arh)"/>
+          <rect x="340" y="151" width="310" height="16" rx="3" fill="#fdf0dc"/>
+          <text x="495" y="162" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#5a3800">③ {challenge, rpId, userId, pubKeyCredParams}</text>
+
+          <!-- 4 Browser→Authenticator -->
+          <line x1="247" y1="200" x2="442" y2="200" stroke="#0b4a82" stroke-width="1.5" marker-end="url(#arh)"/>
+          <rect x="256" y="183" width="178" height="16" rx="3" fill="white"/>
+          <text x="345" y="194" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#0b4a82">④ credentials.create(options)</text>
+
+          <!-- 5 Authenticator→User: prompt -->
+          <line x1="443" y1="234" x2="88" y2="234" stroke="#1e5f3e" stroke-width="1.5" marker-end="url(#arh)"/>
+          <rect x="118" y="217" width="314" height="16" rx="3" fill="#eaf7ef"/>
+          <text x="275" y="228" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#1e5f3e">⑤ 生体認証 / PIN の入力を要求（User Verification）</text>
+
+          <!-- 6 User→Authenticator: approve -->
+          <line x1="87" y1="268" x2="442" y2="268" stroke="#141824" stroke-width="1.5" marker-end="url(#arh)"/>
+          <rect x="118" y="251" width="314" height="16" rx="3" fill="white"/>
+          <text x="275" y="262" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#141824">⑥ 生体認証 / PIN 承認（UV confirmed）</text>
+
+          <!-- Internal box: key generation -->
+          <rect x="350" y="284" width="206" height="38" rx="5" fill="#d0ead8" stroke="#1e5f3e" stroke-width="0.8"/>
+          <text x="453" y="298" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9.5" fill="#0d3d28" font-weight="600">【認証器内部】</text>
+          <text x="453" y="314" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9.5" fill="#0d3d28">鍵ペア生成 → 秘密鍵をTEE/SEに保存</text>
+
+          <!-- 7 Authenticator→Browser -->
+          <line x1="443" y1="342" x2="248" y2="342" stroke="#1e5f3e" stroke-width="1.5" stroke-dasharray="6 3" marker-end="url(#arh)"/>
+          <rect x="256" y="325" width="178" height="16" rx="3" fill="#d0ead8"/>
+          <text x="345" y="336" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#1e5f3e">⑦ {credentialId, publicKey, attestation}</text>
+
+          <!-- 8 Browser→RP -->
+          <line x1="247" y1="378" x2="662" y2="378" stroke="#0b4a82" stroke-width="1.5" marker-end="url(#arh)"/>
+          <rect x="298" y="361" width="340" height="16" rx="3" fill="white"/>
+          <text x="468" y="372" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#0b4a82">⑧ POST /register/complete  {credId, publicKey, attestation, clientDataJSON}</text>
+
+          <!-- Internal box: RP verify + store -->
+          <rect x="576" y="394" width="180" height="38" rx="5" fill="#fdf0dc" stroke="#5a3800" stroke-width="0.8"/>
+          <text x="666" y="408" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9.5" fill="#5a3800" font-weight="600">【RPサーバ】</text>
+          <text x="666" y="424" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9.5" fill="#5a3800">Attestation検証 → 公開鍵保存</text>
+
+          <!-- 9 RP→Browser -->
+          <line x1="663" y1="452" x2="248" y2="452" stroke="#5a3800" stroke-width="1.5" stroke-dasharray="6 3" marker-end="url(#arh)"/>
+          <rect x="340" y="435" width="310" height="16" rx="3" fill="#eaf7f1"/>
+          <text x="495" y="446" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#155f44">⑨ 200 OK（登録完了）</text>
+
+          <!-- Footer lifelines -->
+          <rect x="24" y="527" width="112" height="18" rx="4" fill="#141824"/>
+          <text x="80" y="540" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="white">利用者</text>
+          <rect x="178" y="527" width="124" height="18" rx="4" fill="#0b4a82"/>
+          <text x="240" y="540" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="white">ブラウザ</text>
+          <rect x="388" y="527" width="124" height="18" rx="4" fill="#1e5f3e"/>
+          <text x="450" y="540" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="white">認証器</text>
+          <rect x="608" y="527" width="124" height="18" rx="4" fill="#5a3800"/>
+          <text x="670" y="540" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="white">RPサーバ</text>
+        </svg>
+      </div>
+
+      <div class="steps">
+        <div class="step hi"><span class="sn">③</span><div class="sb">RPサーバが <strong>challenge（乱数）・rpId・userId・pubKeyCredParams</strong>（対応アルゴリズムリスト）をブラウザへ返します。</div></div>
+        <div class="step hi"><span class="sn">⑤⑥</span><div class="sb">認証器がユーザーに<strong>生体認証またはPIN</strong>の入力を要求します。これを <strong>User Verification（UV）</strong> と呼びます。UAFでは主要認証手段、FIDO2では必要に応じて要求します。</div></div>
+        <div class="step ok"><span class="sn">⑦</span><div class="sb">認証器内部で鍵ペアを生成。<strong>秘密鍵はTEE/SEに格納</strong>し、公開鍵・Credential ID・<strong>Attestation（認証器の正当性証明）</strong>をブラウザへ返します。</div></div>
+        <div class="step wn"><span class="sn">!</span><div class="sb"><strong>Attestationとは：</strong>認証器が正規のデバイスであることをメーカーの証明書で証明する情報です。RPサーバはAttestation証明書チェーンを検証して認証器の信頼性を確認します。</div></div>
+      </div>
+    </section>
+
+    <!-- ── 05 FIDO2認証 ── -->
+    <section class="section" id="s5">
+      <div class="section-header">
+        <span class="s-num">05</span>
+        <h2>FIDO2 認証シーケンス</h2>
+      </div>
+      <p>登録後の認証（Authentication）フローです。サーバが発行したチャレンジを秘密鍵で署名して返送し、サーバが公開鍵で検証します。<strong>signCount（署名カウンター）</strong>により認証器クローンやリプレイ攻撃も検知します。</p>
+
+      <div class="seq-wrap">
+        <p class="seq-cap">シーケンス図 2 — FIDO2 認証（sd FIDO2 Authentication）</p>
+        <svg class="seq" viewBox="0 0 840 540" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="arh2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+              <path d="M1 1L9 5L1 9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </marker>
+          </defs>
+          <rect x="24" y="12" width="112" height="44" rx="6" fill="#141824"/>
+          <text x="80" y="32" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="11" font-weight="500" fill="white">利用者</text>
+          <text x="80" y="48" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9" fill="rgba(255,255,255,.45)">USER</text>
+          <rect x="178" y="12" width="124" height="44" rx="6" fill="#0b4a82"/>
+          <text x="240" y="32" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="11" font-weight="500" fill="white">ブラウザ</text>
+          <text x="240" y="48" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9" fill="rgba(255,255,255,.45)">BROWSER</text>
+          <rect x="388" y="12" width="124" height="44" rx="6" fill="#1e5f3e"/>
+          <text x="450" y="28" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="11" font-weight="500" fill="white">認証器</text>
+          <text x="450" y="44" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9" fill="rgba(255,255,255,.45)">AUTHENTICATOR</text>
+          <rect x="608" y="12" width="124" height="44" rx="6" fill="#5a1a6e"/>
+          <text x="670" y="28" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="11" font-weight="500" fill="white">RPサーバ</text>
+          <text x="670" y="44" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9" fill="rgba(255,255,255,.45)">RELYING PARTY</text>
+
+          <line x1="80" y1="56" x2="80" y2="520" stroke="#cdd7e6" stroke-width="1" stroke-dasharray="4 4"/>
+          <line x1="240" y1="56" x2="240" y2="520" stroke="#cdd7e6" stroke-width="1" stroke-dasharray="4 4"/>
+          <line x1="450" y1="56" x2="450" y2="520" stroke="#cdd7e6" stroke-width="1" stroke-dasharray="4 4"/>
+          <line x1="670" y1="56" x2="670" y2="520" stroke="#cdd7e6" stroke-width="1" stroke-dasharray="4 4"/>
+
+          <rect x="73" y="90" width="14" height="360" rx="2" fill="#e4eaf5" stroke="#b0bdd0" stroke-width="0.8"/>
+          <rect x="233" y="100" width="14" height="350" rx="2" fill="#d8eaff" stroke="#0b4a82" stroke-width="0.8"/>
+          <rect x="443" y="185" width="14" height="218" rx="2" fill="#d0ead8" stroke="#1e5f3e" stroke-width="0.8"/>
+          <rect x="663" y="100" width="14" height="350" rx="2" fill="#eeddff" stroke="#5a1a6e" stroke-width="0.8"/>
+
+          <!-- 1 -->
+          <line x1="87" y1="104" x2="232" y2="104" stroke="#141824" stroke-width="1.5" marker-end="url(#arh2)"/>
+          <rect x="92" y="87" width="134" height="16" rx="3" fill="white"/>
+          <text x="159" y="98" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#141824">① ログインを試みる</text>
+          <!-- 2 -->
+          <line x1="247" y1="136" x2="662" y2="136" stroke="#0b4a82" stroke-width="1.5" marker-end="url(#arh2)"/>
+          <rect x="360" y="119" width="200" height="16" rx="3" fill="white"/>
+          <text x="460" y="130" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#0b4a82">② POST /auth/begin</text>
+          <!-- 3 -->
+          <line x1="663" y1="168" x2="248" y2="168" stroke="#5a1a6e" stroke-width="1.5" stroke-dasharray="6 3" marker-end="url(#arh2)"/>
+          <rect x="300" y="151" width="350" height="16" rx="3" fill="#eeddff"/>
+          <text x="475" y="162" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#5a1a6e">③ {challenge, rpId, allowCredentials, userVerification}</text>
+          <!-- 4 -->
+          <line x1="247" y1="200" x2="442" y2="200" stroke="#0b4a82" stroke-width="1.5" marker-end="url(#arh2)"/>
+          <rect x="256" y="183" width="178" height="16" rx="3" fill="white"/>
+          <text x="345" y="194" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#0b4a82">④ credentials.get(options)</text>
+          <!-- 5 -->
+          <line x1="443" y1="232" x2="88" y2="232" stroke="#1e5f3e" stroke-width="1.5" marker-end="url(#arh2)"/>
+          <rect x="118" y="215" width="314" height="16" rx="3" fill="#eaf7ef"/>
+          <text x="275" y="226" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#1e5f3e">⑤ 生体認証 / PIN の入力を要求</text>
+          <!-- 6 -->
+          <line x1="87" y1="264" x2="442" y2="264" stroke="#141824" stroke-width="1.5" marker-end="url(#arh2)"/>
+          <rect x="118" y="247" width="314" height="16" rx="3" fill="white"/>
+          <text x="275" y="258" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#141824">⑥ 承認（UV confirmed）</text>
+
+          <!-- Internal box: sign -->
+          <rect x="330" y="280" width="236" height="42" rx="5" fill="#d0ead8" stroke="#1e5f3e" stroke-width="0.8"/>
+          <text x="448" y="294" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9.5" fill="#0d3d28" font-weight="600">【認証器内部】</text>
+          <text x="448" y="310" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9.5" fill="#0d3d28">Sign(challenge + authData) using 秘密鍵   signCount++</text>
+
+          <!-- 7 -->
+          <line x1="443" y1="342" x2="248" y2="342" stroke="#1e5f3e" stroke-width="1.5" stroke-dasharray="6 3" marker-end="url(#arh2)"/>
+          <rect x="256" y="325" width="178" height="16" rx="3" fill="#d0ead8"/>
+          <text x="345" y="336" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#1e5f3e">⑦ {signature, authData, clientDataJSON}</text>
+          <!-- 8 -->
+          <line x1="247" y1="376" x2="662" y2="376" stroke="#0b4a82" stroke-width="1.5" marker-end="url(#arh2)"/>
+          <rect x="296" y="359" width="352" height="16" rx="3" fill="white"/>
+          <text x="472" y="370" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#0b4a82">⑧ POST /auth/complete  {credId, signature, authData, clientDataJSON}</text>
+
+          <!-- Internal box RP -->
+          <rect x="568" y="392" width="196" height="48" rx="5" fill="#eeddff" stroke="#5a1a6e" stroke-width="0.8"/>
+          <text x="666" y="406" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9.5" fill="#3a006e" font-weight="600">【RPサーバ】</text>
+          <text x="666" y="420" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9.5" fill="#3a006e">公開鍵で署名検証</text>
+          <text x="666" y="434" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9.5" fill="#3a006e">signCount &gt; 保存値 → OK（クローン検知）</text>
+
+          <!-- 9 -->
+          <line x1="663" y1="460" x2="248" y2="460" stroke="#5a1a6e" stroke-width="1.5" stroke-dasharray="6 3" marker-end="url(#arh2)"/>
+          <rect x="340" y="443" width="310" height="16" rx="3" fill="#eaf7f1"/>
+          <text x="495" y="454" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#155f44">⑨ 200 OK（認証成功）</text>
+
+          <rect x="24" y="507" width="112" height="18" rx="4" fill="#141824"/>
+          <text x="80" y="520" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="white">利用者</text>
+          <rect x="178" y="507" width="124" height="18" rx="4" fill="#0b4a82"/>
+          <text x="240" y="520" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="white">ブラウザ</text>
+          <rect x="388" y="507" width="124" height="18" rx="4" fill="#1e5f3e"/>
+          <text x="450" y="520" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="white">認証器</text>
+          <rect x="608" y="507" width="124" height="18" rx="4" fill="#5a1a6e"/>
+          <text x="670" y="520" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="white">RPサーバ</text>
+        </svg>
+      </div>
+
+      <div class="steps">
+        <div class="step hi"><span class="sn">③</span><div class="sb">RPサーバが<strong>毎回新しいチャレンジ（乱数）</strong>を生成して送信します。<code>allowCredentials</code> には登録済み Credential ID リストが含まれ、対応する認証器のみが応答できます。</div></div>
+        <div class="step hi"><span class="sn">⑦</span><div class="sb">認証器内部で秘密鍵によりチャレンジに署名し、<strong>signCountをインクリメント</strong>して返します。チャレンジはOriginも含むため偽サイトでは署名対象が異なります。</div></div>
+        <div class="step ok"><span class="sn">⑨</span><div class="sb">RPサーバは <strong>①公開鍵で署名検証 ②signCount が保存値より大きいか確認</strong> の2点を検証します。signCountが逆転していれば認証器クローンまたはリプレイ攻撃として認証を拒否します。</div></div>
+      </div>
+
+      <div class="keypoint">
+        <p class="kp-label">核心ポイント</p>
+        <p>FIDO2認証の本質は「<strong>秘密鍵を送らずに、秘密鍵を持っていることを証明する</strong>」点にあります。毎回異なるチャレンジを使うことでリプレイ攻撃を無効化し、Origin紐付けでフィッシングを構造的に排除します。</p>
+      </div>
+    </section>
+
+    <!-- ── 06 UAF ── -->
+    <section class="section" id="s6">
+      <div class="section-header">
+        <span class="s-num">06</span>
+        <h2>UAF シーケンス（パスワードレス）</h2>
+      </div>
+      <p>UAF（Universal Authentication Framework）はパスワードを<strong>完全に排除</strong>するプロトコルです。スマートフォンの生体認証が主要な認証手段となり、その成果を公開鍵署名でサーバに証明します。たとえるならば、「顔パス」で入館する仕組みを、デジタル証明書で厳密化したものです。</p>
+
+      <div class="seq-wrap">
+        <p class="seq-cap">シーケンス図 3 — UAF 登録・認証フロー（sd UAF Authentication）</p>
+        <svg class="seq" viewBox="0 0 720 560" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="arh3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+              <path d="M1 1L9 5L1 9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </marker>
+          </defs>
+          <!-- User=80, UAF Client=290, UAF Server=560 -->
+          <rect x="18" y="12" width="124" height="44" rx="6" fill="#141824"/>
+          <text x="80" y="28" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="11" font-weight="500" fill="white">利用者</text>
+          <text x="80" y="44" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9" fill="rgba(255,255,255,.45)">スマートフォン</text>
+
+          <rect x="220" y="12" width="140" height="44" rx="6" fill="#0b4a82"/>
+          <text x="290" y="28" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="11" font-weight="500" fill="white">UAFクライアント</text>
+          <text x="290" y="44" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9" fill="rgba(255,255,255,.45)">App / Authenticator</text>
+
+          <rect x="490" y="12" width="140" height="44" rx="6" fill="#5a3800"/>
+          <text x="560" y="28" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="11" font-weight="500" fill="white">UAFサーバ</text>
+          <text x="560" y="44" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9" fill="rgba(255,255,255,.45)">Relying Party</text>
+
+          <line x1="80" y1="56" x2="80" y2="540" stroke="#cdd7e6" stroke-width="1" stroke-dasharray="4 4"/>
+          <line x1="290" y1="56" x2="290" y2="540" stroke="#cdd7e6" stroke-width="1" stroke-dasharray="4 4"/>
+          <line x1="560" y1="56" x2="560" y2="540" stroke="#cdd7e6" stroke-width="1" stroke-dasharray="4 4"/>
+
+          <!-- Phase labels -->
+          <rect x="18" y="68" width="672" height="18" rx="3" fill="#eaf3ff" stroke="#a8cef5" stroke-width="0.8"/>
+          <text x="354" y="81" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="9.5" fill="#0b4a82" letter-spacing="2">Registration Phase</text>
+
+          <rect x="283" y="92" width="14" height="200" rx="2" fill="#d8eaff" stroke="#0b4a82" stroke-width="0.8"/>
+          <rect x="553" y="102" width="14" height="140" rx="2" fill="#fdf0dc" stroke="#5a3800" stroke-width="0.8"/>
+          <rect x="73" y="102" width="14" height="190" rx="2" fill="#e4eaf5" stroke="#b0bdd0" stroke-width="0.8"/>
+
+          <!-- Reg 1 -->
+          <line x1="297" y1="108" x2="552" y2="108" stroke="#0b4a82" stroke-width="1.5" marker-end="url(#arh3)"/>
+          <rect x="330" y="91" width="188" height="16" rx="3" fill="white"/>
+          <text x="424" y="102" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#0b4a82">① RegistrationRequest 送信</text>
+          <!-- Reg 2 -->
+          <line x1="553" y1="138" x2="298" y2="138" stroke="#5a3800" stroke-width="1.5" stroke-dasharray="6 3" marker-end="url(#arh3)"/>
+          <rect x="316" y="121" width="224" height="16" rx="3" fill="#fdf0dc"/>
+          <text x="428" y="132" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#5a3800">② {challenge, policy, AppID} 返却</text>
+          <!-- Reg 3 -->
+          <line x1="283" y1="168" x2="88" y2="168" stroke="#0b4a82" stroke-width="1.5" marker-end="url(#arh3)"/>
+          <rect x="96" y="151" width="180" height="16" rx="3" fill="#eaf7ef"/>
+          <text x="186" y="162" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#155f44">③ 生体認証を要求（指紋・顔）</text>
+          <!-- Reg 4 -->
+          <line x1="87" y1="198" x2="282" y2="198" stroke="#141824" stroke-width="1.5" marker-end="url(#arh3)"/>
+          <rect x="96" y="181" width="180" height="16" rx="3" fill="white"/>
+          <text x="186" y="192" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#141824">④ 生体認証承認</text>
+
+          <rect x="188" y="210" width="188" height="28" rx="5" fill="#d0ead8" stroke="#1e5f3e" stroke-width="0.8"/>
+          <text x="282" y="222" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9.5" fill="#0d3d28">鍵ペア生成 → 秘密鍵をTEE/SEに保存</text>
+          <text x="282" y="233" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9" fill="#0d3d28">（KeyID発行）</text>
+
+          <!-- Reg 5 -->
+          <line x1="297" y1="258" x2="552" y2="258" stroke="#0b4a82" stroke-width="1.5" marker-end="url(#arh3)"/>
+          <rect x="330" y="241" width="210" height="16" rx="3" fill="white"/>
+          <text x="435" y="252" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#0b4a82">⑤ {publicKey, KeyID, Attestation} 送信</text>
+          <!-- Reg 6 -->
+          <line x1="553" y1="288" x2="298" y2="288" stroke="#5a3800" stroke-width="1.5" stroke-dasharray="6 3" marker-end="url(#arh3)"/>
+          <rect x="330" y="271" width="210" height="16" rx="3" fill="#eaf7f1"/>
+          <text x="435" y="282" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#155f44">⑥ 登録完了 200 OK</text>
+
+          <!-- Phase label auth -->
+          <rect x="18" y="308" width="672" height="18" rx="3" fill="#eeddff" stroke="#c8a8f0" stroke-width="0.8"/>
+          <text x="354" y="321" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="9.5" fill="#5a1a6e" letter-spacing="2">Authentication Phase</text>
+
+          <rect x="283" y="330" width="14" height="172" rx="2" fill="#d8eaff" stroke="#0b4a82" stroke-width="0.8"/>
+          <rect x="553" y="340" width="14" height="122" rx="2" fill="#fdf0dc" stroke="#5a3800" stroke-width="0.8"/>
+          <rect x="73" y="340" width="14" height="162" rx="2" fill="#e4eaf5" stroke="#b0bdd0" stroke-width="0.8"/>
+
+          <!-- Auth 1 -->
+          <line x1="87" y1="348" x2="282" y2="348" stroke="#141824" stroke-width="1.5" marker-end="url(#arh3)"/>
+          <rect x="96" y="331" width="180" height="16" rx="3" fill="white"/>
+          <text x="186" y="342" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#141824">⑦ ログインリクエスト</text>
+          <!-- Auth 2 -->
+          <line x1="297" y1="378" x2="552" y2="378" stroke="#0b4a82" stroke-width="1.5" marker-end="url(#arh3)"/>
+          <rect x="330" y="361" width="210" height="16" rx="3" fill="white"/>
+          <text x="435" y="372" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#0b4a82">⑧ AuthenticationRequest</text>
+          <!-- Auth 3 -->
+          <line x1="553" y1="408" x2="298" y2="408" stroke="#5a3800" stroke-width="1.5" stroke-dasharray="6 3" marker-end="url(#arh3)"/>
+          <rect x="316" y="391" width="224" height="16" rx="3" fill="#fdf0dc"/>
+          <text x="428" y="402" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#5a3800">⑨ {challenge, AppID} 返却</text>
+          <!-- Auth 4 -->
+          <line x1="283" y1="438" x2="88" y2="438" stroke="#0b4a82" stroke-width="1.5" marker-end="url(#arh3)"/>
+          <rect x="96" y="421" width="180" height="16" rx="3" fill="#eaf7ef"/>
+          <text x="186" y="432" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#155f44">⑩ 生体認証を要求</text>
+          <!-- Auth 5 -->
+          <line x1="87" y1="468" x2="282" y2="468" stroke="#141824" stroke-width="1.5" marker-end="url(#arh3)"/>
+          <rect x="96" y="451" width="180" height="16" rx="3" fill="white"/>
+          <text x="186" y="462" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#141824">⑪ 承認 → Sign(challenge)</text>
+          <!-- Auth 6 -->
+          <line x1="297" y1="498" x2="552" y2="498" stroke="#0b4a82" stroke-width="1.5" marker-end="url(#arh3)"/>
+          <rect x="316" y="481" width="224" height="16" rx="3" fill="white"/>
+          <text x="428" y="492" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#0b4a82">⑫ {signature, KeyID} → 検証 → 200 OK</text>
+
+          <rect x="18" y="525" width="124" height="18" rx="4" fill="#141824"/>
+          <text x="80" y="538" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="white">利用者</text>
+          <rect x="220" y="525" width="140" height="18" rx="4" fill="#0b4a82"/>
+          <text x="290" y="538" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="white">UAFクライアント</text>
+          <rect x="490" y="525" width="140" height="18" rx="4" fill="#5a3800"/>
+          <text x="560" y="538" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="white">UAFサーバ</text>
+        </svg>
+      </div>
+
+      <div class="steps">
+        <div class="step hi"><span class="sn">③④</span><div class="sb">UAFはパスワードなしに<strong>生体認証のみ</strong>でユーザー確認を行います。指紋・顔・虹彩など、デバイスのセキュアエリアで照合が完結します。</div></div>
+        <div class="step ok"><span class="sn">⑫</span><div class="sb">認証時、署名された <code>{signature, KeyID}</code> を受け取ったサーバは、登録時に保存した公開鍵で署名を検証します。パスワードは一切使用・送信されません。</div></div>
+      </div>
+    </section>
+
+    <!-- ── 07 U2F ── -->
+    <section class="section" id="s7">
+      <div class="section-header">
+        <span class="s-num">07</span>
+        <h2>U2F シーケンス（第2要素認証）</h2>
+      </div>
+      <p>U2F（Universal Second Factor）は既存のパスワード認証に<strong>強力な第2要素を追加</strong>するプロトコルです。セキュリティキー（YubiKey等）をUSBやNFCで接続し、物理ボタンを押すだけで認証を完了します。パスワードは引き続き使用しますが、フィッシング耐性が大幅に向上します。</p>
+
+      <div class="seq-wrap">
+        <p class="seq-cap">シーケンス図 4 — U2F 第2要素認証（sd U2F Authentication）</p>
+        <svg class="seq" viewBox="0 0 800 530" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="arh4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+              <path d="M1 1L9 5L1 9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </marker>
+          </defs>
+          <!-- User=80, Browser=260, SecurityKey=470, RP=670 -->
+          <rect x="18" y="12" width="124" height="44" rx="6" fill="#141824"/>
+          <text x="80" y="28" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="11" font-weight="500" fill="white">利用者</text>
+          <text x="80" y="44" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9" fill="rgba(255,255,255,.45)">＋ セキュリティキー</text>
+
+          <rect x="198" y="12" width="124" height="44" rx="6" fill="#0b4a82"/>
+          <text x="260" y="32" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="11" font-weight="500" fill="white">ブラウザ</text>
+          <text x="260" y="48" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9" fill="rgba(255,255,255,.45)">BROWSER</text>
+
+          <rect x="408" y="12" width="124" height="44" rx="6" fill="#7a4208"/>
+          <text x="470" y="28" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="11" font-weight="500" fill="white">セキュリティキー</text>
+          <text x="470" y="44" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9" fill="rgba(255,255,255,.45)">USB / NFC</text>
+
+          <rect x="608" y="12" width="124" height="44" rx="6" fill="#5a1a6e"/>
+          <text x="670" y="28" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="11" font-weight="500" fill="white">RPサーバ</text>
+          <text x="670" y="44" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9" fill="rgba(255,255,255,.45)">RELYING PARTY</text>
+
+          <line x1="80" y1="56" x2="80" y2="514" stroke="#cdd7e6" stroke-width="1" stroke-dasharray="4 4"/>
+          <line x1="260" y1="56" x2="260" y2="514" stroke="#cdd7e6" stroke-width="1" stroke-dasharray="4 4"/>
+          <line x1="470" y1="56" x2="470" y2="514" stroke="#cdd7e6" stroke-width="1" stroke-dasharray="4 4"/>
+          <line x1="670" y1="56" x2="670" y2="514" stroke="#cdd7e6" stroke-width="1" stroke-dasharray="4 4"/>
+
+          <!-- Phase 1st factor (dimmed) -->
+          <rect x="18" y="68" width="762" height="16" rx="3" fill="#f3f6fb" stroke="#cdd7e6" stroke-width="0.8"/>
+          <text x="399" y="80" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="9.5" fill="#6a6e8e" letter-spacing="2">1st Factor: Password Authentication (従来通り)</text>
+
+          <rect x="73" y="88" width="14" height="58" rx="2" fill="#f0f0f0" stroke="#cdd7e6" stroke-width="0.8" opacity="0.5"/>
+          <rect x="253" y="92" width="14" height="50" rx="2" fill="#d8eaff" stroke="#0b4a82" stroke-width="0.8" opacity="0.5"/>
+          <rect x="663" y="92" width="14" height="50" rx="2" fill="#eeddff" stroke="#5a1a6e" stroke-width="0.8" opacity="0.5"/>
+
+          <line x1="87" y1="100" x2="252" y2="100" stroke="#b0b0b0" stroke-width="1.3" stroke-dasharray="4 3" marker-end="url(#arh4)"/>
+          <rect x="108" y="84" width="136" height="15" rx="3" fill="#f3f6fb"/>
+          <text x="176" y="95" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9.5" fill="#888">ID・パスワードを入力</text>
+          <line x1="267" y1="126" x2="662" y2="126" stroke="#b0b0b0" stroke-width="1.3" stroke-dasharray="4 3" marker-end="url(#arh4)"/>
+          <rect x="370" y="110" width="180" height="15" rx="3" fill="#f3f6fb"/>
+          <text x="460" y="121" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9.5" fill="#888">POST login（第1要素 OK）</text>
+
+          <!-- Phase 2nd factor -->
+          <rect x="18" y="150" width="762" height="16" rx="3" fill="#eaf3ff" stroke="#a8cef5" stroke-width="0.8"/>
+          <text x="399" y="162" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="9.5" fill="#0b4a82" letter-spacing="2">2nd Factor: U2F Authentication</text>
+
+          <rect x="253" y="170" width="14" height="296" rx="2" fill="#d8eaff" stroke="#0b4a82" stroke-width="0.8"/>
+          <rect x="463" y="246" width="14" height="170" rx="2" fill="#ffe8cc" stroke="#7a4208" stroke-width="0.8"/>
+          <rect x="663" y="170" width="14" height="296" rx="2" fill="#eeddff" stroke="#5a1a6e" stroke-width="0.8"/>
+          <rect x="73" y="268" width="14" height="198" rx="2" fill="#e4eaf5" stroke="#b0bdd0" stroke-width="0.8"/>
+
+          <!-- 1 -->
+          <line x1="267" y1="185" x2="662" y2="185" stroke="#0b4a82" stroke-width="1.5" marker-end="url(#arh4)"/>
+          <rect x="360" y="168" width="192" height="16" rx="3" fill="white"/>
+          <text x="456" y="179" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#0b4a82">① POST /u2f/begin</text>
+          <!-- 2 -->
+          <line x1="663" y1="218" x2="268" y2="218" stroke="#5a1a6e" stroke-width="1.5" stroke-dasharray="6 3" marker-end="url(#arh4)"/>
+          <rect x="310" y="201" width="340" height="16" rx="3" fill="#eeddff"/>
+          <text x="480" y="212" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#5a1a6e">② {challenge, AppID, keyHandle}</text>
+          <!-- 3 -->
+          <line x1="253" y1="252" x2="88" y2="252" stroke="#0b4a82" stroke-width="1.5" marker-end="url(#arh4)"/>
+          <rect x="100" y="235" width="146" height="16" rx="3" fill="#eaf3ff"/>
+          <text x="173" y="246" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#0b4a82">③ ボタン押下を促す</text>
+          <!-- 4 -->
+          <line x1="267" y1="286" x2="462" y2="286" stroke="#0b4a82" stroke-width="1.5" marker-end="url(#arh4)"/>
+          <rect x="280" y="269" width="176" height="16" rx="3" fill="white"/>
+          <text x="368" y="280" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#0b4a82">④ sign(challenge, keyHandle)</text>
+          <!-- 5 User presses button -->
+          <line x1="463" y1="318" x2="88" y2="318" stroke="#7a4208" stroke-width="1.5" marker-end="url(#arh4)"/>
+          <rect x="110" y="301" width="344" height="16" rx="3" fill="#fff8e6"/>
+          <text x="282" y="312" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#7a4208">⑤ 物理ボタン押下を促す（User Presence 確認）</text>
+          <!-- 6 -->
+          <line x1="87" y1="352" x2="462" y2="352" stroke="#141824" stroke-width="1.5" marker-end="url(#arh4)"/>
+          <rect x="110" y="335" width="344" height="16" rx="3" fill="white"/>
+          <text x="282" y="346" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#141824">⑥ ボタン押下（UP confirmed）</text>
+
+          <rect x="346" y="368" width="220" height="36" rx="5" fill="#ffe8cc" stroke="#7a4208" stroke-width="0.8"/>
+          <text x="456" y="382" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9.5" fill="#5a2800" font-weight="600">【セキュリティキー内部】</text>
+          <text x="456" y="398" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9.5" fill="#5a2800">Sign(challenge + counter) → counter++</text>
+
+          <!-- 7 -->
+          <line x1="463" y1="424" x2="268" y2="424" stroke="#7a4208" stroke-width="1.5" stroke-dasharray="6 3" marker-end="url(#arh4)"/>
+          <rect x="280" y="407" width="176" height="16" rx="3" fill="#ffe8cc"/>
+          <text x="368" y="418" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#7a4208">⑦ {signature, counter, clientData}</text>
+          <!-- 8 -->
+          <line x1="267" y1="458" x2="662" y2="458" stroke="#0b4a82" stroke-width="1.5" marker-end="url(#arh4)"/>
+          <rect x="310" y="441" width="340" height="16" rx="3" fill="white"/>
+          <text x="480" y="452" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#0b4a82">⑧ POST /u2f/complete  {signature, counter, clientData}</text>
+
+          <!-- RP verify box -->
+          <rect x="566" y="474" width="208" height="28" rx="5" fill="#eeddff" stroke="#5a1a6e" stroke-width="0.8"/>
+          <text x="670" y="486" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9.5" fill="#3a006e">公開鍵で署名検証 + counter &gt; 保存値</text>
+          <text x="670" y="498" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9.5" fill="#155f44">→ 2FA 認証成功</text>
+
+          <rect x="18" y="510" width="124" height="18" rx="4" fill="#141824"/>
+          <text x="80" y="523" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="white">利用者</text>
+          <rect x="198" y="510" width="124" height="18" rx="4" fill="#0b4a82"/>
+          <text x="260" y="523" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="white">ブラウザ</text>
+          <rect x="408" y="510" width="124" height="18" rx="4" fill="#7a4208"/>
+          <text x="470" y="523" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="white">セキュリティキー</text>
+          <rect x="608" y="510" width="124" height="18" rx="4" fill="#5a1a6e"/>
+          <text x="670" y="523" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="white">RPサーバ</text>
+        </svg>
+      </div>
+
+      <div class="steps">
+        <div class="step hi"><span class="sn">⑤⑥</span><div class="sb">U2F固有の確認として <strong>User Presence（UP）</strong>があります。ユーザーが物理ボタンを押したことで「意図的な操作」を証明します。これによりマルウェアによる自動的な悪用を防ぎます。</div></div>
+        <div class="step ok"><span class="sn">⑧</span><div class="sb">RPサーバは <strong>①署名検証 ②counter が保存値より大きいか</strong>の2点を確認します。counterが逆転していれば認証器クローンの可能性として認証を拒否します。</div></div>
+        <div class="step wn"><span class="sn">!</span><div class="sb"><strong>UAFとの違い：</strong>U2Fでは第1要素のパスワード認証は引き続き必要です。セキュリティキーはあくまで第2要素の強化であり、パスワードを置き換えるものではありません。</div></div>
+      </div>
+    </section>
+
+    <!-- ── 08 脅威 ── -->
+    <section class="section" id="s8">
+      <div class="section-header">
+        <span class="s-num red-bg">08</span>
+        <h2>FIDO認証への脅威と対策</h2>
+      </div>
+      <p>FIDO認証はパスワード認証と比較して格段に安全ですが、実装・運用上の脅威は存在します。以下に代表的な脅威と対策を整理します。</p>
+
+      <div class="threat-grid">
+        <div class="threat-card">
+          <div class="tc-head">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r="1" fill="white"/></svg>
+            <span>認証器の紛失・盗難</span>
+          </div>
+          <div class="tc-body">
+            <p>スマートフォンやセキュリティキーが盗まれた場合、生体認証やPINが第2の防壁となる。ただし強制解除の可能性もゼロではない。</p>
+            <p class="tc-counter">対策：生体認証の必須化・Credential IDのサーバ側無効化・デバイス紛失時の即時失効手順</p>
+          </div>
+        </div>
+        <div class="threat-card">
+          <div class="tc-head">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            <span>認証器クローン</span>
+          </div>
+          <div class="tc-body">
+            <p>TEE/SEからの秘密鍵抽出による認証器の複製。物理的攻撃が必要で非常に困難だが、理論上はゼロではない。</p>
+            <p class="tc-counter">対策：signCountの監視（逆転で検知）・TEE/SE搭載の認証器の採用・FIDO認定デバイスの使用</p>
+          </div>
+        </div>
+        <div class="threat-card">
+          <div class="tc-head warn-head">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            <span>マルウェアによる認証の乗っ取り</span>
+          </div>
+          <div class="tc-body">
+            <p>ユーザーのデバイスにマルウェアが感染し、FIDOの認証セッション確立後にブラウザ操作を乗っ取る（Session Hijacking）。</p>
+            <p class="tc-counter">対策：エンドポイントセキュリティの強化・セッション管理の堅牢化・異常ログインの検知</p>
+          </div>
+        </div>
+        <div class="threat-card">
+          <div class="tc-head warn-head">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <span>ソーシャルエンジニアリング</span>
+          </div>
+          <div class="tc-body">
+            <p>ユーザーを騙して意図しない認証器登録・認証を実行させる。例えばサポートを装い不正な登録操作を誘導する。</p>
+            <p class="tc-counter">対策：登録・認証操作の明示的な意思確認UIの実装・セキュリティ教育・不審な登録の通知</p>
+          </div>
+        </div>
+        <div class="threat-card">
+          <div class="tc-head">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+            <span>RPサーバの侵害</span>
+          </div>
+          <div class="tc-body">
+            <p>サーバに保存されているのは公開鍵のみであるため、サーバが侵害されてもパスワードのような認証情報は流出しない。ただしサービス停止リスクはある。</p>
+            <p class="tc-counter">対策：公開鍵DBのアクセス制御・HSMによるサーバ秘密鍵管理・多重署名・ログ監査</p>
+          </div>
+        </div>
+        <div class="threat-card">
+          <div class="tc-head">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><circle cx="12" cy="17" r="1" fill="white"/></svg>
+            <span>フォールバック認証の脆弱性</span>
+          </div>
+          <div class="tc-body">
+            <p>認証器紛失時のアカウント回復フローとして設けられたフォールバック認証（メール・電話番号等）が攻撃の標的になる。</p>
+            <p class="tc-counter">対策：回復コードの安全な管理・フォールバック認証の強化・SIMスワップ対策</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 09 比較 ── -->
+    <section class="section" id="s9">
+      <div class="section-header">
+        <span class="s-num gold-bg">09</span>
+        <h2>類似技術との比較</h2>
+      </div>
+      <p>試験ではFIDO認証と他の認証技術の違いが頻出です。混同しやすいポイントを整理します。</p>
+
+      <h3>認証方式の比較</h3>
+      <table class="cmp-table">
+        <thead>
+          <tr>
+            <th>比較項目</th>
+            <th>パスワード</th>
+            <th>TOTP（Google Authenticator等）</th>
+            <th>FIDO UAF</th>
+            <th>FIDO U2F</th>
+            <th>FIDO2</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>認証要素</td>
+            <td>知識のみ</td>
+            <td>知識＋所持</td>
+            <td class="cmp-good">所持＋生体</td>
+            <td class="cmp-good">知識＋所持</td>
+            <td class="cmp-good">所持＋生体 or PIN</td>
+          </tr>
+          <tr>
+            <td>フィッシング耐性</td>
+            <td class="cmp-bad">なし</td>
+            <td class="cmp-mid">低（OTPは転送可能）</td>
+            <td class="cmp-good">高（Origin紐付け）</td>
+            <td class="cmp-good">高（Origin紐付け）</td>
+            <td class="cmp-good">高（Origin紐付け）</td>
+          </tr>
+          <tr>
+            <td>リプレイ攻撃耐性</td>
+            <td class="cmp-bad">なし</td>
+            <td class="cmp-mid">有効期間内は危険</td>
+            <td class="cmp-good">あり（チャレンジ）</td>
+            <td class="cmp-good">あり（チャレンジ）</td>
+            <td class="cmp-good">あり（チャレンジ）</td>
+          </tr>
+          <tr>
+            <td>サーバへの秘密情報送信</td>
+            <td>パスワード送信</td>
+            <td>OTPコード送信</td>
+            <td class="cmp-good">なし（署名のみ）</td>
+            <td class="cmp-good">なし（署名のみ）</td>
+            <td class="cmp-good">なし（署名のみ）</td>
+          </tr>
+          <tr>
+            <td>サーバ漏洩時の影響</td>
+            <td class="cmp-bad">パスワード流出</td>
+            <td class="cmp-mid">シード流出のリスク</td>
+            <td class="cmp-good">公開鍵のみ（影響小）</td>
+            <td class="cmp-good">公開鍵のみ（影響小）</td>
+            <td class="cmp-good">公開鍵のみ（影響小）</td>
+          </tr>
+          <tr>
+            <td>パスワード不要</td>
+            <td>—</td>
+            <td class="cmp-bad">パスワード必要</td>
+            <td class="cmp-good">不要</td>
+            <td class="cmp-bad">パスワード必要</td>
+            <td class="cmp-good">不要（または任意）</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>signCount の動作比較</h3>
+      <table class="cmp-table">
+        <thead>
+          <tr>
+            <th>状況</th>
+            <th>signCount の値</th>
+            <th>サーバの判断</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>正常な認証</td>
+            <td style="text-align:center;color:#155f44;font-weight:600;">保存値 + 1 以上</td>
+            <td><span class="cmp-good">認証成功・保存値を更新</span></td>
+          </tr>
+          <tr>
+            <td>signCount = 0</td>
+            <td style="text-align:center;">0（一部認証器はカウンタ非対応）</td>
+            <td><span class="cmp-mid">認証成功（警告なし）</span></td>
+          </tr>
+          <tr>
+            <td>signCount ≤ 保存値</td>
+            <td style="text-align:center;color:#7a1818;font-weight:600;">保存値以下</td>
+            <td><span class="cmp-bad">認証失敗：クローン or リプレイ攻撃の疑い</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ── 10 練習問題 ── -->
+    <section class="section" id="s10">
+      <div class="section-header">
+        <span class="s-num gold-bg">10</span>
+        <h2>過去問スタイル 練習問題</h2>
+      </div>
+      <p>情報処理安全確保支援士試験の出題傾向に沿った練習問題です。選択肢をクリックすると正誤と解説が表示されます。</p>
+
+      <div class="quiz-wrap">
+
+        <div class="quiz" id="q1">
+          <div class="quiz-q">
+            <span class="quiz-qn">Q1</span>
+            <span>FIDO UAFに関する説明として、最も適切なものはどれか。</span>
+          </div>
+          <div class="quiz-opts">
+            <button class="quiz-opt" onclick="answer('q1','a','b')">ア. パスワードに追加する第2要素認証のプロトコルであり、セキュリティキーを用いてボタン押下で認証する。</button>
+            <button class="quiz-opt" onclick="answer('q1','b','b')">イ. パスワードを不要にするプロトコルであり、デバイス上の生体認証やPINを通じて公開鍵暗号で認証する。</button>
+            <button class="quiz-opt" onclick="answer('q1','c','b')">ウ. W3Cが標準化したブラウザAPIであり、ブラウザと認証器の通信プロトコルを規定する。</button>
+            <button class="quiz-opt" onclick="answer('q1','d','b')">エ. 時刻ベースのワンタイムパスワード（TOTP）を生成する認証器の規格である。</button>
+          </div>
+          <div class="quiz-exp" id="q1-exp">
+            <strong>正解：イ</strong><br>
+            UAF（Universal Authentication Framework）はパスワードを<strong>完全に排除</strong>するプロトコルです。生体認証（指紋・顔認証）やPINをデバイス上で実施し、その結果を公開鍵署名でサーバに証明します。<br>
+            ア：これはU2Fの説明です。<br>
+            ウ：これはWebAuthn（FIDO2の構成要素）の説明です。<br>
+            エ：TOTPはFIDOとは無関係のOTP規格（RFC 6238）です。
+          </div>
+        </div>
+
+        <div class="quiz" id="q2">
+          <div class="quiz-q">
+            <span class="quiz-qn">Q2</span>
+            <span>FIDO2認証においてリプレイ攻撃を防止する主な仕組みとして、最も適切なものはどれか。</span>
+          </div>
+          <div class="quiz-opts">
+            <button class="quiz-opt" onclick="answer('q2','a','c')">ア. 認証のたびに新しい公開鍵・秘密鍵ペアを生成し、署名値が毎回変わるようにする。</button>
+            <button class="quiz-opt" onclick="answer('q2','b','c')">イ. RPサーバが認証時にPINを暗号化して送信するため、傍受されても解読できない。</button>
+            <button class="quiz-opt" onclick="answer('q2','c','c')">ウ. RPサーバが毎回異なるチャレンジ（乱数）を発行し、認証器がそのチャレンジに秘密鍵で署名して返すため、傍受した署名値を再送しても無効である。</button>
+            <button class="quiz-opt" onclick="answer('q2','d','c')">エ. 認証要求に送信元IPアドレスを含め、前回認証時と異なる場合は認証を拒否する。</button>
+          </div>
+          <div class="quiz-exp" id="q2-exp">
+            <strong>正解：ウ</strong><br>
+            FIDO2はチャレンジ&レスポンス方式を採用しています。サーバが毎回異なる<strong>チャレンジ（乱数）</strong>を生成し、認証器がそれに秘密鍵で署名します。署名はチャレンジに紐付くため、過去の署名を再送しても別のチャレンジには対応できません（リプレイ攻撃不可）。さらに<code>signCount</code>の増加チェックで認証器クローンも検知できます。<br>
+            ア：鍵ペアは登録時に1回生成し、認証のたびに変えるものではありません。<br>
+            エ：IPアドレスはFIDOの仕組みではなく、モバイル環境では毎回変化するため実用的でもありません。
+          </div>
+        </div>
+
+        <div class="quiz" id="q3">
+          <div class="quiz-q">
+            <span class="quiz-qn">Q3</span>
+            <span>FIDO2がフィッシング攻撃に対して高い耐性を持つ根本的な理由として、最も適切なものはどれか。</span>
+          </div>
+          <div class="quiz-opts">
+            <button class="quiz-opt" onclick="answer('q3','a','b')">ア. 認証情報をサーバ側で強力な暗号で保管しているため、フィッシングサイトが盗んでも解読できない。</button>
+            <button class="quiz-opt" onclick="answer('q3','b','b')">イ. 認証器が鍵ペアを登録時のOrigin（ドメイン）と紐付けて生成するため、偽サイトには対応する秘密鍵が存在せず認証が成立しない。</button>
+            <button class="quiz-opt" onclick="answer('q3','c','b')">ウ. 認証時にSMSでワンタイムパスワードを送信する仕組みを採用しているため、偽サイトが途中で傍受できない。</button>
+            <button class="quiz-opt" onclick="answer('q3','d','b')">エ. 認証器がSSL証明書の有効性を確認するため、EV証明書を持たない偽サイトでは認証が開始されない。</button>
+          </div>
+          <div class="quiz-exp" id="q3-exp">
+            <strong>正解：イ</strong><br>
+            FIDOのフィッシング耐性の核心は<strong>「鍵ペアがRP ID（Originのドメイン）に紐付いている」</strong>ことです。例えば <code>https://bank.com</code> に登録した鍵は <code>https://evil-bank.com</code> では使用できません。認証器がOriginを検証し、登録時のドメインと一致しない場合は署名処理を実行しないためです。<br>
+            ア：FIDOはサーバに秘密鍵を送らないため、この観点は異なります。<br>
+            ウ：SMSによるOTPはFIDOとは無関係です。<br>
+            エ：SSL証明書の種類による制限はFIDOの仕組みではありません。
+          </div>
+        </div>
+
+        <div class="quiz" id="q4">
+          <div class="quiz-q">
+            <span class="quiz-qn">Q4</span>
+            <span>FIDO2の構成要素に関する記述のうち、<strong>誤っているもの</strong>はどれか。</span>
+          </div>
+          <div class="quiz-opts">
+            <button class="quiz-opt" onclick="answer('q4','a','d')">ア. WebAuthnはW3Cが標準化したAPIであり、ブラウザとRPサーバ間のインタフェースを規定する。</button>
+            <button class="quiz-opt" onclick="answer('q4','b','d')">イ. CTAP2（Client to Authenticator Protocol 2）はブラウザと外部認証器（セキュリティキー等）間の通信プロトコルである。</button>
+            <button class="quiz-opt" onclick="answer('q4','c','d')">ウ. Relying Party（RP）とは認証を要求するWebサービスのことであり、登録時に公開鍵を受け取って保管する。</button>
+            <button class="quiz-opt" onclick="answer('q4','d','d')">エ. 認証器はすべてのRPに対して同一の鍵ペアを使用することで、認証の一貫性とユーザーの利便性を確保する。</button>
+          </div>
+          <div class="quiz-exp" id="q4-exp">
+            <strong>正解（誤り）：エ</strong><br>
+            FIDOの重要な設計原則として、認証器は<strong>RPごとに異なる鍵ペアを生成</strong>します。同一の鍵を複数サービスで使うと、各サービスがユーザーを横断的に追跡（名寄せ）できてしまいプライバシーの問題が生じます。RP別に独立した鍵ペアを持つことがFIDO設計上の必須要件です。<br>
+            ア：正しい。WebAuthnはW3C標準でブラウザのJavaScript APIとして組み込まれています。<br>
+            イ：正しい。CTAPはブラウザと外部認証器の通信規格です。<br>
+            ウ：正しい。RPサーバは登録時に公開鍵とCredential IDを保管します。
+          </div>
+        </div>
+
+        <div class="quiz" id="q5">
+          <div class="quiz-q">
+            <span class="quiz-qn">Q5</span>
+            <span>FIDO2認証において、受信した signCount の値がRPサーバに保存されている値以下であった場合、RPサーバが取るべき対応として最も適切なものはどれか。</span>
+          </div>
+          <div class="quiz-opts">
+            <button class="quiz-opt" onclick="answer('q5','a','c')">ア. ネットワーク遅延による値の逆転が原因の可能性が高いため、再認証を促して正常に続行する。</button>
+            <button class="quiz-opt" onclick="answer('q5','b','c')">イ. 認証器のバッテリー切れによるカウンタリセットが原因の可能性があるため、ユーザーに認証器の再登録を促した上で認証を許可する。</button>
+            <button class="quiz-opt" onclick="answer('q5','c','c')">ウ. 認証器がクローン（複製）された可能性またはリプレイ攻撃の可能性があるため、認証を拒否しセキュリティインシデントとして対応する。</button>
+            <button class="quiz-opt" onclick="answer('q5','d','c')">エ. カウンタのオーバーフローが原因の可能性があるため、保存値をリセットしてそのまま認証を許可する。</button>
+          </div>
+          <div class="quiz-exp" id="q5-exp">
+            <strong>正解：ウ</strong><br>
+            signCountは認証のたびに<strong>単調増加</strong>する設計です。受信値がサーバ保存値以下であれば以下のシナリオが考えられます：<br>
+            1. <strong>リプレイ攻撃</strong>：以前傍受した認証レスポンスを再送している<br>
+            2. <strong>認証器のクローン</strong>：秘密鍵がコピーされた偽の認証器が存在し、古い状態から使い始めた<br><br>
+            WebAuthn仕様書（W3C）では、この場合は<strong>認証を失敗</strong>させ、インシデントとして扱うことが求められています。ネットワーク遅延やバッテリー切れはカウンターの逆転を引き起こしません。
+          </div>
+        </div>
+
+        <div class="quiz" id="q6">
+          <div class="quiz-q">
+            <span class="quiz-qn">Q6</span>
+            <span>FIDO2認証とTOTP（Time-based One-Time Password）の違いについて、最も適切な説明はどれか。</span>
+          </div>
+          <div class="quiz-opts">
+            <button class="quiz-opt" onclick="answer('q6','a','c')">ア. TOTPはサーバに秘密情報を保存しないが、FIDO2はサーバに公開鍵を保存する点で、FIDO2の方がサーバ侵害時のリスクが高い。</button>
+            <button class="quiz-opt" onclick="answer('q6','b','c')">イ. FIDO2はOTPコードをネットワーク経由で送信するが、TOTPは送信しないためフィッシング耐性はTOTPの方が高い。</button>
+            <button class="quiz-opt" onclick="answer('q6','c','c')">ウ. TOTPのOTPコードはフィッシングサイトに入力してしまうと悪用可能であるが、FIDO2はOriginに紐付いた鍵ペアを用いるため偽サイトでは認証が成立しない。</button>
+            <button class="quiz-opt" onclick="answer('q6','d','c')">エ. FIDO2はサーバ側でのみ処理が完結するため、クライアント側の認証器は不要である。</button>
+          </div>
+          <div class="quiz-exp" id="q6-exp">
+            <strong>正解：ウ</strong><br>
+            TOTPはリアルタイムフィッシング（本物サイトへ転送する中間者サイト）への耐性がありません。攻撃者が偽サイトでOTPコードを取得し即座に本物サイトへ転送すれば認証を突破できます。<br>
+            一方FIDO2は鍵ペアがOrigin（ドメイン）に紐付いているため、偽サイトのドメインに対応する秘密鍵が存在せず、そもそも署名が成立しません。<br>
+            ア：誤り。サーバに秘密鍵を送らないFIDO2の方がサーバ侵害時のリスクは低い（公開鍵のみ）。<br>
+            イ：逆です。TOTPのコードこそネットワーク経由で送信されます。
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── 11 用語 ── -->
+    <section class="section" id="s11">
+      <div class="section-header">
+        <span class="s-num">11</span>
+        <h2>重要用語まとめ</h2>
+      </div>
+
+      <h3>試験頻出キーワード</h3>
+      <table class="term-table">
+        <tr><td>FIDO</td><td>Fast IDentity Online。パスワードに依存しない認証標準を策定するFIDOアライアンスの規格群の総称。</td></tr>
+        <tr><td>UAF</td><td>Universal Authentication Framework。パスワードレス認証プロトコル。生体認証のみで完結する第一世代FIDO規格（2014年）。</td></tr>
+        <tr><td>U2F</td><td>Universal Second Factor。パスワードに第2要素を追加するプロトコル。セキュリティキー（USB/NFC）による認証（2014年）。</td></tr>
+        <tr><td>FIDO2</td><td>WebAuthn + CTAP2で構成される現行世代のFIDO規格。UAF・U2F双方の機能を統合（2018年〜）。</td></tr>
+        <tr><td>WebAuthn</td><td>W3Cが標準化したFIDO2のブラウザAPI仕様。全主要ブラウザに組み込み済み。<code>navigator.credentials</code> APIで利用。</td></tr>
+        <tr><td>CTAP2</td><td>Client to Authenticator Protocol 2。ブラウザ（クライアント）と外部認証器（セキュリティキー等）間の通信プロトコル。</td></tr>
+        <tr><td>Authenticator（認証器）</td><td>鍵の生成・保管・署名を行う装置。プラットフォーム型（デバイス内蔵）とローミング型（セキュリティキー等）がある。</td></tr>
+        <tr><td>Relying Party（RP）</td><td>認証を要求するWebサービス。公開鍵を保管し、署名を検証する。RP IDはOrigin（ドメイン）に相当。</td></tr>
+        <tr><td>Credential ID</td><td>認証器が生成した鍵ペアの識別子。サーバに保存され、認証時に認証器へ提示される。</td></tr>
+        <tr><td>challenge（チャレンジ）</td><td>毎回異なるサーバ生成の乱数（ノンス）。リプレイ攻撃防止のため認証ごとに新規生成する。</td></tr>
+        <tr><td>User Verification（UV）</td><td>ユーザーの本人確認。生体認証またはPINによる確認。UAFでは必須、U2Fでは任意。</td></tr>
+        <tr><td>User Presence（UP）</td><td>ユーザーがその場にいることの確認。U2Fでのボタン押下がこれに相当。</td></tr>
+        <tr><td>signCount</td><td>署名カウンター。認証のたびに増加する単調増加値。サーバ保存値以下であればクローンまたはリプレイを検知。</td></tr>
+        <tr><td>Attestation</td><td>認証器の正当性証明。認証器メーカーの証明書で署名された情報。登録時にサーバへ提出・検証される。</td></tr>
+        <tr><td>TEE / SE / TPM</td><td>Trusted Execution Environment / Secure Element / Trusted Platform Module。秘密鍵を安全に保管するハードウェアセキュアエリア。</td></tr>
+        <tr><td>Origin</td><td>スキーム・ホスト・ポートの組み合わせ（例：https://example.com）。FIDO2はOriginと鍵ペアを紐付けてフィッシングを防ぐ。</td></tr>
+        <tr><td>Passkeys（パスキー）</td><td>FIDO2の発展形。Credential IDと秘密鍵をクラウド同期可能にしたもの。Apple・Google・Microsoftが実装。</td></tr>
+        <tr><td>AppID（UAF/U2F）</td><td>UAF/U2Fでのサービス識別子。FIDO2ではRP IDに相当。</td></tr>
+      </table>
+
+      <div class="keypoint" style="margin-top:28px">
+        <p class="kp-label">試験対策 5つの鉄則</p>
+        <p>
+          1. <strong>秘密鍵はデバイス外に出ない</strong> — 署名処理はTEE/SE内で完結し、ネットワーク越しに送信されない<br>
+          2. <strong>UAF＝パスワードレス、U2F＝第2要素追加</strong> — FIDO2はその両方を統合した現行規格<br>
+          3. <strong>フィッシング耐性の理由はOrigin紐付け</strong> — 偽サイトのドメインには対応する秘密鍵がない<br>
+          4. <strong>リプレイ防止はチャレンジ（乱数）＋signCount</strong> — 毎回異なるチャレンジ＋単調増加カウンター<br>
+          5. <strong>signCount逆転は即座に認証拒否</strong> — クローン認証器またはリプレイ攻撃のインシデントとして扱う
+        </p>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  <p>FIDO認証 技術解説書 Ver.1 — 情報処理安全確保支援士試験 対応版</p>
+  <p>シラバス Ver.2.1 | 3-8 アカウント管理及びアクセス管理 / 3-1 暗号利用及び鍵管理 / 2-4 セキュリティ機能の設計・実装</p>
+</footer>
+
+<script>
+  function setActive(el) {
+    document.querySelectorAll('.sidebar nav a').forEach(a => a.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  function answer(qid, selected, correct) {
+    const quiz = document.getElementById(qid);
+    const opts = quiz.querySelectorAll('.quiz-opt');
+    const exp = document.getElementById(qid + '-exp');
+    const letters = ['a','b','c','d'];
+    opts.forEach((btn, i) => {
+      btn.disabled = true;
+      const letter = letters[i];
+      if (letter === correct) {
+        btn.classList.add('correct');
+      } else if (letter === selected) {
+        btn.classList.add('wrong');
+      } else {
+        btn.classList.add('reveal');
+      }
+    });
+    exp.classList.add('show');
+    exp.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  const sections = document.querySelectorAll('section.section');
+  const navLinks = document.querySelectorAll('.sidebar nav a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(sec => {
+      if (window.scrollY >= sec.offsetTop - 80) current = sec.id;
+    });
+    navLinks.forEach(link => {
+      link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+    });
+  }, { passive: true });
+</script>
+</body>
+</html>

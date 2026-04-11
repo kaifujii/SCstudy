@@ -1,0 +1,2444 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AZ-305 | データ転送・移行ツール完全ガイド</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;600&family=Outfit:wght@700;900&display=swap');
+
+/* ── DESIGN TOKENS ── */
+:root {
+  --bg:#04080F; --bg2:#070D1A; --bg3:#0A1220;
+  --s1:#0E1828; --s2:#142030; --s3:#1A2838;
+  --bd:rgba(255,255,255,0.06); --bd2:rgba(0,120,212,0.2);
+  --t1:#F0F6FF; --t2:#8AAEC8; --t3:#4A7090; --t4:#243850;
+  --az:#0078D4; --aq:#00B4D8; --gn:#00B386; --or:#E05C14; --pu:#8A3FC0; --ye:#E8A000; --rd:#C8303C;
+  --ok:#00C878; --wn:#F0A800; --er:#F03C3C;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'Noto Sans JP',sans-serif;
+  background:var(--bg);
+  color:var(--t1);
+  line-height:1.8;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* Subtle grid overlay */
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.015) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.015) 1px,transparent 1px);
+  background-size:48px 48px;
+  pointer-events:none;z-index:0;
+}
+body::after{
+  content:'';position:fixed;inset:0;
+  background:
+    radial-gradient(ellipse 1000px 600px at 10% 0%,rgba(0,120,212,.06) 0%,transparent 70%),
+    radial-gradient(ellipse 700px 900px at 90% 100%,rgba(138,63,192,.04) 0%,transparent 70%);
+  pointer-events:none;z-index:0;
+}
+
+/* ── HEADER ── */
+.hdr{
+  position:sticky;top:0;z-index:200;
+  background:rgba(4,8,15,.95);
+  border-bottom:1px solid var(--bd);
+  backdrop-filter:blur(24px);
+}
+.hdr-inner{
+  max-width:1480px;margin:0 auto;
+  padding:0 32px;
+  display:flex;align-items:stretch;justify-content:space-between;
+  gap:24px;min-height:58px;
+}
+.brand{display:flex;align-items:center;gap:14px;}
+.brand-mark{
+  width:34px;height:34px;flex-shrink:0;
+  /* MS Windows 11 grid icon style */
+}
+.brand-text .n1{
+  font-family:'Outfit',sans-serif;font-size:14px;font-weight:900;
+  color:#fff;letter-spacing:-.2px;
+}
+.brand-text .n2{font-size:10px;color:var(--t3);margin-top:1px;}
+.hdr-right{display:flex;align-items:center;gap:8px;}
+.badge{
+  padding:3px 12px;border-radius:4px;
+  font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;
+  background:rgba(0,120,212,.15);border:1px solid rgba(0,120,212,.35);color:#50D4FF;
+}
+
+/* ── TABS ── */
+.tabs{
+  background:var(--bg2);
+  border-bottom:1px solid var(--bd);
+}
+.tabs-inner{
+  max-width:1480px;margin:0 auto;
+  padding:0 32px;
+  display:flex;overflow-x:auto;
+  scrollbar-width:none;
+}
+.tabs-inner::-webkit-scrollbar{display:none;}
+.tab{
+  display:flex;align-items:center;gap:9px;
+  padding:0 18px;height:46px;
+  font-size:12px;font-weight:500;color:var(--t3);
+  cursor:pointer;border:none;background:none;
+  border-bottom:2px solid transparent;
+  white-space:nowrap;transition:all .18s;
+  font-family:'Noto Sans JP',sans-serif;
+  flex-shrink:0;
+}
+.tab:hover{color:var(--t1);background:rgba(255,255,255,.03);}
+.tab.on{color:#fff;border-bottom-color:var(--az);background:rgba(0,120,212,.07);}
+.tab-icon{width:20px;height:20px;flex-shrink:0;}
+
+/* ── PAGES ── */
+.pg{display:none;max-width:1480px;margin:0 auto;padding:40px 32px 120px;position:relative;z-index:1;}
+.pg.on{display:block;}
+
+/* ── HERO ── */
+.hero{
+  border-radius:16px;padding:48px 52px;
+  margin-bottom:48px;position:relative;overflow:hidden;
+  border:1px solid rgba(255,255,255,.06);
+}
+.hero::after{
+  content:'';position:absolute;top:0;right:0;bottom:0;width:40%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.02));
+  pointer-events:none;
+}
+.hero-content{position:relative;z-index:1;}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:4px 14px;border-radius:4px;margin-bottom:18px;
+  font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+}
+.hero h1{
+  font-family:'Outfit',sans-serif;
+  font-size:clamp(26px,3vw,42px);font-weight:900;
+  line-height:1.12;margin-bottom:16px;
+}
+.hero-sub{
+  font-size:14.5px;color:var(--t2);
+  max-width:680px;line-height:1.85;margin-bottom:24px;
+}
+.chips{display:flex;flex-wrap:wrap;gap:8px;}
+.chip{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:5px 14px;border-radius:4px;
+  font-size:11.5px;font-weight:600;
+}
+
+/* Per-service hero themes */
+.h-blue{background:linear-gradient(135deg,rgba(0,120,212,.12),rgba(0,120,212,.04));border-color:rgba(0,120,212,.3);}
+.h-blue .eyebrow{background:rgba(0,120,212,.2);border:1px solid rgba(0,120,212,.45);color:#50D4FF;}
+.h-blue h1{background:linear-gradient(135deg,#fff 0%,#90D0FF 60%,#0096E8 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.h-teal{background:linear-gradient(135deg,rgba(0,180,216,.1),rgba(0,180,216,.03));border-color:rgba(0,180,216,.3);}
+.h-teal .eyebrow{background:rgba(0,180,216,.2);border:1px solid rgba(0,180,216,.45);color:#00D4FF;}
+.h-teal h1{background:linear-gradient(135deg,#fff,#60E8FF,#00B4D8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.h-green{background:linear-gradient(135deg,rgba(0,179,134,.1),rgba(0,179,134,.03));border-color:rgba(0,179,134,.3);}
+.h-green .eyebrow{background:rgba(0,179,134,.2);border:1px solid rgba(0,179,134,.45);color:#00D8A4;}
+.h-green h1{background:linear-gradient(135deg,#fff,#60F0C0,#00B386);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.h-purple{background:linear-gradient(135deg,rgba(138,63,192,.1),rgba(138,63,192,.03));border-color:rgba(138,63,192,.3);}
+.h-purple .eyebrow{background:rgba(138,63,192,.2);border:1px solid rgba(138,63,192,.45);color:#C890F0;}
+.h-purple h1{background:linear-gradient(135deg,#fff,#D0A0FF,#8A3FC0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.h-orange{background:linear-gradient(135deg,rgba(224,92,20,.1),rgba(224,92,20,.03));border-color:rgba(224,92,20,.3);}
+.h-orange .eyebrow{background:rgba(224,92,20,.2);border:1px solid rgba(224,92,20,.45);color:#F07840;}
+.h-orange h1{background:linear-gradient(135deg,#fff,#F09060,#E05C14);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.h-yellow{background:linear-gradient(135deg,rgba(232,160,0,.08),rgba(232,160,0,.02));border-color:rgba(232,160,0,.3);}
+.h-yellow .eyebrow{background:rgba(232,160,0,.18);border:1px solid rgba(232,160,0,.45);color:#F0C840;}
+.h-yellow h1{background:linear-gradient(135deg,#fff,#F0D060,#E8A000);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+
+/* ── SECTION HEADS ── */
+.sh{margin:36px 0 6px;}
+.sh h2{
+  font-family:'Outfit',sans-serif;font-size:18px;font-weight:900;
+  display:flex;align-items:center;gap:10px;
+  color:var(--t1);
+}
+.sh h2 .n{color:#50D4FF;font-size:14px;}
+.sh-line{height:1px;background:linear-gradient(90deg,rgba(0,120,212,.5),transparent);margin:8px 0 4px;}
+.sh-sub{font-size:13px;color:var(--t3);margin-bottom:22px;line-height:1.7;}
+
+/* ── CARDS ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:24px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:24px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
+.card{
+  border-radius:12px;padding:22px;
+  border:1px solid var(--bd);background:var(--bg3);
+  transition:transform .18s,border-color .18s;
+}
+.card:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.1);}
+.card.c-b{background:rgba(0,120,212,.07);border-color:rgba(0,120,212,.25);}
+.card.c-t{background:rgba(0,180,216,.07);border-color:rgba(0,180,216,.25);}
+.card.c-g{background:rgba(0,179,134,.07);border-color:rgba(0,179,134,.25);}
+.card.c-p{background:rgba(138,63,192,.07);border-color:rgba(138,63,192,.25);}
+.card.c-o{background:rgba(224,92,20,.07);border-color:rgba(224,92,20,.25);}
+.card.c-y{background:rgba(232,160,0,.06);border-color:rgba(232,160,0,.25);}
+.card-hd{display:flex;align-items:flex-start;gap:14px;margin-bottom:12px;}
+.card-icon{width:42px;height:42px;flex-shrink:0;border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.card h3{font-size:14.5px;font-weight:700;line-height:1.3;margin-top:2px;}
+.card.c-b h3{color:#50D4FF;}
+.card.c-t h3{color:#00D4FF;}
+.card.c-g h3{color:#00D8A4;}
+.card.c-p h3{color:#C890F0;}
+.card.c-o h3{color:#F07840;}
+.card.c-y h3{color:#F0C840;}
+.card p{font-size:13px;color:var(--t2);line-height:1.8;}
+.card ul{font-size:12.5px;color:var(--t2);padding-left:16px;line-height:1.85;}
+.card li{margin-bottom:2px;}
+
+/* ── TAGS ── */
+.tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:12px;}
+.tag{padding:2px 9px;border-radius:3px;font-size:10.5px;font-weight:700;}
+.tb{background:rgba(0,120,212,.2);color:#50D4FF;}
+.tt{background:rgba(0,180,216,.2);color:#00D4FF;}
+.tg{background:rgba(0,179,134,.2);color:#00D8A4;}
+.tp{background:rgba(138,63,192,.2);color:#C890F0;}
+.to{background:rgba(224,92,20,.2);color:#F07840;}
+.ty{background:rgba(232,160,0,.15);color:#F0C840;}
+.tr{background:rgba(200,48,60,.2);color:#F07070;}
+
+/* ── INFO BOXES ── */
+.ib{
+  display:flex;gap:14px;
+  border-radius:10px;padding:15px 18px;
+  margin-bottom:16px;font-size:13px;line-height:1.8;
+}
+.ib-ico{font-size:18px;flex-shrink:0;margin-top:2px;}
+.ib strong{display:block;font-size:13.5px;font-weight:700;margin-bottom:4px;}
+.ib.tip{background:rgba(0,120,212,.07);border:1px solid rgba(0,120,212,.25);}
+.ib.warn{background:rgba(240,168,0,.07);border:1px solid rgba(240,168,0,.3);}
+.ib.danger{background:rgba(240,60,60,.07);border:1px solid rgba(240,60,60,.3);}
+.ib.ok{background:rgba(0,200,120,.07);border:1px solid rgba(0,200,120,.25);}
+
+/* ── DIAGRAM ── */
+.dw{
+  background:var(--bg2);border:1px solid var(--bd);
+  border-radius:14px;padding:28px 24px 22px;
+  margin-bottom:26px;overflow:hidden;
+}
+.dw-hd{
+  font-size:10.5px;font-weight:700;letter-spacing:2px;
+  text-transform:uppercase;color:var(--t4);
+  margin-bottom:18px;display:flex;align-items:center;gap:8px;
+}
+.dw-hd::after{content:'';flex:1;height:1px;background:var(--bd);}
+svg.d{width:100%;height:auto;display:block;}
+
+/* ── TABLES ── */
+.tw{overflow-x:auto;border-radius:12px;border:1px solid var(--bd);margin-bottom:24px;}
+table{width:100%;border-collapse:collapse;font-size:12.5px;}
+thead tr{background:var(--s2);}
+th{
+  padding:11px 15px;text-align:left;
+  font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;
+}
+.thg{color:var(--t3);} .thb{color:#50D4FF;} .thp{color:#C890F0;}
+.tht{color:#00D4FF;} .thgn{color:#00D8A4;} .tho{color:#F07840;}
+td{padding:11px 15px;border-top:1px solid rgba(255,255,255,.04);vertical-align:top;line-height:1.7;}
+td:first-child{color:var(--t2);font-weight:600;white-space:nowrap;}
+tr:hover td{background:rgba(255,255,255,.012);}
+.ok{color:var(--ok);} .wn{color:var(--wn);} .er{color:var(--er);}
+.cb{color:#50D4FF;} .ct{color:#00D4FF;} .cg{color:#00D8A4;}
+.cp{color:#C890F0;} .co{color:#F07840;} .cy{color:#F0C840;}
+td code{
+  font-family:'JetBrains Mono',monospace;font-size:11px;
+  color:#9DC8F8;background:rgba(0,0,0,.3);padding:1px 5px;border-radius:3px;
+}
+
+/* ── CODE ── */
+.code{
+  background:rgba(0,0,0,.6);border:1px solid var(--bd);
+  border-radius:10px;padding:15px 18px;
+  font-family:'JetBrains Mono',monospace;font-size:11.5px;
+  color:#9DC8F8;overflow-x:auto;margin-bottom:16px;line-height:1.8;
+}
+.kw{color:#569CD6;}.str{color:#CE9178;}.cm{color:#6A9955;}.val{color:#B5CEA8;}.flag{color:#FFD700;}
+
+/* ── FLOW STEPS ── */
+.steps{display:flex;flex-direction:column;margin-bottom:24px;}
+.step{display:flex;gap:16px;padding:13px 0;border-bottom:1px solid rgba(255,255,255,.04);}
+.step:last-child{border-bottom:none;}
+.sn{
+  width:28px;height:28px;border-radius:50%;flex-shrink:0;margin-top:3px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:800;
+}
+.sn.b{background:rgba(0,120,212,.15);border:1.5px solid rgba(0,120,212,.4);color:#50D4FF;}
+.sn.g{background:rgba(0,179,134,.15);border:1.5px solid rgba(0,179,134,.4);color:#00D8A4;}
+.sn.p{background:rgba(138,63,192,.15);border:1.5px solid rgba(138,63,192,.4);color:#C890F0;}
+.sc h5{font-size:13.5px;font-weight:700;margin-bottom:3px;}
+.sc p{font-size:12.5px;color:var(--t2);line-height:1.8;}
+
+/* ── EXAM CARDS ── */
+.ec{
+  background:rgba(240,168,0,.06);border:1px solid rgba(240,168,0,.28);
+  border-radius:12px;padding:20px 24px;margin-bottom:16px;
+}
+.ec-lbl{
+  display:inline-flex;align-items:center;gap:5px;
+  background:rgba(240,168,0,.15);border:1px solid rgba(240,168,0,.35);
+  border-radius:3px;padding:2px 10px;
+  font-size:9.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--wn);margin-bottom:10px;
+}
+.ec h4{font-size:14.5px;font-weight:700;margin-bottom:8px;}
+.ec p{font-size:13px;color:var(--t2);line-height:1.8;}
+.ec .ans{
+  background:rgba(0,200,120,.07);border:1px solid rgba(0,200,120,.25);
+  border-radius:6px;padding:10px 14px;margin-top:10px;
+  font-size:12.5px;color:#40D898;font-weight:600;line-height:1.7;
+}
+.ec .no{
+  background:rgba(240,60,60,.06);border:1px solid rgba(240,60,60,.25);
+  border-radius:6px;padding:10px 14px;margin-top:8px;
+  font-size:12.5px;color:#F07878;line-height:1.7;
+}
+
+/* ── QUIZ ── */
+.qz{background:var(--bg3);border:1px solid var(--bd);border-radius:12px;padding:22px;margin-bottom:18px;}
+.qz-hd{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.qz-n{
+  width:28px;height:28px;border-radius:50%;flex-shrink:0;
+  background:rgba(0,120,212,.18);border:1.5px solid rgba(0,120,212,.4);
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:800;color:#50D4FF;
+}
+.qz h4{font-size:14px;font-weight:700;color:#50D4FF;}
+.qz .q{font-size:13px;color:var(--t1);line-height:1.8;margin-bottom:12px;}
+.choices{list-style:none;padding:0;}
+.choices li{
+  padding:8px 13px;border-radius:7px;margin-bottom:5px;
+  font-size:12.5px;color:var(--t2);
+  background:var(--s1);border:1px solid var(--bd);
+  cursor:pointer;transition:all .15s;
+}
+.choices li:hover{background:var(--s2);color:var(--t1);}
+.choices li.ok{background:rgba(0,200,120,.08);border-color:rgba(0,200,120,.35);color:#40D898;}
+.choices li.er{background:rgba(240,60,60,.07);border-color:rgba(240,60,60,.28);color:#F07878;}
+.exp{
+  background:var(--s2);border-left:2px solid var(--az);
+  border-radius:0 8px 8px 0;padding:13px 16px;
+  font-size:12.5px;color:var(--t2);margin-top:12px;
+  display:none;line-height:1.85;
+}
+.exp.show{display:block;}
+.exp-btn{
+  display:inline-flex;align-items:center;gap:5px;
+  margin-top:10px;padding:5px 13px;border-radius:5px;
+  background:rgba(0,120,212,.14);border:1px solid rgba(0,120,212,.3);
+  color:#50D4FF;font-size:11.5px;font-weight:600;
+  cursor:pointer;font-family:'Noto Sans JP',sans-serif;
+}
+
+/* ── OVERVIEW GRID ── */
+.ov{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:28px;}
+.ov-card{
+  background:var(--s1);border:1px solid var(--bd);
+  border-radius:12px;padding:20px;
+  cursor:pointer;transition:all .18s;
+}
+.ov-card:hover{background:var(--s2);transform:translateY(-2px);}
+.ov-icon{margin-bottom:12px;}
+.ov-name{font-family:'Outfit',sans-serif;font-size:13.5px;font-weight:900;margin-bottom:6px;}
+.ov-desc{font-size:11.5px;color:var(--t3);line-height:1.6;}
+.ov-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:10px;}
+
+@media(max-width:960px){
+  .g2,.g3,.g4,.ov{grid-template-columns:1fr;}
+  .pg{padding:24px 18px 80px;}
+  .tabs-inner{padding:0 18px;}
+  .hdr-inner{padding:0 18px;}
+  .hero{padding:28px 22px;}
+}
+</style>
+</head>
+<body>
+<!-- ─────────────────────────────── ICON DEFS ─────────────────────────────── -->
+<!-- MS公式Azureアイコン SVGインライン定義（非表示） -->
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Storage Account (MS official style) -->
+    <symbol id="ico-storage" viewBox="0 0 18 18">
+      <rect x="1" y="4" width="16" height="11" rx="1.5" fill="#0078D4"/>
+      <rect x="1" y="4" width="16" height="4" rx="1.5" fill="#50E6FF"/>
+      <rect x="1" y="4" width="16" height="4" rx="0" fill="#50E6FF" y="5.5"/>
+      <rect x="3" y="10" width="12" height="1.5" rx=".75" fill="rgba(255,255,255,.5)"/>
+      <rect x="3" y="12.5" width="8" height="1.5" rx=".75" fill="rgba(255,255,255,.4)"/>
+      <rect x="1" y="4" width="16" height="3.5" rx="1.5" fill="#50E6FF"/>
+    </symbol>
+
+    <!-- AzCopy (Storage + bidirectional arrows) -->
+    <symbol id="ico-azcopy" viewBox="0 0 18 18">
+      <rect x="1" y="3" width="7" height="6" rx="1" fill="#0078D4"/>
+      <rect x="1" y="3" width="7" height="2.5" rx="1" fill="#50E6FF"/>
+      <rect x="10" y="3" width="7" height="6" rx="1" fill="#0078D4"/>
+      <rect x="10" y="3" width="7" height="2.5" rx="1" fill="#50E6FF"/>
+      <!-- arrow right -->
+      <path d="M5 11.5 L9.5 11.5 L8 10 M9.5 11.5 L8 13" stroke="#50E6FF" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+      <!-- arrow left -->
+      <path d="M13 14.5 L8.5 14.5 L10 13 M8.5 14.5 L10 16" stroke="#50E6FF" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+    </symbol>
+
+    <!-- Azure File Sync (sync circle + file) -->
+    <symbol id="ico-filesync" viewBox="0 0 18 18">
+      <circle cx="9" cy="9" r="7.5" fill="none" stroke="#0078D4" stroke-width="1.5"/>
+      <circle cx="9" cy="9" r="7.5" fill="none" stroke="#50E6FF" stroke-width="1.5" stroke-dasharray="7 4" stroke-dashoffset="0"/>
+      <!-- File icon center -->
+      <rect x="6" y="5.5" width="6" height="7" rx=".8" fill="#0078D4"/>
+      <rect x="6" y="5.5" width="6" height="2.5" rx=".8" fill="#50E6FF"/>
+      <path d="M7 10 L11 10 M7 11.5 L9.5 11.5" stroke="rgba(255,255,255,.7)" stroke-width=".9" stroke-linecap="round"/>
+      <!-- sync arrows on circle -->
+      <path d="M9 1.5 L9 3" stroke="#50E6FF" stroke-width="1.3" stroke-linecap="round"/>
+      <path d="M9 15 L9 16.5" stroke="#50E6FF" stroke-width="1.3" stroke-linecap="round"/>
+    </symbol>
+
+    <!-- Azure Migrate (rocket/arrow upward) -->
+    <symbol id="ico-migrate" viewBox="0 0 18 18">
+      <!-- Cloud destination -->
+      <path d="M10 4.5 Q10 2 12.5 2 Q15 2 15 4.5 Q16.5 4.5 16.5 6 Q16.5 7.5 14.5 7.5 L10 7.5 Q8.5 7.5 8.5 6 Q8.5 4.5 10 4.5Z" fill="#0078D4"/>
+      <!-- Server box on-prem -->
+      <rect x="1" y="10" width="7" height="6" rx="1" fill="#107C10"/>
+      <rect x="1" y="10" width="7" height="2" rx="1" fill="#54B454"/>
+      <rect x="2" y="13" width="5" height=".8" rx=".4" fill="rgba(255,255,255,.4)"/>
+      <!-- Arrow up-right migration -->
+      <path d="M7.5 9 L12 5.5" stroke="#54B454" stroke-width="1.5" fill="none" stroke-linecap="round" marker-end="url(#mh)"/>
+    </symbol>
+
+    <!-- SQL Managed Instance (cylinder with link) -->
+    <symbol id="ico-milink" viewBox="0 0 18 18">
+      <!-- Left cylinder (SQL Server) -->
+      <ellipse cx="5" cy="5.5" rx="3.5" ry="1.5" fill="#0078D4"/>
+      <rect x="1.5" y="5.5" width="7" height="5" fill="#0078D4"/>
+      <ellipse cx="5" cy="10.5" rx="3.5" ry="1.5" fill="#50E6FF"/>
+      <rect x="1.5" y="5.5" width="7" height="5" fill="url(#cyl-grad)"/>
+      <!-- Link chain center -->
+      <path d="M8.5 8 L9.5 8" stroke="#6B69D6" stroke-width="1.5" stroke-linecap="round"/>
+      <rect x="8.2" y="7.2" width="1.6" height="1.6" rx=".4" fill="#6B69D6"/>
+      <!-- Right cylinder (SQL MI) -->
+      <ellipse cx="13" cy="5.5" rx="3.5" ry="1.5" fill="#6B69D6"/>
+      <rect x="9.5" y="5.5" width="7" height="5" fill="#6B69D6"/>
+      <ellipse cx="13" cy="10.5" rx="3.5" ry="1.5" fill="#C8A0FF"/>
+      <!-- replication arrows -->
+      <path d="M8.5 7 L9.5 7 M9.5 6.5 L9.5 7 L9 7.5" stroke="#fff" stroke-width=".8" fill="none" stroke-linecap="round" opacity=".8"/>
+    </symbol>
+
+    <!-- Azure Data Studio (monitor + code bracket) -->
+    <symbol id="ico-datastudio" viewBox="0 0 18 18">
+      <rect x="2" y="3" width="14" height="10" rx="1.2" fill="#D83B01"/>
+      <rect x="2" y="3" width="14" height="10" rx="1.2" fill="none" stroke="rgba(255,255,255,.15)" stroke-width=".5"/>
+      <!-- Screen -->
+      <rect x="3.5" y="4.5" width="11" height="7" rx=".5" fill="rgba(0,0,0,.5)"/>
+      <!-- Code symbols -->
+      <text x="5" y="10" fill="#50E6FF" font-size="4.5" font-family="monospace">&lt;/&gt;</text>
+      <!-- Stand -->
+      <rect x="7.5" y="13" width="3" height="1.5" rx=".5" fill="#D83B01"/>
+      <rect x="6" y="14.5" width="6" height="1" rx=".5" fill="#D83B01"/>
+    </symbol>
+
+    <!-- Azure Data Share (two nodes + share arrows) -->
+    <symbol id="ico-datashare" viewBox="0 0 18 18">
+      <!-- org A box -->
+      <rect x="1" y="3" width="5.5" height="4.5" rx=".8" fill="#FFB900"/>
+      <rect x="1" y="3" width="5.5" height="1.8" rx=".8" fill="#FFD060"/>
+      <!-- org B box -->
+      <rect x="11.5" y="3" width="5.5" height="4.5" rx=".8" fill="#FFB900"/>
+      <rect x="11.5" y="3" width="5.5" height="1.8" rx=".8" fill="#FFD060"/>
+      <!-- Share arrows center -->
+      <path d="M7 5 L11 5" stroke="#FFD060" stroke-width="1.2" stroke-linecap="round" marker-end="url(#ah)"/>
+      <path d="M11 6.5 L7 6.5" stroke="#FFB900" stroke-width="1.2" stroke-linecap="round" stroke-dasharray="2,1"/>
+      <!-- Data envelope below -->
+      <rect x="5" y="10" width="8" height="6" rx="1" fill="#FFB900"/>
+      <path d="M5 10.5 L9 13.5 L13 10.5" stroke="#FFD060" stroke-width="1" fill="none"/>
+    </symbol>
+
+    <!-- Azure Blob Storage -->
+    <symbol id="ico-blob" viewBox="0 0 18 18">
+      <rect x="1" y="4" width="16" height="11" rx="1.5" fill="#0078D4"/>
+      <rect x="1" y="4" width="16" height="3.5" rx="1.5" fill="#50E6FF"/>
+      <path d="M4 10 Q9 8 14 10" stroke="rgba(255,255,255,.4)" stroke-width=".9" fill="none"/>
+      <path d="M4 12.5 Q9 10.5 14 12.5" stroke="rgba(255,255,255,.3)" stroke-width=".9" fill="none"/>
+    </symbol>
+
+    <!-- ADLS Gen2 -->
+    <symbol id="ico-adls" viewBox="0 0 18 18">
+      <path d="M9 1 L17 5.5 L17 12.5 L9 17 L1 12.5 L1 5.5Z" fill="#0078D4"/>
+      <path d="M9 1 L17 5.5 L9 10 L1 5.5Z" fill="#50E6FF"/>
+      <path d="M9 10 L1 5.5 L1 12.5 L9 17Z" fill="rgba(255,255,255,.15)"/>
+      <text x="9" y="13.5" text-anchor="middle" fill="white" font-size="4" font-weight="bold">Gen2</text>
+    </symbol>
+
+    <!-- Azure SQL Database -->
+    <symbol id="ico-sqldb" viewBox="0 0 18 18">
+      <ellipse cx="9" cy="5" rx="6.5" ry="2.2" fill="#0078D4"/>
+      <rect x="2.5" y="5" width="13" height="6" fill="#0078D4"/>
+      <ellipse cx="9" cy="11" rx="6.5" ry="2.2" fill="#50E6FF"/>
+      <rect x="2.5" y="5" width="13" height="6" fill="rgba(0,0,0,.1)"/>
+      <path d="M2.5 7.5 Q9 9.5 15.5 7.5" stroke="rgba(255,255,255,.3)" stroke-width=".8" fill="none"/>
+    </symbol>
+
+    <!-- Azure SQL Managed Instance -->
+    <symbol id="ico-sqlmi" viewBox="0 0 18 18">
+      <ellipse cx="9" cy="4.5" rx="6.5" ry="2" fill="#6B69D6"/>
+      <rect x="2.5" y="4.5" width="13" height="7" fill="#6B69D6"/>
+      <ellipse cx="9" cy="11.5" rx="6.5" ry="2" fill="#9B99FF"/>
+      <path d="M2.5 7.5 Q9 9 15.5 7.5 M2.5 9.5 Q9 11 15.5 9.5" stroke="rgba(255,255,255,.25)" stroke-width=".8" fill="none"/>
+      <path d="M7 14 L11 14 M9 13 L9 16" stroke="#9B99FF" stroke-width="1.3" stroke-linecap="round"/>
+    </symbol>
+
+    <!-- Azure Migrate Hub -->
+    <symbol id="ico-migrate2" viewBox="0 0 18 18">
+      <circle cx="9" cy="9" r="8" fill="#107C10"/>
+      <path d="M6 9 L12 9 M10 7 L12 9 L10 11" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="4" cy="9" r="2" fill="rgba(255,255,255,.3)"/>
+      <circle cx="14" cy="9" r="2" fill="rgba(255,255,255,.8)"/>
+    </symbol>
+
+    <!-- Azure Database Migration Service -->
+    <symbol id="ico-dms" viewBox="0 0 18 18">
+      <circle cx="9" cy="9" r="8" fill="#0078D4"/>
+      <path d="M5 7 L9 5 L13 7 L13 11 L9 13 L5 11Z" fill="rgba(255,255,255,.2)" stroke="rgba(255,255,255,.6)" stroke-width=".8"/>
+      <path d="M6 9.5 L8 11.5 L12 7.5" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+
+    <!-- Storage Explorer -->
+    <symbol id="ico-explorer" viewBox="0 0 18 18">
+      <rect x="1" y="3" width="16" height="13" rx="1.5" fill="#0078D4"/>
+      <rect x="1" y="3" width="5" height="13" rx="1.5" fill="#005A9E"/>
+      <path d="M3 6 L5 6 M3 8.5 L5 8.5 M3 11 L5 11" stroke="#50E6FF" stroke-width="1" stroke-linecap="round"/>
+      <rect x="7.5" y="5.5" width="8" height="1.5" rx=".5" fill="rgba(255,255,255,.5)"/>
+      <rect x="7.5" y="8.5" width="6" height="1.5" rx=".5" fill="rgba(255,255,255,.3)"/>
+      <rect x="7.5" y="11.5" width="7" height="1.5" rx=".5" fill="rgba(255,255,255,.3)"/>
+    </symbol>
+
+    <!-- Azure Data Factory -->
+    <symbol id="ico-adf" viewBox="0 0 18 18">
+      <path d="M9 2 L16 5.5 L16 12.5 L9 16 L2 12.5 L2 5.5Z" fill="#0078D4"/>
+      <path d="M9 2 L16 5.5 L9 9 L2 5.5Z" fill="#50E6FF"/>
+      <path d="M6 7.5 L12 7.5 M7.5 10 L10.5 10" stroke="white" stroke-width="1.2" stroke-linecap="round"/>
+      <circle cx="6" cy="7.5" r="1" fill="white"/> <circle cx="12" cy="7.5" r="1" fill="white"/>
+    </symbol>
+
+    <!-- Azure Import/Export -->
+    <symbol id="ico-importexport" viewBox="0 0 18 18">
+      <rect x="2" y="4" width="14" height="10" rx="1" fill="#0078D4"/>
+      <path d="M5 7 L9 7 L9 5.5 L11.5 8.5 L9 11.5 L9 10 L5 10Z" fill="white" opacity=".9"/>
+    </symbol>
+
+    <!-- Data Box -->
+    <symbol id="ico-databox" viewBox="0 0 18 18">
+      <rect x="2" y="4" width="14" height="12" rx="1.5" fill="#0078D4"/>
+      <rect x="2" y="4" width="14" height="4" rx="1.5" fill="#50E6FF"/>
+      <path d="M6 9 L12 9 M6 11.5 L10 11.5" stroke="rgba(255,255,255,.6)" stroke-width="1" stroke-linecap="round"/>
+      <rect x="7.5" y="2" width="3" height="3" rx=".5" fill="#003A70"/>
+    </symbol>
+
+    <!-- Azure Arc -->
+    <symbol id="ico-arc" viewBox="0 0 18 18">
+      <path d="M9 1 A8 8 0 0 1 17 9" stroke="#0078D4" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <path d="M9 1 A8 8 0 0 0 1 9" stroke="#50E6FF" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <circle cx="9" cy="9" r="3.5" fill="#0078D4"/>
+      <circle cx="9" cy="9" r="1.5" fill="#50E6FF"/>
+    </symbol>
+
+    <!-- Azure Synapse Analytics -->
+    <symbol id="ico-synapse" viewBox="0 0 18 18">
+      <rect x="1" y="7" width="16" height="8" rx="1.5" fill="#0078D4"/>
+      <rect x="1" y="7" width="16" height="3" rx="1.5" fill="#50E6FF"/>
+      <path d="M4 3 L4 7 M7.5 2 L7.5 7 M11 3 L11 7 M14.5 2 L14.5 7" stroke="#50E6FF" stroke-width="1.2" stroke-linecap="round"/>
+    </symbol>
+
+    <!-- Azure Data Explorer -->
+    <symbol id="ico-adx" viewBox="0 0 18 18">
+      <circle cx="9" cy="9" r="8" fill="#0078D4"/>
+      <path d="M5 13 L6 6 L9 11 L11 7 L13 13" stroke="white" stroke-width="1.3" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+    </symbol>
+
+    <!-- Arrowhead markers -->
+    <marker id="ah" markerWidth="6" markerHeight="5" refX="5" refY="2.5" orient="auto">
+      <polygon points="0 0,6 2.5,0 5" fill="#FFD060"/>
+    </marker>
+    <marker id="mh" markerWidth="6" markerHeight="5" refX="5" refY="2.5" orient="auto">
+      <polygon points="0 0,6 2.5,0 5" fill="#54B454"/>
+    </marker>
+    <marker id="bh" markerWidth="6" markerHeight="5" refX="5" refY="2.5" orient="auto">
+      <polygon points="0 0,6 2.5,0 5" fill="#50D4FF"/>
+    </marker>
+    <marker id="gh" markerWidth="6" markerHeight="5" refX="5" refY="2.5" orient="auto">
+      <polygon points="0 0,6 2.5,0 5" fill="#00D8A4"/>
+    </marker>
+    <marker id="ph" markerWidth="6" markerHeight="5" refX="5" refY="2.5" orient="auto">
+      <polygon points="0 0,6 2.5,0 5" fill="#C890F0"/>
+    </marker>
+
+    <!-- Cylinder gradient -->
+    <linearGradient id="cyl-grad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="rgba(0,0,0,.2)"/>
+      <stop offset="1" stop-color="rgba(255,255,255,.1)"/>
+    </linearGradient>
+  </defs>
+</svg>
+<!-- ─────────────────────────────── HEADER ─────────────────────────────── -->
+<header class="hdr">
+  <div class="hdr-inner">
+    <div class="brand">
+      <!-- MS Windows grid mark -->
+      <svg class="brand-mark" viewBox="0 0 34 34" fill="none">
+        <rect x="2" y="2" width="14" height="14" rx="1" fill="#0078D4"/>
+        <rect x="18" y="2" width="14" height="14" rx="1" fill="#50E6FF" opacity=".9"/>
+        <rect x="2" y="18" width="14" height="14" rx="1" fill="#50E6FF" opacity=".7"/>
+        <rect x="18" y="18" width="14" height="14" rx="1" fill="#0078D4" opacity=".5"/>
+      </svg>
+      <div class="brand-text">
+        <div class="n1">AZ-305 データ転送・移行ツール完全ガイド</div>
+        <div class="n2">AzCopy · File Sync · Migrate · MI Link · Data Studio · Data Share + 類似サービス総合比較</div>
+      </div>
+    </div>
+    <div class="hdr-right">
+      <div class="badge">AZ-305</div>
+    </div>
+  </div>
+</header>
+<div class="tabs">
+  <div class="tabs-inner">
+    <button class="tab on" onclick="go('p0',this)">
+      <svg class="tab-icon" viewBox="0 0 18 18"><use href="#ico-migrate2"/></svg>概要・全比較
+    </button>
+    <button class="tab" onclick="go('p1',this)">
+      <svg class="tab-icon" viewBox="0 0 18 18"><use href="#ico-azcopy"/></svg>AzCopy
+    </button>
+    <button class="tab" onclick="go('p2',this)">
+      <svg class="tab-icon" viewBox="0 0 18 18"><use href="#ico-filesync"/></svg>File Sync
+    </button>
+    <button class="tab" onclick="go('p3',this)">
+      <svg class="tab-icon" viewBox="0 0 18 18"><use href="#ico-migrate2"/></svg>Azure Migrate
+    </button>
+    <button class="tab" onclick="go('p4',this)">
+      <svg class="tab-icon" viewBox="0 0 18 18"><use href="#ico-milink"/></svg>MI Link
+    </button>
+    <button class="tab" onclick="go('p5',this)">
+      <svg class="tab-icon" viewBox="0 0 18 18"><use href="#ico-datastudio"/></svg>Data Studio
+    </button>
+    <button class="tab" onclick="go('p6',this)">
+      <svg class="tab-icon" viewBox="0 0 18 18"><use href="#ico-datashare"/></svg>Data Share
+    </button>
+    <button class="tab" onclick="go('p7',this)">
+      <svg class="tab-icon" viewBox="0 0 18 18"><use href="#ico-dms"/></svg>試験演習
+    </button>
+  </div>
+</div>
+<main>
+
+<!-- ═══════════════ PAGE 0: 概要・全比較 ═══════════════ -->
+<div class="pg on" id="p0">
+<div class="hero h-blue">
+  <div class="hero-content">
+    <div class="eyebrow"><svg width="14" height="14" viewBox="0 0 18 18" style="vertical-align:middle;margin-right:5px;"><use href="#ico-migrate2"/></svg>AZ-305 · データ転送・移行ツール</div>
+    <h1>6サービス + 類似ツール<br>完全比較ガイド</h1>
+    <p class="hero-sub">
+      AzCopy・Azure File Sync・Azure Migrate・Managed Instance Link・Azure Data Studio・Azure Data Share。
+      さらにStorage Explorer・Data Factory・DMS・Data Box・Azure Arcなど
+      <strong>試験で混同しやすい類似サービスを網羅的に整理</strong>します。
+    </p>
+    <div class="chips">
+      <span class="chip" style="background:rgba(0,120,212,.2);border:1px solid rgba(0,120,212,.4);color:#50D4FF;"><svg width="16" height="16" viewBox="0 0 18 18"><use href="#ico-azcopy"/></svg>AzCopy</span>
+      <span class="chip" style="background:rgba(0,120,212,.18);border:1px solid rgba(0,120,212,.35);color:#50D4FF;"><svg width="16" height="16" viewBox="0 0 18 18"><use href="#ico-filesync"/></svg>File Sync</span>
+      <span class="chip" style="background:rgba(0,179,134,.2);border:1px solid rgba(0,179,134,.4);color:#00D8A4;"><svg width="16" height="16" viewBox="0 0 18 18"><use href="#ico-migrate2"/></svg>Migrate</span>
+      <span class="chip" style="background:rgba(138,63,192,.2);border:1px solid rgba(138,63,192,.4);color:#C890F0;"><svg width="16" height="16" viewBox="0 0 18 18"><use href="#ico-milink"/></svg>MI Link</span>
+      <span class="chip" style="background:rgba(224,92,20,.18);border:1px solid rgba(224,92,20,.35);color:#F07840;"><svg width="16" height="16" viewBox="0 0 18 18"><use href="#ico-datastudio"/></svg>Data Studio</span>
+      <span class="chip" style="background:rgba(232,160,0,.15);border:1px solid rgba(232,160,0,.35);color:#F0C840;"><svg width="16" height="16" viewBox="0 0 18 18"><use href="#ico-datashare"/></svg>Data Share</span>
+    </div>
+  </div>
+</div>
+
+<div class="sh"><h2><span class="n">01</span> サービスポジションマップ</h2><div class="sh-line"></div></div>
+<p class="sh-sub">「何を・どこから・どこへ・どういう方法で」の4軸でサービスを整理する</p>
+
+<div class="ov">
+  <div class="ov-card" style="border-color:rgba(0,180,216,.3);" onclick="go('p1',document.querySelectorAll('.tab')[1])">
+    <div class="ov-icon"><svg width="40" height="40" viewBox="0 0 18 18"><use href="#ico-azcopy"/></svg></div>
+    <div class="ov-name" style="color:#00D4FF">AzCopy</div>
+    <div class="ov-desc">Blob/File/S3間の高速コピー・同期専用CLI。スクリプト自動化に最適。</div>
+    <div class="ov-tags"><span class="tag tt">CLI</span><span class="tag tb">Blob/File</span><span class="tag tg">S3対応</span></div>
+  </div>
+  <div class="ov-card" style="border-color:rgba(0,120,212,.3);" onclick="go('p2',document.querySelectorAll('.tab')[2])">
+    <div class="ov-icon"><svg width="40" height="40" viewBox="0 0 18 18"><use href="#ico-filesync"/></svg></div>
+    <div class="ov-name" style="color:#50D4FF">Azure File Sync</div>
+    <div class="ov-desc">Windowsファイルサーバー↔Azure Files 双方向同期。クラウドティアリング。</div>
+    <div class="ov-tags"><span class="tag tb">Windows専用</span><span class="tag tb">継続同期</span></div>
+  </div>
+  <div class="ov-card" style="border-color:rgba(0,179,134,.3);" onclick="go('p3',document.querySelectorAll('.tab')[3])">
+    <div class="ov-icon"><svg width="40" height="40" viewBox="0 0 18 18"><use href="#ico-migrate2"/></svg></div>
+    <div class="ov-name" style="color:#00D8A4">Azure Migrate</div>
+    <div class="ov-desc">VM・DB・Webアプリの移行を統合管理。Discovery→Assessment→Migration。</div>
+    <div class="ov-tags"><span class="tag tg">Lift&Shift</span><span class="tag tg">アセスメント</span></div>
+  </div>
+  <div class="ov-card" style="border-color:rgba(138,63,192,.3);" onclick="go('p4',document.querySelectorAll('.tab')[4])">
+    <div class="ov-icon"><svg width="40" height="40" viewBox="0 0 18 18"><use href="#ico-milink"/></svg></div>
+    <div class="ov-name" style="color:#C890F0">Managed Instance Link</div>
+    <div class="ov-desc">SQL Server↔SQL MIをAlways On分散AGでリアルタイム同期。DR+オンライン移行。</div>
+    <div class="ov-tags"><span class="tag tp">Always On</span><span class="tag tp">DR</span></div>
+  </div>
+  <div class="ov-card" style="border-color:rgba(224,92,20,.3);" onclick="go('p5',document.querySelectorAll('.tab')[5])">
+    <div class="ov-icon"><svg width="40" height="40" viewBox="0 0 18 18"><use href="#ico-datastudio"/></svg></div>
+    <div class="ov-name" style="color:#F07840">Azure Data Studio</div>
+    <div class="ov-desc">Win/Mac/Linux対応クロスプラットフォームDB管理GUI。PostgreSQL・Notebooks対応。</div>
+    <div class="ov-tags"><span class="tag to">クロスOS</span><span class="tag to">PostgreSQL</span></div>
+  </div>
+  <div class="ov-card" style="border-color:rgba(232,160,0,.3);" onclick="go('p6',document.querySelectorAll('.tab')[6])">
+    <div class="ov-icon"><svg width="40" height="40" viewBox="0 0 18 18"><use href="#ico-datashare"/></svg></div>
+    <div class="ov-name" style="color:#F0C840">Azure Data Share</div>
+    <div class="ov-desc">異なるAzureテナント間でデータを安全共有。コード不要・招待ベース・スナップショット。</div>
+    <div class="ov-tags"><span class="tag ty">テナント間</span><span class="tag ty">コード不要</span></div>
+  </div>
+</div>
+
+<div class="sh"><h2><span class="n">02</span> データ転送系 — 全サービス網羅比較</h2><div class="sh-line"></div></div>
+<p class="sh-sub">AzCopy・Storage Explorer・ADF・Data Box・Import/Export・File Sync を一挙比較</p>
+
+<div class="tw">
+  <table>
+    <thead>
+      <tr>
+        <th class="thg" style="width:22%">サービス</th>
+        <th class="thb">UI種別</th>
+        <th class="thb">データ変換</th>
+        <th class="thb">S3/GCS対応</th>
+        <th class="thb">継続同期</th>
+        <th class="thb">オフライン転送</th>
+        <th class="thb">コスト</th>
+        <th class="thg">最適ユースケース</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:8px;"><svg width="20" height="20" viewBox="0 0 18 18"><use href="#ico-azcopy"/></svg>AzCopy</div></td>
+        <td class="ct">CLI</td>
+        <td class="er">❌ コピーのみ</td>
+        <td class="ok">✅ S3/GCS直接</td>
+        <td class="wn">⚠ syncコマンド</td>
+        <td class="er">❌</td>
+        <td class="ok">✅ 無料ツール</td>
+        <td>大量データ一括転送・S3→Azure移行・CI/CD自動化</td>
+      </tr>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:8px;"><svg width="20" height="20" viewBox="0 0 18 18"><use href="#ico-explorer"/></svg>Storage Explorer</div></td>
+        <td class="cb">GUI (Desktop)</td>
+        <td class="er">❌</td>
+        <td class="ok">✅ S3対応</td>
+        <td class="er">❌</td>
+        <td class="er">❌</td>
+        <td class="ok">✅ 無料ツール</td>
+        <td>開発者の手動操作・確認・小規模転送</td>
+      </tr>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:8px;"><svg width="20" height="20" viewBox="0 0 18 18"><use href="#ico-adf"/></svg>Azure Data Factory</div></td>
+        <td class="cb">ポータル/パイプライン</td>
+        <td class="ok">✅ ETL/ELT変換</td>
+        <td class="ok">✅ 100+コネクター</td>
+        <td class="ok">✅ トリガー</td>
+        <td class="er">❌</td>
+        <td class="wn">⚠ 実行課金</td>
+        <td>複雑なETLパイプライン・定期的なデータ統合</td>
+      </tr>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:8px;"><svg width="20" height="20" viewBox="0 0 18 18"><use href="#ico-filesync"/></svg>Azure File Sync</div></td>
+        <td class="cb">エージェント</td>
+        <td class="er">❌</td>
+        <td class="er">❌</td>
+        <td class="ok">✅ リアルタイム双方向</td>
+        <td class="er">❌</td>
+        <td class="wn">⚠ ストレージ費</td>
+        <td>WindowsファイルサーバーのAzure延命・多拠点共有</td>
+      </tr>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:8px;"><svg width="20" height="20" viewBox="0 0 18 18"><use href="#ico-databox"/></svg>Azure Data Box</div></td>
+        <td class="cb">物理デバイス</td>
+        <td class="er">❌</td>
+        <td class="er">❌</td>
+        <td class="er">❌ 一回のみ</td>
+        <td class="ok">✅ 物理発送</td>
+        <td class="wn">⚠ デバイス料金</td>
+        <td>数十TB〜PBクラスの超大量データのオフライン転送</td>
+      </tr>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:8px;"><svg width="20" height="20" viewBox="0 0 18 18"><use href="#ico-importexport"/></svg>Azure Import/Export</div></td>
+        <td class="cb">ポータル+自前HDD</td>
+        <td class="er">❌</td>
+        <td class="er">❌</td>
+        <td class="er">❌</td>
+        <td class="ok">✅ 自前HDD発送</td>
+        <td class="ok">✅ 低コスト</td>
+        <td>Data Boxより低コストな大量オフライン転送（自前HDD使用）</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="sh"><h2><span class="n">03</span> DB移行系 — 全サービス網羅比較</h2><div class="sh-line"></div></div>
+<p class="sh-sub">Azure Migrate・DMS・MI Link・DMA・SSMA・バックアップリストアを横断比較</p>
+
+<div class="tw">
+  <table>
+    <thead>
+      <tr>
+        <th class="thg" style="width:22%">サービス/ツール</th>
+        <th class="thgn">対象DB</th>
+        <th class="thgn">ダウンタイム</th>
+        <th class="thgn">フェイルバック</th>
+        <th class="thgn">スキーマ変換</th>
+        <th class="thgn">評価機能</th>
+        <th class="thg">最適ユースケース</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:8px;"><svg width="20" height="20" viewBox="0 0 18 18"><use href="#ico-migrate2"/></svg>Azure Migrate (DMS)</div></td>
+        <td>SQL / Oracle / MySQL等</td>
+        <td class="ok">✅ オンラインモード</td>
+        <td class="er">❌ 基本不可</td>
+        <td class="wn">⚠ 限定的</td>
+        <td class="ok">✅ アセスメント</td>
+        <td>SQL Server→SQL DB/MI の標準的なオンライン移行</td>
+      </tr>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:8px;"><svg width="20" height="20" viewBox="0 0 18 18"><use href="#ico-milink"/></svg>MI Link (SQL2022)</div></td>
+        <td>SQL Server 2016〜2025</td>
+        <td class="ok">✅ 最小（切替時のみ）</td>
+        <td class="ok">✅ 完全対応</td>
+        <td class="er">❌</td>
+        <td class="er">❌</td>
+        <td>Business Critical tierへのオンライン移行・DR・フェイルバック必須</td>
+      </tr>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:8px;"><svg width="20" height="20" viewBox="0 0 18 18"><use href="#ico-sqldb"/></svg>DMA (Data Migration Assistant)</div></td>
+        <td>SQL Server→Azure SQL</td>
+        <td class="wn">⚠ 評価ツール中心</td>
+        <td class="er">❌</td>
+        <td class="ok">✅ スキーマ移行</td>
+        <td class="ok">✅ 互換性チェック</td>
+        <td>移行前の互換性評価・機能パリティ確認・スキーマ移行</td>
+      </tr>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:8px;"><svg width="20" height="20" viewBox="0 0 18 18"><use href="#ico-sqlmi"/></svg>SSMA (SQL Server Migration Assistant)</div></td>
+        <td>Oracle/MySQL/Access→SQL</td>
+        <td class="wn">⚠ 移行作業中のみ</td>
+        <td class="er">❌</td>
+        <td class="ok">✅ 異種DB変換</td>
+        <td class="ok">✅</td>
+        <td>異種DBからSQL Serverへの移行（Oracle→SQL等）</td>
+      </tr>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:8px;"><svg width="20" height="20" viewBox="0 0 18 18"><use href="#ico-datastudio"/></svg>Azure Data Studio拡張</div></td>
+        <td>SQL / PostgreSQL等</td>
+        <td class="wn">⚠ 作業中のみ</td>
+        <td class="er">❌</td>
+        <td class="wn">⚠ 限定的</td>
+        <td class="ok">✅ GUI評価</td>
+        <td>GUIベースの移行評価・クロスプラットフォーム環境</td>
+      </tr>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:8px;"><svg width="20" height="20" viewBox="0 0 18 18"><use href="#ico-blob"/></svg>バックアップ/リストア</div></td>
+        <td>SQL Server</td>
+        <td class="er">❌ 大きい</td>
+        <td class="er">❌</td>
+        <td class="er">❌</td>
+        <td class="er">❌</td>
+        <td>シンプルな小規模DB移行・ダウンタイム許容できる場合</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="sh"><h2><span class="n">04</span> データ共有・分析系 — 全サービス網羅比較</h2><div class="sh-line"></div></div>
+<p class="sh-sub">Data Share・Synapse・Data Explorer・ADF・Purviewなど共有・分析周辺サービス</p>
+
+<div class="tw">
+  <table>
+    <thead>
+      <tr>
+        <th class="thg" style="width:22%">サービス</th>
+        <th class="thy" style="color:#F0C840">テナント間共有</th>
+        <th class="thy" style="color:#F0C840">コード不要</th>
+        <th class="thy" style="color:#F0C840">リアルタイム</th>
+        <th class="thy" style="color:#F0C840">データ変換</th>
+        <th class="thy" style="color:#F0C840">スケジュール</th>
+        <th class="thg">最適ユースケース</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:8px;"><svg width="20" height="20" viewBox="0 0 18 18"><use href="#ico-datashare"/></svg>Azure Data Share</div></td>
+        <td class="ok">✅ 設計の核心</td>
+        <td class="ok">✅ ポータルのみ</td>
+        <td class="wn">⚠ In-placeのみ</td>
+        <td class="er">❌</td>
+        <td class="ok">✅ 毎時/毎日</td>
+        <td>パートナー企業へのデータ定期共有・コード不要</td>
+      </tr>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:8px;"><svg width="20" height="20" viewBox="0 0 18 18"><use href="#ico-adf"/></svg>Azure Data Factory</div></td>
+        <td class="wn">⚠ 複雑な設定要</td>
+        <td class="er">❌ パイプライン設計</td>
+        <td class="ok">✅ トリガー</td>
+        <td class="ok">✅ ETL</td>
+        <td class="ok">✅ 柔軟</td>
+        <td>複雑なデータ統合・変換・ETLパイプライン</td>
+      </tr>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:8px;"><svg width="20" height="20" viewBox="0 0 18 18"><use href="#ico-synapse"/></svg>Azure Synapse Analytics</div></td>
+        <td class="wn">⚠ Synapse Link</td>
+        <td class="wn">⚠ UI有り</td>
+        <td class="ok">✅ Synapse Link</td>
+        <td class="ok">✅ SQL/Spark</td>
+        <td class="ok">✅</td>
+        <td>大規模データウェアハウス・統合分析プラットフォーム</td>
+      </tr>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:8px;"><svg width="20" height="20" viewBox="0 0 18 18"><use href="#ico-adx"/></svg>Azure Data Explorer</div></td>
+        <td class="wn">⚠</td>
+        <td class="er">❌ KQL必要</td>
+        <td class="ok">✅</td>
+        <td class="wn">⚠</td>
+        <td class="ok">✅</td>
+        <td>テレメトリ・ログのリアルタイム分析・時系列データ</td>
+      </tr>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:8px;"><svg width="20" height="20" viewBox="0 0 18 18"><use href="#ico-arc"/></svg>Microsoft Purview</div></td>
+        <td class="ok">✅ データカタログ</td>
+        <td class="ok">✅</td>
+        <td class="er">❌ スキャン</td>
+        <td class="er">❌</td>
+        <td class="ok">✅</td>
+        <td>データガバナンス・データカタログ・系譜管理</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="sh"><h2><span class="n">05</span> シナリオ別 即決チャート</h2><div class="sh-line"></div></div>
+<div class="tw">
+  <table>
+    <thead><tr><th class="thg">キーワード</th><th class="thb">正解サービス</th><th class="thg">理由の核心</th></tr></thead>
+    <tbody>
+      <tr><td>「S3バケットからAzure Blobへ一括転送・スクリプト自動化」</td><td class="ct"><svg width="16" height="16" viewBox="0 0 18 18" style="vertical-align:middle;margin-right:5px"><use href="#ico-azcopy"/></svg>AzCopy</td><td>S3直接コピー対応・CLI・無料</td></tr>
+      <tr><td>「PBクラスのデータをネットワーク帯域なしで転送」</td><td class="cb"><svg width="16" height="16" viewBox="0 0 18 18" style="vertical-align:middle;margin-right:5px"><use href="#ico-databox"/></svg>Data Box</td><td>物理デバイス発送で帯域不要</td></tr>
+      <tr><td>「CSVをParquetに変換しながらBlobに格納する定期ジョブ」</td><td class="cb"><svg width="16" height="16" viewBox="0 0 18 18" style="vertical-align:middle;margin-right:5px"><use href="#ico-adf"/></svg>Azure Data Factory</td><td>ETL変換+スケジュールパイプライン</td></tr>
+      <tr><td>「WindowsファイルサーバーのUNCパスを変えずにクラウド拡張」</td><td class="cb"><svg width="16" height="16" viewBox="0 0 18 18" style="vertical-align:middle;margin-right:5px"><use href="#ico-filesync"/></svg>Azure File Sync</td><td>双方向同期・クラウドティアリング</td></tr>
+      <tr><td>「150台のVMwareVMをAzureに移行前に依存関係とコスト試算」</td><td class="cg"><svg width="16" height="16" viewBox="0 0 18 18" style="vertical-align:middle;margin-right:5px"><use href="#ico-migrate2"/></svg>Azure Migrate</td><td>Discovery&Assessment機能</td></tr>
+      <tr><td>「SQL ServerをAzure SQL MI Business Criticalに最小ダウンタイムで移行・フェイルバック必要」</td><td class="cp"><svg width="16" height="16" viewBox="0 0 18 18" style="vertical-align:middle;margin-right:5px"><use href="#ico-milink"/></svg>MI Link (SQL2022)</td><td>唯一BC tierオンライン移行+フェイルバック</td></tr>
+      <tr><td>「Oracle→SQL Serverの異種DB移行でスキーマ変換が必要」</td><td class="cb"><svg width="16" height="16" viewBox="0 0 18 18" style="vertical-align:middle;margin-right:5px"><use href="#ico-sqlmi"/></svg>SSMA</td><td>異種DBスキーマ変換専用ツール</td></tr>
+      <tr><td>「Mac/LinuxでSQL ServerとPostgreSQLを同じツールで管理」</td><td class="co"><svg width="16" height="16" viewBox="0 0 18 18" style="vertical-align:middle;margin-right:5px"><use href="#ico-datastudio"/></svg>Azure Data Studio</td><td>クロスOS+PostgreSQL拡張</td></tr>
+      <tr><td>「別テナントのパートナーにADLS Gen2データを毎日共有・コード不要」</td><td class="cy"><svg width="16" height="16" viewBox="0 0 18 18" style="vertical-align:middle;margin-right:5px"><use href="#ico-datashare"/></svg>Azure Data Share</td><td>テナント間共有専用・スナップショット</td></tr>
+      <tr><td>「Storageアカウントのデータ系譜とカタログを管理・データガバナンス」</td><td class="cb"><svg width="16" height="16" viewBox="0 0 18 18" style="vertical-align:middle;margin-right:5px"><use href="#ico-arc"/></svg>Microsoft Purview</td><td>データガバナンス・カタログ専用</td></tr>
+    </tbody>
+  </table>
+</div>
+</div><!-- /p0 -->
+
+<!-- ═══════════════ PAGE 1: AzCopy ═══════════════ -->
+<div class="pg" id="p1">
+<div class="hero h-teal">
+  <div class="hero-content">
+    <div class="eyebrow"><svg width="16" height="16" viewBox="0 0 18 18"><use href="#ico-azcopy"/></svg> AzCopy — コマンドラインストレージ転送ツール</div>
+    <h1>AzCopy<br>高速・大量データ転送の専門CLI</h1>
+    <p class="hero-sub">Blob/File/ADLS・AWS S3・Google Cloud Storage間のデータコピーと同期をCLIで高速実行。並列転送・再開可能・Managed Identity認証に対応。</p>
+    <div class="chips">
+      <span class="chip tt" style="border:1px solid rgba(0,180,216,.35);display:inline-flex;align-items:center;gap:5px;"><svg width="13" height="13" viewBox="0 0 18 18"><use href="#ico-azcopy"/></svg> Win/Mac/Linux CLI</span>
+      <span class="chip tb" style="border:1px solid rgba(0,120,212,.35);display:inline-flex;align-items:center;gap:5px;"><svg width="13" height="13" viewBox="0 0 18 18"><use href="#ico-blob"/></svg> Blob/File/ADLS</span>
+      <span class="chip tg" style="border:1px solid rgba(0,179,134,.35);display:inline-flex;align-items:center;gap:5px;"><svg width="13" height="13" viewBox="0 0 18 18"><use href="#ico-importexport"/></svg> S3/GCS直接コピー</span>
+      <span class="chip ty" style="border:1px solid rgba(232,160,0,.35);">並列転送・再開可能</span>
+    </div>
+  </div>
+</div>
+
+<div class="sh"><h2><span class="n">01</span> 転送パターン全体図</h2><div class="sh-line"></div></div>
+<div class="dw">
+  <div class="dw-hd"><span>AzCopy がサポートする転送パターン</span></div>
+  <svg class="d" viewBox="0 0 1020 340" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="a1" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto"><polygon points="0 0,7 2.5,0 5" fill="#00C878"/></marker>
+      <marker id="a2" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto"><polygon points="0 0,7 2.5,0 5" fill="#00D4FF"/></marker>
+    </defs>
+    <!-- AzCopy core -->
+    <rect x="370" y="128" width="280" height="84" rx="12" fill="rgba(0,180,216,.12)" stroke="#00B4D8" stroke-width="2"/>
+    <svg x="388" y="140" width="36" height="36" viewBox="0 0 18 18"><use href="#ico-azcopy"/></svg>
+    <text x="510" y="162" text-anchor="middle" fill="#00D4FF" font-size="15" font-family="Outfit,sans-serif" font-weight="900">AzCopy</text>
+    <text x="510" y="178" text-anchor="middle" fill="#009AB8" font-size="9.5" font-family="sans-serif">並列転送 / 再開可能 / 認証管理</text>
+    <text x="510" y="194" text-anchor="middle" fill="#006878" font-size="9" font-family="sans-serif">Windows / Linux / macOS</text>
+
+    <!-- Sources (left) -->
+    <rect x="20" y="20" width="160" height="52" rx="8" fill="rgba(0,60,120,.35)" stroke="#0078D4" stroke-width="1.5"/>
+    <svg x="28" y="30" width="24" height="24" viewBox="0 0 18 18"><use href="#ico-blob"/></svg>
+    <text x="110" y="43" text-anchor="middle" fill="#90C8FF" font-size="10" font-family="sans-serif" font-weight="700">オンプレ / VM</text>
+    <text x="110" y="58" text-anchor="middle" fill="#5090C0" font-size="8.5" font-family="sans-serif">ローカルファイルシステム</text>
+
+    <rect x="20" y="90" width="160" height="52" rx="8" fill="rgba(255,153,0,.12)" stroke="rgba(255,153,0,.45)" stroke-width="1.5"/>
+    <text x="56" y="120" text-anchor="middle" fill="#FFA040" font-size="22"></text>
+    <text x="110" y="111" text-anchor="middle" fill="#FFA040" font-size="10" font-family="sans-serif" font-weight="700">AWS S3</text>
+    <text x="110" y="126" text-anchor="middle" fill="#B07030" font-size="8.5" font-family="sans-serif">S3バケット直接コピー</text>
+
+    <rect x="20" y="160" width="160" height="52" rx="8" fill="rgba(66,133,244,.12)" stroke="rgba(66,133,244,.45)" stroke-width="1.5"/>
+    <text x="56" y="190" text-anchor="middle" fill="#6090E0" font-size="22"></text>
+    <text x="110" y="181" text-anchor="middle" fill="#6090E0" font-size="10" font-family="sans-serif" font-weight="700">Google Cloud Storage</text>
+    <text x="110" y="196" text-anchor="middle" fill="#4060A0" font-size="8.5" font-family="sans-serif">GCSバケット</text>
+
+    <rect x="20" y="230" width="160" height="52" rx="8" fill="rgba(0,120,212,.12)" stroke="rgba(0,120,212,.45)" stroke-width="1.5"/>
+    <svg x="28" y="240" width="24" height="24" viewBox="0 0 18 18"><use href="#ico-blob"/></svg>
+    <text x="110" y="253" text-anchor="middle" fill="#50D4FF" font-size="10" font-family="sans-serif" font-weight="700">Azure Blob（別アカウント）</text>
+    <text x="110" y="268" text-anchor="middle" fill="#3080A0" font-size="8.5" font-family="sans-serif">サーバーサイドコピー（高速）</text>
+
+    <!-- Arrows left→center -->
+    <line x1="182" y1="46" x2="368" y2="155" stroke="#00C878" stroke-width="1.8" stroke-dasharray="5,3" marker-end="url(#a1)"/>
+    <line x1="182" y1="116" x2="368" y2="162" stroke="#00C878" stroke-width="1.8" stroke-dasharray="5,3" marker-end="url(#a1)"/>
+    <line x1="182" y1="186" x2="368" y2="170" stroke="#00C878" stroke-width="1.8" stroke-dasharray="5,3" marker-end="url(#a1)"/>
+    <line x1="182" y1="256" x2="368" y2="178" stroke="#00C878" stroke-width="1.8" stroke-dasharray="5,3" marker-end="url(#a1)"/>
+
+    <!-- Destinations (right) -->
+    <rect x="840" y="20" width="165" height="52" rx="8" fill="rgba(0,120,212,.15)" stroke="#0078D4" stroke-width="1.5"/>
+    <svg x="848" y="30" width="24" height="24" viewBox="0 0 18 18"><use href="#ico-blob"/></svg>
+    <text x="920" y="43" text-anchor="middle" fill="#50D4FF" font-size="10" font-family="sans-serif" font-weight="700">Azure Blob Storage</text>
+    <text x="920" y="58" text-anchor="middle" fill="#3080A0" font-size="8.5" font-family="sans-serif">Hot / Cool / Archive</text>
+
+    <rect x="840" y="90" width="165" height="52" rx="8" fill="rgba(0,120,212,.12)" stroke="rgba(0,120,212,.4)" stroke-width="1.5"/>
+    <svg x="848" y="100" width="24" height="24" viewBox="0 0 18 18"><use href="#ico-filesync"/></svg>
+    <text x="920" y="113" text-anchor="middle" fill="#50D4FF" font-size="10" font-family="sans-serif" font-weight="700">Azure Files</text>
+    <text x="920" y="128" text-anchor="middle" fill="#3080A0" font-size="8.5" font-family="sans-serif">SMBファイル共有</text>
+
+    <rect x="840" y="160" width="165" height="52" rx="8" fill="rgba(0,130,114,.12)" stroke="rgba(0,130,114,.45)" stroke-width="1.5"/>
+    <svg x="848" y="170" width="24" height="24" viewBox="0 0 18 18"><use href="#ico-adls"/></svg>
+    <text x="920" y="183" text-anchor="middle" fill="#00D090" font-size="10" font-family="sans-serif" font-weight="700">ADLS Gen2</text>
+    <text x="920" y="198" text-anchor="middle" fill="#008060" font-size="8.5" font-family="sans-serif">Data Lake Storage</text>
+
+    <!-- Arrows center→right -->
+    <line x1="652" y1="155" x2="838" y2="46" stroke="#00D4FF" stroke-width="1.8" marker-end="url(#a2)"/>
+    <line x1="652" y1="165" x2="838" y2="116" stroke="#00D4FF" stroke-width="1.8" marker-end="url(#a2)"/>
+    <line x1="652" y1="175" x2="838" y2="186" stroke="#00D4FF" stroke-width="1.8" marker-end="url(#a2)"/>
+
+    <!-- Auth box -->
+    <rect x="370" y="234" width="280" height="88" rx="10" fill="rgba(0,0,0,.3)" stroke="var(--bd)" stroke-width="1"/>
+    <text x="510" y="254" text-anchor="middle" fill="#F0C840" font-size="10" font-family="sans-serif" font-weight="700">認証方式（推奨順）</text>
+    <rect x="382" y="262" width="118" height="18" rx="4" fill="rgba(0,179,134,.15)"/><text x="441" y="275" text-anchor="middle" fill="#00D8A4" font-size="8.5" font-family="sans-serif">① Managed Identity（CI/CD）</text>
+    <rect x="510" y="262" width="128" height="18" rx="4" fill="rgba(138,63,192,.15)"/><text x="574" y="275" text-anchor="middle" fill="#C890F0" font-size="8.5" font-family="sans-serif">② Entra ID（ユーザー）</text>
+    <rect x="382" y="285" width="118" height="18" rx="4" fill="rgba(0,120,212,.15)"/><text x="441" y="298" text-anchor="middle" fill="#50D4FF" font-size="8.5" font-family="sans-serif">③ SAS Token</text>
+    <rect x="510" y="285" width="128" height="18" rx="4" fill="rgba(60,60,60,.2)"/><text x="574" y="298" text-anchor="middle" fill="#888" font-size="8.5" font-family="sans-serif">④ Storage Key（非推奨）</text>
+  </svg>
+</div>
+
+<div class="sh"><h2><span class="n">02</span> 主要コマンド</h2><div class="sh-line"></div></div>
+<div class="g2">
+  <div>
+    <p style="font-size:11px;color:var(--t3);margin-bottom:6px;font-weight:700;letter-spacing:1px;text-transform:uppercase;">アップロード / Blobティア指定</p>
+    <div class="code"><span class="cm"># フォルダを再帰的にアップロード</span>
+azcopy copy <span class="str">'./data/'</span> \
+  <span class="str">'https://acct.blob.core.windows.net/cont?[SAS]'</span> \
+  <span class="flag">--recursive</span>
+
+<span class="cm"># Archiveティアに直接アップロード</span>
+azcopy copy <span class="str">'./archive/'</span> <span class="str">'https://...'</span> \
+  <span class="flag">--blob-type</span>=BlockBlob \
+  <span class="flag">--block-blob-tier</span>=Archive</div>
+  </div>
+  <div>
+    <p style="font-size:11px;color:var(--t3);margin-bottom:6px;font-weight:700;letter-spacing:1px;text-transform:uppercase;">S3直接コピー / 同期</p>
+    <div class="code"><span class="cm"># AWS S3 → Azure Blob 直接コピー</span>
+<span class="kw">export</span> AWS_ACCESS_KEY_ID=<span class="str">AKIA...</span>
+<span class="kw">export</span> AWS_SECRET_ACCESS_KEY=<span class="str">...</span>
+azcopy copy \
+  <span class="str">'https://s3.amazonaws.com/bucket/'</span> \
+  <span class="str">'https://acct.blob.core.windows.net/cont/?[SAS]'</span> \
+  <span class="flag">--recursive</span>
+
+<span class="cm"># 差分同期（変更分のみ）</span>
+azcopy sync <span class="str">'./src/'</span> <span class="str">'https://...'</span> \
+  <span class="flag">--delete-destination</span>=true</div>
+  </div>
+</div>
+
+<div class="sh"><h2><span class="n">03</span> AzCopy vs 類似ツール 詳細比較</h2><div class="sh-line"></div></div>
+<div class="tw">
+  <table>
+    <thead>
+      <tr>
+        <th class="thg">比較項目</th>
+        <th class="tht">AzCopy</th>
+        <th class="thb">Storage Explorer</th>
+        <th class="thb">Azure Data Factory</th>
+        <th class="thb">Data Box</th>
+        <th class="thb">Import/Export</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>UI</td><td class="ct">CLI</td><td class="cb">GUI Desktop</td><td class="cb">ポータル/パイプライン</td><td class="cb">物理デバイス</td><td class="cb">ポータル+自前HDD</td></tr>
+      <tr><td>スクリプト自動化</td><td class="ok">✅ 最適</td><td class="er">❌</td><td class="ok">✅ トリガー</td><td class="er">❌</td><td class="er">❌</td></tr>
+      <tr><td>ETL変換</td><td class="er">❌ コピーのみ</td><td class="er">❌</td><td class="ok">✅ フル変換</td><td class="er">❌</td><td class="er">❌</td></tr>
+      <tr><td>S3/GCS直接</td><td class="ok">✅</td><td class="ok">✅ S3のみ</td><td class="ok">✅ 100+</td><td class="er">❌</td><td class="er">❌</td></tr>
+      <tr><td>PBクラス転送</td><td class="wn">⚠ 帯域次第</td><td class="wn">⚠</td><td class="wn">⚠</td><td class="ok">✅ 最大80TB</td><td class="ok">✅ 自前HDD</td></tr>
+      <tr><td>コスト</td><td class="ok">✅ 無料</td><td class="ok">✅ 無料</td><td class="wn">⚠ 実行課金</td><td class="wn">⚠ デバイス料金</td><td class="ok">✅ 低コスト</td></tr>
+      <tr><td>サーバーサイドコピー</td><td class="ok">✅ Blob間高速</td><td class="ok">✅</td><td class="ok">✅</td><td class="er">❌</td><td class="er">❌</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="sh"><h2><span class="n">04</span> 全データ転送ツール 網羅比較（AZ-305頻出）</h2><div class="sh-line"></div></div>
+<p class="sh-sub">「どのツールを選ぶべきか」をシナリオ条件から瞬時に判断できるよう、関連ツールを全て並べて比較します</p>
+<div class="tw">
+  <table>
+    <thead>
+      <tr>
+        <th class="thg">ツール</th>
+        <th class="thg">UI種別</th>
+        <th class="thg">ETL変換</th>
+        <th class="thg">S3/他クラウド直接</th>
+        <th class="thg">スクリプト化</th>
+        <th class="thg">オフライン転送</th>
+        <th class="thg">継続同期</th>
+        <th class="thg">コスト</th>
+        <th class="thg">最適シナリオ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:7px;"><svg width="18" height="18" viewBox="0 0 18 18"><use href="#ico-azcopy"/></svg><strong>AzCopy</strong></div></td>
+        <td class="ct">CLI</td><td class="er">❌</td><td class="ok">✅ S3/GCS</td><td class="ok">✅ 最適</td><td class="er">❌</td><td class="wn">⚠ syncコマンド</td><td class="ok">✅ 無料</td>
+        <td>大量データ一括転送・S3→Azure・CI/CD自動化</td>
+      </tr>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:7px;"><svg width="18" height="18" viewBox="0 0 18 18"><use href="#ico-explorer"/></svg>Storage Explorer</div></td>
+        <td class="cb">GUI Desktop</td><td class="er">❌</td><td class="ok">✅ S3対応</td><td class="er">❌</td><td class="er">❌</td><td class="er">❌</td><td class="ok">✅ 無料</td>
+        <td>開発者の手動操作・確認・小規模転送</td>
+      </tr>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:7px;"><svg width="18" height="18" viewBox="0 0 18 18"><use href="#ico-adf"/></svg>Azure Data Factory</div></td>
+        <td class="cb">ポータル</td><td class="ok">✅ ETL/ELT</td><td class="ok">✅ 100+コネクター</td><td class="ok">✅ トリガー</td><td class="er">❌</td><td class="er">❌</td><td class="wn">⚠ 実行課金</td>
+        <td>複雑なETLパイプライン・定期データ統合・変換あり</td>
+      </tr>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:7px;"><svg width="18" height="18" viewBox="0 0 18 18"><use href="#ico-filesync"/></svg>Azure File Sync</div></td>
+        <td class="cb">エージェント</td><td class="er">❌</td><td class="er">❌</td><td class="er">❌</td><td class="er">❌</td><td class="ok">✅ リアルタイム</td><td class="wn">⚠ ストレージ費</td>
+        <td>Windowsファイルサーバー延命・クラウドティアリング</td>
+      </tr>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:7px;"><svg width="18" height="18" viewBox="0 0 18 18"><use href="#ico-databox"/></svg>Azure Data Box</div></td>
+        <td class="cb">物理デバイス</td><td class="er">❌</td><td class="er">❌</td><td class="er">❌</td><td class="ok">✅ 最大80TB</td><td class="er">❌</td><td class="wn">⚠ デバイス料金</td>
+        <td>低速回線での数十TB以上のオフライン転送（Data Box Heavy: 1PB）</td>
+      </tr>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:7px;"><svg width="18" height="18" viewBox="0 0 18 18"><use href="#ico-importexport"/></svg>Azure Import/Export</div></td>
+        <td class="cb">ポータル+HDD自前</td><td class="er">❌</td><td class="er">❌</td><td class="er">❌</td><td class="ok">✅ 自前HDD発送</td><td class="er">❌</td><td class="ok">✅ 低コスト</td>
+        <td>Data Boxより低コストなオフライン転送（自前ハードディスク使用）</td>
+      </tr>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:7px;"><svg width="18" height="18" viewBox="0 0 18 18"><use href="#ico-synapse"/></svg>Synapse Analytics Pipeline</div></td>
+        <td class="cb">ポータル</td><td class="ok">✅ Spark変換</td><td class="ok">✅ ADFコネクター</td><td class="ok">✅</td><td class="er">❌</td><td class="er">❌</td><td class="wn">⚠ コンピュート課金</td>
+        <td>ビッグデータのETL・分析パイプラインと転送を統合したい場合</td>
+      </tr>
+      <tr>
+        <td><svg width="18" height="18" viewBox="0 0 18 18" style="vertical-align:middle;margin-right:7px;"><rect x="2" y="5" width="14" height="9" rx="1" fill="#107C10"/><path d="M6 8 L12 8 M8 6 L8 10" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg>robocopy / rsync (オンプレ)</td>
+        <td class="ct">CLI</td><td class="er">❌</td><td class="er">❌ Azure非対応</td><td class="ok">✅</td><td class="er">❌</td><td class="ok">✅ 差分コピー</td><td class="ok">✅ OS標準</td>
+        <td>オンプレ内のローカルファイルコピー・AzCopy移行前の整理用途</td>
+      </tr>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:7px;"><svg width="18" height="18" viewBox="0 0 18 18"><use href="#ico-migrate2"/></svg>Azure Migrate (DMS)</div></td>
+        <td class="cb">ポータル</td><td class="er">❌</td><td class="er">❌</td><td class="wn">⚠</td><td class="er">❌</td><td class="er">❌ 一回のみ</td><td class="wn">⚠</td>
+        <td>VM・DB・WebAppのAzureへの移行（一回性）</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="ec">
+  <div class="ec-lbl">試験ポイント</div>
+  <h4>「500GBのS3バケットをAzureに移行。スクリプトで自動化できる最もシンプルな方法は？」</h4>
+  <p>「S3」「スクリプト自動化」「シンプル」の3キーワードが揃ったらAzCopyです。</p>
+  <div class="ans">✅ AzCopy — S3直接コピー・CLI・無料・並列転送で高速</div>
+  <div class="no">❌ ADF — パイプライン設計が必要で「シンプル」に反する / Data Box — 500GBは過剰 / Storage Explorer — スクリプト不可</div>
+</div>
+</div><!-- /p1 -->
+
+<!-- ═══════════════ PAGE 2: Azure File Sync ═══════════════ -->
+<div class="pg" id="p2">
+<div class="hero h-blue">
+  <div class="hero-content">
+    <div class="eyebrow"><svg width="16" height="16" viewBox="0 0 18 18"><use href="#ico-filesync"/></svg> Azure File Sync — ファイルサーバーのクラウド拡張</div>
+    <h1>Azure File Sync<br>オンプレとクラウドを透過的に統合</h1>
+    <p class="hero-sub">Windows ServerにエージェントをインストールするだけでAzure Filesと双方向同期。クラウドティアリングでローカルは軽量に保ちつつ全データをクラウドに保持。</p>
+    <div class="chips">
+      <span class="chip tb" style="border:1px solid rgba(0,120,212,.35);">双方向リアルタイム同期</span>
+      <span class="chip tg" style="border:1px solid rgba(0,179,134,.35);">クラウドティアリング</span>
+      <span class="chip ty" style="border:1px solid rgba(232,160,0,.35);">Windows Server専用</span>
+      <span class="chip tp" style="border:1px solid rgba(138,63,192,.35);">最大30サーバー/グループ</span>
+    </div>
+  </div>
+</div>
+
+<div class="sh"><h2><span class="n">01</span> アーキテクチャ全体図</h2><div class="sh-line"></div></div>
+<div class="dw">
+  <div class="dw-hd"><span>Azure File Sync — コンポーネントと同期フロー</span></div>
+  <svg class="d" viewBox="0 0 1020 360" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="fs1" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto"><polygon points="0 0,7 2.5,0 5" fill="#0078D4"/></marker>
+      <marker id="fs2" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto"><polygon points="0 0,7 2.5,0 5" fill="#00C878"/></marker>
+    </defs>
+    <!-- Azure Cloud -->
+    <rect x="440" y="8" width="572" height="344" rx="14" fill="rgba(0,120,212,.03)" stroke="rgba(0,120,212,.15)" stroke-width="1"/>
+    <text x="726" y="26" text-anchor="middle" fill="rgba(0,120,212,.4)" font-size="10" font-family="sans-serif" font-weight="700">Microsoft Azure</text>
+
+    <!-- Storage Sync Service -->
+    <rect x="460" y="38" width="532" height="110" rx="12" fill="rgba(0,120,212,.08)" stroke="#0078D4" stroke-width="1.8"/>
+    <text x="726" y="58" text-anchor="middle" fill="#50D4FF" font-size="12" font-family="Outfit,sans-serif" font-weight="900">Storage Sync Service</text>
+    <text x="726" y="72" text-anchor="middle" fill="#3080A0" font-size="9" font-family="sans-serif">Azure File Syncの管理リソース（サブスクリプションに1つ）</text>
+
+    <rect x="474" y="80" width="234" height="56" rx="8" fill="rgba(0,120,212,.15)" stroke="rgba(0,120,212,.4)" stroke-width="1.2"/>
+    <text x="591" y="102" text-anchor="middle" fill="#50D4FF" font-size="10" font-family="sans-serif" font-weight="700">Sync Group A</text>
+    <text x="591" y="116" text-anchor="middle" fill="#306090" font-size="8.5" font-family="sans-serif">Cloud EP: /share1 ← Server EP: 東京</text>
+    <rect x="720" y="80" width="258" height="56" rx="8" fill="rgba(138,63,192,.15)" stroke="rgba(138,63,192,.4)" stroke-width="1.2"/>
+    <text x="849" y="102" text-anchor="middle" fill="#C890F0" font-size="10" font-family="sans-serif" font-weight="700">Sync Group B</text>
+    <text x="849" y="116" text-anchor="middle" fill="#6840A0" font-size="8.5" font-family="sans-serif">Cloud EP: /share2 ← Server EP: 大阪</text>
+
+    <!-- Azure Files -->
+    <rect x="460" y="162" width="532" height="76" rx="12" fill="rgba(0,120,212,.1)" stroke="#0078D4" stroke-width="1.8"/>
+    <svg x="472" y="172" width="28" height="28" viewBox="0 0 18 18"><use href="#ico-blob"/></svg>
+    <text x="726" y="186" text-anchor="middle" fill="#50D4FF" font-size="11" font-family="Outfit,sans-serif" font-weight="900">Azure Files（ストレージアカウント） = Cloud Endpoint</text>
+    <rect x="474" y="196" width="230" height="32" rx="6" fill="rgba(0,120,212,.2)"/><text x="589" y="216" text-anchor="middle" fill="#50D4FF" font-size="9.5" font-family="sans-serif">/share1 (SMB)</text>
+    <rect x="716" y="196" width="264" height="32" rx="6" fill="rgba(138,63,192,.18)"/><text x="848" y="216" text-anchor="middle" fill="#C890F0" font-size="9.5" font-family="sans-serif">/share2 (SMB)</text>
+
+    <!-- Features callout -->
+    <rect x="460" y="252" width="532" height="88" rx="10" fill="rgba(0,0,0,.2)" stroke="var(--bd)" stroke-width="1"/>
+    <text x="726" y="270" text-anchor="middle" fill="#F0C840" font-size="10" font-family="sans-serif" font-weight="700">重要ポイント・制限</text>
+    <rect x="472" y="278" width="242" height="17" rx="4" fill="rgba(240,60,60,.1)" stroke="rgba(240,60,60,.25)" stroke-width="1"/>
+    <text x="593" y="290" text-anchor="middle" fill="#F07070" font-size="8.5" font-family="sans-serif">⚠ Windows Server専用（Linux不可）</text>
+    <rect x="726" y="278" width="254" height="17" rx="4" fill="rgba(0,120,212,.1)" stroke="rgba(0,120,212,.25)" stroke-width="1"/>
+    <text x="853" y="290" text-anchor="middle" fill="#50D4FF" font-size="8.5" font-family="sans-serif">✅ HTTPS 443ポートのみ（アウトバウンド）</text>
+    <rect x="472" y="300" width="242" height="17" rx="4" fill="rgba(240,168,0,.08)" stroke="rgba(240,168,0,.25)" stroke-width="1"/>
+    <text x="593" y="312" text-anchor="middle" fill="#F0C840" font-size="8.5" font-family="sans-serif">⚠ DFS名前空間と併用で多拠点統合可</text>
+    <rect x="726" y="300" width="254" height="17" rx="4" fill="rgba(0,200,120,.08)" stroke="rgba(0,200,120,.25)" stroke-width="1"/>
+    <text x="853" y="312" text-anchor="middle" fill="#40D898" font-size="8.5" font-family="sans-serif">✅ 最大30 Server Endpoints / Sync Group</text>
+    <text x="726" y="332" text-anchor="middle" fill="#3060A0" font-size="8.5" font-family="sans-serif">バックアップ時: スタブファイルに注意 → Azure Backupで事前リコール推奨</text>
+
+    <!-- On-prem servers left -->
+    <rect x="8" y="38" width="215" height="148" rx="12" fill="rgba(60,60,60,.12)" stroke="#444" stroke-width="1.5"/>
+    <text x="115" y="58" text-anchor="middle" fill="#888" font-size="10" font-family="sans-serif" font-weight="700"> 東京拠点</text>
+    <svg x="20" y="68" width="24" height="24" viewBox="0 0 18 18"><use href="#ico-filesync"/></svg>
+    <text x="115" y="80" text-anchor="middle" fill="#6090B0" font-size="9.5" font-family="sans-serif" font-weight="700">Windows Server</text>
+    <text x="115" y="94" text-anchor="middle" fill="#406080" font-size="8.5" font-family="sans-serif">File Sync エージェント</text>
+    <rect x="20" y="102" width="196" height="36" rx="6" fill="rgba(0,200,120,.08)" stroke="rgba(0,200,120,.3)" stroke-width="1"/>
+    <text x="118" y="118" text-anchor="middle" fill="#40D898" font-size="8.5" font-family="sans-serif" font-weight="700">クラウドティアリング有効</text>
+    <text x="118" y="132" text-anchor="middle" fill="#208060" font-size="7.5" font-family="sans-serif">30日未使用→Azureに自動移動（スタブ化）</text>
+    <rect x="20" y="144" width="196" height="30" rx="6" fill="rgba(0,120,212,.1)" stroke="rgba(0,120,212,.25)" stroke-width="1"/>
+    <text x="118" y="163" text-anchor="middle" fill="#50D4FF" font-size="8" font-family="sans-serif">Server Endpoint / Sync Group A に参加</text>
+
+    <!-- Osaka -->
+    <rect x="8" y="204" width="215" height="100" rx="12" fill="rgba(138,63,192,.08)" stroke="rgba(138,63,192,.3)" stroke-width="1.5"/>
+    <text x="115" y="224" text-anchor="middle" fill="#C890F0" font-size="10" font-family="sans-serif" font-weight="700"> 大阪拠点</text>
+    <text x="115" y="240" text-anchor="middle" fill="#8060B0" font-size="9.5" font-family="sans-serif">Windows Server + File Sync</text>
+    <text x="115" y="255" text-anchor="middle" fill="#6040A0" font-size="8.5" font-family="sans-serif">Sync Group B に参加</text>
+    <rect x="20" y="264" width="196" height="28" rx="6" fill="rgba(138,63,192,.12)"/>
+    <text x="118" y="281" text-anchor="middle" fill="#A870E0" font-size="8" font-family="sans-serif">UNC: \\osaka-srv\share2 → 透過アクセス</text>
+
+    <!-- Sync arrows -->
+    <line x1="224" y1="112" x2="458" y2="170" stroke="#0078D4" stroke-width="2.2" marker-end="url(#fs1)"/>
+    <line x1="458" y1="180" x2="224" y2="122" stroke="#00C878" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#fs2)"/>
+    <text x="342" y="140" fill="#50D4FF" font-size="8.5" font-family="sans-serif" text-anchor="middle">↑ 同期 (HTTPS 443)</text>
+    <line x1="224" y1="264" x2="458" y2="210" stroke="rgba(138,63,192,.6)" stroke-width="1.8" stroke-dasharray="4,3" marker-end="url(#fs1)"/>
+  </svg>
+</div>
+
+<div class="sh"><h2><span class="n">02</span> Azure File Sync vs 類似サービス</h2><div class="sh-line"></div></div>
+<div class="tw">
+  <table>
+    <thead>
+      <tr><th class="thg">比較項目</th><th class="thb">Azure File Sync</th><th class="tht">AzCopy</th><th class="thgn">Azure Migrate</th><th class="thb">Azure Files（単体）</th><th class="thb">Azure NetApp Files</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>継続的な双方向同期</td><td class="ok">✅ リアルタイム</td><td class="er">❌</td><td class="er">❌ 一回のみ</td><td class="er">❌ なし</td><td class="er">❌ なし</td></tr>
+      <tr><td>クラウドティアリング</td><td class="ok">✅ あり</td><td class="er">❌</td><td class="er">❌</td><td class="er">❌</td><td class="er">❌</td></tr>
+      <tr><td>既存UNCパス維持</td><td class="ok">✅ 可能</td><td class="er">❌</td><td class="er">❌ 移行後廃止</td><td class="wn">⚠ 認証変更必要</td><td class="ok">✅</td></tr>
+      <tr><td>対応OS</td><td class="wn">Windows Serverのみ</td><td class="ok">全OS</td><td class="wn">VMware/Hyper-V等</td><td class="ok">全OS (SMBクライアント)</td><td class="wn">Linux/Windowsのみ</td></tr>
+      <tr><td>高パフォーマンスNFS</td><td class="er">❌</td><td class="er">❌</td><td class="er">❌</td><td class="wn">⚠ Premium限定</td><td class="ok">✅ NFS v3/4.1対応</td></tr>
+      <tr><td>典型ユースケース</td><td>ファイルサーバー延命・容量拡張・DR・多拠点共有</td><td>スクリプトでの大量転送</td><td>サーバーをAzureに完全移行</td><td>フル移行後のSMBファイル共有</td><td>高性能が必要なLinuxワークロード</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="sh"><h2><span class="n">03</span> ファイルサービス・同期ツール 網羅比較</h2><div class="sh-line"></div></div>
+<p class="sh-sub">WindowsファイルサーバーのクラウドIT化手段を全て比較します。試験では「なぜFile Syncでなければならないか」を説明できることが重要です</p>
+<div class="tw">
+  <table>
+    <thead>
+      <tr>
+        <th class="thg">サービス/ツール</th>
+        <th class="thg">継続同期</th>
+        <th class="thg">クラウドティアリング</th>
+        <th class="thg">UNCパス維持</th>
+        <th class="thg">対応OS</th>
+        <th class="thg">オンプレ廃止不要</th>
+        <th class="thg">高性能NFS</th>
+        <th class="thg">コスト</th>
+        <th class="thg">最適シナリオ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:7px;"><svg width="18" height="18" viewBox="0 0 18 18"><use href="#ico-filesync"/></svg><strong>Azure File Sync</strong></div></td>
+        <td class="ok">✅ リアルタイム双方向</td><td class="ok">✅ あり</td><td class="ok">✅ 可能</td><td class="wn">Windows Serverのみ</td><td class="ok">✅</td><td class="er">❌</td><td class="wn">⚠ ストレージ費</td>
+        <td>Windowsファイルサーバー延命・容量拡張・DR・多拠点共有</td>
+      </tr>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:7px;"><svg width="18" height="18" viewBox="0 0 18 18"><use href="#ico-azcopy"/></svg>AzCopy</div></td>
+        <td class="er">❌ 手動/スケジュール</td><td class="er">❌</td><td class="er">❌</td><td class="ok">全OS</td><td class="ok">✅</td><td class="er">❌</td><td class="ok">✅ 無料</td>
+        <td>スクリプトでの大量ファイル一括転送・一回性移行</td>
+      </tr>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:7px;"><svg width="18" height="18" viewBox="0 0 18 18"><use href="#ico-migrate2"/></svg>Azure Migrate (File Server)</div></td>
+        <td class="er">❌ 一回のみ</td><td class="er">❌</td><td class="er">❌ 移行後廃止</td><td class="wn">Windows Server</td><td class="er">❌ 廃止前提</td><td class="er">❌</td><td class="wn">⚠</td>
+        <td>ファイルサーバーをAzureに完全移行・廃止する場合</td>
+      </tr>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:7px;"><svg width="18" height="18" viewBox="0 0 18 18"><use href="#ico-blob"/></svg>Azure Files（単体・SMB）</div></td>
+        <td class="er">❌ なし</td><td class="er">❌</td><td class="wn">⚠ 認証変更必要</td><td class="ok">全OS（SMBクライアント）</td><td class="wn">⚠ 並行運用可</td><td class="wn">⚠ Premium限定</td><td class="wn">⚠ ファイル料金</td>
+        <td>完全クラウドネイティブなSMBファイル共有・File Sync移行後の受け皿</td>
+      </tr>
+      <tr>
+        <td><svg width="18" height="18" viewBox="0 0 18 18" style="vertical-align:middle;margin-right:7px;"><ellipse cx="9" cy="6" rx="6" ry="2" fill="#0078D4"/><rect x="3" y="6" width="12" height="6" fill="#0078D4"/><ellipse cx="9" cy="12" rx="6" ry="2" fill="#50E6FF"/><path d="M3 8.5 Q9 10 15 8.5" stroke="rgba(255,255,255,.3)" stroke-width=".8" fill="none"/></svg>Azure NetApp Files</td>
+        <td class="er">❌</td><td class="er">❌</td><td class="ok">✅</td><td class="wn">Linux/Windows</td><td class="ok">✅</td><td class="ok">✅ NFS v3/4.1</td><td class="er">❌ 高コスト</td>
+        <td>HPC・SAP・Oracle等の超高性能Linux NFSワークロード</td>
+      </tr>
+      <tr>
+        <td><svg width="18" height="18" viewBox="0 0 18 18" style="vertical-align:middle;margin-right:7px;"><rect x="1" y="3" width="16" height="12" rx="1.5" fill="#005A9E"/><path d="M1 7 L17 7 M1 11 L17 11" stroke="rgba(255,255,255,.2)" stroke-width=".8"/><text x="9" y="15" text-anchor="middle" fill="rgba(255,255,255,.5)" font-size="3.5">DFS</text><path d="M4 5 L9 5 M4 9 L9 9" stroke="#50E6FF" stroke-width="1" stroke-linecap="round"/></svg>DFS-N (Distributed File System)</td>
+        <td class="ok">✅ 名前空間統合</td><td class="er">❌</td><td class="ok">✅ 統合UNCパス</td><td class="wn">Windows Server</td><td class="ok">✅</td><td class="er">❌</td><td class="ok">✅ Windows標準</td>
+        <td>複数拠点のファイル共有を単一UNCパスに統合（File Syncと組み合わせ推奨）</td>
+      </tr>
+      <tr>
+        <td><svg width="18" height="18" viewBox="0 0 18 18" style="vertical-align:middle;margin-right:7px;"><rect x="2" y="2" width="14" height="14" rx="2" fill="#107C10"/><path d="M5 9 L9 5 L13 9 M9 5 L9 13" stroke="white" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>Storage Migration Service (WSMT)</td>
+        <td class="er">❌ 一回性移行</td><td class="er">❌</td><td class="ok">✅ カットオーバー</td><td class="wn">Windows Server</td><td class="er">❌ 移行後廃止</td><td class="er">❌</td><td class="ok">✅ Windows Admin Center</td>
+        <td>Windows ServerのファイルをAzureや別のWindows Serverに移行するGUIツール</td>
+      </tr>
+      <tr>
+        <td><svg width="18" height="18" viewBox="0 0 18 18" style="vertical-align:middle;margin-right:7px;"><rect x="2" y="4" width="14" height="10" rx="1.5" fill="#0078D4"/><path d="M5 7 L13 7 M5 10 L10 10" stroke="rgba(255,255,255,.6)" stroke-width="1" stroke-linecap="round"/><circle cx="14" cy="11" r="3" fill="#00C853"/><path d="M13 11 L14 12 L16 10" stroke="white" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/></svg>Azure Backup (MARS Agent)</td>
+        <td class="er">❌ バックアップのみ</td><td class="er">❌</td><td class="er">❌</td><td class="wn">Windows Server</td><td class="ok">✅</td><td class="er">❌</td><td class="ok">✅ 低コスト</td>
+        <td>ファイルサーバーのバックアップ・DR用途（同期・共有には使えない）</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div class="ib" style="background:rgba(0,120,212,.06);border:1px solid rgba(0,120,212,.25);border-radius:10px;padding:14px 18px;margin-bottom:18px;font-size:13px;">
+  <div class="ib-ico" style="font-size:18px;flex-shrink:0;color:#50D4FF;">i</div>
+  <div><strong style="color:#50D4FF;display:block;margin-bottom:5px;">実務での組み合わせパターン（試験でも問われる）</strong>
+  DFS-N + Azure File Sync の組み合わせが大規模企業でよく使われます。DFS-Nで統一のUNCパスを提供しつつ、File Syncで各拠点サーバーをAzure Filesと同期します。これにより「\\company\share」というパスをユーザーが変更せずに、バックエンドをクラウドに移行できます。</div>
+</div>
+
+<div class="ec">
+  <div class="ec-lbl">試験ポイント</div>
+  <h4>「オンプレWindowsファイルサーバーを廃止せず、よく使うファイル（30日以内）だけローカルに残してクラウドに拡張したい」</h4>
+  <div class="ans">✅ Azure File Sync + クラウドティアリング（日付ポリシー: 30日）— UNCパス変更なし・自動ティアリング</div>
+  <div class="no">❌ AzCopyは継続同期なし / Azure Migrateはサーバーを移行・廃止する / Azure NetApp FilesはLinuxのNFS高性能用途</div>
+</div>
+</div><!-- /p2 -->
+
+<!-- ═══════════════ PAGE 3: Azure Migrate ═══════════════ -->
+<div class="pg" id="p3">
+<div class="hero h-green">
+  <div class="hero-content">
+    <div class="eyebrow"><svg width="16" height="16" viewBox="0 0 18 18"><use href="#ico-migrate2"/></svg> Azure Migrate — 移行統合プラットフォーム</div>
+    <h1>Azure Migrate<br>Discovery → Assessment → Migration</h1>
+    <p class="hero-sub">VMware・Hyper-V・物理サーバー・データベース・Webアプリの移行を一元管理するハブ。Applianceをデプロイするだけで依存関係マップ・サイジング・コスト試算が自動生成される。</p>
+    <div class="chips">
+      <span class="chip tg" style="border:1px solid rgba(0,179,134,.35);">依存関係マップ</span>
+      <span class="chip tg" style="border:1px solid rgba(0,179,134,.35);">コスト試算</span>
+      <span class="chip tb" style="border:1px solid rgba(0,120,212,.35);">VMware/Hyper-V/物理</span>
+      <span class="chip tp" style="border:1px solid rgba(138,63,192,.35);">DB / Web App 移行</span>
+    </div>
+  </div>
+</div>
+
+<div class="sh"><h2><span class="n">01</span> 3フェーズ移行フロー</h2><div class="sh-line"></div></div>
+<div class="dw">
+  <div class="dw-hd"><span>Azure Migrate — Discovery → Assessment → Migration 全体図</span></div>
+  <svg class="d" viewBox="0 0 1020 340" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="am1" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto"><polygon points="0 0,7 2.5,0 5" fill="#00C878"/></marker>
+    </defs>
+    <!-- Phase 1 -->
+    <rect x="8" y="18" width="290" height="304" rx="12" fill="rgba(0,180,216,.05)" stroke="rgba(0,180,216,.3)" stroke-width="1.5"/>
+    <rect x="8" y="18" width="290" height="32" rx="12" fill="rgba(0,180,216,.2)"/>
+    <text x="153" y="38" text-anchor="middle" fill="#00D4FF" font-size="11" font-family="Outfit,sans-serif" font-weight="900">① Discovery（発見）</text>
+    <rect x="22" y="62" width="262" height="50" rx="8" fill="rgba(0,60,120,.3)" stroke="#0078D4" stroke-width="1.2"/>
+    <text x="153" y="84" text-anchor="middle" fill="#90C8FF" font-size="9.5" font-family="sans-serif" font-weight="700">オンプレ環境</text>
+    <text x="153" y="98" text-anchor="middle" fill="#407090" font-size="8.5" font-family="sans-serif">VMware vCenter / Hyper-V / 物理サーバー</text>
+    <rect x="22" y="124" width="262" height="48" rx="8" fill="rgba(0,180,216,.15)" stroke="#00B4D8" stroke-width="1.5"/>
+    <text x="153" y="145" text-anchor="middle" fill="#00D4FF" font-size="9.5" font-family="sans-serif" font-weight="700">Azure Migrate Appliance</text>
+    <text x="153" y="159" text-anchor="middle" fill="#008090" font-size="8" font-family="sans-serif">OVA/VHDをデプロイ（エージェントレス）</text>
+    <rect x="22" y="184" width="262" height="48" rx="8" fill="rgba(0,120,212,.1)"/>
+    <text x="153" y="205" text-anchor="middle" fill="#50D4FF" font-size="9" font-family="sans-serif" font-weight="700">収集データ:</text>
+    <text x="153" y="220" text-anchor="middle" fill="#305070" font-size="8.5" font-family="sans-serif">CPU/メモリ/ディスク/ネットワーク/依存関係</text>
+    <rect x="22" y="244" width="262" height="64" rx="8" fill="rgba(0,200,120,.07)" stroke="rgba(0,200,120,.3)" stroke-width="1"/>
+    <text x="153" y="264" text-anchor="middle" fill="#40D898" font-size="9.5" font-family="sans-serif" font-weight="700">依存関係マッピング</text>
+    <text x="153" y="278" text-anchor="middle" fill="#208060" font-size="8" font-family="sans-serif">エージェントあり: Log Analytics連携</text>
+    <text x="153" y="292" text-anchor="middle" fill="#208060" font-size="8" font-family="sans-serif">エージェントレス: Appliance直接収集</text>
+    <text x="153" y="306" text-anchor="middle" fill="#40D898" font-size="8" font-family="sans-serif">→ 移行グループを自動提案</text>
+
+    <!-- Arrow 1→2 -->
+    <line x1="300" y1="170" x2="336" y2="170" stroke="#00C878" stroke-width="2.5" marker-end="url(#am1)"/>
+
+    <!-- Phase 2 -->
+    <rect x="338" y="18" width="290" height="304" rx="12" fill="rgba(240,168,0,.04)" stroke="rgba(240,168,0,.3)" stroke-width="1.5"/>
+    <rect x="338" y="18" width="290" height="32" rx="12" fill="rgba(240,168,0,.18)"/>
+    <text x="483" y="38" text-anchor="middle" fill="#F0C840" font-size="11" font-family="Outfit,sans-serif" font-weight="900">② Assessment（評価）</text>
+    <rect x="352" y="62" width="262" height="50" rx="8" fill="rgba(240,168,0,.1)" stroke="rgba(240,168,0,.4)" stroke-width="1.2"/>
+    <text x="483" y="82" text-anchor="middle" fill="#F0C840" font-size="9.5" font-family="sans-serif" font-weight="700">Azure VM Assessment</text>
+    <text x="483" y="97" text-anchor="middle" fill="#907020" font-size="8.5" font-family="sans-serif">適切なAzure VMサイズ提案（as-is / perf-based）</text>
+    <rect x="352" y="124" width="262" height="50" rx="8" fill="rgba(0,120,212,.1)"/>
+    <text x="483" y="145" text-anchor="middle" fill="#50D4FF" font-size="9.5" font-family="sans-serif" font-weight="700">SQL Assessment</text>
+    <text x="483" y="160" text-anchor="middle" fill="#305070" font-size="8.5" font-family="sans-serif">SQL DB / MI / VM の移行先提案・互換性問題検出</text>
+    <rect x="352" y="186" width="262" height="50" rx="8" fill="rgba(138,63,192,.1)"/>
+    <text x="483" y="207" text-anchor="middle" fill="#C890F0" font-size="9.5" font-family="sans-serif" font-weight="700">コスト試算</text>
+    <text x="483" y="222" text-anchor="middle" fill="#604080" font-size="8.5" font-family="sans-serif">月次コスト・Reserved Instance・Azure Hybrid Benefit</text>
+    <rect x="352" y="248" width="262" height="64" rx="8" fill="rgba(0,200,120,.07)" stroke="rgba(0,200,120,.28)" stroke-width="1"/>
+    <text x="483" y="268" text-anchor="middle" fill="#40D898" font-size="9.5" font-family="sans-serif" font-weight="700">準備度チェック</text>
+    <text x="483" y="283" text-anchor="middle" fill="#208060" font-size="8" font-family="sans-serif">Ready / Conditionally Ready / Not Ready</text>
+    <text x="483" y="298" text-anchor="middle" fill="#208060" font-size="8" font-family="sans-serif">条件付き: 修正が必要な項目をリスト提示</text>
+    <text x="483" y="313" text-anchor="middle" fill="#40D898" font-size="8" font-family="sans-serif">→ 移行計画とROI試算レポート出力</text>
+
+    <!-- Arrow 2→3 -->
+    <line x1="630" y1="170" x2="666" y2="170" stroke="#00C878" stroke-width="2.5" marker-end="url(#am1)"/>
+
+    <!-- Phase 3 -->
+    <rect x="668" y="18" width="344" height="304" rx="12" fill="rgba(0,179,134,.05)" stroke="rgba(0,179,134,.3)" stroke-width="1.5"/>
+    <rect x="668" y="18" width="344" height="32" rx="12" fill="rgba(0,179,134,.2)"/>
+    <text x="840" y="38" text-anchor="middle" fill="#00D8A4" font-size="11" font-family="Outfit,sans-serif" font-weight="900">③ Migration（移行）</text>
+    <rect x="682" y="62" width="316" height="50" rx="8" fill="rgba(0,179,134,.12)" stroke="rgba(0,179,134,.4)" stroke-width="1.2"/>
+    <svg x="690" y="70" width="24" height="24" viewBox="0 0 18 18"><use href="#ico-migrate2"/></svg>
+    <text x="840" y="84" text-anchor="middle" fill="#00D8A4" font-size="9.5" font-family="sans-serif" font-weight="700">Server Migration</text>
+    <text x="840" y="99" text-anchor="middle" fill="#008060" font-size="8.5" font-family="sans-serif">VMware（エージェントレス/エージェント）/ Hyper-V / 物理</text>
+    <rect x="682" y="124" width="316" height="50" rx="8" fill="rgba(0,120,212,.1)"/>
+    <svg x="690" y="132" width="22" height="22" viewBox="0 0 18 18"><use href="#ico-dms"/></svg>
+    <text x="840" y="145" text-anchor="middle" fill="#50D4FF" font-size="9.5" font-family="sans-serif" font-weight="700">Database Migration (DMS)</text>
+    <text x="840" y="160" text-anchor="middle" fill="#305070" font-size="8.5" font-family="sans-serif">SQL/Oracle/MySQL → Azure SQL（オンライン/オフライン）</text>
+    <rect x="682" y="186" width="316" height="50" rx="8" fill="rgba(224,92,20,.08)"/>
+    <text x="840" y="207" text-anchor="middle" fill="#F07840" font-size="9.5" font-family="sans-serif" font-weight="700">Web App Migration</text>
+    <text x="840" y="222" text-anchor="middle" fill="#803020" font-size="8.5" font-family="sans-serif">ASP.NET / Java / PHP → App Service / Container Apps</text>
+    <rect x="682" y="248" width="316" height="64" rx="8" fill="rgba(0,200,120,.07)" stroke="rgba(0,200,120,.28)" stroke-width="1"/>
+    <text x="840" y="268" text-anchor="middle" fill="#40D898" font-size="9.5" font-family="sans-serif" font-weight="700">テスト移行 → 本番カットオーバー</text>
+    <text x="840" y="283" text-anchor="middle" fill="#208060" font-size="8" font-family="sans-serif">段階的移行でリスク最小化</text>
+    <text x="840" y="298" text-anchor="middle" fill="#208060" font-size="8" font-family="sans-serif">本番前にテスト環境で動作確認</text>
+    <text x="840" y="313" text-anchor="middle" fill="#40D898" font-size="8" font-family="sans-serif">移行後: Azure Cost Management でコスト最適化</text>
+  </svg>
+</div>
+
+<div class="sh"><h2><span class="n">02</span> 移行ツール全体比較（試験頻出）</h2><div class="sh-line"></div></div>
+<div class="tw">
+  <table>
+    <thead>
+      <tr>
+        <th class="thg" style="width:20%">ツール / サービス</th>
+        <th class="thgn">対象</th>
+        <th class="thgn">ダウンタイム</th>
+        <th class="thgn">フェイルバック</th>
+        <th class="thgn">スキーマ変換</th>
+        <th class="thgn">評価機能</th>
+        <th class="thg">最適ユースケース</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:7px;"><svg width="18" height="18" viewBox="0 0 18 18"><use href="#ico-migrate2"/></svg>Azure Migrate<br>(Server Migration)</div></td>
+        <td>VMware / Hyper-V / 物理</td>
+        <td class="wn">⚠ カットオーバー時のみ</td>
+        <td class="er">❌ 基本なし</td>
+        <td class="er">❌</td>
+        <td class="ok">✅ 依存関係・サイズ</td>
+        <td>VMのLift&Shift移行・依存関係調査</td>
+      </tr>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:7px;"><svg width="18" height="18" viewBox="0 0 18 18"><use href="#ico-dms"/></svg>Azure DMS<br>(Database Migration)</div></td>
+        <td>SQL / Oracle / MySQL等</td>
+        <td class="ok">✅ オンラインモード</td>
+        <td class="er">❌</td>
+        <td class="wn">⚠ 限定的</td>
+        <td class="ok">✅ アセスメント</td>
+        <td>SQL Server→SQL DB/MI の標準DB移行</td>
+      </tr>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:7px;"><svg width="18" height="18" viewBox="0 0 18 18"><use href="#ico-milink"/></svg>MI Link (SQL2022)</div></td>
+        <td>SQL Server 2016〜2025</td>
+        <td class="ok">✅ 最小</td>
+        <td class="ok">✅ 完全対応</td>
+        <td class="er">❌</td>
+        <td class="er">❌</td>
+        <td>Business Critical tierへのオンライン移行・DR</td>
+      </tr>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:7px;"><svg width="18" height="18" viewBox="0 0 18 18"><use href="#ico-sqldb"/></svg>DMA</div></td>
+        <td>SQL Server→Azure SQL</td>
+        <td class="wn">⚠ 評価中心</td>
+        <td class="er">❌</td>
+        <td class="ok">✅ スキーマ移行</td>
+        <td class="ok">✅ 互換性チェック</td>
+        <td>移行前の互換性評価・スキーマ移行</td>
+      </tr>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:7px;"><svg width="18" height="18" viewBox="0 0 18 18"><use href="#ico-sqlmi"/></svg>SSMA</div></td>
+        <td>Oracle/MySQL/Access→SQL</td>
+        <td class="wn">⚠ 作業中のみ</td>
+        <td class="er">❌</td>
+        <td class="ok">✅ 異種DB変換</td>
+        <td class="ok">✅</td>
+        <td>Oracle等異種DBからSQL Serverへの移行</td>
+      </tr>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:7px;"><svg width="18" height="18" viewBox="0 0 18 18"><use href="#ico-arc"/></svg>Azure Arc</div></td>
+        <td>オンプレ/マルチクラウドVM</td>
+        <td>N/A（管理ツール）</td>
+        <td>N/A</td>
+        <td class="er">❌</td>
+        <td class="wn">⚠ 監視・ポリシー</td>
+        <td>移行前後のハイブリッド管理・ポリシー適用</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="sh"><h2><span class="n">03</span> VM・サーバー移行ツール 網羅比較</h2><div class="sh-line"></div></div>
+<p class="sh-sub">Azure Migrate以外の移行支援ツールとの違いを理解することが、試験の選択問題で差がつきます</p>
+<div class="tw">
+  <table>
+    <thead>
+      <tr>
+        <th class="thg">ツール / サービス</th>
+        <th class="thg">対象</th>
+        <th class="thg">主な機能</th>
+        <th class="thg">DR（継続レプリカ）</th>
+        <th class="thg">アセスメント</th>
+        <th class="thg">ダウンタイム</th>
+        <th class="thg">キーワード</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:7px;"><svg width="18" height="18" viewBox="0 0 18 18"><use href="#ico-migrate2"/></svg><strong>Azure Migrate</strong></div></td>
+        <td>VM / DB / WebApp</td><td>Discovery・Assessment・Migration統合ハブ</td>
+        <td class="er">❌</td><td class="ok">✅ 依存関係・サイジング</td><td class="wn">⚠ カットオーバー時のみ</td>
+        <td>「Lift&amp;Shift」「アセスメント」「依存関係マップ」</td>
+      </tr>
+      <tr>
+        <td><svg width="18" height="18" viewBox="0 0 18 18" style="vertical-align:middle;margin-right:7px;"><circle cx="9" cy="9" r="8" fill="#0078D4"/><path d="M9 4 L9 9 L13 9" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M5 13 L9 9" stroke="rgba(255,255,255,.6)" stroke-width="1" stroke-linecap="round"/></svg><strong>Azure Site Recovery (ASR)</strong></td>
+        <td>VM（VMware/Hyper-V/Azure VM）</td><td>継続レプリケーションによるDR・移行</td>
+        <td class="ok">✅ 継続的なレプリカ維持</td><td class="er">❌</td><td class="ok">✅ 最小（数分〜数十分）</td>
+        <td>「DR」「RPO数秒」「RTO数分」「フェイルオーバー」「フェイルバック」</td>
+      </tr>
+      <tr>
+        <td><svg width="18" height="18" viewBox="0 0 18 18" style="vertical-align:middle;margin-right:7px;"><rect x="2" y="3" width="14" height="12" rx="1.5" fill="#8A3FC0"/><path d="M9 6 L12 9 L9 12 M9 6 L6 9 L9 12" stroke="white" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>Movere (Azure Migrate統合)</td>
+        <td>サーバー・アプリケーション</td><td>エージェントベースの詳細インベントリ収集</td>
+        <td class="er">❌</td><td class="ok">✅ ソフトウェアインベントリ</td><td>N/A（評価のみ）</td>
+        <td>「詳細インベントリ」「ソフトウェア利用状況」「Azure Migrate統合」</td>
+      </tr>
+      <tr>
+        <td><svg width="18" height="18" viewBox="0 0 18 18" style="vertical-align:middle;margin-right:7px;"><rect x="2" y="3" width="14" height="12" rx="1.5" fill="#107C10"/><path d="M5 7 L13 7 M5 10 L10 10" stroke="rgba(255,255,255,.7)" stroke-width="1" stroke-linecap="round"/><circle cx="13" cy="10" r="2.5" fill="#54B454"/><path d="M12 10 L13 11 L15 9" stroke="white" stroke-width=".9" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>App Service Migration Assistant</td>
+        <td>ASP.NET / PHP / Java (IIS Webアプリ)</td><td>Webアプリの互換性評価とApp Service移行</td>
+        <td class="er">❌</td><td class="ok">✅ 互換性チェック</td><td class="wn">⚠ 作業中のみ</td>
+        <td>「WebアプリをApp Serviceに移行」「ASP.NET」「IIS」</td>
+      </tr>
+      <tr>
+        <td><svg width="18" height="18" viewBox="0 0 18 18" style="vertical-align:middle;margin-right:7px;"><rect x="1" y="3" width="16" height="12" rx="2" fill="#E05C14"/><rect x="1" y="3" width="16" height="4.5" rx="2" fill="#F08040"/><path d="M4 10 L9 10 L9 8.5 L12 11 L9 13.5 L9 12 L4 12Z" fill="white" opacity=".9"/></svg>CloudEndure Migration (非推奨→ASR)</td>
+        <td>物理・仮想サーバー（任意OS）</td><td>エージェントベースのブロックレベルレプリケーション</td>
+        <td class="ok">✅（ASRに統合）</td><td class="er">❌</td><td class="ok">✅ 最小</td>
+        <td>現在はAzure Migrate/ASRへの統合が推奨（AWS CloudEndureは別）</td>
+      </tr>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:7px;"><svg width="18" height="18" viewBox="0 0 18 18"><use href="#ico-arc"/></svg>Azure Arc + Azure Migrate</div></td>
+        <td>オンプレ/他クラウドのVM・K8s</td><td>Arc対応サーバーのMigrate統合管理</td>
+        <td class="wn">⚠ 監視・ポリシー</td><td class="ok">✅ Arc対応サーバーの状態把握</td><td class="wn">⚠ 移行時のみ</td>
+        <td>「マルチクラウド」「Arc対応サーバー」「ハイブリッド管理」</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="ib warn">
+  <div class="ib-ico" style="font-size:18px;flex-shrink:0;">⚠</div>
+  <div>
+    <strong>Azure Migrate と Azure Site Recovery の重要な違い</strong>
+    Azure Migrateは「移行プロジェクト管理ハブ」で、一方向の移行を目的とします。Azure Site Recovery（ASR）は「継続的なDRソリューション」で、フェイルオーバー後のフェイルバックが前提です。両者はServer Migration機能で統合されており、Azure Migrate経由でASRエンジンを利用した移行も可能です。試験では「DR＝ASR」「一回限りのLift&amp;Shift＝Azure Migrate」で判断します。
+  </div>
+</div>
+</div><!-- /p3 -->
+
+<!-- ═══════════════ PAGE 4: MI Link ═══════════════ -->
+<div class="pg" id="p4">
+<div class="hero h-purple">
+  <div class="hero-content">
+    <div class="eyebrow"><svg width="16" height="16" viewBox="0 0 18 18"><use href="#ico-milink"/></svg> Managed Instance Link</div>
+    <h1>Managed Instance Link<br>Always On分散AGでSQL Serverを拡張</h1>
+    <p class="hero-sub">SQL ServerのAlways On「分散可用性グループ（Distributed AG）」技術を利用し、オンプレSQL ServerとAzure SQL MIをニアリアルタイムで同期。SQL Server 2022以降では双方向フェイルオーバーとフェイルバックが利用可能。</p>
+    <div class="chips">
+      <span class="chip tp" style="border:1px solid rgba(138,63,192,.35);">分散AG</span>
+      <span class="chip tb" style="border:1px solid rgba(0,120,212,.35);">ニアリアルタイム</span>
+      <span class="chip tg" style="border:1px solid rgba(0,179,134,.35);">↔ 双方向 (SQL2022+)</span>
+      <span class="chip ty" style="border:1px solid rgba(232,160,0,.35);">DR + オンライン移行</span>
+    </div>
+  </div>
+</div>
+
+<div class="sh"><h2><span class="n">01</span> 仕組みとアーキテクチャ</h2><div class="sh-line"></div></div>
+<div class="dw">
+  <div class="dw-hd"><span>Managed Instance Link — 分散可用性グループによる同期アーキテクチャ</span></div>
+  <svg class="d" viewBox="0 0 1020 380" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="ml1" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto"><polygon points="0 0,7 2.5,0 5" fill="#C890F0"/></marker>
+      <marker id="ml2" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto"><polygon points="0 0,7 2.5,0 5" fill="#00C878"/></marker>
+    </defs>
+    <!-- On-prem -->
+    <rect x="8" y="16" width="400" height="356" rx="14" fill="rgba(60,60,60,.1)" stroke="#444" stroke-width="1.5"/>
+    <text x="208" y="36" text-anchor="middle" fill="#888" font-size="10" font-family="sans-serif" font-weight="700"> On-premises / AWS VM / Azure VM（別VNet）</text>
+
+    <!-- SQL Server -->
+    <rect x="22" y="50" width="372" height="176" rx="10" fill="rgba(0,60,120,.28)" stroke="#0078D4" stroke-width="1.5"/>
+    <svg x="30" y="58" width="28" height="28" viewBox="0 0 18 18"><use href="#ico-sqldb"/></svg>
+    <text x="208" y="72" text-anchor="middle" fill="#50D4FF" font-size="11" font-family="Outfit,sans-serif" font-weight="900">SQL Server (2016〜2025)</text>
+    <!-- Local AG -->
+    <rect x="34" y="84" width="348" height="54" rx="8" fill="rgba(0,120,212,.18)" stroke="rgba(0,120,212,.4)" stroke-width="1.2"/>
+    <text x="208" y="104" text-anchor="middle" fill="#50D4FF" font-size="9.5" font-family="sans-serif" font-weight="700">Always On 可用性グループ (Local AG)</text>
+    <rect x="44" y="116" width="150" height="16" rx="4" fill="rgba(0,120,212,.3)"/><text x="119" y="128" text-anchor="middle" fill="white" font-size="8.5" font-family="sans-serif">PRIMARY</text>
+    <rect x="204" y="116" width="166" height="16" rx="4" fill="rgba(0,120,212,.2)"/><text x="287" y="128" text-anchor="middle" fill="#A0C8FF" font-size="8.5" font-family="sans-serif">SECONDARY (任意)</text>
+    <!-- Distributed AG -->
+    <rect x="34" y="148" width="348" height="64" rx="8" fill="rgba(138,63,192,.2)" stroke="#8A3FC0" stroke-width="1.8"/>
+    <text x="208" y="170" text-anchor="middle" fill="#C890F0" font-size="10" font-family="sans-serif" font-weight="700">分散可用性グループ (Distributed AG)</text>
+    <text x="208" y="184" text-anchor="middle" fill="#7040A0" font-size="8.5" font-family="sans-serif">Local AG と SQL MI リモートAGを接続</text>
+    <text x="208" y="198" text-anchor="middle" fill="#604080" font-size="8" font-family="sans-serif">TCP port 5022 / TLS 1.2暗号化 / NSG設定必要</text>
+
+    <!-- Version comparison -->
+    <rect x="22" y="238" width="178" height="122" rx="8" fill="rgba(240,60,60,.07)" stroke="rgba(240,60,60,.3)" stroke-width="1.2"/>
+    <text x="111" y="257" text-anchor="middle" fill="#F07070" font-size="9.5" font-family="sans-serif" font-weight="700">SQL 2016〜2019</text>
+    <text x="111" y="272" text-anchor="middle" fill="#A04040" font-size="8.5" font-family="sans-serif">✅ SQL Server → MI (一方向)</text>
+    <text x="111" y="286" text-anchor="middle" fill="#A04040" font-size="8.5" font-family="sans-serif">❌ フェイルバック不可</text>
+    <text x="111" y="300" text-anchor="middle" fill="#A04040" font-size="8.5" font-family="sans-serif">❌ リンク切断後は再作成要</text>
+    <text x="111" y="316" text-anchor="middle" fill="#F07070" font-size="8" font-family="sans-serif">DR用に使えるが戻せない</text>
+    <text x="111" y="330" text-anchor="middle" fill="#804040" font-size="7.5" font-family="sans-serif">復旧はbacpac/トランザクションレプリ</text>
+
+    <rect x="212" y="238" width="182" height="122" rx="8" fill="rgba(0,179,134,.08)" stroke="rgba(0,179,134,.4)" stroke-width="1.5"/>
+    <text x="303" y="257" text-anchor="middle" fill="#00D8A4" font-size="9.5" font-family="sans-serif" font-weight="700">SQL 2022 / 2025 ★</text>
+    <text x="303" y="272" text-anchor="middle" fill="#00A070" font-size="8.5" font-family="sans-serif">✅ 双方向フェイルオーバー</text>
+    <text x="303" y="286" text-anchor="middle" fill="#00A070" font-size="8.5" font-family="sans-serif">✅ フェイルバック対応!</text>
+    <text x="303" y="300" text-anchor="middle" fill="#00A070" font-size="8.5" font-family="sans-serif">✅ MI → SQL Serverも可</text>
+    <text x="303" y="314" text-anchor="middle" fill="#00D8A4" font-size="8" font-family="sans-serif">Business Criticalへの唯一のオンライン移行</text>
+    <text x="303" y="328" text-anchor="middle" fill="#40A880" font-size="7.5" font-family="sans-serif">AZ-305試験で最重要機能!</text>
+
+    <!-- Azure SQL MI right -->
+    <rect x="620" y="16" width="392" height="356" rx="14" fill="rgba(0,120,212,.03)" stroke="#0078D4" stroke-width="1.5"/>
+    <text x="816" y="36" text-anchor="middle" fill="#3080A0" font-size="10" font-family="sans-serif" font-weight="700"> Azure SQL Managed Instance</text>
+
+    <!-- MI box -->
+    <rect x="636" y="50" width="360" height="104" rx="10" fill="rgba(138,63,192,.15)" stroke="#8A3FC0" stroke-width="1.8"/>
+    <svg x="644" y="58" width="28" height="28" viewBox="0 0 18 18"><use href="#ico-sqlmi"/></svg>
+    <text x="816" y="72" text-anchor="middle" fill="#C890F0" font-size="11" font-family="Outfit,sans-serif" font-weight="900">Azure SQL Managed Instance</text>
+    <rect x="648" y="82" width="158" height="30" rx="6" fill="rgba(138,63,192,.25)"/>
+    <text x="727" y="101" text-anchor="middle" fill="#C890F0" font-size="9" font-family="sans-serif">Remote AG (SECONDARY)</text>
+    <rect x="818" y="82" width="166" height="30" rx="6" fill="rgba(0,120,212,.15)"/>
+    <text x="901" y="97" text-anchor="middle" fill="#50D4FF" font-size="9" font-family="sans-serif">読み取りオフロード可</text>
+    <text x="816" y="140" text-anchor="middle" fill="#604080" font-size="8.5" font-family="sans-serif">General Purpose / Business Critical両サービス層対応</text>
+
+    <!-- Use cases -->
+    <rect x="636" y="168" width="360" height="190" rx="10" fill="rgba(0,0,0,.2)"/>
+    <text x="816" y="187" text-anchor="middle" fill="#F0C840" font-size="10" font-family="sans-serif" font-weight="700">3つの主要ユースケース</text>
+    <rect x="648" y="196" width="336" height="46" rx="6" fill="rgba(240,60,60,.07)" stroke="rgba(240,60,60,.25)" stroke-width="1"/>
+    <text x="816" y="214" text-anchor="middle" fill="#F07070" font-size="9.5" font-family="sans-serif" font-weight="700"> ① ディザスタリカバリ (DR)</text>
+    <text x="816" y="228" text-anchor="middle" fill="#A04040" font-size="8.5" font-family="sans-serif">障害時→MI にフェイルオーバー（SQL2022はフェイルバックも）</text>
+    <text x="816" y="238" text-anchor="middle" fill="#804040" font-size="8" font-family="sans-serif">RPO≒0 / RTO: 手動フェイルオーバー時間</text>
+    <rect x="648" y="250" width="336" height="46" rx="6" fill="rgba(0,120,212,.08)" stroke="rgba(0,120,212,.25)" stroke-width="1"/>
+    <text x="816" y="268" text-anchor="middle" fill="#50D4FF" font-size="9.5" font-family="sans-serif" font-weight="700">② オンライン移行（最小ダウンタイム）</text>
+    <text x="816" y="282" text-anchor="middle" fill="#305070" font-size="8.5" font-family="sans-serif">同期完了後→本番トラフィックをMIに切替（数分のみ）</text>
+    <text x="816" y="296" text-anchor="middle" fill="#205060" font-size="8" font-family="sans-serif">Business Criticalへの唯一のオンライン移行手段</text>
+    <rect x="648" y="304" width="336" height="46" rx="6" fill="rgba(0,179,134,.08)" stroke="rgba(0,179,134,.25)" stroke-width="1"/>
+    <text x="816" y="322" text-anchor="middle" fill="#00D8A4" font-size="9.5" font-family="sans-serif" font-weight="700"> ③ ハイブリッド読み取りオフロード</text>
+    <text x="816" y="337" text-anchor="middle" fill="#008060" font-size="8.5" font-family="sans-serif">SQL Server=書き込み、SQL MI=分析・レポート用読み取り</text>
+    <text x="816" y="351" text-anchor="middle" fill="#006040" font-size="8" font-family="sans-serif">Power BI / Synapse / カスタム分析と統合</text>
+
+    <!-- Sync arrow -->
+    <path d="M 410 180 Q 510 170 618 100" fill="none" stroke="#C890F0" stroke-width="2.5" marker-end="url(#ml1)"/>
+    <text x="514" y="140" text-anchor="middle" fill="#C890F0" font-size="9.5" font-family="sans-serif"> TLS 1.2</text>
+    <text x="514" y="154" text-anchor="middle" fill="#8060B0" font-size="9" font-family="sans-serif">Port 5022</text>
+    <path d="M 618 120 Q 516 175 412 200" fill="none" stroke="#00C878" stroke-width="1.8" stroke-dasharray="5,3" marker-end="url(#ml2)"/>
+  </svg>
+</div>
+
+<div class="sh"><h2><span class="n">02</span> SQLバージョン別機能比較</h2><div class="sh-line"></div></div>
+<div class="tw">
+  <table>
+    <thead><tr><th class="thg">SQLバージョン</th><th class="thp">同期方向</th><th class="thp">フェイルバック</th><th class="thp">リンク起点</th><th class="thg">試験重要度</th></tr></thead>
+    <tbody>
+      <tr><td>SQL Server 2016〜2019</td><td class="cp">SQL Server → MI のみ</td><td class="er">❌ リンク切断</td><td class="cp">SQL Server側のみ</td><td class="wn">★★☆</td></tr>
+      <tr><td style="color:#00D8A4;font-weight:700">SQL Server 2022 ★</td><td class="ok">✅ 双方向</td><td class="ok">✅ オンライン/オフライン</td><td class="ok">どちらからでも (CU10+)</td><td class="ok">★★★ 最重要</td></tr>
+      <tr><td>SQL Server 2025</td><td class="ok">✅ 双方向</td><td class="ok">✅</td><td class="ok">どちらからでも</td><td class="wn">★★☆ 最新</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="sh"><h2><span class="n">03</span> ネットワーク要件</h2><div class="sh-line"></div></div>
+<div class="g2">
+  <div class="card c-p">
+    <div class="card-hd"><div class="card-icon" style="background:rgba(138,63,192,.2);"><svg width="26" height="26" viewBox="0 0 18 18"><use href="#ico-milink"/></svg></div><div><h3>必須ポート設定</h3></div></div>
+    <ul>
+      <li>SQL MI サブネットのNSG: <strong style="color:#C890F0">Inbound port 5022</strong> と <strong style="color:#C890F0">11000-11999</strong> を SQL Server IPから許可</li>
+      <li>SQL MI サブネットのNSG: <strong style="color:#C890F0">Outbound port 5022</strong> を SQL Server IPへ許可</li>
+      <li>SQL Server 側でも port 5022 の受信を許可</li>
+    </ul>
+    <div class="tags"><span class="tag tp">Port 5022</span><span class="tag tp">NSG必須</span><span class="tag tr">パブリックEP不可</span></div>
+  </div>
+  <div class="card c-y">
+    <div class="card-hd"><div class="card-icon" style="background:rgba(232,160,0,.15);"><svg width="26" height="26" viewBox="0 0 18 18"><use href="#ico-arc"/></svg></div><div><h3>接続方式の推奨順</h3></div></div>
+    <ul>
+      <li><strong style="color:#F0C840">同一VNetのAzure VM:</strong> 自動接続（最シンプル）</li>
+      <li><strong style="color:#F0C840">別VNet:</strong> VNetピアリング（MSバックボーン）</li>
+      <li><strong style="color:#F0C840">オンプレ:</strong> ExpressRoute推奨（最高性能）またはVPN</li>
+      <li><strong style="color:#F07840">パブリックエンドポイントはリンクに使用不可</strong></li>
+    </ul>
+    <div class="tags"><span class="tag ty">ExpressRoute推奨</span><span class="tag tr">パブリックEP不可</span></div>
+  </div>
+</div>
+
+<div class="sh"><h2><span class="n">04</span> SQL Server HA/DR/移行 全手段 網羅比較</h2><div class="sh-line"></div></div>
+<p class="sh-sub">SQL Server から Azure SQL MI への移行・DR方法を全て並べると、試験でどれを選ぶべきかが明確になります</p>
+<div class="tw">
+  <table>
+    <thead>
+      <tr>
+        <th class="thg">手段</th>
+        <th class="thg">方向</th>
+        <th class="thg">ダウンタイム</th>
+        <th class="thg">フェイルバック</th>
+        <th class="thg">Biz Critical tier</th>
+        <th class="thg">リアルタイム同期</th>
+        <th class="thg">前提バージョン</th>
+        <th class="thg">最適ユースケース</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:6px;"><svg width="17" height="17" viewBox="0 0 18 18"><use href="#ico-milink"/></svg><strong style="color:#C890F0">MI Link (SQL2022)</strong></div></td>
+        <td>双方向</td>
+        <td class="ok">✅ 最小（切替時のみ）</td>
+        <td class="ok">✅ 完全対応</td>
+        <td class="ok">✅ 唯一のオンライン移行手段</td>
+        <td class="ok">✅ ニアリアルタイム</td>
+        <td>SQL Server 2022+</td>
+        <td>Business Critical tier移行・DR・ハイブリッド読み取りオフロード</td>
+      </tr>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:6px;"><svg width="17" height="17" viewBox="0 0 18 18"><use href="#ico-milink"/></svg>MI Link (SQL 2016〜2019)</div></td>
+        <td>一方向（SQL→MI）</td>
+        <td class="ok">✅ 最小</td>
+        <td class="er">❌ リンク切断</td>
+        <td class="wn">⚠ GP tierのみ</td>
+        <td class="ok">✅ ニアリアルタイム</td>
+        <td>SQL Server 2016以降</td>
+        <td>General Purpose tierへのオンライン移行・DR（フェイルバック不要）</td>
+      </tr>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:6px;"><svg width="17" height="17" viewBox="0 0 18 18"><use href="#ico-dms"/></svg><strong>Azure DMS（オンライン）</strong></div></td>
+        <td>一方向（→MI）</td>
+        <td class="ok">✅ 最小</td>
+        <td class="er">❌</td>
+        <td class="er">❌ GP tierのみ</td>
+        <td class="ok">✅ CDC使用</td>
+        <td>SQL Server 2005以降</td>
+        <td>General Purpose tierへの標準オンライン移行（Business Criticalは不可）</td>
+      </tr>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:6px;"><svg width="17" height="17" viewBox="0 0 18 18"><use href="#ico-dms"/></svg>Azure DMS（オフライン）</div></td>
+        <td>一方向（→MI）</td>
+        <td class="er">❌ ダウンタイム大</td>
+        <td class="er">❌</td>
+        <td class="ok">✅ GP/BC 両対応</td>
+        <td class="er">❌</td>
+        <td>SQL Server 2005以降</td>
+        <td>ダウンタイムを許容できる場合・GP/BC両対応</td>
+      </tr>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:6px;"><svg width="17" height="17" viewBox="0 0 18 18"><use href="#ico-sqldb"/></svg>バックアップ / リストア</div></td>
+        <td>一方向（→MI）</td>
+        <td class="er">❌ ダウンタイム大</td>
+        <td class="er">❌</td>
+        <td class="ok">✅ GP/BC 両対応</td>
+        <td class="er">❌</td>
+        <td>SQL Server 2008以降</td>
+        <td>最もシンプルな移行・小規模DB・ダウンタイム許容</td>
+      </tr>
+      <tr>
+        <td><svg width="17" height="17" viewBox="0 0 18 18" style="vertical-align:middle;margin-right:6px;"><ellipse cx="5" cy="9" rx="3.5" ry="7" fill="none" stroke="#0078D4" stroke-width="1.5"/><ellipse cx="13" cy="9" rx="3.5" ry="7" fill="none" stroke="#6B69D6" stroke-width="1.5"/><path d="M7 6 L11 6 M7 12 L11 12" stroke="#50E6FF" stroke-width="1" stroke-dasharray="2,1"/></svg>トランザクションレプリケーション</td>
+        <td>一方向（継続）</td>
+        <td class="ok">✅ 最小</td>
+        <td class="er">❌</td>
+        <td class="ok">✅ GP/BC 両対応</td>
+        <td class="ok">✅ ほぼリアルタイム</td>
+        <td>SQL Server 2016以降</td>
+        <td>MI Linkの代替・読み取りレプリカ・データ配布</td>
+      </tr>
+      <tr>
+        <td><svg width="17" height="17" viewBox="0 0 18 18" style="vertical-align:middle;margin-right:6px;"><path d="M2 5 L16 5 L16 14 L2 14Z" fill="none" stroke="#8A3FC0" stroke-width="1.5"/><path d="M2 8 L16 8" stroke="#8A3FC0" stroke-width="1"/><circle cx="5" cy="6.5" r="1" fill="#C890F0"/><circle cx="9" cy="6.5" r="1" fill="#C890F0"/></svg>ログ配布（Log Shipping）</td>
+        <td>一方向（非同期）</td>
+        <td class="wn">⚠ ログ遅延あり</td>
+        <td class="wn">⚠ 手動で可能</td>
+        <td class="ok">✅ GP/BC 両対応</td>
+        <td class="er">❌ 非同期</td>
+        <td>SQL Server 2008以降</td>
+        <td>シンプルなDR（レイテンシ許容）・読み取りセカンダリ</td>
+      </tr>
+      <tr>
+        <td><svg width="17" height="17" viewBox="0 0 18 18" style="vertical-align:middle;margin-right:6px;"><ellipse cx="9" cy="5" rx="6" ry="2" fill="#0078D4"/><rect x="3" y="5" width="12" height="5" fill="#0078D4"/><ellipse cx="9" cy="10" rx="6" ry="2" fill="#50E6FF"/><path d="M13 12 L15 14 M15 12 L13 14" stroke="#FF4040" stroke-width="1.2" stroke-linecap="round"/></svg>Always On AG（スタンドアロン）</td>
+        <td>双方向（AG内）</td>
+        <td class="ok">✅ 自動フェイルオーバー</td>
+        <td class="ok">✅</td>
+        <td class="er">❌ MI Link必要</td>
+        <td class="ok">✅ 同期モード</td>
+        <td>SQL Server 2012以降</td>
+        <td>オンプレSQL Server間のHA/DR（Azure連携はMI Link）</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="ib" style="background:rgba(138,63,192,.07);border:1px solid rgba(138,63,192,.3);border-radius:10px;padding:14px 18px;margin-bottom:18px;font-size:13px;display:flex;gap:12px;">
+  <div style="font-size:18px;flex-shrink:0;color:#C890F0;">!</div>
+  <div><strong style="color:#C890F0;display:block;margin-bottom:5px;">Business Critical tier への移行方法が問われる理由</strong>
+  Business Critical はローカルSSD・4ノードクラスター構成で、General Purpose とは内部アーキテクチャが大きく異なります。そのため DMS のオンラインモードは GP tier にしか対応していません。「Business Critical + 最小ダウンタイム + フェイルバック」の3条件が揃えば、答えは必ず <strong>MI Link (SQL 2022)</strong> です。</div>
+</div>
+
+<div class="ec">
+  <div class="ec-lbl">試験ポイント</div>
+  <h4>「SQL Server 2022をAzure SQL MI Business Criticalに最小ダウンタイムで移行。問題時はオンプレに戻せること」</h4>
+  <div class="ans">✅ MI Link (SQL2022) — Business Critical tierへの唯一のオンライン移行手段。フェイルバック完全対応。</div>
+  <div class="no">❌ Azure DMS — Business Critical tierへのオンライン移行非対応（General Purposeのみ）。これがAZ-305最頻出の引っかけ。</div>
+</div>
+</div><!-- /p4 -->
+
+<!-- ═══════════════ PAGE 5: Azure Data Studio ═══════════════ -->
+<div class="pg" id="p5">
+<div class="hero h-orange">
+  <div class="hero-content">
+    <div class="eyebrow"><svg width="16" height="16" viewBox="0 0 18 18"><use href="#ico-datastudio"/></svg> Azure Data Studio — クロスプラットフォームDB管理GUI</div>
+    <h1>Azure Data Studio<br>VSCodeベースの次世代DB管理ツール</h1>
+    <p class="hero-sub">Windows/macOS/Linux対応のオープンソースDB管理ツール。SQLServerだけでなくPostgreSQL・MySQL対応。Jupyter Notebookで分析ドキュメント作成、移行拡張機能でDMSと連携。</p>
+    <div class="chips">
+      <span class="chip to" style="border:1px solid rgba(224,92,20,.35);">Win / Mac / Linux</span>
+      <span class="chip tb" style="border:1px solid rgba(0,120,212,.35);">PostgreSQL対応</span>
+      <span class="chip tp" style="border:1px solid rgba(138,63,192,.35);">Jupyter Notebook</span>
+      <span class="chip tg" style="border:1px solid rgba(0,179,134,.35);">オープンソース</span>
+    </div>
+  </div>
+</div>
+
+<div class="sh"><h2><span class="n">01</span> Azure Data Studio vs SSMS vs Azure Portal</h2><div class="sh-line"></div></div>
+<div class="tw">
+  <table>
+    <thead>
+      <tr>
+        <th class="thg">比較項目</th>
+        <th class="tho">Azure Data Studio</th>
+        <th class="thb">SSMS</th>
+        <th class="thb">Azure Portal Query Editor</th>
+        <th class="thb">DBeaver / TablePlus</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>対応OS</td><td class="ok">✅ Win / Mac / Linux</td><td class="er">❌ Windowsのみ</td><td class="ok">✅ ブラウザ</td><td class="ok">✅ マルチOS</td></tr>
+      <tr><td>SQL Server管理</td><td class="ok">✅ 拡張機能で完全対応</td><td class="ok">✅ フル管理</td><td class="wn">⚠ 基本クエリのみ</td><td class="ok">✅</td></tr>
+      <tr><td>PostgreSQL対応</td><td class="ok">✅ 拡張機能</td><td class="er">❌ 非対応</td><td class="wn">⚠ 限定的</td><td class="ok">✅</td></tr>
+      <tr><td>MySQL / MariaDB</td><td class="ok">✅ 拡張機能</td><td class="er">❌</td><td class="wn">⚠</td><td class="ok">✅</td></tr>
+      <tr><td>Jupyter Notebook</td><td class="ok">✅ 組み込み</td><td class="er">❌</td><td class="er">❌</td><td class="er">❌</td></tr>
+      <tr><td>DB移行機能</td><td class="ok">✅ Azure SQL Migration拡張</td><td class="ok">✅ DMAと統合</td><td class="er">❌</td><td class="er">❌</td></tr>
+      <tr><td>SQL Server Agent管理</td><td class="wn">⚠ 拡張機能で部分対応</td><td class="ok">✅ フル対応</td><td class="er">❌</td><td class="er">❌</td></tr>
+      <tr><td>オープンソース</td><td class="ok">✅ GitHub</td><td class="er">❌</td><td class="er">❌</td><td class="wn">⚠ Community版のみ</td></tr>
+      <tr><td>Azure公式ツール</td><td class="ok">✅</td><td class="ok">✅</td><td class="ok">✅</td><td class="er">❌ サードパーティ</td></tr>
+      <tr><td>コスト</td><td class="ok">✅ 無料</td><td class="ok">✅ 無料</td><td class="ok">✅ 無料</td><td class="wn">⚠ 有料プランあり</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="sh"><h2><span class="n">02</span> 主要拡張機能</h2><div class="sh-line"></div></div>
+<div class="g3">
+  <div class="card c-o">
+    <div class="card-hd"><div class="card-icon" style="background:rgba(224,92,20,.2);"><svg width="26" height="26" viewBox="0 0 18 18"><use href="#ico-dms"/></svg></div><div><h3>Azure SQL Migration</h3></div></div>
+    <p>SQL Server / Azure SQLの<strong style="color:#F07840">移行評価と実際の移行</strong>をData Studio内から実行。Azure DMSのGUIフロントエンドとして動作。</p>
+    <div class="tags"><span class="tag to">移行評価</span><span class="tag to">DMS統合</span></div>
+  </div>
+  <div class="card c-b">
+    <div class="card-hd"><div class="card-icon" style="background:rgba(0,120,212,.2);"><svg width="26" height="26" viewBox="0 0 18 18"><use href="#ico-sqldb"/></svg></div><div><h3>PostgreSQL拡張</h3></div></div>
+    <p>Azure Database for PostgreSQL / オンプレPostgreSQLへの接続・管理・クエリ。<strong style="color:#50D4FF">SSMSはPostgreSQL不可</strong>のためマルチDB環境では必須。</p>
+    <div class="tags"><span class="tag tb">PostgreSQL</span><span class="tag tb">Azure DB for PG</span></div>
+  </div>
+  <div class="card c-p">
+    <div class="card-hd"><div class="card-icon" style="background:rgba(138,63,192,.2);"><svg width="26" height="26" viewBox="0 0 18 18"><use href="#ico-synapse"/></svg></div><div><h3>Notebooks (Jupyter)</h3></div></div>
+    <p>SQLとPythonのコードと説明文・可視化を組み合わせた<strong style="color:#C890F0">インタラクティブ分析ドキュメント</strong>作成・共有。DevOpsとの統合に利用。</p>
+    <div class="tags"><span class="tag tp">Python連携</span><span class="tag tp">分析ドキュメント</span></div>
+  </div>
+</div>
+
+<div class="sh"><h2><span class="n">03</span> DB管理ツール 全種類 網羅比較</h2><div class="sh-line"></div></div>
+<p class="sh-sub">Azure上のデータベースを管理するツールをすべて整理します。試験では「なぜData Studioか」を他ツールとの差分で説明できることが重要です</p>
+<div class="tw">
+  <table>
+    <thead>
+      <tr>
+        <th class="thg">ツール</th>
+        <th class="thg">対応OS</th>
+        <th class="thg">SQL Server</th>
+        <th class="thg">Azure SQL DB/MI</th>
+        <th class="thg">PostgreSQL</th>
+        <th class="thg">MySQL</th>
+        <th class="thg">Cosmos DB</th>
+        <th class="thg">Azure公式</th>
+        <th class="thg">無料</th>
+        <th class="thg">DB移行機能</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:6px;"><svg width="17" height="17" viewBox="0 0 18 18"><use href="#ico-datastudio"/></svg><strong style="color:#F07840">Azure Data Studio</strong></div></td>
+        <td class="ok">Win/Mac/Linux</td>
+        <td class="ok">✅ 完全</td>
+        <td class="ok">✅ 完全</td>
+        <td class="ok">✅ 拡張機能</td>
+        <td class="ok">✅ 拡張機能</td>
+        <td class="wn">⚠ 限定的</td>
+        <td class="ok">✅</td>
+        <td class="ok">✅</td>
+        <td class="ok">✅ SQL Migration拡張</td>
+      </tr>
+      <tr>
+        <td><svg width="17" height="17" viewBox="0 0 18 18" style="vertical-align:middle;margin-right:6px;"><rect x="1" y="3" width="16" height="12" rx="1.5" fill="#CC3300"/><rect x="1" y="3" width="16" height="4" rx="1.5" fill="#FF5030"/><path d="M4 9.5 L14 9.5 M4 11.5 L10 11.5" stroke="rgba(255,255,255,.5)" stroke-width="1" stroke-linecap="round"/></svg><strong>SSMS</strong></td>
+        <td class="er">Windowsのみ</td>
+        <td class="ok">✅ フル管理</td>
+        <td class="ok">✅ フル管理</td>
+        <td class="er">❌</td>
+        <td class="er">❌</td>
+        <td class="er">❌</td>
+        <td class="ok">✅</td>
+        <td class="ok">✅</td>
+        <td class="ok">✅ DMAと統合</td>
+      </tr>
+      <tr>
+        <td><svg width="17" height="17" viewBox="0 0 18 18" style="vertical-align:middle;margin-right:6px;"><rect x="2" y="2" width="14" height="14" rx="2" fill="#0078D4"/><rect x="4" y="6" width="10" height="2" rx="1" fill="rgba(255,255,255,.8)"/><rect x="4" y="10" width="7" height="2" rx="1" fill="rgba(255,255,255,.5)"/></svg>Azure Portal Query Editor</td>
+        <td class="ok">ブラウザ（全OS）</td>
+        <td class="er">❌</td>
+        <td class="ok">✅ 基本クエリ</td>
+        <td class="wn">⚠ 限定的</td>
+        <td class="wn">⚠ 限定的</td>
+        <td class="wn">⚠ Data Explorer</td>
+        <td class="ok">✅</td>
+        <td class="ok">✅</td>
+        <td class="er">❌</td>
+      </tr>
+      <tr>
+        <td><svg width="17" height="17" viewBox="0 0 18 18" style="vertical-align:middle;margin-right:6px;"><rect x="2" y="2" width="14" height="14" rx="2" fill="#3F7EBF"/><circle cx="9" cy="9" r="4" fill="none" stroke="rgba(255,255,255,.8)" stroke-width="1.5"/><circle cx="9" cy="9" r="1.5" fill="white"/></svg>DBeaver Community</td>
+        <td class="ok">Win/Mac/Linux</td>
+        <td class="ok">✅</td>
+        <td class="ok">✅</td>
+        <td class="ok">✅</td>
+        <td class="ok">✅</td>
+        <td class="ok">✅</td>
+        <td class="er">❌ サードパーティ</td>
+        <td class="ok">✅ Community版</td>
+        <td class="er">❌</td>
+      </tr>
+      <tr>
+        <td><svg width="17" height="17" viewBox="0 0 18 18" style="vertical-align:middle;margin-right:6px;"><rect x="2" y="2" width="14" height="14" rx="2" fill="#336699"/><path d="M5 6 L9 4 L13 6 L13 14 L9 16 L5 14Z" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="1.2"/><text x="9" y="11" text-anchor="middle" fill="white" font-size="4.5">PG</text></svg>pgAdmin 4</td>
+        <td class="ok">Win/Mac/Linux</td>
+        <td class="er">❌</td>
+        <td class="er">❌</td>
+        <td class="ok">✅ 専用ツール</td>
+        <td class="er">❌</td>
+        <td class="er">❌</td>
+        <td class="er">❌ サードパーティ</td>
+        <td class="ok">✅</td>
+        <td class="er">❌</td>
+      </tr>
+      <tr>
+        <td><svg width="17" height="17" viewBox="0 0 18 18" style="vertical-align:middle;margin-right:6px;"><rect x="2" y="2" width="14" height="14" rx="2" fill="#00758F"/><path d="M5 9 L13 9 M9 5 L9 13" stroke="rgba(255,255,255,.7)" stroke-width="1.5" stroke-linecap="round"/></svg>MySQL Workbench</td>
+        <td class="ok">Win/Mac/Linux</td>
+        <td class="er">❌</td>
+        <td class="er">❌</td>
+        <td class="er">❌</td>
+        <td class="ok">✅ 専用ツール</td>
+        <td class="er">❌</td>
+        <td class="er">❌ サードパーティ</td>
+        <td class="ok">✅</td>
+        <td class="ok">✅ MySQL移行</td>
+      </tr>
+      <tr>
+        <td><svg width="17" height="17" viewBox="0 0 18 18" style="vertical-align:middle;margin-right:6px;"><rect x="2" y="2" width="14" height="14" rx="2" fill="#0078D4"/><path d="M5 6 L13 6 M5 9 L11 9 M5 12 L9 12" stroke="rgba(255,255,255,.6)" stroke-width="1" stroke-linecap="round"/><circle cx="13" cy="12" r="2.5" fill="#50E6FF"/><path d="M12 12 L13 13 L15 11" stroke="white" stroke-width=".8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>Data Migration Assistant (DMA)</td>
+        <td class="er">Windowsのみ</td>
+        <td class="ok">✅ 評価中心</td>
+        <td class="ok">✅ 移行評価</td>
+        <td class="er">❌</td>
+        <td class="er">❌</td>
+        <td class="er">❌</td>
+        <td class="ok">✅</td>
+        <td class="ok">✅</td>
+        <td class="ok">✅ SQL→Azure SQL評価</td>
+      </tr>
+      <tr>
+        <td><svg width="17" height="17" viewBox="0 0 18 18" style="vertical-align:middle;margin-right:6px;"><rect x="2" y="2" width="14" height="14" rx="2" fill="#8A3FC0"/><path d="M5 6 L8 9 L5 12 M10 6 L13 6 M10 9 L13 9 M10 12 L12 12" stroke="rgba(255,255,255,.8)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>SSMA (SQL Server Migration Assistant)</td>
+        <td class="er">Windowsのみ</td>
+        <td class="er">❌</td>
+        <td class="ok">✅ 移行先</td>
+        <td class="er">❌</td>
+        <td class="ok">✅ MySQL→SQL</td>
+        <td class="er">❌</td>
+        <td class="ok">✅</td>
+        <td class="ok">✅</td>
+        <td class="ok">✅ 異種DB→SQL変換</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="ib" style="background:rgba(224,92,20,.07);border:1px solid rgba(224,92,20,.3);border-radius:10px;padding:14px 18px;margin-bottom:18px;font-size:13px;display:flex;gap:12px;">
+  <div style="font-size:18px;flex-shrink:0;">!</div>
+  <div><strong style="color:#F07840;display:block;margin-bottom:5px;">AZ-305試験でのData Studio vs SSMSの選び方</strong>
+  「Linux/Mac使用」または「PostgreSQL/MySQL管理が必要」→ <strong style="color:#F07840">Azure Data Studio</strong>が正解。「SQL Server Agentのフルジョブ管理」「詳細なDBメンテナンスプラン」→ <strong style="color:#50D4FF">SSMS</strong>が適切。試験では両方でなく「どちらか一方を選ぶ」理由を問われます。</div>
+</div>
+
+<div class="ec">
+  <div class="ec-lbl">試験ポイント</div>
+  <h4>「DBAチームがWin/Mac混在環境でSQL ServerとAzure Database for PostgreSQLを1つのツールで管理したい」</h4>
+  <div class="ans">✅ Azure Data Studio — クロスプラットフォーム（Win/Mac/Linux）+ PostgreSQL拡張機能で両方対応</div>
+  <div class="no">❌ SSMS — Windowsのみ。PostgreSQL未対応。 / Azure Portal — 管理機能が限定的。マルチDB統合不可。</div>
+</div>
+</div><!-- /p5 -->
+
+<!-- ═══════════════ PAGE 6: Azure Data Share ═══════════════ -->
+<div class="pg" id="p6">
+<div class="hero h-yellow">
+  <div class="hero-content">
+    <div class="eyebrow"><svg width="16" height="16" viewBox="0 0 18 18"><use href="#ico-datashare"/></svg> Azure Data Share — 組織間セキュアデータ共有</div>
+    <h1>Azure Data Share<br>コード不要でテナント間データを共有</h1>
+    <p class="hero-sub">異なるAzureテナント間でデータを安全に共有するマネージドサービス。SASキー共有不要・招待ベースの承認フロー・スナップショット/ライブ共有の2モード対応。</p>
+    <div class="chips">
+      <span class="chip ty" style="border:1px solid rgba(232,160,0,.35);">テナント間共有</span>
+      <span class="chip tg" style="border:1px solid rgba(0,179,134,.35);">コード不要</span>
+      <span class="chip tb" style="border:1px solid rgba(0,120,212,.35);"> スナップショット</span>
+      <span class="chip tp" style="border:1px solid rgba(138,63,192,.35);"> 招待ベース</span>
+    </div>
+  </div>
+</div>
+
+<div class="sh"><h2><span class="n">01</span> プロバイダー/コンシューマーモデル</h2><div class="sh-line"></div></div>
+<div class="dw">
+  <div class="dw-hd"><span>Azure Data Share — データ共有フロー</span></div>
+  <svg class="d" viewBox="0 0 1020 320" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="ds1" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto"><polygon points="0 0,7 2.5,0 5" fill="#F0C840"/></marker>
+      <marker id="ds2" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto"><polygon points="0 0,7 2.5,0 5" fill="#00C878"/></marker>
+    </defs>
+    <!-- Provider -->
+    <rect x="8" y="16" width="320" height="292" rx="12" fill="rgba(232,160,0,.05)" stroke="rgba(232,160,0,.35)" stroke-width="1.5"/>
+    <text x="168" y="36" text-anchor="middle" fill="#F0C840" font-size="10" font-family="Outfit,sans-serif" font-weight="900"> データプロバイダー (Tenant A)</text>
+    <!-- Data sources -->
+    <rect x="22" y="48" width="292" height="130" rx="8" fill="rgba(0,120,212,.07)" stroke="rgba(0,120,212,.25)" stroke-width="1"/>
+    <text x="168" y="66" text-anchor="middle" fill="#50D4FF" font-size="9.5" font-family="sans-serif" font-weight="700">共有するデータソース</text>
+    <svg x="30" y="74" width="20" height="20" viewBox="0 0 18 18"><use href="#ico-blob"/></svg><text x="85" y="90" fill="#50D4FF" font-size="8.5" font-family="sans-serif">Blob Storage</text>
+    <svg x="30" y="100" width="20" height="20" viewBox="0 0 18 18"><use href="#ico-adls"/></svg><text x="85" y="116" fill="#50D4FF" font-size="8.5" font-family="sans-serif">ADLS Gen2</text>
+    <svg x="160" y="74" width="20" height="20" viewBox="0 0 18 18"><use href="#ico-sqldb"/></svg><text x="215" y="90" fill="#50D4FF" font-size="8.5" font-family="sans-serif">Azure SQL DB</text>
+    <svg x="160" y="100" width="20" height="20" viewBox="0 0 18 18"><use href="#ico-synapse"/></svg><text x="215" y="116" fill="#50D4FF" font-size="8.5" font-family="sans-serif">Azure Synapse</text>
+    <text x="168" y="166" text-anchor="middle" fill="#807020" font-size="8" font-family="sans-serif">+ Azure Data Explorer</text>
+
+    <!-- Data Share resource -->
+    <rect x="22" y="192" width="292" height="100" rx="8" fill="rgba(232,160,0,.12)" stroke="rgba(232,160,0,.45)" stroke-width="1.5"/>
+    <svg x="30" y="200" width="22" height="22" viewBox="0 0 18 18"><use href="#ico-datashare"/></svg>
+    <text x="168" y="216" text-anchor="middle" fill="#F0C840" font-size="10" font-family="sans-serif" font-weight="700">Azure Data Share リソース</text>
+    <text x="168" y="230" text-anchor="middle" fill="#906820" font-size="8.5" font-family="sans-serif">① Share作成 → Dataset定義</text>
+    <text x="168" y="244" text-anchor="middle" fill="#906820" font-size="8.5" font-family="sans-serif">② コンシューマーにメール招待送信</text>
+    <rect x="34" y="254" width="128" height="18" rx="4" fill="rgba(0,180,216,.12)" stroke="rgba(0,180,216,.3)" stroke-width="1"/>
+    <text x="98" y="267" text-anchor="middle" fill="#00D4FF" font-size="8" font-family="sans-serif"> スナップショット共有</text>
+    <rect x="170" y="254" width="130" height="18" rx="4" fill="rgba(138,63,192,.12)" stroke="rgba(138,63,192,.3)" stroke-width="1"/>
+    <text x="235" y="267" text-anchor="middle" fill="#C890F0" font-size="8" font-family="sans-serif"> ライブ共有(in-place)</text>
+    <text x="168" y="284" text-anchor="middle" fill="#908060" font-size="7.5" font-family="sans-serif">認証: MSI (パスワード不要)</text>
+
+    <!-- Center process -->
+    <rect x="358" y="100" width="282" height="120" rx="12" fill="rgba(0,0,0,.25)" stroke="rgba(255,255,255,.06)" stroke-width="1"/>
+    <text x="499" y="122" text-anchor="middle" fill="#888" font-size="10" font-family="sans-serif" font-weight="700">共有プロセス</text>
+    <text x="499" y="140" text-anchor="middle" fill="#666" font-size="8.5" font-family="sans-serif">① プロバイダーがShareを作成</text>
+    <text x="499" y="156" text-anchor="middle" fill="#666" font-size="8.5" font-family="sans-serif">② コンシューマーのメールに招待送信</text>
+    <text x="499" y="172" text-anchor="middle" fill="#666" font-size="8.5" font-family="sans-serif">③ コンシューマーが受諾・送信先指定</text>
+    <text x="499" y="188" text-anchor="middle" fill="#666" font-size="8.5" font-family="sans-serif">④ スナップショット取得 or ライブ参照</text>
+    <text x="499" y="204" text-anchor="middle" fill="#F0C840" font-size="8.5" font-family="sans-serif">Entra ID MSI認証（パスワード共有不要）</text>
+
+    <!-- Consumer -->
+    <rect x="672" y="16" width="340" height="292" rx="12" fill="rgba(0,200,120,.04)" stroke="rgba(0,200,120,.3)" stroke-width="1.5"/>
+    <text x="842" y="36" text-anchor="middle" fill="#40D898" font-size="10" font-family="Outfit,sans-serif" font-weight="900"> データコンシューマー (Tenant B)</text>
+    <rect x="686" y="48" width="312" height="130" rx="8" fill="rgba(0,200,120,.06)" stroke="rgba(0,200,120,.25)" stroke-width="1"/>
+    <text x="842" y="66" text-anchor="middle" fill="#40D898" font-size="9.5" font-family="sans-serif" font-weight="700">データ受信先（コンシューマーが指定）</text>
+    <svg x="694" y="74" width="20" height="20" viewBox="0 0 18 18"><use href="#ico-blob"/></svg><text x="750" y="90" fill="#40D898" font-size="8.5" font-family="sans-serif">Blob Storage</text>
+    <svg x="694" y="100" width="20" height="20" viewBox="0 0 18 18"><use href="#ico-adls"/></svg><text x="750" y="116" fill="#40D898" font-size="8.5" font-family="sans-serif">ADLS Gen2</text>
+    <svg x="844" y="74" width="20" height="20" viewBox="0 0 18 18"><use href="#ico-sqldb"/></svg><text x="900" y="90" fill="#40D898" font-size="8.5" font-family="sans-serif">SQL DB / Synapse</text>
+    <svg x="844" y="100" width="20" height="20" viewBox="0 0 18 18"><use href="#ico-adx"/></svg><text x="900" y="116" fill="#40D898" font-size="8.5" font-family="sans-serif">Data Explorer</text>
+    <text x="842" y="166" text-anchor="middle" fill="#208060" font-size="8" font-family="sans-serif">コンシューマーが受信先ストレージを指定</text>
+    <!-- Consumer control -->
+    <rect x="686" y="192" width="312" height="100" rx="8" fill="rgba(0,120,212,.08)" stroke="rgba(0,120,212,.25)" stroke-width="1"/>
+    <text x="842" y="212" text-anchor="middle" fill="#50D4FF" font-size="9.5" font-family="sans-serif" font-weight="700">コンシューマー側の制御</text>
+    <text x="842" y="228" text-anchor="middle" fill="#305070" font-size="8.5" font-family="sans-serif">スナップショットスケジュール設定（毎時/毎日）</text>
+    <text x="842" y="243" text-anchor="middle" fill="#305070" font-size="8.5" font-family="sans-serif">個別データセットの受諾/拒否</text>
+    <text x="842" y="258" text-anchor="middle" fill="#305070" font-size="8.5" font-family="sans-serif">共有へのアクセスをいつでも取り消し可能</text>
+    <text x="842" y="276" text-anchor="middle" fill="#40D898" font-size="8" font-family="sans-serif">✅ プロバイダーのキー/シークレット不要</text>
+
+    <!-- Arrows -->
+    <line x1="330" y1="162" x2="356" y2="162" stroke="#F0C840" stroke-width="2" marker-end="url(#ds1)"/>
+    <line x1="642" y1="162" x2="670" y2="162" stroke="#00C878" stroke-width="2" marker-end="url(#ds2)"/>
+  </svg>
+</div>
+
+<div class="sh"><h2><span class="n">02</span> スナップショット vs ライブ共有</h2><div class="sh-line"></div></div>
+<div class="tw">
+  <table>
+    <thead><tr><th class="thg">比較項目</th><th class="tht"> スナップショット共有</th><th class="thp"> ライブ共有（In-place）</th></tr></thead>
+    <tbody>
+      <tr><td>データの最新性</td><td class="wn">⚠ スナップショット時点のコピー</td><td class="ok">✅ リアルタイム（常に最新）</td></tr>
+      <tr><td>コンシューマーのストレージ</td><td class="wn">⚠ コピー受信（コンシューマーが所有）</td><td class="ok">✅ 不要（プロバイダーデータを参照）</td></tr>
+      <tr><td>スケジュール</td><td class="ok">✅ 毎時/毎日 自動スナップショット</td><td>N/A（常時）</td></tr>
+      <tr><td>対応データソース</td><td class="ok">✅ Blob / ADLS / SQL / Synapse</td><td class="wn">⚠ ADLS Gen2 / Data Explorerのみ</td></tr>
+      <tr><td>典型ユースケース</td><td>日次データ配信・定期レポート・パートナーへのデータ提供</td><td>大規模データレイクへのリアルタイムアクセス共有</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="sh"><h2><span class="n">03</span> Data Share vs 類似サービス</h2><div class="sh-line"></div></div>
+<div class="tw">
+  <table>
+    <thead><tr><th class="thg">比較項目</th><th class="thy" style="color:#F0C840">Azure Data Share</th><th class="tht">AzCopy</th><th class="thb">Azure Data Factory</th><th class="thb">Microsoft Purview</th><th class="thb">Azure Synapse Link</th></tr></thead>
+    <tbody>
+      <tr><td>テナント間共有</td><td class="ok">✅ 核心機能</td><td class="wn">⚠ SASキー共有必要</td><td class="wn">⚠ 複雑な設定</td><td class="ok">✅ カタログ共有</td><td class="er">❌ 同一テナント内</td></tr>
+      <tr><td>コード不要</td><td class="ok">✅ ポータルのみ</td><td class="er">❌ CLI必要</td><td class="er">❌ パイプライン設計</td><td class="ok">✅</td><td class="wn">⚠</td></tr>
+      <tr><td>招待・承認フロー</td><td class="ok">✅ 組み込み</td><td class="er">❌</td><td class="er">❌</td><td class="er">❌</td><td class="er">❌</td></tr>
+      <tr><td>ETL変換</td><td class="er">❌ コピーのみ</td><td class="er">❌</td><td class="ok">✅ フル変換</td><td class="er">❌</td><td class="wn">⚠</td></tr>
+      <tr><td>データガバナンス</td><td class="wn">⚠ 基本的なみ</td><td class="er">❌</td><td class="er">❌</td><td class="ok">✅ 完全なガバナンス</td><td class="er">❌</td></tr>
+      <tr><td>典型ユースケース</td><td>外部パートナーへの定期データ共有</td><td>自分のストレージ間転送</td><td>複雑なETLパイプライン</td><td>データカタログ・系譜管理</td><td>CosmosDB↔Synapseリアルタイム連携</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="sh"><h2><span class="n">04</span> データ共有・ガバナンス ツール 網羅比較</h2><div class="sh-line"></div></div>
+<p class="sh-sub">「データを外部と共有する」「データのカタログ管理をする」「リアルタイムにデータを連携する」はそれぞれ異なるツールです</p>
+<div class="tw">
+  <table>
+    <thead>
+      <tr>
+        <th class="thg">ツール / サービス</th>
+        <th class="thg">テナント間共有</th>
+        <th class="thg">コード不要</th>
+        <th class="thg">招待フロー</th>
+        <th class="thg">ETL変換</th>
+        <th class="thg">リアルタイム</th>
+        <th class="thg">データカタログ</th>
+        <th class="thg">ストリーミング</th>
+        <th class="thg">最適シナリオ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:6px;"><svg width="17" height="17" viewBox="0 0 18 18"><use href="#ico-datashare"/></svg><strong style="color:#F0C840">Azure Data Share</strong></div></td>
+        <td class="ok">✅ 核心機能</td>
+        <td class="ok">✅ ポータルのみ</td>
+        <td class="ok">✅ 組み込み</td>
+        <td class="er">❌ コピーのみ</td>
+        <td class="wn">⚠ In-place共有のみ</td>
+        <td class="er">❌</td>
+        <td class="er">❌</td>
+        <td>外部パートナーへの定期データ共有（スナップショット）</td>
+      </tr>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:6px;"><svg width="17" height="17" viewBox="0 0 18 18"><use href="#ico-adf"/></svg>Azure Data Factory</div></td>
+        <td class="wn">⚠ 複雑な設定</td>
+        <td class="er">❌ パイプライン設計</td>
+        <td class="er">❌</td>
+        <td class="ok">✅ フルETL</td>
+        <td class="wn">⚠ トリガーで対応</td>
+        <td class="er">❌</td>
+        <td class="er">❌</td>
+        <td>複雑なETLパイプライン・定期的なデータ統合・変換</td>
+      </tr>
+      <tr>
+        <td><svg width="17" height="17" viewBox="0 0 18 18" style="vertical-align:middle;margin-right:6px;"><rect x="2" y="3" width="14" height="12" rx="1.5" fill="#8A3FC0"/><path d="M5 7 L13 7 M5 10 L10 10" stroke="rgba(255,255,255,.6)" stroke-width="1" stroke-linecap="round"/><circle cx="13" cy="11" r="3" fill="#C890F0"/><path d="M11.5 11 L13 12.5 L15.5 9" stroke="white" stroke-width=".9" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><strong>Microsoft Purview</strong></td>
+        <td class="ok">✅ カタログ共有</td>
+        <td class="ok">✅</td>
+        <td class="er">❌</td>
+        <td class="er">❌</td>
+        <td class="er">❌</td>
+        <td class="ok">✅ 完全なガバナンス</td>
+        <td class="er">❌</td>
+        <td>データカタログ・系譜管理・コンプライアンス・機密データ分類</td>
+      </tr>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:6px;"><svg width="17" height="17" viewBox="0 0 18 18"><use href="#ico-synapse"/></svg>Azure Synapse Link</div></td>
+        <td class="er">❌ 同一テナント内</td>
+        <td class="wn">⚠</td>
+        <td class="er">❌</td>
+        <td class="wn">⚠ Spark変換</td>
+        <td class="ok">✅ ほぼリアルタイム</td>
+        <td class="er">❌</td>
+        <td class="er">❌</td>
+        <td>CosmosDB/Dataverse↔Synapseリアルタイム分析連携</td>
+      </tr>
+      <tr>
+        <td><svg width="17" height="17" viewBox="0 0 18 18" style="vertical-align:middle;margin-right:6px;"><path d="M2 5 L9 2 L16 5 L16 13 L9 16 L2 13Z" fill="#0078D4"/><path d="M2 5 L9 8 L16 5" stroke="rgba(255,255,255,.3)" stroke-width=".8" fill="none"/><path d="M9 8 L9 16" stroke="rgba(255,255,255,.3)" stroke-width=".8"/><path d="M4 7 L7 8.5" stroke="#50E6FF" stroke-width="1.2" stroke-linecap="round"/><path d="M14 7 L11 8.5" stroke="#50E6FF" stroke-width="1.2" stroke-linecap="round"/></svg>Azure Event Hubs</td>
+        <td class="wn">⚠ パーティションキー共有</td>
+        <td class="er">❌ 開発必要</td>
+        <td class="er">❌</td>
+        <td class="er">❌</td>
+        <td class="ok">✅ ストリーミング</td>
+        <td class="er">❌</td>
+        <td class="ok">✅ 大規模イベント</td>
+        <td>リアルタイムイベントストリームの取り込み・配信（百万イベント/秒）</td>
+      </tr>
+      <tr>
+        <td><svg width="17" height="17" viewBox="0 0 18 18" style="vertical-align:middle;margin-right:6px;"><rect x="2" y="3" width="14" height="12" rx="1.5" fill="#0078D4"/><rect x="4" y="5" width="4" height="8" rx=".5" fill="rgba(255,255,255,.4)"/><rect x="10" y="5" width="4" height="8" rx=".5" fill="rgba(255,255,255,.2)"/><path d="M8 9 L10 9" stroke="#50E6FF" stroke-width="1.2" stroke-linecap="round"/></svg>Azure API Management</td>
+        <td class="ok">✅ API経由で共有</td>
+        <td class="er">❌ API設計必要</td>
+        <td class="er">❌</td>
+        <td class="ok">✅ ポリシーで変換</td>
+        <td class="ok">✅ リクエスト/レスポンス</td>
+        <td class="er">❌</td>
+        <td class="er">❌</td>
+        <td>APIゲートウェイ経由でデータをサービスとして外部公開</td>
+      </tr>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:6px;"><svg width="17" height="17" viewBox="0 0 18 18"><use href="#ico-adx"/></svg>Azure Data Explorer (ADX)</div></td>
+        <td class="wn">⚠ フォロワーDB</td>
+        <td class="wn">⚠ KQL必要</td>
+        <td class="er">❌</td>
+        <td class="er">❌</td>
+        <td class="ok">✅ リアルタイム分析</td>
+        <td class="er">❌</td>
+        <td class="ok">✅ テレメトリ</td>
+        <td>時系列・ログ・テレメトリデータのリアルタイム分析・フォロワーDBで読み取り共有</td>
+      </tr>
+      <tr>
+        <td><svg width="17" height="17" viewBox="0 0 18 18" style="vertical-align:middle;margin-right:6px;"><rect x="2" y="3" width="14" height="12" rx="1.5" fill="#107C10"/><path d="M5 6 L13 6 M5 9 L10 9 M5 12 L8 12" stroke="rgba(255,255,255,.6)" stroke-width="1" stroke-linecap="round"/><circle cx="13" cy="10" r="3.5" fill="#54B454"/><text x="13" y="12" text-anchor="middle" fill="white" font-size="4.5" font-weight="bold">M</text></svg>Microsoft Marketplace Data Products</td>
+        <td class="ok">✅ 商用データ共有</td>
+        <td class="ok">✅</td>
+        <td class="er">❌ 購入フロー</td>
+        <td class="er">❌</td>
+        <td class="er">❌</td>
+        <td class="er">❌</td>
+        <td class="er">❌</td>
+        <td>商用データプロバイダーがAzure Marketplaceを通じてデータを販売・配信</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="ib" style="background:rgba(232,160,0,.07);border:1px solid rgba(232,160,0,.3);border-radius:10px;padding:14px 18px;margin-bottom:18px;font-size:13px;display:flex;gap:12px;">
+  <div style="font-size:18px;flex-shrink:0;">!</div>
+  <div><strong style="color:#F0C840;display:block;margin-bottom:5px;">Data Share vs Purview vs ADF — 3つの役割の違い</strong>
+  <strong style="color:#F0C840">Azure Data Share</strong>は「データをパートナーに届ける配達サービス」。<strong style="color:#C890F0">Microsoft Purview</strong>は「データの地図帳と管理台帳（どこに何があるかを知る）」。<strong style="color:#50D4FF">Azure Data Factory</strong>は「データを加工・変換する工場」。試験でこの3つが選択肢に並ぶ場合、「外部テナントへの共有」→Data Share、「カタログ・系譜管理」→Purview、「ETL変換」→ADFで判断します。</div>
+</div>
+
+<div class="ec">
+  <div class="ec-lbl">試験ポイント</div>
+  <h4>「自社ADLS Gen2データを別テナントのパートナーに毎日自動共有。コーディング最小で、パートナーにキーを渡したくない」</h4>
+  <div class="ans">✅ Azure Data Share — テナント間共有専用・コード不要・スナップショットスケジュール・MSI認証でキー不要</div>
+  <div class="no">❌ AzCopy — パートナーにSASキーを渡す必要がある / ADF — パイプライン設計が必要でコーディング最小に反する</div>
+</div>
+</div><!-- /p6 -->
+
+<!-- ═══════════════ PAGE 7: 試験演習 ═══════════════ -->
+<div class="pg" id="p7">
+<div class="hero h-green">
+  <div class="hero-content">
+    <div class="eyebrow"><svg width="16" height="16" viewBox="0 0 18 18"><use href="#ico-dms"/></svg> 試験問題演習</div>
+    <h1>AZ-305形式<br>シナリオ問題 7問演習</h1>
+    <p class="hero-sub">選択肢をクリックして正誤確認。「なぜ他の選択肢は誤りか」まで読んで完全理解しましょう。</p>
+  </div>
+</div>
+
+<div class="qz" id="q1">
+  <div class="qz-hd"><div class="qz-n">1</div><h4>データ転送 — S3からAzureへのスクリプト自動化</h4></div>
+  <p class="q">AWS S3バケット（500GB）のデータをAzure Blob Storageに転送します。スクリプトで自動化でき、最もシンプルな方法はどれですか？</p>
+  <ul class="choices">
+    <li onclick="ans(this,'q1',false)">A. Storage ExplorerのS3接続機能を使ってDrag&Dropでコピーする</li>
+    <li onclick="ans(this,'q1',true)">B. AzCopyのcopyコマンドでS3バケットURLとAzure Blob SAS URLを指定して実行する</li>
+    <li onclick="ans(this,'q1',false)">C. Azure Data Factoryパイプラインを作成しS3コネクターを設定して実行する</li>
+    <li onclick="ans(this,'q1',false)">D. Azure Import Jobを作成し物理HDDにコピーしてMicrosoftへ発送する</li>
+  </ul>
+  <button class="exp-btn" onclick="showExp('q1')">解説を表示</button>
+  <div class="exp" id="exp-q1">
+    <strong style="color:#40D898">✅ 正解: B — AzCopy</strong><br><br>
+    S3→Azure直接コピー、CLI、無料という3点でAzCopyが最適。<code>azcopy copy 's3://bucket/' 'https://acct.blob.core.windows.net/cont/?SAS' --recursive</code> で完結します。<br><br>
+    <strong>A が不正解:</strong> Storage ExplorerはGUIツールでスクリプト自動化不可。<br>
+    <strong>C が不正解:</strong> ADFは「シンプル」に反する（パイプライン設計が必要）。ETL変換が必要な場合はADF。<br>
+    <strong>D が不正解:</strong> 500GBはオフライン転送の対象外（Data Boxは数十TB〜PB向け）。
+  </div>
+</div>
+
+<div class="qz" id="q2">
+  <div class="qz-hd"><div class="qz-n">2</div><h4>ファイルサーバー延命 — クラウドティアリング</h4></div>
+  <p class="q">東京本社のWindows Server 2019ファイルサーバー（300GB）が容量不足（総1TB）。既存のUNCパスを変えず、よく使うファイル（30日以内）だけローカルに残す構成は？</p>
+  <ul class="choices">
+    <li onclick="ans(this,'q2',false)">A. Azure MigrateでWindows ServerをAzure VMに移行し、Azure Filesをマウントする</li>
+    <li onclick="ans(this,'q2',true)">B. Azure File SyncエージェントをインストールしてAzure Filesと同期、クラウドティアリング（日付ポリシー30日）を有効にする</li>
+    <li onclick="ans(this,'q2',false)">C. AzCopyで全データをAzure Filesに移行し、ネットワークドライブとして割り当てる</li>
+    <li onclick="ans(this,'q2',false)">D. Azure Backupで古いファイルをバックアップしてローカルから削除する</li>
+  </ul>
+  <button class="exp-btn" onclick="showExp('q2')">解説を表示</button>
+  <div class="exp" id="exp-q2">
+    <strong style="color:#40D898">✅ 正解: B — Azure File Sync</strong><br><br>
+    「UNCパス変更なし」「容量拡張」「よく使うファイルのみローカル」= File Sync + クラウドティアリング（日付ポリシー）の組み合わせで完全に要件を満たします。<br><br>
+    <strong>A が不正解:</strong> Azure MigrateはサーバーをAzureに移行して廃止するもの。「廃止せず延命」に反する。<br>
+    <strong>C が不正解:</strong> ネットワークドライブは認証変更が必要でUNCパスを維持できない。またAzCopyは継続同期不可。<br>
+    <strong>D が不正解:</strong> Azure BackupはDR/バックアップ用。クラウド容量拡張や透過的アクセスには使えない。
+  </div>
+</div>
+
+<div class="qz" id="q3">
+  <div class="qz-hd"><div class="qz-n">3</div><h4>移行アセスメント — VMware150台</h4></div>
+  <p class="q">VMware vSphere環境（150台）をAzureに移行前に「①適切なAzure VMサイズ ②月間コスト試算 ③依存関係マップ」の3つを調査したい。最も適切なアプローチは？</p>
+  <ul class="choices">
+    <li onclick="ans(this,'q3',false)">A. Azure Cost Managementでコスト試算し、依存関係は手動で文書化する</li>
+    <li onclick="ans(this,'q3',false)">B. Azure Monitor AgentをすべてのVMにインストールしLog Analyticsで分析する</li>
+    <li onclick="ans(this,'q3',true)">C. Azure MigrateをデプロイしてvSphere用ApplianceでDiscovery & Assessmentを実行する</li>
+    <li onclick="ans(this,'q3',false)">D. Azure VMのSKU一覧を参照してオンプレVMの仕様と手動で対応させる</li>
+  </ul>
+  <button class="exp-btn" onclick="showExp('q3')">解説を表示</button>
+  <div class="exp" id="exp-q3">
+    <strong style="color:#40D898">✅ 正解: C — Azure Migrate</strong><br><br>
+    Azure MigrateのDiscovery & Assessmentは、vSphereにApplianceをデプロイするだけで「VMサイズ提案」「コスト試算」「依存関係マップ」の3点をすべて自動生成します。<br><br>
+    <strong>A が不正解:</strong> Azure Cost Managementは既存Azureリソースのコスト管理ツール。移行前アセスメントには使えない。<br>
+    <strong>B が不正解:</strong> Azure Monitor Agentは監視用。Azure Migrate Assessmentの依存関係マップとは別機能（Azure Migrateのエージェントベース依存関係マッピングはLog Analyticsを使いますがAzure Migrateのコンテキストで）。<br>
+    <strong>D が不正解:</strong> 手動対応は150台では非現実的で、実際の使用量ベースのサイジングができない。
+  </div>
+</div>
+
+<div class="qz" id="q4">
+  <div class="qz-hd"><div class="qz-n">4</div><h4>SQL移行 — Business Critical + フェイルバック</h4></div>
+  <p class="q">本番稼働中のSQL Server 2022をAzure SQL MI Business Criticalに移行。要件：①最小ダウンタイム②移行後問題時はオンプレに戻せる③移行中もアプリは通常稼働。最適な方法は？</p>
+  <ul class="choices">
+    <li onclick="ans(this,'q4',false)">A. Azure Database Migration Service（オンラインモード）でSQL Server 2022からSQL MIに移行する</li>
+    <li onclick="ans(this,'q4',false)">B. SSMSでバックアップを取得し、Azure SQL MIにリストアする</li>
+    <li onclick="ans(this,'q4',true)">C. Managed Instance Linkを使ってSQL Server 2022とSQL MIを同期し、準備後にフェイルオーバー。問題時はフェイルバックする</li>
+    <li onclick="ans(this,'q4',false)">D. Azure MigrateでSQL Server 2022をAzure VMとして移行し後でSQL MIにアップグレードする</li>
+  </ul>
+  <button class="exp-btn" onclick="showExp('q4')">解説を表示</button>
+  <div class="exp" id="exp-q4">
+    <strong style="color:#40D898">✅ 正解: C — Managed Instance Link</strong><br><br>
+    3要件（最小ダウンタイム・フェイルバック・移行中通常稼働）をすべて満たすのはMI Linkのみ。SQL 2022の双方向フェイルオーバーにより完全なフェイルバックが可能。<br><br>
+    <strong style="color:#F07070">A が不正解（試験最頻出の引っかけ！）:</strong> Azure DMSのオンラインモードはSQL Server→SQL MIのGeneral Purposeには対応していますが、<strong style="color:#F0C840">Business Critical tierへのオンライン移行には非対応</strong>。これがAZ-305で最も狙われるポイントです。<br>
+    <strong>B が不正解:</strong> バックアップ・リストアは大きなダウンタイムが発生。「最小ダウンタイム」に反する。<br>
+    <strong>D が不正解:</strong> VM→SQL MIの2段階移行はコスト・リスク・時間が増える。また「最小ダウンタイム」を満たせない。
+  </div>
+</div>
+
+<div class="qz" id="q5">
+  <div class="qz-hd"><div class="qz-n">5</div><h4>DB管理ツール — Mac/Windows混在+PostgreSQL</h4></div>
+  <p class="q">DBAチームはWin3名・Mac2名。管理対象：SQL Server 2022とAzure Database for PostgreSQL Flexible。1つのツールで両方管理したい。最適なツールは？</p>
+  <ul class="choices">
+    <li onclick="ans(this,'q5',false)">A. SSMS（SQL Server Management Studio）を全員に配布する</li>
+    <li onclick="ans(this,'q5',true)">B. Azure Data Studioを全員にインストールし、PostgreSQL拡張機能を追加する</li>
+    <li onclick="ans(this,'q5',false)">C. Azure PortalのQuery Editorを使用する</li>
+    <li onclick="ans(this,'q5',false)">D. DBeaverをインストールする</li>
+  </ul>
+  <button class="exp-btn" onclick="showExp('q5')">解説を表示</button>
+  <div class="exp" id="exp-q5">
+    <strong style="color:#40D898">✅ 正解: B — Azure Data Studio</strong><br><br>
+    「Mac/Windows混在」（クロスプラットフォーム）＋「PostgreSQL対応」の2要件に完全対応。PostgreSQL拡張機能でSQL ServerとPostgreSQLを1ツールで管理できます。<br><br>
+    <strong>A が不正解:</strong> SSMSはWindowsのみ。Mac2名は使用不可。PostgreSQL管理も不可。<br>
+    <strong>C が不正解:</strong> Azure Portal Query Editorはブラウザで動作するが管理機能が限定的。PostgreSQL FlexibleのQuery Editorはフル管理機能を持たない。<br>
+    <strong>D が不正解:</strong> DBeaverはサードパーティツール。試験ではAzure公式ツールが優先。Azure Data StudioがMicrosoftの公式推奨。
+  </div>
+</div>
+
+<div class="qz" id="q6">
+  <div class="qz-hd"><div class="qz-n">6</div><h4>テナント間データ共有 — コード不要・キー不要</h4></div>
+  <p class="q">自社（Tenant A）のADLS Gen2データをパートナー企業（Tenant B）に毎日自動共有。要件：①コーディング最小②毎日自動更新③パートナーにキー/シークレットを渡さない。最適な方法は？</p>
+  <ul class="choices">
+    <li onclick="ans(this,'q6',false)">A. ADLSのストレージアカウントキーをパートナーに共有する</li>
+    <li onclick="ans(this,'q6',false)">B. AzCopyを使ってパートナーのAzureアカウントに毎日コピーするスクリプトをAzure Automationで実行する</li>
+    <li onclick="ans(this,'q6',true)">C. Azure Data Shareでパートナーを招待し、スナップショットスケジュールを毎日に設定する</li>
+    <li onclick="ans(this,'q6',false)">D. ADFパイプラインを作成してパートナーのAzureサブスクリプションにデータをコピーする</li>
+  </ul>
+  <button class="exp-btn" onclick="showExp('q6')">解説を表示</button>
+  <div class="exp" id="exp-q6">
+    <strong style="color:#40D898">✅ 正解: C — Azure Data Share</strong><br><br>
+    テナント間共有・コード不要・毎日自動スナップショット・MSI認証（キー不要）の全要件をカバー。<br><br>
+    <strong>A が不正解:</strong> ストレージキーの共有はセキュリティ上最悪。Full Access権限をパートナーに渡すことになる。<br>
+    <strong>B が不正解:</strong> SASトークンをパートナーに渡す必要があり「キー不要」に反する。Azure Automationの設定もコーディング最小に反する。<br>
+    <strong>D が不正解:</strong> ADFはパイプライン設計が必要でコーディング最小に反する。テナント間のRBAC設定も複雑。
+  </div>
+</div>
+
+<div class="qz" id="q7">
+  <div class="qz-hd"><div class="qz-n">7</div><h4>総合 — 異種DB移行+スキーマ変換</h4></div>
+  <p class="q">オンプレのOracle 19cデータベースをAzure SQL Database（互換レベル150）に移行します。スキーマ変換が必要で、PL/SQLコードのSQL Server T-SQLへの変換も含まれます。最適なツールは？</p>
+  <ul class="choices">
+    <li onclick="ans(this,'q7',false)">A. Azure Migrate（Database Migration機能）を使用して移行する</li>
+    <li onclick="ans(this,'q7',false)">B. Azure Database Migration Service（オンラインモード）を使用してOracleから直接移行する</li>
+    <li onclick="ans(this,'q7',true)">C. SSMA（SQL Server Migration Assistant for Oracle）を使用してスキーマ変換を実施後、DMSでデータ移行する</li>
+    <li onclick="ans(this,'q7',false)">D. DMA（Data Migration Assistant）を使用してOracleからSQL Databaseに移行する</li>
+  </ul>
+  <button class="exp-btn" onclick="showExp('q7')">解説を表示</button>
+  <div class="exp" id="exp-q7">
+    <strong style="color:#40D898">✅ 正解: C — SSMA → DMS の2段階</strong><br><br>
+    Oracle→SQL Serverの異種DB移行ではスキーマ変換が必要です。<strong>SSMA（SQL Server Migration Assistant for Oracle）</strong>がPL/SQL→T-SQLの変換を担当し、その後DMSでデータを移行する2段階アプローチが正解。<br><br>
+    <strong>A が不正解:</strong> Azure Migrate（DMS）はOracle→SQL Serverの完全なスキーマ変換機能を持たない。<br>
+    <strong>B が不正解:</strong> DMS単体ではOracleからSQL DatabaseへのT-SQLスキーマ変換ができない。データ移行は可能だがスキーマ変換は別ツールが必要。<br>
+    <strong>D が不正解:</strong> DMA（Data Migration Assistant）はSQL Server→Azure SQL DBの評価・移行ツール。OracleなどSQL Server以外のソースには対応していない。OracleはSSMAの担当。
+  </div>
+</div>
+
+<!-- Summary -->
+<div class="dw" style="margin-top:36px;">
+  <div class="dw-hd"><span>演習まとめ — 全判断の軸</span></div>
+  <div class="tw" style="margin-bottom:0;">
+    <table>
+      <thead><tr><th class="thg">問題</th><th class="thb">正解サービス</th><th class="thg">決め手のキーワード</th><th class="thg">典型の間違い</th></tr></thead>
+      <tbody>
+        <tr><td>Q1: S3→Azure転送</td><td class="ct"><svg width="15" height="15" viewBox="0 0 18 18" style="vertical-align:middle;margin-right:4px"><use href="#ico-azcopy"/></svg>AzCopy</td><td>S3直接コピー・CLIスクリプト・無料</td><td>ADF（パイプライン設計が必要で「シンプル」に反する）</td></tr>
+        <tr><td>Q2: ファイルサーバー延命</td><td class="cb"><svg width="15" height="15" viewBox="0 0 18 18" style="vertical-align:middle;margin-right:4px"><use href="#ico-filesync"/></svg>File Sync</td><td>UNCパス不変・容量拡張・クラウドティアリング</td><td>Azure Migrate（サーバーを廃止してしまう）</td></tr>
+        <tr><td>Q3: VMアセスメント</td><td class="cg"><svg width="15" height="15" viewBox="0 0 18 18" style="vertical-align:middle;margin-right:4px"><use href="#ico-migrate2"/></svg>Azure Migrate</td><td>サイジング自動・コスト試算・依存関係マップ</td><td>Azure Monitor（監視ツール、移行アセスメントではない）</td></tr>
+        <tr><td>Q4: SQL MI Business Critical移行</td><td class="cp"><svg width="15" height="15" viewBox="0 0 18 18" style="vertical-align:middle;margin-right:4px"><use href="#ico-milink"/></svg>MI Link (SQL2022)</td><td>Business Critical唯一のオンライン移行・フェイルバック</td><td>Azure DMS（Business Criticalのオンライン移行に非対応）</td></tr>
+        <tr><td>Q5: クロスOS+PostgreSQL管理</td><td class="co"><svg width="15" height="15" viewBox="0 0 18 18" style="vertical-align:middle;margin-right:4px"><use href="#ico-datastudio"/></svg>Data Studio</td><td>Mac対応・PostgreSQL拡張・1ツール統合管理</td><td>SSMS（Windowsのみ・PostgreSQL未対応）</td></tr>
+        <tr><td>Q6: テナント間定期共有</td><td class="cy"><svg width="15" height="15" viewBox="0 0 18 18" style="vertical-align:middle;margin-right:4px"><use href="#ico-datashare"/></svg>Data Share</td><td>テナント間・コード不要・キー不要・スナップショット</td><td>AzCopy（SASキーをパートナーに渡す必要）</td></tr>
+        <tr><td>Q7: Oracle→SQLスキーマ変換</td><td class="cb"><svg width="15" height="15" viewBox="0 0 18 18" style="vertical-align:middle;margin-right:4px"><use href="#ico-sqlmi"/></svg>SSMA → DMS</td><td>異種DB変換=SSMA、データ移行=DMSの2段階</td><td>DMAのみ（DMAはSQL→SQL評価用、Oracle非対応）</td></tr>
+        <tr><td>Q8: VMのDR（継続レプリカ+フェイルバック）</td><td class="cb"><svg width="15" height="15" viewBox="0 0 18 18" style="vertical-align:middle;margin-right:4px"><use href="#ico-migrate2"/></svg>Azure Site Recovery</td><td>継続レプリカ・自動フェイルオーバー・フェイルバック</td><td>Azure Migrate（一回性の移行ツール、DRでない）</td></tr>
+        <tr><td>Q9: データカタログ・系譜管理・機密分類</td><td class="cp"><svg width="15" height="15" viewBox="0 0 18 18" style="vertical-align:middle;margin-right:4px"><use href="#ico-sqlmi"/></svg>Microsoft Purview</td><td>データガバナンス・カタログ・コンプライアンス</td><td>Azure Data Share（共有ツール、ガバナンスでない）</td></tr>
+        <tr><td>Q10: リアルタイムイベントストリーム配信（百万/秒）</td><td class="cb"><svg width="15" height="15" viewBox="0 0 18 18" style="vertical-align:middle;margin-right:4px"><use href="#ico-adx"/></svg>Azure Event Hubs</td><td>ストリーミング・大規模・リアルタイム</td><td>Azure Data Share（バッチ共有、ストリーミング不可）</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</div><!-- /p7 -->
+
+</main>
+<script>
+function go(id, btn) {
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  if(btn){btn.classList.add('on');}
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function ans(el, qid, correct) {
+  const c=document.getElementById(qid);
+  c.querySelectorAll('.choices li').forEach(li=>{li.onclick=null;li.style.cursor='default';});
+  el.classList.add(correct?'ok':'er');
+  el.innerHTML=(correct?'✅ ':'❌ ')+el.innerHTML;
+  showExp(qid);
+}
+function showExp(qid) {
+  const e=document.getElementById('exp-'+qid);
+  e.classList.add('show');
+  const b=e.previousElementSibling;
+  if(b&&b.classList.contains('exp-btn'))b.style.display='none';
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,1796 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SSL/TLS プロトコル — 技術解説書 完全版</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600&family=Noto+Sans+JP:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:     #141824;
+    --ink2:    #1e2d4a;
+    --accent:  #0b4a82;
+    --accent2: #1570b8;
+    --gold:    #b5821e;
+    --soft:    #e8edf5;
+    --surface: #f3f6fb;
+    --line:    #cdd7e6;
+    --success: #155f44;
+    --warn:    #7a4208;
+    --danger:  #7a1818;
+    --mono:    'JetBrains Mono', monospace;
+    --serif:   'Noto Serif JP', serif;
+    --sans:    'Noto Sans JP', sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: var(--sans); background: #edf1f8; color: var(--ink); font-size: 15px; line-height: 1.78; }
+
+  /* ── Cover ── */
+  .cover { background: var(--ink); color: #fff; padding: 72px 60px 56px; position: relative; overflow: hidden; }
+  .cover-geo { position: absolute; top: 0; right: 0; width: 420px; height: 420px; opacity: .06; }
+  .cover-kicker { font-size: 11px; font-weight: 700; letter-spacing: .2em; color: rgba(255,255,255,.42); text-transform: uppercase; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+  .cover-kicker::before { content: ''; display: block; width: 24px; height: 1px; background: var(--gold); }
+  .cover h1 { font-family: var(--serif); font-size: 40px; font-weight: 600; line-height: 1.22; margin-bottom: 18px; }
+  .cover h1 em { color: #6ab4f5; font-style: normal; }
+  .cover-desc { font-size: 14px; color: rgba(255,255,255,.58); max-width: 560px; margin-bottom: 36px; line-height: 1.8; }
+  .cover-tags { display: flex; gap: 7px; flex-wrap: wrap; }
+  .ctag { font-size: 10.5px; padding: 3px 11px; border-radius: 3px; border: 1px solid rgba(255,255,255,.16); color: rgba(255,255,255,.6); letter-spacing: .04em; font-family: var(--mono); }
+
+  /* ── Layout ── */
+  .layout { display: flex; align-items: flex-start; }
+  .sidebar { position: sticky; top: 0; width: 220px; flex-shrink: 0; height: 100vh; overflow-y: auto; background: var(--ink2); padding: 28px 0; }
+  .sidebar-title { font-size: 10px; font-weight: 700; letter-spacing: .18em; color: rgba(255,255,255,.3); text-transform: uppercase; padding: 0 20px 12px; border-bottom: 1px solid rgba(255,255,255,.08); margin-bottom: 8px; }
+  .sidebar nav a { display: block; padding: 8px 20px; font-size: 12.5px; color: rgba(255,255,255,.55); text-decoration: none; border-left: 2px solid transparent; transition: all .15s; line-height: 1.45; }
+  .sidebar nav a:hover { color: #fff; background: rgba(255,255,255,.05); }
+  .sidebar nav a.active { color: #6ab4f5; border-left-color: #6ab4f5; background: rgba(100,180,245,.07); }
+  .sidebar nav .nav-num { font-family: var(--mono); font-size: 9px; color: rgba(255,255,255,.25); display: block; margin-bottom: 1px; }
+  .main { flex: 1; min-width: 0; padding: 52px 52px 100px; }
+
+  /* ── Section ── */
+  .section { margin-bottom: 80px; scroll-margin-top: 24px; }
+  .section-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 26px; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
+  .s-num { font-family: var(--mono); font-size: 10px; font-weight: 500; color: #fff; background: var(--accent); padding: 3px 8px; border-radius: 3px; margin-top: 5px; white-space: nowrap; flex-shrink: 0; }
+  .s-num.gold-bg { background: var(--gold); }
+  .s-num.red-bg  { background: var(--danger); }
+  h2 { font-family: var(--serif); font-size: 24px; font-weight: 600; color: var(--ink); line-height: 1.3; }
+  h3 { font-size: 15px; font-weight: 700; color: var(--ink2); margin: 32px 0 12px; padding-left: 10px; border-left: 3px solid var(--accent2); }
+  p { color: #3a3d52; margin-bottom: 14px; }
+
+  /* ── Cards ── */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px,1fr)); gap: 14px; margin: 22px 0; }
+  .icard { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px; }
+  .icard-icon { color: var(--accent2); }
+  .icard-label { font-size: 10.5px; font-weight: 700; letter-spacing: .1em; color: var(--accent); text-transform: uppercase; }
+  .icard-val { font-size: 13px; color: var(--ink); line-height: 1.55; }
+
+  /* ── Sequence Diagram (HTML/CSS only) ── */
+  .seq-wrap { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 28px 24px 20px; margin: 24px 0; overflow-x: auto; }
+  .seq-cap { font-size: 10.5px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); margin-bottom: 24px; display: flex; align-items: center; gap: 10px; }
+  .seq-cap::after { content:''; flex:1; height:1px; background:var(--line); }
+
+  /* CSS-only sequence diagram */
+  .seq-diagram { min-width: 620px; position: relative; }
+  .seq-actors { display: flex; gap: 0; margin-bottom: 0; }
+  .seq-actor { flex: 1; display: flex; flex-direction: column; align-items: center; position: relative; }
+  .seq-actor-box { padding: 8px 10px; border-radius: 6px; text-align: center; font-size: 12px; font-weight: 600; color: #fff; width: 100%; max-width: 160px; position: relative; z-index: 2; }
+  .seq-actor-box small { display: block; font-size: 9px; opacity: .6; font-weight: 400; font-family: var(--mono); margin-top: 2px; }
+  .seq-actor.client .seq-actor-box { background: var(--accent); }
+  .seq-actor.server .seq-actor-box { background: var(--success); }
+  .seq-actor.ca .seq-actor-box { background: #5a1a6e; }
+  .seq-actor.authsv .seq-actor-box { background: var(--warn); }
+
+  .seq-body { position: relative; margin-top: 0; }
+
+  /* Lifelines */
+  .seq-lifelines { display: flex; position: absolute; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; }
+  .seq-lifeline { flex: 1; display: flex; justify-content: center; }
+  .seq-lifeline::after { content: ''; display: block; width: 2px; background: repeating-linear-gradient(to bottom, var(--line) 0px, var(--line) 6px, transparent 6px, transparent 10px); height: 100%; }
+
+  /* Phase banner */
+  .seq-phase { background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 6px 14px; font-size: 11px; font-weight: 700; color: var(--ink2); margin: 10px 0 0; display: flex; align-items: center; gap: 8px; }
+  .seq-phase.ph-hello { background: #e8f0fa; border-color: var(--accent); color: var(--accent); }
+  .seq-phase.ph-auth  { background: #eaf7f1; border-color: var(--success); color: var(--success); }
+  .seq-phase.ph-key   { background: #e8f0fa; border-color: var(--accent2); color: var(--accent2); }
+  .seq-phase.ph-enc   { background: #fdf5e6; border-color: var(--gold); color: var(--warn); }
+  .seq-phase.ph-data  { background: #eaf7f1; border-color: var(--success); color: var(--success); }
+  .seq-phase svg { flex-shrink: 0; }
+
+  /* Message rows */
+  .seq-row { display: flex; align-items: stretch; min-height: 52px; position: relative; }
+  .seq-row.has-note { min-height: 70px; }
+
+  .seq-cell { flex: 1; position: relative; display: flex; align-items: center; justify-content: center; }
+
+  /* Arrow + label */
+  .seq-msg { display: flex; align-items: center; width: 100%; position: relative; }
+
+  /* Right arrow (client → server) */
+  .arrow-right { display: flex; flex-direction: column; align-items: stretch; width: 100%; gap: 3px; }
+  .arrow-right .arr-line { height: 2px; background: var(--accent); width: 100%; position: relative; }
+  .arrow-right .arr-line::after { content:''; position:absolute; right: -1px; top: -5px; border-left: 10px solid var(--accent); border-top: 6px solid transparent; border-bottom: 6px solid transparent; }
+  .arrow-right .arr-label { font-size: 11px; font-weight: 600; color: var(--accent); text-align: center; background: #fff; padding: 2px 8px; border-radius: 3px; border: 1px solid var(--accent); align-self: center; white-space: nowrap; }
+  .arrow-right .arr-sub { font-size: 10px; color: #6a6e8e; text-align: center; white-space: nowrap; }
+
+  /* Left arrow (server → client) */
+  .arrow-left { display: flex; flex-direction: column; align-items: stretch; width: 100%; gap: 3px; }
+  .arrow-left .arr-line { height: 2px; background: var(--success); width: 100%; position: relative; background: repeating-linear-gradient(to right, var(--success) 0px, var(--success) 10px, transparent 10px, transparent 15px); }
+  .arrow-left .arr-line::before { content:''; position:absolute; left: -1px; top: -5px; border-right: 10px solid var(--success); border-top: 6px solid transparent; border-bottom: 6px solid transparent; }
+  .arrow-left .arr-label { font-size: 11px; font-weight: 600; color: var(--success); text-align: center; background: #eaf7f1; padding: 2px 8px; border-radius: 3px; border: 1px solid var(--success); align-self: center; white-space: nowrap; }
+  .arrow-left .arr-sub { font-size: 10px; color: #6a6e8e; text-align: center; white-space: nowrap; }
+
+  /* CA direction arrows */
+  .arrow-right-ca .arr-line { background: #5a1a6e; }
+  .arrow-right-ca .arr-line::after { border-left-color: #5a1a6e; }
+  .arrow-right-ca .arr-label { color: #5a1a6e; border-color: #5a1a6e; }
+  .arrow-left-ca .arr-line { background: repeating-linear-gradient(to right, #5a1a6e 0px, #5a1a6e 10px, transparent 10px, transparent 15px); }
+  .arrow-left-ca .arr-line::before { border-right-color: #5a1a6e; }
+  .arrow-left-ca .arr-label { color: #5a1a6e; border-color: #5a1a6e; background: #f5eeff; }
+
+  /* Internal box */
+  .seq-internal { background: var(--surface); border: 1px solid var(--line); border-radius: 5px; padding: 5px 10px; font-size: 10.5px; color: var(--ink2); text-align: center; margin: 4px auto; max-width: 140px; }
+  .seq-internal.cli { background: #e8f0fa; border-color: var(--accent); color: var(--accent); }
+  .seq-internal.srv { background: #eaf7f1; border-color: var(--success); color: var(--success); }
+
+  /* span helpers */
+  .seq-span-all { grid-column: 1/-1; }
+
+  /* Encrypted badge */
+  .enc-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 700; color: var(--warn); background: #fff8e6; border: 1px solid #e8c97a; padding: 3px 8px; border-radius: 3px; margin-left: 8px; }
+
+  /* Full-width banner row */
+  .seq-banner { background: #eaf7f1; border: 1.5px solid var(--success); border-radius: 5px; padding: 8px 14px; font-size: 12px; font-weight: 700; color: var(--success); text-align: center; margin: 8px 0; display: flex; align-items: center; justify-content: center; gap: 8px; }
+
+  /* ── Steps ── */
+  .steps { display:flex; flex-direction:column; gap:8px; margin:16px 0; }
+  .step { display:flex; gap:12px; align-items:flex-start; padding:11px 15px; border-radius:6px; background: var(--surface); border-left: 3px solid var(--line); }
+  .step.hi  { background:#eaf3ff; border-left-color:var(--accent2); }
+  .step.ok  { background:#eaf7f1; border-left-color:var(--success); }
+  .step.wn  { background:#fdf5e6; border-left-color:var(--gold); }
+  .step.ng  { background:#fdf0f0; border-left-color:var(--danger); }
+  .sn { font-family:var(--mono); font-size:10px; font-weight:500; color:#fff; background:var(--accent2); min-width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px; }
+  .step.ok .sn { background:var(--success); }
+  .step.wn .sn { background:var(--gold); }
+  .step.ng .sn { background:var(--danger); }
+  .sb { font-size:13.5px; color:var(--ink); line-height:1.65; }
+  .sb strong { color:var(--ink2); }
+  .sb code { font-family:var(--mono); font-size:11.5px; background:rgba(11,74,130,.08); color:var(--accent); padding:1px 5px; border-radius:3px; }
+
+  /* ── Notes ── */
+  .note { display:flex; gap:11px; border-radius:6px; padding:13px 16px; margin:14px 0; border: 1px solid; }
+  .note-i { flex-shrink:0; margin-top:2px; }
+  .note p { margin:0; font-size:13px; line-height:1.7; }
+  .note.info  { background:#e8f3fd; border-color:#a8cef5; }
+  .note.info p { color:#0b3a6a; }
+  .note.warn  { background:#fdf5e6; border-color:#e8c97a; }
+  .note.warn p { color:#5a3200; }
+  .note.danger{ background:#fdf0f0; border-color:#e8a8a8; }
+  .note.danger p { color:#5a0000; }
+
+  /* ── Threat grid ── */
+  .threat-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:20px 0; }
+  .threat-card { background:#fff; border:1px solid var(--line); border-radius:8px; overflow:hidden; }
+  .tc-head { display:flex; align-items:center; gap:10px; padding:10px 14px; background: var(--danger); color:#fff; }
+  .tc-head.warn-head { background: var(--gold); }
+  .tc-head span { font-size:12.5px; font-weight:700; }
+  .tc-body { padding:12px 14px; }
+  .tc-body p { font-size:12.5px; color:#3a3d52; margin:0 0 8px; line-height:1.6; }
+  .tc-counter { font-size:11.5px; color:var(--success); padding:6px 10px; background:#eaf7f1; border-radius:4px; margin:0; border-left:3px solid var(--success); }
+
+  /* ── Tables ── */
+  .req-table { width:100%; border-collapse:collapse; font-size:13.5px; margin:16px 0; }
+  .req-table th { background:var(--ink2); color:#fff; padding:9px 13px; text-align:left; font-size:11px; font-weight:600; letter-spacing:.06em; }
+  .req-table td { padding:9px 13px; border-bottom:1px solid var(--line); vertical-align:top; line-height:1.6; }
+  .req-table tr:last-child td { border-bottom:none; }
+  .req-table tr:nth-child(even) td { background:var(--surface); }
+  .req-table td:first-child { font-weight:600; color:var(--ink2); white-space:nowrap; }
+  .atk-table { width:100%; border-collapse:collapse; font-size:13px; margin:16px 0; }
+  .atk-table th { background:var(--ink); color:#fff; padding:9px 13px; text-align:left; font-size:11px; font-weight:600; letter-spacing:.06em; }
+  .atk-table td { padding:9px 13px; border-bottom:1px solid var(--line); vertical-align:top; line-height:1.6; }
+  .atk-table tr:last-child td { border-bottom:none; }
+  .atk-table tr:nth-child(even) td { background:var(--surface); }
+  .atk-table td:first-child { font-weight:600; color:var(--danger); white-space:nowrap; }
+  .atk-table td:last-child { color:var(--success); font-size:12.5px; }
+  .cmp-table { width:100%; border-collapse:collapse; font-size:13px; margin:16px 0; }
+  .cmp-table th { background:var(--accent); color:#fff; padding:9px 13px; text-align:center; font-size:11px; font-weight:600; letter-spacing:.06em; }
+  .cmp-table th:first-child { text-align:left; background:var(--ink2); }
+  .cmp-table td { padding:9px 13px; border:1px solid var(--line); text-align:center; font-size:12.5px; vertical-align:middle; }
+  .cmp-table td:first-child { text-align:left; font-weight:600; color:var(--ink2); background:var(--surface); white-space:nowrap; }
+  .cmp-good { color:var(--success); font-weight:600; }
+  .cmp-bad  { color:var(--danger); }
+  .cmp-mid  { color:var(--warn); }
+
+  /* ── Keypoint ── */
+  .keypoint { background:var(--ink); color:#fff; border-radius:8px; padding:20px 26px; margin:24px 0; }
+  .kp-label { font-size:9.5px; font-weight:700; letter-spacing:.2em; color:rgba(181,130,30,.9); text-transform:uppercase; margin-bottom:8px; display:flex; align-items:center; gap:8px; }
+  .kp-label::before { content:''; display:block; width:16px; height:1px; background:var(--gold); }
+  .keypoint p { color:rgba(255,255,255,.82); margin:0; font-size:13.5px; line-height:1.8; }
+  .keypoint strong { color:#6ab4f5; }
+
+  /* ── Quiz ── */
+  .quiz-wrap { display:flex; flex-direction:column; gap:24px; margin:20px 0; }
+  .quiz { background:#fff; border:1px solid var(--line); border-radius:8px; overflow:hidden; }
+  .quiz-q { padding:14px 18px; background:var(--ink2); color:#fff; font-size:13.5px; line-height:1.65; display:flex; gap:12px; }
+  .quiz-qn { font-family:var(--mono); font-size:10px; background:rgba(255,255,255,.15); padding:2px 8px; border-radius:3px; white-space:nowrap; flex-shrink:0; height:fit-content; margin-top:2px; }
+  .quiz-opts { padding:14px 18px; display:flex; flex-direction:column; gap:7px; }
+  .quiz-opt { padding:8px 13px; border:1px solid var(--line); border-radius:5px; font-size:13px; color:var(--ink); cursor:pointer; transition:all .15s; background:#fff; text-align:left; }
+  .quiz-opt:hover { background:var(--surface); border-color:var(--accent2); }
+  .quiz-opt.correct { background:#eaf7f1; border-color:var(--success); color:var(--success); }
+  .quiz-opt.wrong   { background:#fdf0f0; border-color:var(--danger); color:var(--danger); }
+  .quiz-opt.reveal  { background:var(--surface); color:#aaa; }
+  .quiz-exp { display:none; padding:12px 18px; background:#f0f6ff; border-top:1px solid #b8d5f5; font-size:13px; color:#0b3a6a; line-height:1.7; }
+  .quiz-exp.show { display:block; }
+
+  /* ── Term table ── */
+  .term-table { width:100%; border-collapse:collapse; font-size:13px; margin:12px 0; }
+  .term-table td { padding:8px 11px; border-bottom:1px dashed var(--line); vertical-align:top; }
+  .term-table td:first-child { font-family:var(--mono); font-size:11px; color:var(--accent2); font-weight:500; white-space:nowrap; min-width:200px; }
+  .term-table tr:last-child td { border-bottom:none; }
+
+  /* ── Layer diagram ── */
+  .layer-stack { display: flex; flex-direction: column; gap: 4px; }
+  .layer-row { padding: 11px 18px; border-radius: 5px; text-align: center; font-size: 13px; font-weight: 600; border: 1.5px solid; }
+  .layer-row small { display: block; font-size: 10px; font-weight: 400; margin-top: 2px; opacity: .75; }
+
+  /* Packet diagram */
+  .packet-wrap { font-family: var(--mono); font-size: 11.5px; line-height: 2; padding: 16px 20px; background: #f8fafb; border-radius: 6px; border: 1px solid var(--line); }
+
+  /* Cipher suite decompose */
+  .suite-grid { display: grid; grid-template-columns: 110px 1fr; gap: 2px; margin: 12px 0; }
+  .suite-key { padding: 9px 13px; font-family: var(--mono); font-size: 11.5px; font-weight: 700; text-align: center; border-radius: 4px 0 0 4px; }
+  .suite-val { padding: 9px 13px; font-size: 12.5px; color: #3a3d52; border-radius: 0 4px 4px 0; border: 1px solid var(--line); }
+  .suite-kex  { background: #eaf7f1; color: var(--success); }
+  .suite-auth { background: #fdf5e6; color: var(--warn); }
+  .suite-enc  { background: #e8f0fa; color: var(--accent); }
+  .suite-mac  { background: #f5eeff; color: #5a1a6e; }
+
+  footer { background:var(--ink); color:rgba(255,255,255,.35); text-align:center; padding:22px; font-size:11.5px; letter-spacing:.05em; line-height:1.8; }
+
+  @media (max-width: 800px) {
+    .sidebar { display:none; }
+    .main { padding:28px 20px 60px; }
+    .threat-grid { grid-template-columns:1fr; }
+    .cover { padding:48px 24px 40px; }
+    .cover h1 { font-size:28px; }
+  }
+
+  /* Icon helpers */
+  .icon-inline { display:inline-flex; align-items:center; gap:6px; vertical-align:middle; }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <svg class="cover-geo" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="80" y="80" width="240" height="240" stroke="white" stroke-width="1"/>
+    <rect x="110" y="110" width="180" height="180" stroke="white" stroke-width="1"/>
+    <circle cx="200" cy="200" r="140" stroke="white" stroke-width="1"/>
+    <circle cx="200" cy="200" r="90" stroke="white" stroke-width="1"/>
+    <line x1="60" y1="200" x2="340" y2="200" stroke="white" stroke-width="0.5"/>
+    <line x1="200" y1="60" x2="200" y2="340" stroke="white" stroke-width="0.5"/>
+  </svg>
+  <div style="position:relative">
+    <p class="cover-kicker">技術解説書 — 情報処理安全確保支援士対応</p>
+    <h1><em>SSL / TLS</em> プロトコル<br>完全解説書</h1>
+    <p class="cover-desc">通信の安全を守る「デジタルの護衛艦」。ハンドシェイクからセッション確立まで、フェーズ別シーケンスで理解するトランスポート層セキュリティの全容。TLS 1.2/1.3の違い、暗号スイート、証明書検証、拡張仕様まで網羅した実践的完全解説書です。</p>
+    <div class="cover-tags">
+      <span class="ctag">TLS 1.2 / 1.3</span>
+      <span class="ctag">ハンドシェイク</span>
+      <span class="ctag">暗号スイート</span>
+      <span class="ctag">X.509証明書</span>
+      <span class="ctag">常時SSL / HSTS</span>
+      <span class="ctag">Perfect Forward Secrecy</span>
+      <span class="ctag">SNI / ALPN</span>
+      <span class="ctag">クライアント認証</span>
+      <span class="ctag">TLSトンネリング</span>
+    </div>
+  </div>
+</div>
+
+<div class="layout">
+  <aside class="sidebar">
+    <p class="sidebar-title">目次</p>
+    <nav>
+      <a href="#s1" onclick="setActive(this)"><span class="nav-num">01</span>SSL/TLSの位置づけ</a>
+      <a href="#s2" onclick="setActive(this)"><span class="nav-num">02</span>常時SSL化の必要性</a>
+      <a href="#s3" onclick="setActive(this)"><span class="nav-num">03</span>プロトコル構造と暗号</a>
+      <a href="#s4" onclick="setActive(this)"><span class="nav-num">04</span>TLS 1.2 ハンドシェイク</a>
+      <a href="#s5" onclick="setActive(this)"><span class="nav-num">05</span>TLS 1.3 ハンドシェイク</a>
+      <a href="#s6" onclick="setActive(this)"><span class="nav-num">06</span>暗号スイートと鍵交換</a>
+      <a href="#s7" onclick="setActive(this)"><span class="nav-num">07</span>サーバ証明書の検証</a>
+      <a href="#s8" onclick="setActive(this)"><span class="nav-num">08</span>TLS拡張仕様 / SNI</a>
+      <a href="#s9" onclick="setActive(this)"><span class="nav-num">09</span>TLSトンネリング</a>
+      <a href="#s10" onclick="setActive(this)"><span class="nav-num">10</span>クライアント認証</a>
+      <a href="#s11" onclick="setActive(this)"><span class="nav-num">11</span>脅威と攻撃手法</a>
+      <a href="#s12" onclick="setActive(this)"><span class="nav-num">12</span>練習問題</a>
+      <a href="#s13" onclick="setActive(this)"><span class="nav-num">13</span>重要用語まとめ</a>
+    </nav>
+  </aside>
+
+  <main class="main">
+
+<!-- ======================================================== -->
+<!-- SECTION 01: 位置づけ -->
+<!-- ======================================================== -->
+<section class="section" id="s1">
+  <div class="section-header">
+    <span class="s-num">01</span>
+    <h2>SSL/TLSの位置づけ — 全体像の中での役割</h2>
+  </div>
+
+  <p>SSL（Secure Sockets Layer）/ TLS（Transport Layer Security）は、<strong>インターネット通信を暗号化し、盗聴・改ざん・なりすましから守るプロトコル</strong>です。SSL は古い名称（Netscape 社が1990年代に開発）で、現在の正式名称は TLS ですが、慣習的に「SSL/TLS」と呼ばれます。現在有効なバージョンは <strong>TLS 1.2 と TLS 1.3</strong> のみで、それ以前のバージョンはすべて非推奨または廃止されています。</p>
+
+  <h3>たとえ話：デジタル通信の「護衛艦」</h3>
+  <p>インターネット上のデータ送信を「荷物を運ぶ輸送船」にたとえると、通常の HTTP 通信は<strong>甲板に荷物を無防備に置いたまま航行する船</strong>です。誰でも荷物を見たり、すり替えたり、偽の船に誘導したりできます。HTTPS（HTTP over TLS）は<strong>荷物を施錠したコンテナに入れ、護衛艦とともに航行する船</strong>です。</p>
+
+  <div class="card-grid">
+    <div class="icard">
+      <div class="icard-icon">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2"/>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          <circle cx="12" cy="16" r="1.5" fill="currentColor"/>
+        </svg>
+      </div>
+      <div class="icard-label">機密性</div>
+      <div class="icard-val">AES-256・ChaCha20等で通信内容を暗号化。第三者が盗聴しても解読不可能。</div>
+    </div>
+    <div class="icard">
+      <div class="icard-icon">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          <polyline points="9 12 11 14 15 10"/>
+        </svg>
+      </div>
+      <div class="icard-label">完全性</div>
+      <div class="icard-val">MAC / AEAD で改ざん検知。1ビットでも変更されれば接続が切断される。</div>
+    </div>
+    <div class="icard">
+      <div class="icard-icon">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="8" r="4"/>
+          <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+          <polyline points="16 11 18 13 22 9"/>
+        </svg>
+      </div>
+      <div class="icard-label">真正性</div>
+      <div class="icard-val">サーバ証明書で接続先が本物と確認。フィッシングサイトへの誘導を防ぐ。</div>
+    </div>
+    <div class="icard">
+      <div class="icard-icon">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <path d="M9 13h6M9 17h4"/>
+          <circle cx="9" cy="10" r="1" fill="currentColor"/>
+        </svg>
+      </div>
+      <div class="icard-label">否認防止</div>
+      <div class="icard-val">デジタル署名により、通信の送受信を事後否認不可。法的証拠として有効。</div>
+    </div>
+  </div>
+
+  <h3>OSI参照モデルと TCP/IP モデルでの位置</h3>
+  <div style="background:#fff; border:1px solid var(--line); border-radius:10px; padding:24px; margin:24px 0">
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px">
+      <div>
+        <p style="font-size:11px;font-weight:700;color:var(--accent);margin-bottom:10px;text-align:center">OSI参照モデル（7層）</p>
+        <div class="layer-stack">
+          <div class="layer-row" style="background:#e8f0fa;border-color:var(--accent);color:var(--accent)">第7層 アプリケーション層<small>HTTP, SMTP, FTP …</small></div>
+          <div class="layer-row" style="background:#e8f0fa;border-color:var(--accent);color:var(--accent)">第6層 プレゼンテーション層</div>
+          <div class="layer-row" style="background:#eaf7f1;border-color:var(--success);color:var(--success);border-width:2.5px">SSL / TLS<small>← セッション層相当に位置</small></div>
+          <div class="layer-row" style="background:#fdf5e6;border-color:var(--gold);color:var(--warn)">第4層 トランスポート層<small>TCP, UDP</small></div>
+          <div class="layer-row" style="background:var(--surface);border-color:var(--line);color:#3a3d52">第3層 ネットワーク層<small>IP</small></div>
+          <div class="layer-row" style="background:var(--surface);border-color:var(--line);color:#3a3d52">第2層 データリンク層</div>
+          <div class="layer-row" style="background:var(--surface);border-color:var(--line);color:#3a3d52">第1層 物理層</div>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:11px;font-weight:700;color:var(--accent);margin-bottom:10px;text-align:center">TCP/IP モデル（4層）</p>
+        <div class="layer-stack">
+          <div class="layer-row" style="background:#e8f0fa;border-color:var(--accent);color:var(--accent)">アプリケーション層<small>HTTP, SMTP, FTP …</small></div>
+          <div class="layer-row" style="background:#eaf7f1;border-color:var(--success);color:var(--success);border-width:2.5px;margin:8px 0">SSL / TLS<small>← アプリとトランスポートの間</small></div>
+          <div class="layer-row" style="background:#fdf5e6;border-color:var(--gold);color:var(--warn)">トランスポート層<small>TCP, UDP</small></div>
+          <div class="layer-row" style="background:var(--surface);border-color:var(--line);color:#3a3d52">インターネット層<small>IP</small></div>
+          <div class="layer-row" style="background:var(--surface);border-color:var(--line);color:#3a3d52">ネットワークインタフェース層</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note info">
+    <div class="note-i">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1570b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16" stroke-width="2.5"/></svg>
+    </div>
+    <p><strong>重要：</strong>SSL/TLS は<strong>アプリケーション層とトランスポート層の間</strong>に位置する汎用セキュリティ層です。HTTP だけでなく SMTP, FTP, LDAP など任意のプロトコルに適用できます。HTTPS＝HTTP over TLS、SMTPS＝SMTP over TLS を意味します。</p>
+  </div>
+
+  <h3>SSL/TLS と類似技術の比較（同じレイヤーの技術を整理）</h3>
+  <table class="cmp-table">
+    <thead>
+      <tr><th>技術</th><th>対象レイヤー</th><th>用途・特徴</th><th>暗号化範囲</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>SSL/TLS</td><td>セッション層<br><small>(TCP 上)</small></td><td class="cmp-good">Web・メール等の汎用通信暗号化。ポート 443。</td><td>アプリケーションデータ全体</td></tr>
+      <tr><td>IPsec</td><td>ネットワーク層<br><small>(IP 層)</small></td><td>VPN・拠点間通信の暗号化。OS 透過的。</td><td>IP パケット全体またはペイロード</td></tr>
+      <tr><td>SSH</td><td>アプリケーション層</td><td>リモートログイン・ファイル転送専用。ポート 22。</td><td>SSH セッション内の通信</td></tr>
+      <tr><td>WPA3</td><td>データリンク層<br><small>(無線 LAN)</small></td><td>無線 LAN フレームの暗号化。Wi-Fi 専用。</td><td>無線フレーム</td></tr>
+    </tbody>
+  </table>
+
+  <div class="steps">
+    <div class="step hi">
+      <span class="sn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </span>
+      <div class="sb"><strong>IPsec は「国境警備」</strong> — 国（ネットワーク）に出入りするすべての通信を自動暗号化します。VPN 拠点間接続が典型例。</div>
+    </div>
+    <div class="step ok">
+      <span class="sn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </span>
+      <div class="sb"><strong>TLS は「個別の護衛艦」</strong> — 特定のアプリ通信だけを護衛します。対象プロトコルを選択でき、柔軟性が高い。</div>
+    </div>
+    <div class="step wn">
+      <span class="sn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      </span>
+      <div class="sb"><strong>SSH は「専用車両」</strong> — サーバ管理という特定用途専用。鍵認証・ポート転送・SCP など独自機能を持つ。</div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================== -->
+<!-- SECTION 02: 常時SSL -->
+<!-- ======================================================== -->
+<section class="section" id="s2">
+  <div class="section-header">
+    <span class="s-num">02</span>
+    <h2>常時SSL化の必要性と HSTS</h2>
+  </div>
+
+  <p>かつては「ログイン・決済ページだけ HTTPS」という<strong>部分SSL化</strong>が一般的でした。しかし現在は<strong>Webサイト全体を HTTPS 化する「常時SSL（Always-On SSL）」</strong>が標準であり、Google もランキングシグナルとして採用しています。</p>
+
+  <h3>たとえ話：一部だけ守る城壁の問題</h3>
+  <p>部分SSL化は<strong>「正門だけ鉄扉、裏門は木の扉、城壁の一部は柵」</strong>のようなものです。攻撃者は弱い部分から侵入します。常時SSL化は<strong>「城壁全体を石造りにしてすべての入口を鉄扉に統一」</strong>することです。</p>
+
+  <div class="card-grid">
+    <div class="icard">
+      <div class="icard-icon">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
+          <path d="M2 12h20M12 2c-2.76 3.66-4 7.34-4 10s1.24 6.34 4 10M12 2c2.76 3.66 4 7.34 4 10s-1.24 6.34-4 10"/>
+          <line x1="12" y1="2" x2="12" y2="22"/>
+        </svg>
+      </div>
+      <div class="icard-label">Cookie 盗聴防止</div>
+      <div class="icard-val">セッション ID を含む Cookie が HTTP で流れると、セッションハイジャックのリスク。全ページ HTTPS で防止。</div>
+    </div>
+    <div class="icard">
+      <div class="icard-icon">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <line x1="23" y1="11" x2="23" y2="13"/>
+          <path d="M16 11l1.5 1.5L19 11"/>
+          <path d="M20.5 13H16"/>
+        </svg>
+      </div>
+      <div class="icard-label">中間者攻撃防止</div>
+      <div class="icard-val">公衆 Wi-Fi での HTTP 通信は盗聴・改ざん容易。常時 SSL で全ページを保護。</div>
+    </div>
+    <div class="icard">
+      <div class="icard-icon">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+        </svg>
+      </div>
+      <div class="icard-label">HTTP/2 対応</div>
+      <div class="icard-val">HTTP/2（多重化・ヘッダ圧縮で高速化）は HTTPS 上でのみ動作。性能向上にも HTTPS が必要。</div>
+    </div>
+    <div class="icard">
+      <div class="icard-icon">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/>
+          <path d="m21 21-4.35-4.35"/>
+          <polyline points="8 11 11 14 16 9"/>
+        </svg>
+      </div>
+      <div class="icard-label">SEO 向上</div>
+      <div class="icard-val">Google が HTTPS をランキングシグナルとして使用。同一コンテンツなら HTTPS サイトが上位表示。</div>
+    </div>
+  </div>
+
+  <h3>HSTS（HTTP Strict Transport Security）</h3>
+  <p>HSTS は <strong>「このサイトへは今後必ず HTTPS でアクセスしなさい」</strong> とブラウザに指示するレスポンスヘッダです。一度受信したブラウザは有効期間内の HTTP アクセスを自動的に HTTPS にリダイレクトします（SSL ストリッピング攻撃を防ぐ）。</p>
+
+  <div class="packet-wrap">
+    <span style="color:#155f44;font-weight:700">Strict-Transport-Security:</span> <span style="color:#0b4a82">max-age=31536000; includeSubDomains; preload</span><br>
+    <span style="color:#6a6e8e">    # max-age      : 有効期間（秒）。31536000 ≒ 1年</span><br>
+    <span style="color:#6a6e8e">    # includeSubDomains : サブドメインにも適用</span><br>
+    <span style="color:#6a6e8e">    # preload       : ブラウザのHSTSプリロードリストに登録申請</span>
+  </div>
+
+  <div class="keypoint">
+    <p class="kp-label">常時 SSL の本質</p>
+    <p>「鎖の強度は最も弱い環で決まる」原則と同様に、平文 HTTP の経路が一つでも残れば、そこが攻撃の糸口になります。<strong>全ページを暗号化して初めて安全</strong>になります。HSTS の preload でブラウザ初回アクセスからの HTTP 接続さえ防ぐのが最高水準です。</p>
+  </div>
+</section>
+
+<!-- ======================================================== -->
+<!-- SECTION 03: プロトコル構造と暗号 -->
+<!-- ======================================================== -->
+<section class="section" id="s3">
+  <div class="section-header">
+    <span class="s-num">03</span>
+    <h2>TLS プロトコルの構造・サブプロトコル・IP パケット</h2>
+  </div>
+
+  <p>TLS は複数の<strong>サブプロトコル</strong>から成る階層構造を持ちます。最下位にある<strong>TLS レコードプロトコル</strong>がすべてのデータを運搬し、その上で 4 つのサブプロトコルが動作します。</p>
+
+  <h3>TLS のサブプロトコル構成</h3>
+  <div class="seq-wrap" style="padding:20px 24px">
+    <div style="border:2px solid var(--accent); border-radius:8px; padding:16px; margin-bottom:12px; background:#e8f0fa">
+      <p style="font-size:12px;font-weight:700;color:var(--accent);text-align:center;margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:8px">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+        TLS Record Protocol（レコードプロトコル）— データの分割・暗号化・MAC付加・送信
+      </p>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+        <div style="background:#d0f0e0;border:1px solid var(--success);border-radius:6px;padding:12px 8px;text-align:center">
+          <div style="font-size:11px;font-weight:700;color:var(--success);margin-bottom:6px;display:flex;align-items:center;justify-content:center;gap:4px">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            Handshake
+          </div>
+          <div style="font-size:10px;color:#0d3d28">鍵交換・証明書・<br>認証ネゴシエーション</div>
+        </div>
+        <div style="background:#fdf5e6;border:1px solid var(--gold);border-radius:6px;padding:12px 8px;text-align:center">
+          <div style="font-size:11px;font-weight:700;color:var(--warn);margin-bottom:6px;display:flex;align-items:center;justify-content:center;gap:4px">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22V12M2 12h20M12 2l4 4-4 4M8 6l-4 4 4 4"/></svg>
+            ChangeCipherSpec
+          </div>
+          <div style="font-size:10px;color:#7a4208">暗号モード切替<br>通知（TLS1.2まで）</div>
+        </div>
+        <div style="background:#fdf0f0;border:1px solid var(--danger);border-radius:6px;padding:12px 8px;text-align:center">
+          <div style="font-size:11px;font-weight:700;color:var(--danger);margin-bottom:6px;display:flex;align-items:center;justify-content:center;gap:4px">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            Alert
+          </div>
+          <div style="font-size:10px;color:#7a1818">エラー・警告通知<br>接続終了の合図</div>
+        </div>
+        <div style="background:#eeddff;border:1px solid #5a1a6e;border-radius:6px;padding:12px 8px;text-align:center">
+          <div style="font-size:11px;font-weight:700;color:#5a1a6e;margin-bottom:6px;display:flex;align-items:center;justify-content:center;gap:4px">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="14" y2="14"/></svg>
+            Application Data
+          </div>
+          <div style="font-size:10px;color:#3a006e">実データ送受信<br>（暗号化済みHTTP等）</div>
+        </div>
+      </div>
+    </div>
+    <div style="border:1.5px solid var(--gold);border-radius:6px;padding:10px;background:#fff8e6;text-align:center;font-size:12.5px;font-weight:600;color:var(--warn);margin-bottom:6px">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:6px"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.18 2 2 0 0 1 3.59 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.1A16 16 0 0 0 16 16.09l.96-.95a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 23.93 17z"/></svg>
+      TCP（トランスポート層）— 信頼性ある到達保証
+    </div>
+    <div style="border:1.5px solid var(--line);border-radius:6px;padding:10px;background:var(--surface);text-align:center;font-size:12.5px;font-weight:600;color:#3a3d52">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:6px"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      IP（ネットワーク層）— アドレッシング・ルーティング
+    </div>
+  </div>
+
+  <h3>IP パケット内での TLS データ配置（実例）</h3>
+  <div class="seq-wrap" style="padding:20px 24px">
+    <div class="packet-wrap">
+      <span style="color:#3a3d52;font-weight:700">[Ethernet Frame]</span><br>
+      <span style="color:#6a6e8e">  ├─ Dst MAC: aa:bb:cc:dd:ee:ff / Src MAC: 11:22:33:44:55:66 / Type: 0x0800</span><br><br>
+      <span style="color:var(--accent);font-weight:700">[IP Header — 20バイト]</span><br>
+      <span style="color:var(--accent2)">  ├─ Src IP: 192.168.1.100 / Dst IP: 203.0.113.50 / Protocol: 6 (TCP)</span><br><br>
+      <span style="color:var(--success);font-weight:700">[TCP Header — 20バイト]</span><br>
+      <span style="color:#1f7a5a">  ├─ Src Port: 54321 / Dst Port: <strong>443 (HTTPS)</strong> / Flags: ACK, PSH</span><br><br>
+      <span style="color:var(--warn);font-weight:700">[TLS Record Header — 5バイト]</span><br>
+      <span style="color:#b5821e">  ├─ ContentType: 23 (Application Data)</span><br>
+      <span style="color:#b5821e">  ├─ ProtocolVersion: 0x0303 (TLS 1.2) ※TLS1.3でも互換性のため0x0303</span><br>
+      <span style="color:#b5821e">  └─ Length: 528 bytes</span><br><br>
+      <span style="color:var(--danger);font-weight:700">[TLS Encrypted Payload — 528バイト]</span><br>
+      <span style="color:#7a1818">  └─ [暗号化済み HTTP GET リクエスト / AES-256-GCM 暗号化 + 認証タグ]</span>
+    </div>
+    <p style="font-size:12px;color:#6a6e8e;margin-top:8px;margin-bottom:0">TLS レコードはポート 443 の TCP コネクション上を流れます。IP ヘッダには暗号化は施されないため、送受信 IP アドレス自体は第三者から観測可能です（コンテンツは暗号化）。</p>
+  </div>
+
+  <h3>TLS で使用する暗号アルゴリズム一覧</h3>
+  <table class="req-table">
+    <thead><tr><th>分類</th><th>アルゴリズム例</th><th>TLS での用途</th><th>備考</th></tr></thead>
+    <tbody>
+      <tr><td>共通鍵暗号</td><td>AES-128/256-GCM, ChaCha20-Poly1305</td><td>実際のデータ暗号化（セッション鍵で）</td><td>高速処理、AEAD 暗号</td></tr>
+      <tr><td>公開鍵暗号 / 署名</td><td>RSA-2048/4096, ECDSA-P256/P384, Ed25519</td><td>サーバ証明書の署名・検証</td><td>鍵長 2048bit 以上推奨</td></tr>
+      <tr><td>鍵交換（KEM）</td><td>ECDHE (x25519, P-256), DHE-2048</td><td>セッション鍵の安全な共有</td><td>PFS 必須で TLS 1.3 は ECDHE/DHE のみ</td></tr>
+      <tr><td>ハッシュ / PRF</td><td>SHA-256, SHA-384, HKDF</td><td>鍵導出・Finished メッセージ検証</td><td>TLS 1.3 は HKDF で統一</td></tr>
+      <tr><td>AEAD 暗号</td><td>AES-GCM, AES-CCM, ChaCha20-Poly1305</td><td>暗号化と完全性認証を同時実行</td><td>TLS 1.3 では AEAD のみ許可</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ======================================================== -->
+<!-- SECTION 04: TLS 1.2 ハンドシェイク -->
+<!-- ======================================================== -->
+<section class="section" id="s4">
+  <div class="section-header">
+    <span class="s-num">04</span>
+    <h2>TLS 1.2 ハンドシェイクのシーケンス</h2>
+  </div>
+
+  <p>TLS 1.2 のハンドシェイクは<strong>2-RTT（2往復）</strong>で暗号化パラメータを合意します。「Hello 交換 → サーバ認証 → 鍵交換 → 暗号化開始」の 4 フェーズに分かれます。たとえ話では<strong>「新幹線の乗車前確認」</strong>のようなものです。改札口（サーバ証明書確認）を通過し、指定席を決め（暗号スイート合意）、座席番号を共有し（鍵交換）、乗車（暗号化通信開始）します。</p>
+
+  <!-- HTML/CSS Sequence Diagram -->
+  <div class="seq-wrap">
+    <p class="seq-cap">シーケンス図 1 — TLS 1.2 フルハンドシェイク（2-RTT）</p>
+
+    <div class="seq-diagram">
+      <!-- Actors -->
+      <div class="seq-actors">
+        <div class="seq-actor client" style="flex:1">
+          <div class="seq-actor-box" style="background:var(--accent)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" style="vertical-align:middle;margin-right:4px"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            クライアント<small>BROWSER / CLIENT</small>
+          </div>
+        </div>
+        <div class="seq-actor server" style="flex:1">
+          <div class="seq-actor-box" style="background:var(--success)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" style="vertical-align:middle;margin-right:4px"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6" stroke-width="3"/><line x1="6" y1="18" x2="6.01" y2="18" stroke-width="3"/></svg>
+            サーバ<small>WEB SERVER</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Body with lifelines -->
+      <div class="seq-body" style="padding: 0 0 10px">
+
+        <!-- PHASE 1 -->
+        <div class="seq-phase ph-hello" style="margin-top:0">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Phase 1: Hello 交換 — 対応バージョン・暗号スイートの提示とネゴシエーション
+        </div>
+
+        <!-- Row: ClientHello -->
+        <div style="display:flex;align-items:center;padding:10px 0;border-bottom:1px dashed var(--line)">
+          <div style="flex:1;text-align:center;font-size:11px;color:#6a6e8e;padding:0 8px">
+            <div style="font-family:var(--mono);font-size:10px;color:var(--accent);font-weight:600">CLIENT</div>
+          </div>
+          <div style="flex:3;padding:0 8px">
+            <div style="position:relative;height:44px;display:flex;flex-direction:column;justify-content:center">
+              <div style="height:2px;background:var(--accent);width:100%;position:relative">
+                <div style="position:absolute;right:-2px;top:-5px;border-left:10px solid var(--accent);border-top:6px solid transparent;border-bottom:6px solid transparent"></div>
+              </div>
+              <div style="background:#fff;border:1px solid var(--accent);border-radius:3px;padding:3px 12px;font-size:11px;font-weight:600;color:var(--accent);text-align:center;margin-top:4px;align-self:center">① ClientHello</div>
+              <div style="font-size:10px;color:#6a6e8e;text-align:center">TLS バージョンリスト, 暗号スイートリスト, Client Random (28byte乱数)</div>
+            </div>
+          </div>
+          <div style="flex:1;text-align:center;font-size:11px;color:#6a6e8e;padding:0 8px">
+            <div style="font-family:var(--mono);font-size:10px;color:var(--success);font-weight:600">SERVER</div>
+          </div>
+        </div>
+
+        <!-- Row: ServerHello -->
+        <div style="display:flex;align-items:center;padding:10px 0;border-bottom:1px dashed var(--line)">
+          <div style="flex:1;text-align:center"></div>
+          <div style="flex:3;padding:0 8px">
+            <div style="position:relative;height:44px;display:flex;flex-direction:column;justify-content:center">
+              <div style="height:2px;background:repeating-linear-gradient(to right,var(--success) 0,var(--success) 8px,transparent 8px,transparent 13px);width:100%;position:relative">
+                <div style="position:absolute;left:-2px;top:-5px;border-right:10px solid var(--success);border-top:6px solid transparent;border-bottom:6px solid transparent"></div>
+              </div>
+              <div style="background:#eaf7f1;border:1px solid var(--success);border-radius:3px;padding:3px 12px;font-size:11px;font-weight:600;color:var(--success);text-align:center;margin-top:4px;align-self:center">② ServerHello</div>
+              <div style="font-size:10px;color:#6a6e8e;text-align:center">選択した TLS バージョン, 選択暗号スイート, Server Random (28byte乱数)</div>
+            </div>
+          </div>
+          <div style="flex:1"></div>
+        </div>
+
+        <!-- PHASE 2 -->
+        <div class="seq-phase ph-auth">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Phase 2: サーバ認証 — 証明書提示・ECDHE 公開鍵交換
+        </div>
+
+        <!-- Row: Certificate -->
+        <div style="display:flex;align-items:center;padding:10px 0;border-bottom:1px dashed var(--line)">
+          <div style="flex:1"></div>
+          <div style="flex:3;padding:0 8px">
+            <div style="position:relative;height:44px;display:flex;flex-direction:column;justify-content:center">
+              <div style="height:2px;background:repeating-linear-gradient(to right,var(--success) 0,var(--success) 8px,transparent 8px,transparent 13px);width:100%;position:relative">
+                <div style="position:absolute;left:-2px;top:-5px;border-right:10px solid var(--success);border-top:6px solid transparent;border-bottom:6px solid transparent"></div>
+              </div>
+              <div style="background:#eaf7f1;border:1px solid var(--success);border-radius:3px;padding:3px 12px;font-size:11px;font-weight:600;color:var(--success);text-align:center;margin-top:4px;align-self:center">③ Certificate</div>
+              <div style="font-size:10px;color:#6a6e8e;text-align:center">X.509 サーバ証明書（公開鍵・CN・CA署名・有効期限を含む）</div>
+            </div>
+          </div>
+          <div style="flex:1"></div>
+        </div>
+
+        <!-- Row: ServerKeyExchange -->
+        <div style="display:flex;align-items:center;padding:10px 0;border-bottom:1px dashed var(--line)">
+          <div style="flex:1"></div>
+          <div style="flex:3;padding:0 8px">
+            <div style="position:relative;height:50px;display:flex;flex-direction:column;justify-content:center">
+              <div style="height:2px;background:repeating-linear-gradient(to right,var(--success) 0,var(--success) 8px,transparent 8px,transparent 13px);width:100%;position:relative">
+                <div style="position:absolute;left:-2px;top:-5px;border-right:10px solid var(--success);border-top:6px solid transparent;border-bottom:6px solid transparent"></div>
+              </div>
+              <div style="background:#eaf7f1;border:1px solid var(--success);border-radius:3px;padding:3px 12px;font-size:11px;font-weight:600;color:var(--success);text-align:center;margin-top:4px;align-self:center">④ ServerKeyExchange</div>
+              <div style="font-size:10px;color:#6a6e8e;text-align:center">ECDHE 一時公開鍵 + サーバ秘密鍵による署名（改ざん防止）</div>
+            </div>
+          </div>
+          <div style="flex:1"></div>
+        </div>
+
+        <!-- Row: ServerHelloDone -->
+        <div style="display:flex;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line)">
+          <div style="flex:1"></div>
+          <div style="flex:3;padding:0 8px">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+              <div style="height:2px;background:repeating-linear-gradient(to right,var(--success) 0,var(--success) 8px,transparent 8px,transparent 13px);width:100%;position:relative">
+                <div style="position:absolute;left:-2px;top:-5px;border-right:10px solid var(--success);border-top:6px solid transparent;border-bottom:6px solid transparent"></div>
+              </div>
+              <div style="background:#eaf7f1;border:1px solid var(--success);border-radius:3px;padding:3px 12px;font-size:11px;font-weight:600;color:var(--success)">⑤ ServerHelloDone</div>
+            </div>
+          </div>
+          <div style="flex:1"></div>
+        </div>
+
+        <!-- Client internal: verify cert -->
+        <div style="display:flex;align-items:center;padding:6px 0">
+          <div style="flex:1;display:flex;justify-content:center">
+            <div class="seq-internal cli" style="max-width:180px;font-size:10.5px">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:3px"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+              証明書検証 (①〜⑥の6ステップ)<br>ECDHE 共有秘密の計算
+            </div>
+          </div>
+          <div style="flex:3"></div>
+          <div style="flex:1"></div>
+        </div>
+
+        <!-- PHASE 3 -->
+        <div class="seq-phase ph-key">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+          Phase 3: 鍵交換 — Pre-Master Secret の共有と Master Secret 導出
+        </div>
+
+        <!-- Row: ClientKeyExchange -->
+        <div style="display:flex;align-items:center;padding:10px 0;border-bottom:1px dashed var(--line)">
+          <div style="flex:1"></div>
+          <div style="flex:3;padding:0 8px">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+              <div style="height:2px;background:var(--accent);width:100%;position:relative">
+                <div style="position:absolute;right:-2px;top:-5px;border-left:10px solid var(--accent);border-top:6px solid transparent;border-bottom:6px solid transparent"></div>
+              </div>
+              <div style="background:#fff;border:1px solid var(--accent);border-radius:3px;padding:3px 12px;font-size:11px;font-weight:600;color:var(--accent)">⑥ ClientKeyExchange</div>
+              <div style="font-size:10px;color:#6a6e8e">クライアント ECDHE 一時公開鍵</div>
+            </div>
+          </div>
+          <div style="flex:1"></div>
+        </div>
+
+        <!-- Both derive -->
+        <div style="display:flex;gap:8px;padding:8px 0;border-bottom:1px dashed var(--line)">
+          <div style="flex:1;display:flex;justify-content:center">
+            <div class="seq-internal cli" style="max-width:none;width:90%;font-size:10px;text-align:left;padding:6px 10px">
+              <strong>Master Secret 導出</strong><br>
+              PRF(pre_master_secret, "master secret",<br>ClientRandom + ServerRandom) → 48 byte<br>
+              → 暗号鍵・MAC 鍵・IV（各 2 セット） 生成
+            </div>
+          </div>
+          <div style="flex:1;display:flex;justify-content:center">
+            <div class="seq-internal srv" style="max-width:none;width:90%;font-size:10px;text-align:left;padding:6px 10px">
+              <strong>Master Secret 導出</strong><br>
+              （同一の計算を独立して実行）<br>
+              → 同一のセッション鍵を共有
+            </div>
+          </div>
+        </div>
+
+        <!-- PHASE 4 -->
+        <div class="seq-phase ph-enc">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><circle cx="12" cy="16" r="1.5" fill="currentColor"/></svg>
+          Phase 4: 暗号化開始 — ChangeCipherSpec と Finished によって相互検証
+        </div>
+
+        <!-- C→S: ChangeCipherSpec -->
+        <div style="display:flex;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line)">
+          <div style="flex:1"></div>
+          <div style="flex:3;padding:0 8px">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+              <div style="height:2px;background:#b5821e;width:100%;position:relative">
+                <div style="position:absolute;right:-2px;top:-5px;border-left:10px solid #b5821e;border-top:6px solid transparent;border-bottom:6px solid transparent"></div>
+              </div>
+              <div style="background:#fff8e6;border:1px solid #b5821e;border-radius:3px;padding:3px 12px;font-size:11px;font-weight:600;color:var(--warn)">⑦ ChangeCipherSpec（C→S）</div>
+              <div style="font-size:10px;color:#6a6e8e">「これ以降は暗号化通信に切り替える」の宣言</div>
+            </div>
+          </div>
+          <div style="flex:1"></div>
+        </div>
+
+        <!-- C→S: Finished -->
+        <div style="display:flex;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line)">
+          <div style="flex:1"></div>
+          <div style="flex:3;padding:0 8px">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+              <div style="height:2px;background:var(--accent);width:100%;position:relative">
+                <div style="position:absolute;right:-2px;top:-5px;border-left:10px solid var(--accent);border-top:6px solid transparent;border-bottom:6px solid transparent"></div>
+              </div>
+              <div style="background:#d8eaff;border:1px solid var(--accent);border-radius:3px;padding:3px 12px;font-size:11px;font-weight:600;color:var(--accent)">⑧ Finished（暗号化済）<span class="enc-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>ENC</span></div>
+              <div style="font-size:10px;color:#6a6e8e">ハンドシェイク全メッセージの HMAC — サーバが検証</div>
+            </div>
+          </div>
+          <div style="flex:1"></div>
+        </div>
+
+        <!-- S→C: ChangeCipherSpec -->
+        <div style="display:flex;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line)">
+          <div style="flex:1"></div>
+          <div style="flex:3;padding:0 8px">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+              <div style="height:2px;background:repeating-linear-gradient(to right,#b5821e 0,#b5821e 8px,transparent 8px,transparent 13px);width:100%;position:relative">
+                <div style="position:absolute;left:-2px;top:-5px;border-right:10px solid #b5821e;border-top:6px solid transparent;border-bottom:6px solid transparent"></div>
+              </div>
+              <div style="background:#fff8e6;border:1px solid #b5821e;border-radius:3px;padding:3px 12px;font-size:11px;font-weight:600;color:var(--warn)">⑨ ChangeCipherSpec（S→C）</div>
+            </div>
+          </div>
+          <div style="flex:1"></div>
+        </div>
+
+        <!-- S→C: Finished -->
+        <div style="display:flex;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line)">
+          <div style="flex:1"></div>
+          <div style="flex:3;padding:0 8px">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+              <div style="height:2px;background:repeating-linear-gradient(to right,var(--success) 0,var(--success) 8px,transparent 8px,transparent 13px);width:100%;position:relative">
+                <div style="position:absolute;left:-2px;top:-5px;border-right:10px solid var(--success);border-top:6px solid transparent;border-bottom:6px solid transparent"></div>
+              </div>
+              <div style="background:#eaf7f1;border:1px solid var(--success);border-radius:3px;padding:3px 12px;font-size:11px;font-weight:600;color:var(--success)">⑩ Finished（暗号化済）<span class="enc-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>ENC</span></div>
+              <div style="font-size:10px;color:#6a6e8e">ハンドシェイク全メッセージの HMAC — クライアントが検証</div>
+            </div>
+          </div>
+          <div style="flex:1"></div>
+        </div>
+
+        <!-- Data phase -->
+        <div style="display:flex;align-items:center;padding:8px 0">
+          <div style="flex:1"></div>
+          <div style="flex:3;padding:0 8px">
+            <div class="seq-banner">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              暗号化通信開始 — Application Data（双方向・暗号化済）
+            </div>
+          </div>
+          <div style="flex:1"></div>
+        </div>
+
+      </div><!-- /seq-body -->
+    </div><!-- /seq-diagram -->
+  </div>
+
+  <div class="steps">
+    <div class="step hi"><span class="sn">①②</span><div class="sb"><strong>ClientHello / ServerHello：</strong>Client Random と Server Random が毎回異なる乱数であることが重要です。これらが後の Master Secret 導出に使われ、セッション固有の鍵が生成されます。</div></div>
+    <div class="step hi"><span class="sn">③④</span><div class="sb"><strong>Certificate / ServerKeyExchange：</strong>④ で送る ECDHE 一時公開鍵にはサーバ秘密鍵による署名が付きます。証明書との対応を検証することで中間者攻撃を防ぎます。</div></div>
+    <div class="step ok"><span class="sn">⑧⑩</span><div class="sb"><strong>Finished：</strong>ハンドシェイク全メッセージの HMAC です。両者が同一のセッション鍵を持っていることを相互に確認します。ここで改ざんが検知されれば接続が切断されます。</div></div>
+    <div class="step wn"><span class="sn">!</span><div class="sb"><strong>TLS 1.2 の限界：</strong>証明書は平文で送信されます（傍受されると接続先ドメインが漏洩）。また RSA 鍵交換を選択した場合は PFS が得られません。</div></div>
+  </div>
+</section>
+
+<!-- ======================================================== -->
+<!-- SECTION 05: TLS 1.3 ハンドシェイク -->
+<!-- ======================================================== -->
+<section class="section" id="s5">
+  <div class="section-header">
+    <span class="s-num">05</span>
+    <h2>TLS 1.3 ハンドシェイク — 何が変わったか</h2>
+  </div>
+
+  <p>TLS 1.3（RFC 8446, 2018年）は<strong>1-RTT（1往復）</strong>を実現し、速度・セキュリティの両面で大幅に改善されました。RSA 鍵交換・静的 DH・古い暗号を全廃し、<strong>PFS（Perfect Forward Secrecy）を強制</strong>します。</p>
+
+  <div class="seq-wrap">
+    <p class="seq-cap">シーケンス図 2 — TLS 1.3 フルハンドシェイク（1-RTT）</p>
+
+    <div class="seq-diagram">
+      <div class="seq-actors">
+        <div class="seq-actor client" style="flex:1">
+          <div class="seq-actor-box" style="background:var(--accent)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" style="vertical-align:middle;margin-right:4px"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            クライアント<small>BROWSER / CLIENT</small>
+          </div>
+        </div>
+        <div class="seq-actor server" style="flex:1">
+          <div class="seq-actor-box" style="background:var(--success)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" style="vertical-align:middle;margin-right:4px"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6" stroke-width="3"/><line x1="6" y1="18" x2="6.01" y2="18" stroke-width="3"/></svg>
+            サーバ<small>WEB SERVER</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="seq-body" style="padding:0 0 10px">
+
+        <!-- ClientHello with key_share -->
+        <div style="display:flex;align-items:center;padding:10px 0;border-bottom:1px dashed var(--line)">
+          <div style="flex:1"></div>
+          <div style="flex:3;padding:0 8px">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+              <div style="height:2px;background:var(--accent);width:100%;position:relative">
+                <div style="position:absolute;right:-2px;top:-5px;border-left:10px solid var(--accent);border-top:6px solid transparent;border-bottom:6px solid transparent"></div>
+              </div>
+              <div style="background:#fff;border:1.5px solid var(--accent);border-radius:3px;padding:4px 12px;font-size:11px;font-weight:600;color:var(--accent)">① ClientHello</div>
+              <div style="font-size:10px;color:#6a6e8e;text-align:center">暗号スイートリスト, Client Random</div>
+              <div style="font-size:10.5px;color:var(--warn);font-weight:700;background:#fff8e6;border:1px solid #e8c97a;padding:2px 8px;border-radius:3px">
+                + key_share 拡張：ECDHE 一時公開鍵を先送り（RTT削減の核心）
+              </div>
+            </div>
+          </div>
+          <div style="flex:1"></div>
+        </div>
+
+        <!-- Server derives early -->
+        <div style="display:flex;padding:6px 0">
+          <div style="flex:1"></div>
+          <div style="flex:1;display:flex;justify-content:center">
+            <div class="seq-internal srv" style="max-width:none;width:90%;font-size:10px;text-align:left;padding:6px 10px">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:3px"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+              クライアントの key_share を受信<br>→ 即座に鍵交換完了・セッション鍵導出
+            </div>
+          </div>
+        </div>
+
+        <!-- ServerHello with key_share -->
+        <div style="display:flex;align-items:center;padding:10px 0;border-bottom:1px dashed var(--line)">
+          <div style="flex:1"></div>
+          <div style="flex:3;padding:0 8px">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+              <div style="height:2px;background:repeating-linear-gradient(to right,var(--success) 0,var(--success) 8px,transparent 8px,transparent 13px);width:100%;position:relative">
+                <div style="position:absolute;left:-2px;top:-5px;border-right:10px solid var(--success);border-top:6px solid transparent;border-bottom:6px solid transparent"></div>
+              </div>
+              <div style="background:#eaf7f1;border:1.5px solid var(--success);border-radius:3px;padding:4px 12px;font-size:11px;font-weight:600;color:var(--success)">② ServerHello</div>
+              <div style="font-size:10.5px;color:var(--warn);font-weight:700;background:#fff8e6;border:1px solid #e8c97a;padding:2px 8px;border-radius:3px">
+                + key_share 拡張：サーバ ECDHE 一時公開鍵を返送
+              </div>
+            </div>
+          </div>
+          <div style="flex:1"></div>
+        </div>
+
+        <!-- Encrypted banner -->
+        <div style="margin:8px 0">
+          <div style="background:#1e2d4a;color:#6ab4f5;border-radius:5px;padding:8px 14px;font-size:12px;font-weight:700;text-align:center;display:flex;align-items:center;justify-content:center;gap:8px">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            ここから下はすべて暗号化（ServerHello 直後から！）
+          </div>
+        </div>
+
+        <!-- EncryptedExtensions -->
+        <div style="display:flex;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line)">
+          <div style="flex:1"></div>
+          <div style="flex:3;padding:0 8px">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+              <div style="height:2px;background:repeating-linear-gradient(to right,var(--success) 0,var(--success) 8px,transparent 8px,transparent 13px);width:100%;position:relative">
+                <div style="position:absolute;left:-2px;top:-5px;border-right:10px solid var(--success);border-top:6px solid transparent;border-bottom:6px solid transparent"></div>
+              </div>
+              <div style="background:#eaf7f1;border:1px solid var(--success);border-radius:3px;padding:3px 12px;font-size:11px;font-weight:600;color:var(--success)">③ {EncryptedExtensions}<span class="enc-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>ENC</span></div>
+              <div style="font-size:10px;color:#6a6e8e">TLS 拡張（ALPN 等）を暗号化して送信（1.2 では平文）</div>
+            </div>
+          </div>
+          <div style="flex:1"></div>
+        </div>
+
+        <!-- Certificate -->
+        <div style="display:flex;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line)">
+          <div style="flex:1"></div>
+          <div style="flex:3;padding:0 8px">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+              <div style="height:2px;background:repeating-linear-gradient(to right,var(--success) 0,var(--success) 8px,transparent 8px,transparent 13px);width:100%;position:relative">
+                <div style="position:absolute;left:-2px;top:-5px;border-right:10px solid var(--success);border-top:6px solid transparent;border-bottom:6px solid transparent"></div>
+              </div>
+              <div style="background:#eaf7f1;border:1px solid var(--success);border-radius:3px;padding:3px 12px;font-size:11px;font-weight:600;color:var(--success)">④ {Certificate}<span class="enc-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>ENC</span></div>
+              <div style="font-size:10px;color:#6a6e8e">証明書も暗号化送信（TLS 1.2 は平文 → TLS 1.3 でプライバシー向上）</div>
+            </div>
+          </div>
+          <div style="flex:1"></div>
+        </div>
+
+        <!-- CertificateVerify -->
+        <div style="display:flex;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line)">
+          <div style="flex:1"></div>
+          <div style="flex:3;padding:0 8px">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+              <div style="height:2px;background:repeating-linear-gradient(to right,var(--success) 0,var(--success) 8px,transparent 8px,transparent 13px);width:100%;position:relative">
+                <div style="position:absolute;left:-2px;top:-5px;border-right:10px solid var(--success);border-top:6px solid transparent;border-bottom:6px solid transparent"></div>
+              </div>
+              <div style="background:#eaf7f1;border:1px solid var(--success);border-radius:3px;padding:3px 12px;font-size:11px;font-weight:600;color:var(--success)">⑤ {CertificateVerify}<span class="enc-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>ENC</span></div>
+              <div style="font-size:10px;color:#6a6e8e">ハンドシェイク全体のハッシュを秘密鍵で署名（1.2 の ServerKeyExchange 相当）</div>
+            </div>
+          </div>
+          <div style="flex:1"></div>
+        </div>
+
+        <!-- Server Finished -->
+        <div style="display:flex;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line)">
+          <div style="flex:1"></div>
+          <div style="flex:3;padding:0 8px">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+              <div style="height:2px;background:repeating-linear-gradient(to right,var(--success) 0,var(--success) 8px,transparent 8px,transparent 13px);width:100%;position:relative">
+                <div style="position:absolute;left:-2px;top:-5px;border-right:10px solid var(--success);border-top:6px solid transparent;border-bottom:6px solid transparent"></div>
+              </div>
+              <div style="background:#eaf7f1;border:1px solid var(--success);border-radius:3px;padding:3px 12px;font-size:11px;font-weight:600;color:var(--success)">⑥ {Finished}（サーバ）<span class="enc-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>ENC</span></div>
+            </div>
+          </div>
+          <div style="flex:1"></div>
+        </div>
+
+        <!-- Client derives -->
+        <div style="display:flex;padding:6px 0">
+          <div style="flex:1;display:flex;justify-content:center">
+            <div class="seq-internal cli" style="max-width:none;width:90%;font-size:10px;text-align:left;padding:6px 10px">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:3px"><path d="M9 11l3 3L22 4"/></svg>
+              証明書検証 + Finished 検証<br>
+              → 鍵交換完了（key_share）セッション鍵導出
+            </div>
+          </div>
+          <div style="flex:1"></div>
+        </div>
+
+        <!-- Client Finished -->
+        <div style="display:flex;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line)">
+          <div style="flex:1"></div>
+          <div style="flex:3;padding:0 8px">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+              <div style="height:2px;background:var(--accent);width:100%;position:relative">
+                <div style="position:absolute;right:-2px;top:-5px;border-left:10px solid var(--accent);border-top:6px solid transparent;border-bottom:6px solid transparent"></div>
+              </div>
+              <div style="background:#d8eaff;border:1px solid var(--accent);border-radius:3px;padding:3px 12px;font-size:11px;font-weight:600;color:var(--accent)">⑦ {Finished}（クライアント）<span class="enc-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>ENC</span></div>
+            </div>
+          </div>
+          <div style="flex:1"></div>
+        </div>
+
+        <div style="display:flex;align-items:center;padding:8px 0">
+          <div style="flex:1"></div>
+          <div style="flex:3;padding:0 8px">
+            <div class="seq-banner">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              暗号化通信開始（RTT = 1往復で達成）
+            </div>
+          </div>
+          <div style="flex:1"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <h3>TLS 1.2 vs TLS 1.3 比較</h3>
+  <table class="cmp-table">
+    <thead><tr><th>比較項目</th><th>TLS 1.2</th><th>TLS 1.3</th></tr></thead>
+    <tbody>
+      <tr><td>ハンドシェイク往復</td><td class="cmp-bad">2-RTT（2往復）</td><td class="cmp-good">1-RTT（1往復）</td></tr>
+      <tr><td>0-RTT（再接続）</td><td class="cmp-bad">なし</td><td class="cmp-mid">あり（リプレイ攻撃リスク注意）</td></tr>
+      <tr><td>鍵交換方式</td><td class="cmp-bad">RSA, DHE, ECDHE（選択可）</td><td class="cmp-good">ECDHE, DHE のみ（PFS 強制）</td></tr>
+      <tr><td>Perfect Forward Secrecy</td><td class="cmp-mid">DHE/ECDHE 選択時のみ</td><td class="cmp-good">常に対応（必須）</td></tr>
+      <tr><td>証明書の送信</td><td class="cmp-bad">平文で送信</td><td class="cmp-good">暗号化して送信</td></tr>
+      <tr><td>ChangeCipherSpec</td><td>あり（専用メッセージ）</td><td class="cmp-good">廃止（不要）</td></tr>
+      <tr><td>暗号スイート</td><td class="cmp-bad">TLS_RSA_WITH_RC4_128_MD5 等も存在</td><td class="cmp-good">AEAD のみ（5 種類に絞込）</td></tr>
+      <tr><td>廃止された機能</td><td>—</td><td class="cmp-good">RC4, DES, 3DES, MD5, SHA-1, RSA 鍵交換, 静的 DH, 圧縮</td></tr>
+    </tbody>
+  </table>
+
+  <div class="keypoint">
+    <p class="kp-label">TLS 1.3 の革新ポイント</p>
+    <p>TLS 1.3 の核心は <strong>ClientHello に ECDHE 公開鍵（key_share 拡張）を先送り</strong>することです。これによりサーバは ClientHello 受信と同時に鍵交換を完了できるため、ServerHello 以降をすべて暗号化できます。往復が 1 回で済むだけでなく、<strong>証明書まで暗号化</strong>されることでプライバシーも向上します。</p>
+  </div>
+</section>
+
+<!-- ======================================================== -->
+<!-- SECTION 06: 暗号スイート -->
+<!-- ======================================================== -->
+<section class="section" id="s6">
+  <div class="section-header">
+    <span class="s-num">06</span>
+    <h2>暗号スイートと鍵交換アルゴリズム</h2>
+  </div>
+
+  <p><strong>暗号スイート（Cipher Suite）</strong>は「どの鍵交換・認証・暗号化・ハッシュアルゴリズムを組み合わせるか」を一括指定する文字列です。TLS 接続のネゴシエーションで双方が共通してサポートする最も優先度の高いスイートが選ばれます。</p>
+
+  <h3>TLS 1.2 暗号スイートの読み方</h3>
+  <div class="seq-wrap" style="padding:20px 24px">
+    <div style="font-family:var(--mono);font-size:15px;font-weight:700;text-align:center;padding:14px;background:#f3f6fb;border:1px solid var(--line);border-radius:6px;margin-bottom:18px;color:var(--ink2);letter-spacing:.05em">
+      TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+    </div>
+    <div class="suite-grid">
+      <div class="suite-key suite-kex">ECDHE</div>
+      <div class="suite-val">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:5px;color:var(--success)"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+        <strong>鍵交換</strong>：Elliptic Curve DH Ephemeral — 楕円曲線 DH の一時鍵。PFS 対応。毎回異なる鍵ペアを生成して破棄。
+      </div>
+      <div class="suite-key suite-auth">RSA</div>
+      <div class="suite-val">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:5px;color:var(--warn)"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+        <strong>認証</strong>：サーバ証明書の署名アルゴリズム。RSA か ECDSA か。
+      </div>
+      <div class="suite-key suite-enc">AES_256_GCM</div>
+      <div class="suite-val">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:5px;color:var(--accent)"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <strong>暗号化</strong>：AES 256bit, GCM モード（AEAD）。暗号化と完全性保護を同時実行。
+      </div>
+      <div class="suite-key suite-mac">SHA384</div>
+      <div class="suite-val">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:5px;color:#5a1a6e"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        <strong>PRF/MAC ハッシュ</strong>：鍵導出・Finished メッセージの HMAC に使用。
+      </div>
+    </div>
+  </div>
+
+  <h3>TLS 1.3 の暗号スイート（5 種類のみ）</h3>
+  <div class="seq-wrap" style="padding:20px 24px">
+    <div style="font-family:var(--mono);font-size:13px;font-weight:700;text-align:center;padding:12px;background:#f3f6fb;border:1px solid var(--line);border-radius:6px;margin-bottom:14px;color:var(--ink2)">
+      TLS_AES_128_GCM_SHA256<br>
+      TLS_AES_256_GCM_SHA384<br>
+      TLS_CHACHA20_POLY1305_SHA256<br>
+      <span style="color:#999">TLS_AES_128_CCM_SHA256</span><br>
+      <span style="color:#999">TLS_AES_128_CCM_8_SHA256</span>
+    </div>
+    <div class="note info">
+      <div class="note-i"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1570b8" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16" stroke-width="2.5"/></svg></div>
+      <p>TLS 1.3 では<strong>鍵交換アルゴリズム（ECDHE/DHE）が暗号スイートから切り離されました</strong>。鍵交換は拡張（key_share / supported_groups）で別途ネゴシエーションされます。暗号スイートはAEAD暗号とHKDFハッシュの組み合わせのみを指定します。</p>
+    </div>
+  </div>
+
+  <h3>Perfect Forward Secrecy（PFS）のたとえ話</h3>
+  <p>RSA 鍵交換（TLS 1.2 まで）は<strong>「マスターキー（サーバ秘密鍵）で南京錠を開けて荷物を配達」</strong>する方式です。マスターキーが盗まれると、<strong>過去にキャプチャした通信もすべて解読可能</strong>になります。ECDHE による PFS は<strong>「配達のたびに使い捨ての南京錠を使う」</strong>方式です。マスターキーが漏洩しても、過去の通信には影響しません。</p>
+  <div class="steps">
+    <div class="step ng"><span class="sn">×</span><div class="sb"><strong>RSA 鍵交換（TLS 1.2 以前）：</strong>Pre-Master Secret をサーバ公開鍵で暗号化して送信 → サーバ秘密鍵が漏れると過去の録音通信がすべて復号可能。TLS 1.3 で廃止。</div></div>
+    <div class="step ok"><span class="sn">○</span><div class="sb"><strong>ECDHE（Diffie-Hellman Ephemeral）：</strong>セッションごとに一時鍵ペアを生成・使用後破棄 → 秘密鍵漏洩でも過去通信は復号不可。TLS 1.3 で必須化。</div></div>
+  </div>
+</section>
+
+<!-- ======================================================== -->
+<!-- SECTION 07: 証明書の検証 -->
+<!-- ======================================================== -->
+<section class="section" id="s7">
+  <div class="section-header">
+    <span class="s-num">07</span>
+    <h2>Web ブラウザによるサーバ証明書の検証プロセス</h2>
+  </div>
+
+  <p>ブラウザはサーバから受け取った X.509 証明書を<strong>6 ステップで検証</strong>します。1 ステップでも失敗すると「証明書エラー」が表示され、接続がブロックされます。</p>
+
+  <h3>証明書検証の 6 ステップ</h3>
+  <div class="steps">
+    <div class="step hi">
+      <span class="sn" style="background:#3a3200;font-size:9px">①</span>
+      <div class="sb">
+        <strong>信頼チェーン（Chain of Trust）検証：</strong><br>
+        サーバ証明書の署名者（中間CA）→ 中間CAの署名者（ルートCA）と辿り、ブラウザが信頼する<strong>ルートCA証明書ストア</strong>に到達するか確認。たとえ話：「身分証の発行元が政府機関か」を確認するようなもの。
+      </div>
+    </div>
+    <div class="step hi">
+      <span class="sn" style="background:#3a3200;font-size:9px">②</span>
+      <div class="sb">
+        <strong>署名の検証：</strong><br>
+        上位CA の公開鍵で証明書内のデジタル署名を復号し、証明書の内容ハッシュと一致するか確認。改ざん検知。
+      </div>
+    </div>
+    <div class="step hi">
+      <span class="sn" style="background:#3a3200;font-size:9px">③</span>
+      <div class="sb">
+        <strong>有効期限の確認：</strong><br>
+        証明書の <code>notBefore</code>（開始日時）と <code>notAfter</code>（終了日時）が現在時刻を含むか確認。有効期限切れは即エラー。
+      </div>
+    </div>
+    <div class="step hi">
+      <span class="sn" style="background:#3a3200;font-size:9px">④</span>
+      <div class="sb">
+        <strong>失効確認（OCSP / CRL）：</strong><br>
+        OCSP（リアルタイム照会）または CRL（失効リスト参照）で証明書が失効していないか確認。秘密鍵漏洩後に失効された証明書の不正使用を防ぐ。
+      </div>
+    </div>
+    <div class="step hi">
+      <span class="sn" style="background:#3a3200;font-size:9px">⑤</span>
+      <div class="sb">
+        <strong>ドメイン名の一致確認（CN / SANの検証）：</strong><br>
+        証明書の <code>Subject Alternative Names（SAN）</code> または <code>CN（Common Name）</code> が、アクセスしている URL のホスト名と一致するか確認。ワイルドカード（<code>*.example.com</code>）も照合。
+      </div>
+    </div>
+    <div class="step hi">
+      <span class="sn" style="background:#3a3200;font-size:9px">⑥</span>
+      <div class="sb">
+        <strong>鍵使用用途の確認（Key Usage）：</strong><br>
+        証明書の <code>Key Usage</code> / <code>Extended Key Usage</code> 拡張に「TLS Web Server Authentication」が含まれるか確認。
+      </div>
+    </div>
+  </div>
+
+  <h3>ブラウザの証明書エラーと原因</h3>
+  <table class="atk-table">
+    <thead><tr><th>エラーメッセージ例</th><th>原因</th><th>典型的な発生シーン</th></tr></thead>
+    <tbody>
+      <tr><td>NET::ERR_CERT_DATE_INVALID</td><td>有効期限切れ（検証ステップ③）</td><td>証明書の更新忘れ</td></tr>
+      <tr><td>NET::ERR_CERT_AUTHORITY_INVALID</td><td>信頼チェーン失敗（検証ステップ①②）</td><td>自己署名証明書、プライベートCA</td></tr>
+      <tr><td>NET::ERR_CERT_COMMON_NAME_INVALID</td><td>ドメイン名不一致（検証ステップ⑤）</td><td>IP アドレス直接アクセス、誤ったドメイン</td></tr>
+      <tr><td>NET::ERR_CERT_REVOKED</td><td>証明書失効（検証ステップ④）</td><td>秘密鍵漏洩後の失効処理</td></tr>
+    </tbody>
+  </table>
+
+  <h3>X.509 証明書の主要フィールド</h3>
+  <div class="packet-wrap">
+    <span style="color:var(--accent);font-weight:700">Certificate: {</span><br>
+    <span style="color:#1f7a5a">  Subject     : "CN=www.example.com, O=Example Inc, C=JP"</span><br>
+    <span style="color:#1f7a5a">  Issuer      : "CN=GlobalSign RSA OV SSL CA 2018, O=GlobalSign"</span><br>
+    <span style="color:var(--warn)">  validFrom   : 2024-01-01T00:00:00Z</span><br>
+    <span style="color:var(--warn)">  validTo     : 2025-01-01T23:59:59Z</span><br>
+    <span style="color:var(--accent2)">  SubjectAltName: DNS:www.example.com, DNS:example.com</span><br>
+    <span style="color:var(--accent2)">  publicKey   : (RSA 2048bit または EC P-256)</span><br>
+    <span style="color:#5a1a6e">  signature   : (発行CAの秘密鍵による署名値)</span><br>
+    <span style="color:var(--accent);font-weight:700">}</span>
+  </div>
+</section>
+
+<!-- ======================================================== -->
+<!-- SECTION 08: TLS 拡張仕様 / SNI -->
+<!-- ======================================================== -->
+<section class="section" id="s8">
+  <div class="section-header">
+    <span class="s-num">08</span>
+    <h2>TLS 拡張仕様 — SNI・ALPN と 0-RTT</h2>
+  </div>
+
+  <p>TLS には ClientHello / ServerHello に追加情報を載せる<strong>「拡張（Extensions）」</strong>機能があります。SNI と ALPN は特に試験頻出の重要拡張です。</p>
+
+  <h3>SNI（Server Name Indication）</h3>
+  <p>1 つの IP アドレスで複数の HTTPS サービス（バーチャルホスト）を運用するための拡張です。TLS ハンドシェイクの開始時（ClientHello）にアクセス先ホスト名をサーバへ通知し、サーバはそれに対応する証明書を選択して提示します。</p>
+
+  <p><strong>たとえ話：</strong>マンションの「玄関ロック」にたとえると、建物（IP アドレス）は一つですが、何号室か（ドメイン名）を最初に言うことで、そのドメインの住人が出てくる仕組みです。SNI 以前は「建物に 1 枚の証明書」しか貼れませんでした。</p>
+
+  <!-- SNI Sequence HTML/CSS -->
+  <div class="seq-wrap">
+    <p class="seq-cap">シーケンス図 3 — SNI を使った複数ドメインホスティング</p>
+    <div class="seq-diagram">
+      <div class="seq-actors">
+        <div class="seq-actor client" style="flex:1">
+          <div class="seq-actor-box" style="background:var(--accent)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" style="vertical-align:middle;margin-right:4px"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            ブラウザ<small>CLIENT</small>
+          </div>
+        </div>
+        <div class="seq-actor server" style="flex:2">
+          <div class="seq-actor-box" style="background:#5a1a6e;max-width:none">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" style="vertical-align:middle;margin-right:4px"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6" stroke-width="3"/><line x1="6" y1="18" x2="6.01" y2="18" stroke-width="3"/></svg>
+            サーバ 203.0.113.50<small>1つのIPで複数ドメインをホスト</small>
+          </div>
+        </div>
+      </div>
+      <div class="seq-body" style="padding:0 0 10px">
+        <div style="display:flex;align-items:center;padding:10px 0;border-bottom:1px dashed var(--line)">
+          <div style="flex:1"></div>
+          <div style="flex:3;padding:0 8px">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+              <div style="height:2px;background:var(--accent);width:100%;position:relative">
+                <div style="position:absolute;right:-2px;top:-5px;border-left:10px solid var(--accent);border-top:6px solid transparent;border-bottom:6px solid transparent"></div>
+              </div>
+              <div style="background:#fff;border:1.5px solid var(--accent);border-radius:3px;padding:4px 12px;font-size:11px;font-weight:600;color:var(--accent)">ClientHello</div>
+              <div style="background:#fff8e6;border:1px solid #e8c97a;border-radius:3px;padding:2px 8px;font-size:11px;font-weight:700;color:var(--warn)">
+                SNI 拡張: server_name = "shop.example.com"
+              </div>
+              <div style="font-size:10px;color:#6a6e8e">ハンドシェイク開始時にホスト名を平文で通知（！）</div>
+            </div>
+          </div>
+          <div style="flex:1"></div>
+        </div>
+        <div style="display:flex;padding:6px 0">
+          <div style="flex:1"></div>
+          <div style="flex:1;display:flex;justify-content:center">
+            <div class="seq-internal" style="max-width:none;width:90%;background:#f5eeff;border-color:#5a1a6e;color:#5a1a6e;font-size:10px;text-align:left;padding:6px 10px">
+              SNI を確認 → "shop.example.com" 用の証明書を選択<br>
+              （同じ IP で "blog.example.com" 用も別途保有）
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;padding:10px 0;border-bottom:1px dashed var(--line)">
+          <div style="flex:1"></div>
+          <div style="flex:3;padding:0 8px">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+              <div style="height:2px;background:repeating-linear-gradient(to right,#5a1a6e 0,#5a1a6e 8px,transparent 8px,transparent 13px);width:100%;position:relative">
+                <div style="position:absolute;left:-2px;top:-5px;border-right:10px solid #5a1a6e;border-top:6px solid transparent;border-bottom:6px solid transparent"></div>
+              </div>
+              <div style="background:#f5eeff;border:1px solid #5a1a6e;border-radius:3px;padding:3px 12px;font-size:11px;font-weight:600;color:#5a1a6e">ServerHello + Certificate（shop.example.com 用）</div>
+            </div>
+          </div>
+          <div style="flex:1"></div>
+        </div>
+        <div class="note warn" style="margin-top:10px">
+          <div class="note-i"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+          <p><strong>プライバシー上の注意：</strong>SNI は ClientHello で<strong>平文送信</strong>されるため、ネットワーク上の第三者が「どのドメインにアクセスしているか」を観測できます。これを暗号化する<strong>ECH（Encrypted Client Hello）</strong>が TLS 1.3 の拡張として標準化中です。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h3>その他の主要拡張仕様</h3>
+  <table class="req-table">
+    <thead><tr><th>拡張名</th><th>用途</th><th>ポイント</th></tr></thead>
+    <tbody>
+      <tr><td>ALPN</td><td>Application-Layer Protocol Negotiation — 使用するアプリプロトコル（HTTP/1.1, HTTP/2, HTTP/3 等）のネゴシエーション</td><td>HTTP/2 利用に必須。TLS ハンドシェイク内で確定。</td></tr>
+      <tr><td>session_ticket</td><td>前回のセッションパラメータをチケットとして保存・再利用し、フルハンドシェイクを省略</td><td>TLS 1.2 でのセッション再利用。TLS 1.3 は PSK（Pre-Shared Key）方式。</td></tr>
+      <tr><td>0-RTT (Early Data)</td><td>TLS 1.3 の PSK 再接続時に、最初のメッセージをハンドシェイクと同時に送信</td><td>リプレイ攻撃リスク。冪等な GET リクエスト等に限定使用推奨。</td></tr>
+      <tr><td>key_share</td><td>ECDHE 公開鍵を ClientHello に同梱。1-RTT の核心。</td><td>TLS 1.3 の必須拡張。</td></tr>
+      <tr><td>OCSP Stapling</td><td>サーバが OCSP レスポンスを事前取得し、証明書と共に提示</td><td>クライアントの失効確認負荷を低減。</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ======================================================== -->
+<!-- SECTION 09: TLS トンネリング -->
+<!-- ======================================================== -->
+<section class="section" id="s9">
+  <div class="section-header">
+    <span class="s-num">09</span>
+    <h2>TLS トンネリング（HTTP CONNECT）</h2>
+  </div>
+
+  <p>プロキシサーバを経由して HTTPS 通信を行う際に使用される仕組みです。クライアントは HTTP <strong>CONNECT メソッド</strong>を使ってプロキシにトンネルの確立を依頼し、その後 TLS ハンドシェイクを行います。</p>
+
+  <p><strong>たとえ話：</strong>プロキシは「交換局」のようなものです。CONNECT によって「XX さん宛の不透明な封筒を中継してほしい」と依頼します。交換局（プロキシ）は封筒の中身（TLS 暗号化データ）を開けられないまま転送します。</p>
+
+  <div class="seq-wrap">
+    <p class="seq-cap">シーケンス図 4 — プロキシ経由 TLS トンネリング（HTTP CONNECT）</p>
+    <div class="seq-diagram">
+      <div class="seq-actors" style="display:grid;grid-template-columns:1fr 1fr 1fr">
+        <div class="seq-actor client">
+          <div class="seq-actor-box" style="background:var(--accent)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" style="vertical-align:middle;margin-right:3px"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            クライアント<small>BROWSER</small>
+          </div>
+        </div>
+        <div class="seq-actor">
+          <div class="seq-actor-box" style="background:var(--warn)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" style="vertical-align:middle;margin-right:3px"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            プロキシ<small>HTTP PROXY</small>
+          </div>
+        </div>
+        <div class="seq-actor server">
+          <div class="seq-actor-box" style="background:var(--success)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" style="vertical-align:middle;margin-right:3px"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/></svg>
+            宛先サーバ<small>HTTPS SERVER</small>
+          </div>
+        </div>
+      </div>
+      <div class="seq-body" style="padding:0 0 10px">
+        <!-- CONNECT -->
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;padding:10px 0;border-bottom:1px dashed var(--line)">
+          <div style="grid-column:1/3;padding:0 8px">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+              <div style="height:2px;background:var(--accent);width:100%;position:relative">
+                <div style="position:absolute;right:-2px;top:-5px;border-left:10px solid var(--accent);border-top:6px solid transparent;border-bottom:6px solid transparent"></div>
+              </div>
+              <div style="background:#fff;border:1px solid var(--accent);border-radius:3px;padding:3px 10px;font-size:11px;font-weight:600;color:var(--accent)">① CONNECT www.example.com:443 HTTP/1.1</div>
+              <div style="font-size:10px;color:#6a6e8e">プロキシに「このホスト:ポートへのトンネルを開けてほしい」と要求</div>
+            </div>
+          </div>
+          <div></div>
+        </div>
+        <!-- Proxy→Server: TCP connect -->
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;padding:10px 0;border-bottom:1px dashed var(--line)">
+          <div></div>
+          <div style="grid-column:2/4;padding:0 8px">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+              <div style="height:2px;background:#b5821e;width:100%;position:relative">
+                <div style="position:absolute;right:-2px;top:-5px;border-left:10px solid #b5821e;border-top:6px solid transparent;border-bottom:6px solid transparent"></div>
+              </div>
+              <div style="background:#fff8e6;border:1px solid #b5821e;border-radius:3px;padding:3px 10px;font-size:11px;font-weight:600;color:var(--warn)">② プロキシが宛先サーバへ TCP 接続確立</div>
+            </div>
+          </div>
+        </div>
+        <!-- 200 Connection Established -->
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;padding:10px 0;border-bottom:1px dashed var(--line)">
+          <div style="grid-column:1/3;padding:0 8px">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+              <div style="height:2px;background:repeating-linear-gradient(to right,var(--warn) 0,var(--warn) 8px,transparent 8px,transparent 13px);width:100%;position:relative">
+                <div style="position:absolute;left:-2px;top:-5px;border-right:10px solid var(--warn);border-top:6px solid transparent;border-bottom:6px solid transparent"></div>
+              </div>
+              <div style="background:#fff8e6;border:1px solid var(--warn);border-radius:3px;padding:3px 10px;font-size:11px;font-weight:600;color:var(--warn)">③ HTTP/1.1 200 Connection Established</div>
+              <div style="font-size:10px;color:#6a6e8e">プロキシがトンネル確立を通知。以後プロキシは中身を見ずに転送するだけ。</div>
+            </div>
+          </div>
+          <div></div>
+        </div>
+        <!-- TLS Handshake -->
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;padding:10px 0;border-bottom:1px dashed var(--line)">
+          <div style="grid-column:1/4;padding:0 8px">
+            <div style="background:#e8f0fa;border:1.5px solid var(--accent);border-radius:5px;padding:10px 14px;text-align:center;font-size:11.5px;font-weight:600;color:var(--accent);display:flex;align-items:center;justify-content:center;gap:8px">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              ④ クライアント〜宛先サーバ間で TLS ハンドシェイク（プロキシは不透明に中継）
+            </div>
+          </div>
+        </div>
+        <!-- Encrypted Data -->
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;padding:8px 0">
+          <div style="grid-column:1/4;padding:0 8px">
+            <div class="seq-banner">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              ⑤ 暗号化された HTTPS 通信（プロキシは中身を解読できない）
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note info">
+    <div class="note-i"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1570b8" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16" stroke-width="2.5"/></svg></div>
+    <p><strong>SSL インスペクション（SSL Inspection / HTTPS Inspection）：</strong>企業のセキュリティ機器（Next-Gen Firewall 等）が CONNECT トンネルを「中断」し、サーバになりすまして独自証明書を提示する手法。クライアントには企業 CA が発行した証明書が提示されます。通信内容の検査や DLP（情報漏洩防止）に使用されますが、プライバシーへの影響と管理体制の整備が必要です。</p>
+  </div>
+</section>
+
+<!-- ======================================================== -->
+<!-- SECTION 10: TLS クライアント認証 -->
+<!-- ======================================================== -->
+<section class="section" id="s10">
+  <div class="section-header">
+    <span class="s-num">10</span>
+    <h2>TLS クライアント認証（相互 TLS / mTLS）</h2>
+  </div>
+
+  <p>通常の TLS は「クライアントがサーバを認証」する一方向認証ですが、<strong>TLS クライアント認証（mTLS : Mutual TLS）</strong>では「サーバもクライアントを証明書で認証」する<strong>双方向認証</strong>です。企業 VPN・API ゲートウェイ・金融 API・電子申告（e-Tax）等で使用されます。</p>
+
+  <p><strong>たとえ話：</strong>通常の TLS は<strong>「居酒屋の看板（サーバ証明書）を確認してから入店」</strong>するようなものです。mTLS は<strong>「入店時にお互いが社員証を見せ合う」</strong>クローズドな VIP ルームのような仕組みです。</p>
+
+  <!-- mTLS Sequence -->
+  <div class="seq-wrap">
+    <p class="seq-cap">シーケンス図 5 — TLS クライアント認証（mTLS）ハンドシェイク</p>
+    <div class="seq-diagram">
+      <div class="seq-actors">
+        <div class="seq-actor client" style="flex:1">
+          <div class="seq-actor-box" style="background:var(--accent)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" style="vertical-align:middle;margin-right:3px"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            クライアント<small>クライアント証明書あり</small>
+          </div>
+        </div>
+        <div class="seq-actor server" style="flex:1">
+          <div class="seq-actor-box" style="background:var(--success)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" style="vertical-align:middle;margin-right:3px"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/></svg>
+            サーバ<small>クライアント証明書を要求</small>
+          </div>
+        </div>
+      </div>
+      <div class="seq-body" style="padding:0 0 10px">
+        <!-- ClientHello -->
+        <div style="display:flex;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line)">
+          <div style="flex:1"></div>
+          <div style="flex:3;padding:0 8px;display:flex;flex-direction:column;align-items:center;gap:3px">
+            <div style="height:2px;background:var(--accent);width:100%;position:relative"><div style="position:absolute;right:-2px;top:-5px;border-left:10px solid var(--accent);border-top:6px solid transparent;border-bottom:6px solid transparent"></div></div>
+            <div style="background:#fff;border:1px solid var(--accent);border-radius:3px;padding:3px 12px;font-size:11px;font-weight:600;color:var(--accent)">① ClientHello</div>
+          </div>
+          <div style="flex:1"></div>
+        </div>
+        <!-- ServerHello + Cert + CertReq -->
+        <div style="display:flex;align-items:center;padding:10px 0;border-bottom:1px dashed var(--line)">
+          <div style="flex:1"></div>
+          <div style="flex:3;padding:0 8px;display:flex;flex-direction:column;align-items:center;gap:3px">
+            <div style="height:2px;background:repeating-linear-gradient(to right,var(--success) 0,var(--success) 8px,transparent 8px,transparent 13px);width:100%;position:relative"><div style="position:absolute;left:-2px;top:-5px;border-right:10px solid var(--success);border-top:6px solid transparent;border-bottom:6px solid transparent"></div></div>
+            <div style="background:#eaf7f1;border:1px solid var(--success);border-radius:3px;padding:3px 12px;font-size:11px;font-weight:600;color:var(--success)">② ServerHello + Certificate + ServerKeyExchange</div>
+            <div style="background:#fdf5e6;border:1.5px solid var(--gold);border-radius:3px;padding:3px 12px;font-size:11px;font-weight:700;color:var(--warn)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:3px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              + CertificateRequest（クライアント証明書を要求！）
+            </div>
+            <div style="background:#eaf7f1;border:1px solid var(--success);border-radius:3px;padding:3px 12px;font-size:11px;font-weight:600;color:var(--success)">+ ServerHelloDone</div>
+          </div>
+          <div style="flex:1"></div>
+        </div>
+        <!-- Client sends Cert -->
+        <div style="display:flex;align-items:center;padding:10px 0;border-bottom:1px dashed var(--line)">
+          <div style="flex:1"></div>
+          <div style="flex:3;padding:0 8px;display:flex;flex-direction:column;align-items:center;gap:3px">
+            <div style="height:2px;background:var(--accent);width:100%;position:relative"><div style="position:absolute;right:-2px;top:-5px;border-left:10px solid var(--accent);border-top:6px solid transparent;border-bottom:6px solid transparent"></div></div>
+            <div style="background:#fff8e6;border:1.5px solid var(--gold);border-radius:3px;padding:3px 12px;font-size:11px;font-weight:700;color:var(--warn)">
+              ③ Certificate（クライアント証明書送信）
+            </div>
+            <div style="background:#fff;border:1px solid var(--accent);border-radius:3px;padding:3px 12px;font-size:11px;font-weight:600;color:var(--accent)">+ ClientKeyExchange</div>
+            <div style="background:#fff8e6;border:1.5px solid var(--gold);border-radius:3px;padding:3px 12px;font-size:11px;font-weight:700;color:var(--warn)">
+              + CertificateVerify（クライアント秘密鍵による署名）
+            </div>
+          </div>
+          <div style="flex:1"></div>
+        </div>
+        <!-- Server verifies -->
+        <div style="display:flex;padding:6px 0">
+          <div style="flex:1"></div>
+          <div style="flex:1;display:flex;justify-content:center">
+            <div class="seq-internal srv" style="max-width:none;width:90%;font-size:10px;text-align:left;padding:6px 10px">
+              クライアント証明書を検証<br>（信頼チェーン・有効期限・失効・署名）<br>→ クライアントの身元確認完了
+            </div>
+          </div>
+        </div>
+        <!-- Finished -->
+        <div style="display:flex;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line)">
+          <div style="flex:1"></div>
+          <div style="flex:3;padding:0 8px;display:flex;flex-direction:column;align-items:center;gap:3px">
+            <div style="height:2px;background:var(--accent);width:100%;position:relative"><div style="position:absolute;right:-2px;top:-5px;border-left:10px solid var(--accent);border-top:6px solid transparent;border-bottom:6px solid transparent"></div></div>
+            <div style="background:#d8eaff;border:1px solid var(--accent);border-radius:3px;padding:3px 12px;font-size:11px;font-weight:600;color:var(--accent)">④ ChangeCipherSpec + Finished（暗号化）</div>
+          </div>
+          <div style="flex:1"></div>
+        </div>
+        <div style="display:flex;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line)">
+          <div style="flex:1"></div>
+          <div style="flex:3;padding:0 8px;display:flex;flex-direction:column;align-items:center;gap:3px">
+            <div style="height:2px;background:repeating-linear-gradient(to right,var(--success) 0,var(--success) 8px,transparent 8px,transparent 13px);width:100%;position:relative"><div style="position:absolute;left:-2px;top:-5px;border-right:10px solid var(--success);border-top:6px solid transparent;border-bottom:6px solid transparent"></div></div>
+            <div style="background:#eaf7f1;border:1px solid var(--success);border-radius:3px;padding:3px 12px;font-size:11px;font-weight:600;color:var(--success)">⑤ ChangeCipherSpec + Finished（暗号化）</div>
+          </div>
+          <div style="flex:1"></div>
+        </div>
+        <div style="padding:8px 0">
+          <div class="seq-banner">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="23 11 17 17 14 14"/></svg>
+            双方向認証完了 — クライアント・サーバ相互に本人確認済みで暗号化通信開始
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="steps">
+    <div class="step hi"><span class="sn">!</span><div class="sb"><strong>CertificateRequest：</strong>通常の TLS にはない、サーバがクライアントに証明書提出を要求するメッセージです。受信側クライアントは証明書を持っていなければ接続できません。</div></div>
+    <div class="step hi"><span class="sn">!</span><div class="sb"><strong>CertificateVerify：</strong>クライアントが「このハンドシェイク全体の内容を自分の秘密鍵で署名した」メッセージです。サーバはクライアント証明書の公開鍵でこれを検証し、本人確認を完了します。</div></div>
+    <div class="step ok"><span class="sn">用途</span><div class="sb">企業 VPN 接続（クライアント証明書で端末認証）、API ゲートウェイ間のサービス間認証（mTLS）、電子申告・電子入札システム、クライアント証明書配布によるゼロトラストアクセス制御。</div></div>
+  </div>
+</section>
+
+<!-- ======================================================== -->
+<!-- SECTION 11: 脅威と攻撃 -->
+<!-- ======================================================== -->
+<section class="section" id="s11">
+  <div class="section-header">
+    <span class="s-num red-bg">11</span>
+    <h2>TLS に対する主な脅威と攻撃手法</h2>
+  </div>
+
+  <p>SSL/TLS の歴史は脆弱性の発見と対応の繰り返しです。試験では攻撃名・原理・対策をセットで覚えることが重要です。</p>
+
+  <div class="threat-grid">
+    <div class="threat-card">
+      <div class="tc-head">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        <span>POODLE（2014）</span>
+      </div>
+      <div class="tc-body">
+        <p>SSL 3.0 の CBC モードパディング脆弱性。256 リクエストで 1 バイトを復号。攻撃者がダウングレードを強制（POODLE ATTACK）。</p>
+        <p class="tc-counter">対策：SSL 3.0 の完全無効化（TLS_FALLBACK_SCSV / TLS 1.3 でダウングレード防止）</p>
+      </div>
+    </div>
+    <div class="threat-card">
+      <div class="tc-head">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        <span>Heartbleed（2014）</span>
+      </div>
+      <div class="tc-body">
+        <p>OpenSSL の Heartbeat 拡張実装バグ。境界チェック不備でサーバメモリから秘密鍵・パスワードを 64KB ずつ窃取可能。</p>
+        <p class="tc-counter">対策：OpenSSL 1.0.1g 以降へ更新・証明書再生成・秘密鍵入替</p>
+      </div>
+    </div>
+    <div class="threat-card">
+      <div class="tc-head warn-head">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+        <span>CRIME（2012）</span>
+      </div>
+      <div class="tc-body">
+        <p>TLS 圧縮機能の悪用。圧縮後のサイズ変化から Cookie や認証トークンを推測するサイドチャネル攻撃。</p>
+        <p class="tc-counter">対策：TLS 圧縮の無効化（TLS 1.3 では廃止済み）</p>
+      </div>
+    </div>
+    <div class="threat-card">
+      <div class="tc-head warn-head">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.18 2 2 0 0 1 3.59 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 23 16.92z"/></svg>
+        <span>ダウングレード攻撃</span>
+      </div>
+      <div class="tc-body">
+        <p>中間者が ClientHello を改ざんし、古い TLS バージョンや脆弱な暗号スイートへの使用を強制する。BEAST・POODLE でも使われた手法。</p>
+        <p class="tc-counter">対策：TLS_FALLBACK_SCSV 拡張・最低バージョン制限（TLS 1.2 以上）</p>
+      </div>
+    </div>
+    <div class="threat-card">
+      <div class="tc-head">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M16.5 9.4l-9-5.19M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        <span>中間者攻撃（MITM）</span>
+      </div>
+      <div class="tc-body">
+        <p>偽 CA が発行した証明書や PIN バイパスにより通信を傍受・改ざん。SSL インスペクション機能の悪用も含む。</p>
+        <p class="tc-counter">対策：証明書の厳格な検証・HSTS preload・公開鍵ピンニング（HPKP）・CT（Certificate Transparency）</p>
+      </div>
+    </div>
+    <div class="threat-card">
+      <div class="tc-head">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/><line x1="12" y1="13" x2="12" y2="17"/><line x1="10" y1="15" x2="14" y2="15"/></svg>
+        <span>SSL ストリッピング</span>
+      </div>
+      <div class="tc-body">
+        <p>HTTPS→HTTP へリダイレクトする通信を途中で書き換え、クライアントを平文 HTTP 通信に留まらせる攻撃（Moxie Marlinspike, 2009年）。</p>
+        <p class="tc-counter">対策：HSTS（HTTP Strict Transport Security）+ preload リスト登録</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>攻撃手法まとめ表</h3>
+  <table class="atk-table">
+    <thead><tr><th>攻撃名</th><th>対象バージョン / 機能</th><th>原理</th><th>主な対策</th></tr></thead>
+    <tbody>
+      <tr><td>POODLE</td><td>SSL 3.0 / TLS 1.0</td><td>CBC パディング脆弱性、ダウングレード強制</td><td>SSL 3.0 廃止, TLS_FALLBACK_SCSV</td></tr>
+      <tr><td>BEAST</td><td>TLS 1.0 (CBC)</td><td>IV 予測可能性を利用した CBC 既知平文攻撃</td><td>TLS 1.1 以上, RC4 廃止（現在は別問題）, AEAD</td></tr>
+      <tr><td>CRIME</td><td>TLS 圧縮有効時</td><td>圧縮後サイズ変化でトークン推測</td><td>TLS 圧縮無効化</td></tr>
+      <tr><td>BREACH</td><td>HTTP レスポンス圧縮</td><td>gzip 圧縮レスポンスのサイズ変化でトークン推測</td><td>CSRF トークンのランダム化, 圧縮無効化</td></tr>
+      <tr><td>Heartbleed</td><td>OpenSSL 実装バグ</td><td>Heartbeat 拡張の境界チェック不備、メモリ漏洩</td><td>OpenSSL 更新, 証明書再生成</td></tr>
+      <tr><td>FREAK</td><td>輸出規制暗号（RSA_EXPORT）</td><td>512bit RSA へのダウングレード、因数分解攻撃</td><td>輸出暗号の無効化</td></tr>
+      <tr><td>Logjam</td><td>DHE 512bit</td><td>弱い DH パラメータへのダウングレード</td><td>DHE 2048bit 以上, ECDHE 推奨</td></tr>
+      <tr><td>SSL ストリッピング</td><td>HTTP→HTTPS リダイレクト</td><td>HTTPS を HTTP に置き換えて平文化</td><td>HSTS + preload</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ======================================================== -->
+<!-- SECTION 12: 練習問題 -->
+<!-- ======================================================== -->
+<section class="section" id="s12">
+  <div class="section-header">
+    <span class="s-num gold-bg">12</span>
+    <h2>過去問スタイル 練習問題</h2>
+  </div>
+
+  <p>情報処理安全確保支援士試験の出題傾向に沿った練習問題です。選択肢をクリックすると正誤と解説が表示されます。</p>
+
+  <div class="quiz-wrap">
+
+    <div class="quiz" id="q1">
+      <div class="quiz-q"><span class="quiz-qn">Q1</span><span>TLS 1.3 での主な改善点として、最も適切なものはどれか。</span></div>
+      <div class="quiz-opts">
+        <button class="quiz-opt" onclick="answer('q1','a','c')">ア. ハンドシェイクが 4 往復から 2 往復に短縮された。</button>
+        <button class="quiz-opt" onclick="answer('q1','b','c')">イ. RSA 鍵交換が推奨方式として採用された。</button>
+        <button class="quiz-opt" onclick="answer('q1','c','c')">ウ. RSA 鍵交換が廃止され、PFS が必須化された。</button>
+        <button class="quiz-opt" onclick="answer('q1','d','c')">エ. ChangeCipherSpec メッセージが追加された。</button>
+      </div>
+      <div class="quiz-exp" id="q1-exp"><strong>正解：ウ</strong><br>TLS 1.3 はRSA鍵交換・静的DH を廃止し、ECDHE/DHEのみとすることで Perfect Forward Secrecy を必須化しました。また往復数は「2-RTT → 1-RTT」の短縮です（ア は「4往復→2往復」と書いているため誤りです）。ChangeCipherSpec は TLS 1.3 で廃止されました（エは誤り）。</div>
+    </div>
+
+    <div class="quiz" id="q2">
+      <div class="quiz-q"><span class="quiz-qn">Q2</span><span>SNI（Server Name Indication）拡張の説明として、最も適切なものはどれか。</span></div>
+      <div class="quiz-opts">
+        <button class="quiz-opt" onclick="answer('q2','a','c')">ア. ClientHello でサポートする ECDHE 公開鍵を送信する拡張。</button>
+        <button class="quiz-opt" onclick="answer('q2','b','c')">イ. サーバが OCSP レスポンスを証明書に添付する仕組み。</button>
+        <button class="quiz-opt" onclick="answer('q2','c','c')">ウ. 1 つの IP アドレスで複数の HTTPS サイトをホストするため、ClientHello でアクセス先ホスト名を通知する拡張。</button>
+        <button class="quiz-opt" onclick="answer('q2','d','c')">エ. HTTP/2 を利用することをネゴシエーションする拡張。</button>
+      </div>
+      <div class="quiz-exp" id="q2-exp"><strong>正解：ウ</strong><br>SNI は ClientHello 内でアクセス先ホスト名を送信する拡張で、1 つの IP アドレスで複数ドメインをホスト（バーチャルホスティング）可能にします。ア は key_share 拡張、イ は OCSP Stapling、エ は ALPN 拡張の説明です。</div>
+    </div>
+
+    <div class="quiz" id="q3">
+      <div class="quiz-q"><span class="quiz-qn">Q3</span><span>TLS の通信においてサーバ証明書の有効性確認として行われる処理の組み合わせとして、最も適切なものはどれか。</span></div>
+      <div class="quiz-opts">
+        <button class="quiz-opt" onclick="answer('q3','a','b')">ア. 失効確認（OCSP/CRL）のみ実施。</button>
+        <button class="quiz-opt" onclick="answer('q3','b','b')">イ. 信頼チェーンの確認、有効期限の確認、失効確認、ドメイン名の一致確認を含む複数ステップの検証。</button>
+        <button class="quiz-opt" onclick="answer('q3','c','b')">ウ. サーバが提示した公開鍵が CA の公開鍵と一致するか確認するのみ。</button>
+        <button class="quiz-opt" onclick="answer('q3','d','b')">エ. 証明書の SHA-256 ハッシュをクライアントが計算して CA に問い合わせる。</button>
+      </div>
+      <div class="quiz-exp" id="q3-exp"><strong>正解：イ</strong><br>証明書検証は①信頼チェーン、②署名検証、③有効期限、④失効確認（OCSP/CRL）、⑤ドメイン名一致（SAN/CN）、⑥Key Usage の 6 ステップで構成されます。1 ステップのみでは不十分です。</div>
+    </div>
+
+    <div class="quiz" id="q4">
+      <div class="quiz-q"><span class="quiz-qn">Q4</span><span>Perfect Forward Secrecy（PFS）を実現する仕組みとして、最も適切なものはどれか。</span></div>
+      <div class="quiz-opts">
+        <button class="quiz-opt" onclick="answer('q4','a','d')">ア. サーバ証明書を毎回更新することで、秘密鍵の漏洩影響を限定する。</button>
+        <button class="quiz-opt" onclick="answer('q4','b','d')">イ. AES-GCM の AEAD 暗号方式により、暗号化と認証を同時実行する。</button>
+        <button class="quiz-opt" onclick="answer('q4','c','d')">ウ. OCSP で証明書を毎回リアルタイムに失効確認することで、なりすましを防ぐ。</button>
+        <button class="quiz-opt" onclick="answer('q4','d','d')">エ. ECDHE でセッションごとに一時的な鍵ペアを生成・使用後破棄し、サーバ秘密鍵の漏洩が過去の通信に影響しないようにする。</button>
+      </div>
+      <div class="quiz-exp" id="q4-exp"><strong>正解：エ</strong><br>PFS の核心は「一時鍵（Ephemeral Key）」の使用です。ECDHE によりセッションごとに異なる鍵ペアを生成して使用後破棄することで、将来サーバの長期秘密鍵が漏洩しても、過去の通信は復号できません。</div>
+    </div>
+
+    <div class="quiz" id="q5">
+      <div class="quiz-q"><span class="quiz-qn">Q5</span><span>SSL ストリッピング攻撃への対策として最も有効なものはどれか。</span></div>
+      <div class="quiz-opts">
+        <button class="quiz-opt" onclick="answer('q5','a','c')">ア. TLS の最低バージョンを 1.3 に設定する。</button>
+        <button class="quiz-opt" onclick="answer('q5','b','c')">イ. サーバ証明書を ECDSA に切り替える。</button>
+        <button class="quiz-opt" onclick="answer('q5','c','c')">ウ. HSTS ヘッダを設定し、preload リストに登録する。</button>
+        <button class="quiz-opt" onclick="answer('q5','d','c')">エ. ClientHello で ALPN 拡張を使用して HTTP/2 を指定する。</button>
+      </div>
+      <div class="quiz-exp" id="q5-exp"><strong>正解：ウ</strong><br>SSL ストリッピングは HTTPS を HTTP に書き換えてクライアントを平文通信に誘導する攻撃です。HSTS（HTTP Strict Transport Security）を設定すれば、ブラウザは「このサイトへは必ず HTTPS でアクセス」を学習し、HTTP へのダウングレードを拒否します。preload リストに登録すれば初回アクセス前から有効です。</div>
+    </div>
+
+    <div class="quiz" id="q6">
+      <div class="quiz-q"><span class="quiz-qn">Q6</span><span>TLS クライアント認証（mTLS）の特徴として最も適切なものはどれか。</span></div>
+      <div class="quiz-opts">
+        <button class="quiz-opt" onclick="answer('q6','a','c')">ア. サーバが自身の正当性をクライアントに証明するための仕組みであり、通常の TLS と変わらない。</button>
+        <button class="quiz-opt" onclick="answer('q6','b','c')">イ. クライアントが ID とパスワードを暗号化して送信することで、サーバによる認証が行われる。</button>
+        <button class="quiz-opt" onclick="answer('q6','c','c')">ウ. クライアントも X.509 証明書を提示してサーバに認証される相互認証であり、CertificateRequest と CertificateVerify メッセージが追加される。</button>
+        <button class="quiz-opt" onclick="answer('q6','d','c')">エ. 2 要素認証のため、パスワードと生体情報の両方が必要になる。</button>
+      </div>
+      <div class="quiz-exp" id="q6-exp"><strong>正解：ウ</strong><br>TLS クライアント認証では、サーバが CertificateRequest を送信してクライアントの証明書を要求し、クライアントは自分の X.509 証明書と CertificateVerify（自分の秘密鍵による署名）を送信します。サーバがこれを検証することで、クライアントの本人確認（相互認証）が完了します。</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ======================================================== -->
+<!-- SECTION 13: 重要用語 -->
+<!-- ======================================================== -->
+<section class="section" id="s13">
+  <div class="section-header">
+    <span class="s-num">13</span>
+    <h2>重要用語まとめ</h2>
+  </div>
+
+  <h3>試験頻出キーワード</h3>
+  <table class="term-table">
+    <tr><td>TLS / SSL</td><td>Transport Layer Security / Secure Sockets Layer。TCP 上でアプリデータを暗号化するプロトコル。現行は TLS 1.2 / 1.3 のみ有効。</td></tr>
+    <tr><td>ハンドシェイク</td><td>TLS 接続確立時の暗号スイート合意・証明書交換・鍵交換のプロセス。TLS 1.2 は 2-RTT、TLS 1.3 は 1-RTT。</td></tr>
+    <tr><td>暗号スイート</td><td>鍵交換・認証・暗号化・ハッシュの組み合わせ文字列。例：TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384</td></tr>
+    <tr><td>ECDHE</td><td>Elliptic Curve Diffie-Hellman Ephemeral。楕円曲線上の一時 DH 鍵交換。PFS を実現。TLS 1.3 では必須。</td></tr>
+    <tr><td>PFS (Perfect Forward Secrecy)</td><td>サーバ秘密鍵の漏洩が過去の通信を復号できない性質。一時鍵（ECDHE/DHE）の使用と使用後破棄で実現。</td></tr>
+    <tr><td>AEAD</td><td>Authenticated Encryption with Associated Data。暗号化と完全性認証を同時実行。AES-GCM, ChaCha20-Poly1305。TLS 1.3 必須。</td></tr>
+    <tr><td>X.509 証明書</td><td>公開鍵証明書の標準フォーマット。Subject, Issuer, SAN, 有効期限, 公開鍵, CA署名を含む。</td></tr>
+    <tr><td>信頼チェーン</td><td>エンドエンティティ証明書 → 中間 CA → ルート CA へと辿る検証経路。ルートCA をブラウザの信頼ストアに含む必要。</td></tr>
+    <tr><td>OCSP</td><td>Online Certificate Status Protocol。証明書の失効状態をリアルタイムで確認するプロトコル。</td></tr>
+    <tr><td>OCSP Stapling</td><td>サーバが事前に OCSP レスポンスを取得し、TLS ハンドシェイクに添付する。クライアントの問い合わせ不要。</td></tr>
+    <tr><td>常時SSL / HTTPS化</td><td>Web サイト全体を HTTPS 化すること。部分 SSL 化の問題を解消。</td></tr>
+    <tr><td>HSTS</td><td>HTTP Strict Transport Security。ブラウザに「このサイトは常に HTTPS でアクセスせよ」と指示するヘッダ。SSL ストリッピング対策。</td></tr>
+    <tr><td>SNI</td><td>Server Name Indication。ClientHello でホスト名を送信する拡張。1 IP で複数 HTTPS ドメインを運用可能。</td></tr>
+    <tr><td>ALPN</td><td>Application-Layer Protocol Negotiation。使用するアプリプロトコル（HTTP/2 等）を TLS ハンドシェイク内でネゴシエーション。</td></tr>
+    <tr><td>0-RTT (Early Data)</td><td>TLS 1.3 の PSK 再接続機能。初回メッセージをハンドシェイクと同時送信。リプレイ攻撃リスクあり。</td></tr>
+    <tr><td>TLS レコードプロトコル</td><td>TLS の最下層。Handshake / ChangeCipherSpec / Alert / Application Data の 4 サブプロトコルのデータを運搬・暗号化。</td></tr>
+    <tr><td>HTTP CONNECT</td><td>プロキシに「このホスト:ポートへのトンネルを確立せよ」と要求する HTTP メソッド。HTTPS のプロキシ中継に使用。</td></tr>
+    <tr><td>mTLS / クライアント認証</td><td>Mutual TLS。サーバ・クライアント双方が証明書で相互認証。CertificateRequest / CertificateVerify が追加される。</td></tr>
+    <tr><td>POODLE</td><td>SSL 3.0 の CBC パディング脆弱性を悪用した攻撃。対策：SSL 3.0 廃止、TLS_FALLBACK_SCSV。</td></tr>
+    <tr><td>Heartbleed</td><td>OpenSSL Heartbeat 実装バグ。サーバメモリから秘密鍵等を窃取可能。対策：OpenSSL 更新・証明書再生成。</td></tr>
+    <tr><td>SSL ストリッピング</td><td>HTTPS を HTTP に書き換えてダウングレードさせる中間者攻撃。対策：HSTS。</td></tr>
+  </table>
+
+  <div class="keypoint" style="margin-top:28px">
+    <p class="kp-label">試験対策 7 つの鉄則</p>
+    <p>
+      1. <strong>TLS 1.3 の核心は「RSA 鍵交換廃止 + PFS 必須 + 1-RTT + 証明書暗号化」</strong><br>
+      2. <strong>ハンドシェイクの 4 フェーズ：Hello → 認証 → 鍵交換 → 暗号化開始</strong><br>
+      3. <strong>証明書検証は 6 ステップ：信頼チェーン・署名・有効期限・失効・ドメイン・KeyUsage</strong><br>
+      4. <strong>PFS は「一時鍵（ECDHE）を毎回生成・破棄」で実現</strong><br>
+      5. <strong>SNI = 1 IP 複数ドメイン / ALPN = HTTP/2 ネゴシエーション</strong><br>
+      6. <strong>HSTS = SSL ストリッピング対策 / 常時 SSL の仕上げ</strong><br>
+      7. <strong>攻撃：POODLE=SSL 3.0, Heartbleed=実装バグ, CRIME=圧縮, BEAST=CBC</strong>
+    </p>
+  </div>
+</section>
+
+  </main>
+</div>
+
+<footer>
+  <p>SSL/TLS プロトコル 完全解説 Ver.2 — 情報処理安全確保支援士試験 対応版</p>
+  <p>シラバス Ver.2.1 | 3-1 暗号利用及び鍵管理 / 3-5 ネットワーク及び機器のセキュリティ管理 / 2-4 セキュリティ機能の設計・実装</p>
+</footer>
+
+<script>
+  function setActive(el) {
+    document.querySelectorAll('.sidebar nav a').forEach(a => a.classList.remove('active'));
+    el.classList.add('active');
+  }
+  function answer(qid, selected, correct) {
+    const quiz = document.getElementById(qid);
+    const opts = quiz.querySelectorAll('.quiz-opt');
+    const exp = document.getElementById(qid + '-exp');
+    const letters = ['a','b','c','d'];
+    opts.forEach((btn, i) => {
+      btn.disabled = true;
+      const letter = letters[i];
+      if (letter === correct) btn.classList.add('correct');
+      else if (letter === selected) btn.classList.add('wrong');
+      else btn.classList.add('reveal');
+    });
+    exp.classList.add('show');
+    exp.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+  const sections = document.querySelectorAll('section.section');
+  const navLinks = document.querySelectorAll('.sidebar nav a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(sec => { if (window.scrollY >= sec.offsetTop - 80) current = sec.id; });
+    navLinks.forEach(link => { link.classList.toggle('active', link.getAttribute('href') === '#' + current); });
+  }, { passive: true });
+</script>
+</body>
+</html>

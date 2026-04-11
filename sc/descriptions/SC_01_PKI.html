@@ -1,0 +1,2174 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PKI（公開鍵基盤） — 技術解説書 Ver.1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600&family=Noto+Sans+JP:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:     #141824;
+    --ink2:    #1e2d4a;
+    --accent:  #0b4a82;
+    --accent2: #1570b8;
+    --gold:    #b5821e;
+    --soft:    #e8edf5;
+    --surface: #f3f6fb;
+    --line:    #cdd7e6;
+    --success: #155f44;
+    --warn:    #7a4208;
+    --danger:  #7a1818;
+    --mono:    'JetBrains Mono', monospace;
+    --serif:   'Noto Serif JP', serif;
+    --sans:    'Noto Sans JP', sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--sans);
+    background: #edf1f8;
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.78;
+  }
+
+  /* ── Cover ── */
+  .cover {
+    background: var(--ink);
+    color: #fff;
+    padding: 72px 60px 56px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cover-geo {
+    position: absolute;
+    top: 0; right: 0;
+    width: 420px; height: 420px;
+    opacity: .06;
+  }
+  .cover-kicker {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .2em;
+    color: rgba(255,255,255,.42);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .cover-kicker::before {
+    content: '';
+    display: block;
+    width: 24px; height: 1px;
+    background: var(--gold);
+  }
+  .cover h1 {
+    font-family: var(--serif);
+    font-size: 40px;
+    font-weight: 600;
+    line-height: 1.22;
+    margin-bottom: 18px;
+  }
+  .cover h1 em { color: #6ab4f5; font-style: normal; }
+  .cover-desc {
+    font-size: 14px;
+    color: rgba(255,255,255,.58);
+    max-width: 560px;
+    margin-bottom: 36px;
+    line-height: 1.8;
+  }
+  .cover-tags { display: flex; gap: 7px; flex-wrap: wrap; }
+  .ctag {
+    font-size: 10.5px;
+    padding: 3px 11px;
+    border-radius: 3px;
+    border: 1px solid rgba(255,255,255,.16);
+    color: rgba(255,255,255,.6);
+    letter-spacing: .04em;
+    font-family: var(--mono);
+  }
+
+  /* ── Nav sidebar ── */
+  .layout { display: flex; align-items: flex-start; }
+  .sidebar {
+    position: sticky;
+    top: 0;
+    width: 220px;
+    flex-shrink: 0;
+    height: 100vh;
+    overflow-y: auto;
+    background: var(--ink2);
+    padding: 28px 0;
+  }
+  .sidebar-title {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .18em;
+    color: rgba(255,255,255,.3);
+    text-transform: uppercase;
+    padding: 0 20px 12px;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+    margin-bottom: 8px;
+  }
+  .sidebar nav a {
+    display: block;
+    padding: 8px 20px;
+    font-size: 12.5px;
+    color: rgba(255,255,255,.55);
+    text-decoration: none;
+    border-left: 2px solid transparent;
+    transition: all .15s;
+    line-height: 1.45;
+  }
+  .sidebar nav a:hover { color: #fff; background: rgba(255,255,255,.05); }
+  .sidebar nav a.active { color: #6ab4f5; border-left-color: #6ab4f5; background: rgba(100,180,245,.07); }
+  .sidebar nav .nav-num {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: rgba(255,255,255,.25);
+    display: block;
+    margin-bottom: 1px;
+  }
+
+  .main { flex: 1; min-width: 0; padding: 52px 52px 100px; }
+
+  /* ── Section ── */
+  .section { margin-bottom: 80px; scroll-margin-top: 24px; }
+  .section-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 26px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--line);
+  }
+  .s-num {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 500;
+    color: #fff;
+    background: var(--accent);
+    padding: 3px 8px;
+    border-radius: 3px;
+    margin-top: 5px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .s-num.gold-bg { background: var(--gold); }
+  .s-num.red-bg  { background: var(--danger); }
+  h2 {
+    font-family: var(--serif);
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+  h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ink2);
+    margin: 32px 0 12px;
+    padding-left: 10px;
+    border-left: 3px solid var(--accent2);
+  }
+  p { color: #3a3d52; margin-bottom: 14px; }
+
+  /* ── Cards ── */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px,1fr)); gap: 14px; margin: 22px 0; }
+  .icard {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .icard-icon { color: var(--accent2); }
+  .icard-label { font-size: 10.5px; font-weight: 700; letter-spacing: .1em; color: var(--accent); text-transform: uppercase; }
+  .icard-val { font-size: 13px; color: var(--ink); line-height: 1.55; }
+
+  /* ── Sequence ── */
+  .seq-wrap {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 28px 24px 20px;
+    margin: 24px 0;
+    overflow-x: auto;
+  }
+  .seq-cap {
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .seq-cap::after { content:''; flex:1; height:1px; background:var(--line); }
+  svg.seq { display:block; min-width: 580px; }
+
+  /* ── Step list ── */
+  .steps { display:flex; flex-direction:column; gap:8px; margin:16px 0; }
+  .step {
+    display:flex; gap:12px; align-items:flex-start;
+    padding:11px 15px;
+    border-radius:6px;
+    background: var(--surface);
+    border-left: 3px solid var(--line);
+  }
+  .step.hi  { background:#eaf3ff; border-left-color:var(--accent2); }
+  .step.ok  { background:#eaf7f1; border-left-color:var(--success); }
+  .step.wn  { background:#fdf5e6; border-left-color:var(--gold); }
+  .step.ng  { background:#fdf0f0; border-left-color:var(--danger); }
+  .sn {
+    font-family:var(--mono); font-size:10px; font-weight:500; color:#fff;
+    background:var(--accent2); min-width:22px; height:22px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0; margin-top:2px;
+  }
+  .step.ok .sn { background:var(--success); }
+  .step.wn .sn { background:var(--gold); }
+  .step.ng .sn { background:var(--danger); }
+  .sb { font-size:13.5px; color:var(--ink); line-height:1.65; }
+  .sb strong { color:var(--ink2); }
+  .sb code { font-family:var(--mono); font-size:11.5px; background:rgba(11,74,130,.08); color:var(--accent); padding:1px 5px; border-radius:3px; }
+
+  /* ── Note ── */
+  .note {
+    display:flex; gap:11px;
+    border-radius:6px;
+    padding:13px 16px;
+    margin:14px 0;
+    border: 1px solid;
+  }
+  .note-i { flex-shrink:0; margin-top:2px; }
+  .note p { margin:0; font-size:13px; line-height:1.7; }
+  .note.info  { background:#e8f3fd; border-color:#a8cef5; }
+  .note.info p { color:#0b3a6a; }
+  .note.warn  { background:#fdf5e6; border-color:#e8c97a; }
+  .note.warn p { color:#5a3200; }
+  .note.danger{ background:#fdf0f0; border-color:#e8a8a8; }
+  .note.danger p { color:#5a0000; }
+
+  /* ── Threat / feature grid ── */
+  .threat-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:20px 0; }
+  .threat-card {
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:8px;
+    overflow:hidden;
+  }
+  .tc-head {
+    display:flex; align-items:center; gap:10px;
+    padding:10px 14px;
+    background: var(--accent);
+    color:#fff;
+  }
+  .tc-head.warn-head { background: var(--gold); }
+  .tc-head.danger-head { background: var(--danger); }
+  .tc-head.green-head { background: var(--success); }
+  .tc-head span { font-size:12.5px; font-weight:700; }
+  .tc-body { padding:12px 14px; }
+  .tc-body p { font-size:12.5px; color:#3a3d52; margin:0 0 8px; line-height:1.6; }
+  .tc-counter {
+    font-size:11.5px; color:var(--success);
+    padding:6px 10px;
+    background:#eaf7f1;
+    border-radius:4px;
+    margin:0;
+    border-left:3px solid var(--success);
+  }
+
+  /* ── Req table ── */
+  .req-table { width:100%; border-collapse:collapse; font-size:13.5px; margin:16px 0; }
+  .req-table th { background:var(--ink2); color:#fff; padding:9px 13px; text-align:left; font-size:11px; font-weight:600; letter-spacing:.06em; }
+  .req-table td { padding:9px 13px; border-bottom:1px solid var(--line); vertical-align:top; line-height:1.6; }
+  .req-table tr:last-child td { border-bottom:none; }
+  .req-table tr:nth-child(even) td { background:var(--surface); }
+  .req-table td:first-child { font-weight:600; color:var(--ink2); white-space:nowrap; }
+  .req-table td:nth-child(2) { color:#3a3d52; }
+  .req-table td:last-child { color:var(--success); font-size:12.5px; }
+
+  /* ── Comparison table ── */
+  .cmp-table { width:100%; border-collapse:collapse; font-size:13px; margin:16px 0; }
+  .cmp-table th { background:var(--accent); color:#fff; padding:9px 13px; text-align:center; font-size:11px; font-weight:600; letter-spacing:.06em; }
+  .cmp-table th:first-child { text-align:left; background:var(--ink2); }
+  .cmp-table td { padding:9px 13px; border:1px solid var(--line); text-align:center; font-size:12.5px; vertical-align:middle; }
+  .cmp-table td:first-child { text-align:left; font-weight:600; color:var(--ink2); background:var(--surface); white-space:nowrap; }
+  .cmp-good { color:var(--success); font-weight:600; }
+  .cmp-bad  { color:var(--danger); }
+  .cmp-mid  { color:var(--warn); }
+
+  /* ── Key point ── */
+  .keypoint {
+    background:var(--ink);
+    color:#fff;
+    border-radius:8px;
+    padding:20px 26px;
+    margin:24px 0;
+  }
+  .kp-label { font-size:9.5px; font-weight:700; letter-spacing:.2em; color:rgba(181,130,30,.9); text-transform:uppercase; margin-bottom:8px; display:flex; align-items:center; gap:8px; }
+  .kp-label::before { content:''; display:block; width:16px; height:1px; background:var(--gold); }
+  .keypoint p { color:rgba(255,255,255,.82); margin:0; font-size:13.5px; line-height:1.8; }
+  .keypoint strong { color:#6ab4f5; }
+
+  /* ── Quiz ── */
+  .quiz-wrap { display:flex; flex-direction:column; gap:24px; margin:20px 0; }
+  .quiz {
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:8px;
+    overflow:hidden;
+  }
+  .quiz-q {
+    padding:14px 18px;
+    background:var(--ink2);
+    color:#fff;
+    font-size:13.5px;
+    line-height:1.65;
+    display:flex;
+    gap:12px;
+  }
+  .quiz-qn {
+    font-family:var(--mono);
+    font-size:10px;
+    background:rgba(255,255,255,.15);
+    padding:2px 8px;
+    border-radius:3px;
+    white-space:nowrap;
+    flex-shrink:0;
+    height:fit-content;
+    margin-top:2px;
+  }
+  .quiz-opts { padding:14px 18px; display:flex; flex-direction:column; gap:7px; }
+  .quiz-opt {
+    padding:8px 13px;
+    border:1px solid var(--line);
+    border-radius:5px;
+    font-size:13px;
+    color:var(--ink);
+    cursor:pointer;
+    transition:all .15s;
+    background:#fff;
+    text-align:left;
+  }
+  .quiz-opt:hover { background:var(--surface); border-color:var(--accent2); }
+  .quiz-opt.correct { background:#eaf7f1; border-color:var(--success); color:var(--success); }
+  .quiz-opt.wrong   { background:#fdf0f0; border-color:var(--danger); color:var(--danger); }
+  .quiz-opt.reveal  { background:var(--surface); color:#aaa; }
+  .quiz-exp {
+    display:none;
+    padding:12px 18px;
+    background:#f0f6ff;
+    border-top:1px solid #b8d5f5;
+    font-size:13px;
+    color:#0b3a6a;
+    line-height:1.7;
+  }
+  .quiz-exp.show { display:block; }
+
+  /* ── Term ── */
+  .term-table { width:100%; border-collapse:collapse; font-size:13px; margin:12px 0; }
+  .term-table td { padding:8px 11px; border-bottom:1px dashed var(--line); vertical-align:top; }
+  .term-table td:first-child { font-family:var(--mono); font-size:11px; color:var(--accent2); font-weight:500; white-space:nowrap; min-width:160px; }
+  .term-table tr:last-child td { border-bottom:none; }
+
+  /* ── Attack table ── */
+  .atk-table { width:100%; border-collapse:collapse; font-size:13px; margin:16px 0; }
+  .atk-table th { background:var(--ink); color:#fff; padding:9px 13px; text-align:left; font-size:11px; font-weight:600; letter-spacing:.06em; }
+  .atk-table td { padding:9px 13px; border-bottom:1px solid var(--line); vertical-align:top; line-height:1.6; }
+  .atk-table tr:last-child td { border-bottom:none; }
+  .atk-table tr:nth-child(even) td { background:var(--surface); }
+  .atk-table td:first-child { font-weight:600; color:var(--danger); white-space:nowrap; }
+  .atk-table td:last-child { color:var(--success); font-size:12.5px; }
+
+  /* ── Cert field table ── */
+  .cert-table { width:100%; border-collapse:collapse; font-size:13px; margin:16px 0; }
+  .cert-table th { background:var(--ink2); color:#fff; padding:9px 13px; text-align:left; font-size:11px; font-weight:600; letter-spacing:.06em; }
+  .cert-table td { padding:9px 13px; border-bottom:1px solid var(--line); vertical-align:top; line-height:1.6; }
+  .cert-table tr:last-child td { border-bottom:none; }
+  .cert-table tr:nth-child(even) td { background:var(--surface); }
+  .cert-table td:first-child { font-family:var(--mono); font-size:11px; color:var(--accent2); font-weight:500; white-space:nowrap; }
+  .cert-table td:nth-child(2) { font-weight:600; color:var(--ink2); }
+  .cert-table td:nth-child(3) { color:#3a3d52; }
+  .cert-table .imp { color:var(--danger); font-weight:700; font-size:10px; }
+
+  /* ── Overview map ── */
+  .overview-wrap {
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:24px;
+    margin:24px 0;
+    overflow-x:auto;
+  }
+
+  footer {
+    background:var(--ink);
+    color:rgba(255,255,255,.35);
+    text-align:center;
+    padding:22px;
+    font-size:11.5px;
+    letter-spacing:.05em;
+    line-height:1.8;
+  }
+
+  @media (max-width: 800px) {
+    .sidebar { display:none; }
+    .main { padding:28px 20px 60px; }
+    .threat-grid { grid-template-columns:1fr; }
+    .cover { padding:48px 24px 40px; }
+    .cover h1 { font-size:28px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <svg class="cover-geo" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="200" cy="200" r="160" stroke="white" stroke-width="1"/>
+    <circle cx="200" cy="200" r="110" stroke="white" stroke-width="1"/>
+    <circle cx="200" cy="200" r="60" stroke="white" stroke-width="1"/>
+    <line x1="40" y1="200" x2="360" y2="200" stroke="white" stroke-width="0.5"/>
+    <line x1="200" y1="40" x2="200" y2="360" stroke="white" stroke-width="0.5"/>
+    <line x1="87" y1="87" x2="313" y2="313" stroke="white" stroke-width="0.5"/>
+    <line x1="313" y1="87" x2="87" y2="313" stroke="white" stroke-width="0.5"/>
+    <rect x="120" y="120" width="160" height="160" stroke="white" stroke-width="0.8"/>
+  </svg>
+  <div style="position:relative">
+    <p class="cover-kicker">技術解説書 — 情報処理安全確保支援士対応</p>
+    <h1>PKI（公開鍵基盤）の<br><em>仕組みと運用</em></h1>
+    <p class="cover-desc">「インターネット上の公証役場」PKIの全体像。デジタル証明書（X.509）の構造、CA・RA・IAの役割分担、CSR発行からチェーンオブトラスト確認まで、試験頻出のPKI知識を完全網羅した解説書です。</p>
+    <div class="cover-tags">
+      <span class="ctag">X.509 / PKCS</span>
+      <span class="ctag">CA / RA / IA</span>
+      <span class="ctag">CSR</span>
+      <span class="ctag">信頼チェーン</span>
+      <span class="ctag">OCSP / CRL</span>
+      <span class="ctag">CP / CPS</span>
+      <span class="ctag">ルート証明書</span>
+    </div>
+  </div>
+</div>
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <p class="sidebar-title">目次</p>
+    <nav>
+      <a href="#s1" onclick="setActive(this)"><span class="nav-num">01</span>PKIとは何か — 全体像</a>
+      <a href="#s2" onclick="setActive(this)"><span class="nav-num">02</span>デジタル証明書（X.509）</a>
+      <a href="#s3" onclick="setActive(this)"><span class="nav-num">03</span>PKCS — 標準フォーマット群</a>
+      <a href="#s4" onclick="setActive(this)"><span class="nav-num">04</span>PKIの構成要素</a>
+      <a href="#s5" onclick="setActive(this)"><span class="nav-num">05</span>証明書発行・検証フロー図解</a>
+      <a href="#s6" onclick="setActive(this)"><span class="nav-num">06</span>証明書チェックの5ポイント</a>
+      <a href="#s7" onclick="setActive(this)"><span class="nav-num">07</span>CP / CPS</a>
+      <a href="#s8" onclick="setActive(this)"><span class="nav-num">08</span>練習問題</a>
+      <a href="#s9" onclick="setActive(this)"><span class="nav-num">09</span>重要用語まとめ</a>
+    </nav>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- ── 01 全体像 ── -->
+    <section class="section" id="s1">
+      <div class="section-header">
+        <span class="s-num">01</span>
+        <h2>PKIとは何か — 全体像と位置づけ</h2>
+      </div>
+
+      <p>PKI（Public Key Infrastructure：公開鍵基盤）とは、公開鍵暗号を安全に運用するための<strong>仕組みの総体</strong>です。暗号アルゴリズム単体ではなく、「誰の公開鍵か」を証明・管理する社会インフラ全体を指します。</p>
+
+      <div class="note info">
+        <div class="note-i">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1570b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>
+          </svg>
+        </div>
+        <p><strong>たとえ話：インターネット上の「公証役場」。</strong> 公証役場は「この契約書の署名は確かに本人のものです」という証明書を発行します。PKIも全く同じで、「この公開鍵は確かに○○さんのものです」という電子的な証明書（デジタル証明書）を発行します。手書き署名の信頼性を担保する公証役場が CA（認証局）に相当します。</p>
+      </div>
+
+      <h3>セキュリティ技術の全体地図におけるPKIの位置づけ</h3>
+      <p>PKIは単独で存在するのではなく、以下の技術レイヤーの中に位置づけられます。</p>
+
+      <div class="overview-wrap">
+        <p class="seq-cap">図 1 — PKIの位置づけ（セキュリティ技術スタック）</p>
+        <svg viewBox="0 0 720 320" style="display:block;min-width:560px">
+          <!-- Layer 1: Crypto primitives -->
+          <rect x="20" y="14" width="680" height="52" rx="6" fill="#e4eaf5" stroke="#cdd7e6" stroke-width="1"/>
+          <text x="36" y="36" font-family="'Noto Sans JP',sans-serif" font-size="10" font-weight="700" letter-spacing="0.12em" fill="#6a6e8e">LAYER 1 — 暗号プリミティブ</text>
+          <text x="36" y="52" font-family="'Noto Sans JP',sans-serif" font-size="11.5" fill="#3a3d52">公開鍵暗号（RSA, ECDSA）　共通鍵暗号（AES）　ハッシュ関数（SHA-256）　乱数生成</text>
+          <!-- Layer 2: PKI -->
+          <rect x="20" y="80" width="680" height="64" rx="6" fill="#d8eaff" stroke="#0b4a82" stroke-width="1.5"/>
+          <text x="36" y="102" font-family="'Noto Sans JP',sans-serif" font-size="10" font-weight="700" letter-spacing="0.12em" fill="#0b4a82">LAYER 2 — PKI（公開鍵基盤）</text>
+          <text x="36" y="120" font-family="'Noto Sans JP',sans-serif" font-size="11.5" fill="#1a3a5c">デジタル証明書（X.509）　CA / RA / IA　CSR　信頼チェーン　CRL / OCSP　CP / CPS</text>
+          <rect x="548" y="86" width="136" height="52" rx="4" fill="#0b4a82"/>
+          <text x="616" y="107" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="11" font-weight="600" fill="white">PKI</text>
+          <text x="616" y="122" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9.5" fill="rgba(255,255,255,.7)">公開鍵基盤</text>
+          <text x="616" y="134" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9.5" fill="rgba(255,255,255,.7)">本解説書のスコープ</text>
+          <!-- Layer 3: Protocols -->
+          <rect x="20" y="158" width="680" height="52" rx="6" fill="#d0f0e0" stroke="#155f44" stroke-width="1"/>
+          <text x="36" y="180" font-family="'Noto Sans JP',sans-serif" font-size="10" font-weight="700" letter-spacing="0.12em" fill="#155f44">LAYER 3 — 暗号プロトコル</text>
+          <text x="36" y="197" font-family="'Noto Sans JP',sans-serif" font-size="11.5" fill="#0d3d28">TLS/SSL　S/MIME　SSH　IPsec　電子署名　コードサイニング</text>
+          <!-- Layer 4: Applications -->
+          <rect x="20" y="224" width="680" height="52" rx="6" fill="#fdf5e6" stroke="#b5821e" stroke-width="1"/>
+          <text x="36" y="246" font-family="'Noto Sans JP',sans-serif" font-size="10" font-weight="700" letter-spacing="0.12em" fill="#b5821e">LAYER 4 — アプリケーション</text>
+          <text x="36" y="263" font-family="'Noto Sans JP',sans-serif" font-size="11.5" fill="#5a3200">HTTPS Webサイト　電子メール（暗号・署名）　VPN　マイナンバーカード　電子申告　コードサイニング証明書</text>
+          <!-- Arrows -->
+          <line x1="80" y1="66" x2="80" y2="78" stroke="#b0bdd0" stroke-width="1.5" marker-end="url(#ah_ov)"/>
+          <line x1="80" y1="144" x2="80" y2="156" stroke="#b0bdd0" stroke-width="1.5" marker-end="url(#ah_ov)"/>
+          <line x1="80" y1="210" x2="80" y2="222" stroke="#b0bdd0" stroke-width="1.5" marker-end="url(#ah_ov)"/>
+          <defs>
+            <marker id="ah_ov" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+              <path d="M1 1L9 5L1 9" fill="none" stroke="#b0bdd0" stroke-width="1.5" stroke-linecap="round"/>
+            </marker>
+          </defs>
+        </svg>
+      </div>
+
+      <h3>PKIが解決する問題</h3>
+      <div class="card-grid">
+        <div class="icard">
+          <div class="icard-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+              <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17" stroke-width="2.5"/>
+            </svg>
+          </div>
+          <div class="icard-label">課題：なりすまし</div>
+          <div class="icard-val">「この公開鍵は本当に銀行のもの？」という問いに答えられない。悪意ある第三者が偽の公開鍵を配布できる。</div>
+        </div>
+        <div class="icard">
+          <div class="icard-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              <polyline points="9 12 11 14 15 10"/>
+            </svg>
+          </div>
+          <div class="icard-label">解決：デジタル証明書</div>
+          <div class="icard-val">信頼された第三者機関（CA）が「この公開鍵は確かに○○のもの」と電子的に証明する文書を発行。</div>
+        </div>
+        <div class="icard">
+          <div class="icard-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 0 1 2 2v7"/><line x1="6" y1="9" x2="6" y2="21"/>
+            </svg>
+          </div>
+          <div class="icard-label">仕組み：信頼の連鎖</div>
+          <div class="icard-val">ルートCAを起点に中間CAを経由して末端証明書まで署名の連鎖で信頼を伝播する「チェーンオブトラスト」。</div>
+        </div>
+        <div class="icard">
+          <div class="icard-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+              <line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/>
+            </svg>
+          </div>
+          <div class="icard-label">運用：失効管理</div>
+          <div class="icard-val">秘密鍵の漏洩・組織変更時に証明書を失効させる仕組み（CRL・OCSP）。発行した証明書を取り消せる。</div>
+        </div>
+      </div>
+
+      <div class="keypoint">
+        <p class="kp-label">PKIの本質</p>
+        <p>PKIは「<strong>誰を信頼するか</strong>」という問題を解決するインフラです。暗号技術が「秘密の通信路」を作るとすれば、PKIは「通信相手が本当に名乗っている者かどうか」を保証します。この2つが揃って初めてセキュアな通信が成立します。</p>
+      </div>
+    </section>
+
+    <!-- ── 02 デジタル証明書 ── -->
+    <section class="section" id="s2">
+      <div class="section-header">
+        <span class="s-num">02</span>
+        <h2>デジタル証明書（X.509）の構造</h2>
+      </div>
+
+      <p>X.509はデジタル証明書のデータ構造を定義するITU-Tの規格です（ISO/IEC 9594-8と同一）。現在主流のX.509 v3形式は、<strong>被証明者の公開鍵・身元情報・CAの署名</strong>を一つのファイルにまとめた「電子的な身分証明書」です。</p>
+
+      <div class="note info">
+        <div class="note-i">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1570b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>
+          </svg>
+        </div>
+        <p><strong>たとえ話：パスポートそのもの。</strong> パスポートには「氏名・国籍・写真（公開鍵に相当）・有効期限・発行国の割符（CAの署名）」が記載されています。X.509証明書は全く同じ情報構造です。パスポートを見れば本人確認できるように、デジタル証明書を見れば「この公開鍵は確かに○○のもの」と確認できます。</p>
+      </div>
+
+      <div class="overview-wrap">
+        <p class="seq-cap">図 2 — X.509 v3 証明書の構造（TBSCertificate）</p>
+        <svg viewBox="0 0 720 440" style="display:block;min-width:560px">
+          <defs>
+            <marker id="ah_cert" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+              <path d="M1 1L9 5L1 9" fill="none" stroke="#0b4a82" stroke-width="1.5" stroke-linecap="round"/>
+            </marker>
+          </defs>
+          <!-- Outer border -->
+          <rect x="14" y="14" width="460" height="414" rx="8" fill="#f8fafd" stroke="#0b4a82" stroke-width="1.5"/>
+          <!-- Header bar -->
+          <rect x="14" y="14" width="460" height="36" rx="8" fill="#0b4a82"/>
+          <rect x="14" y="36" width="460" height="14" fill="#0b4a82"/>
+          <text x="234" y="36" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="12" font-weight="700" fill="white">X.509 v3 デジタル証明書</text>
+          <!-- TBS section label -->
+          <rect x="26" y="60" width="436" height="24" rx="3" fill="#e4eaf5"/>
+          <text x="244" y="76" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="10" fill="#0b4a82" font-weight="500">TBSCertificate（署名対象フィールド群）</text>
+          <!-- Fields -->
+          <!-- Version -->
+          <rect x="26" y="92" width="90" height="28" rx="3" fill="#d8eaff" stroke="#a8cef5" stroke-width="0.8"/>
+          <text x="71" y="110" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="9.5" fill="#0b4a82">Version</text>
+          <rect x="124" y="92" width="338" height="28" rx="3" fill="white" stroke="#e0e6f0" stroke-width="0.8"/>
+          <text x="293" y="110" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="11" fill="#3a3d52">v1 / v2 / v3（現在主流は v3）</text>
+          <!-- Serial -->
+          <rect x="26" y="126" width="90" height="28" rx="3" fill="#d8eaff" stroke="#a8cef5" stroke-width="0.8"/>
+          <text x="71" y="140" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="9.5" fill="#0b4a82">SerialNumber</text>
+          <text x="71" y="150" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7.5" fill="#6a8aaa">CA内で一意</text>
+          <rect x="124" y="126" width="338" height="28" rx="3" fill="white" stroke="#e0e6f0" stroke-width="0.8"/>
+          <text x="293" y="144" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="11" fill="#3a3d52">CA内で一意のシリアル番号（CRL照合に使用）</text>
+          <!-- Signature alg -->
+          <rect x="26" y="160" width="90" height="28" rx="3" fill="#d8eaff" stroke="#a8cef5" stroke-width="0.8"/>
+          <text x="71" y="174" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="9.5" fill="#0b4a82">Signature</text>
+          <text x="71" y="184" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7.5" fill="#6a8aaa">Algorithm</text>
+          <rect x="124" y="160" width="338" height="28" rx="3" fill="white" stroke="#e0e6f0" stroke-width="0.8"/>
+          <text x="293" y="178" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="11" fill="#3a3d52">署名アルゴリズム識別子（例：sha256WithRSAEncryption）</text>
+          <!-- Issuer -->
+          <rect x="26" y="194" width="90" height="28" rx="3" fill="#ffe4e4" stroke="#e8a8a8" stroke-width="0.8"/>
+          <text x="71" y="212" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="9.5" fill="#7a1818">Issuer</text>
+          <rect x="124" y="194" width="338" height="28" rx="3" fill="#fff8f8" stroke="#e8a8a8" stroke-width="0.8"/>
+          <text x="293" y="212" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="11" fill="#3a3d52">発行者（CA）の識別名（DN: Distinguished Name）</text>
+          <!-- Validity -->
+          <rect x="26" y="228" width="90" height="28" rx="3" fill="#fdf0dc" stroke="#e8c97a" stroke-width="0.8"/>
+          <text x="71" y="246" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="9.5" fill="#7a4208">Validity</text>
+          <rect x="124" y="228" width="338" height="28" rx="3" fill="#fdf8ee" stroke="#e8c97a" stroke-width="0.8"/>
+          <text x="293" y="246" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="11" fill="#5a3200">有効期限（NotBefore 〜 NotAfter）</text>
+          <!-- Subject -->
+          <rect x="26" y="262" width="90" height="28" rx="3" fill="#d0f0e0" stroke="#a0d8c0" stroke-width="0.8"/>
+          <text x="71" y="280" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="9.5" fill="#155f44">Subject</text>
+          <rect x="124" y="262" width="338" height="28" rx="3" fill="#eaf7f1" stroke="#a0d8c0" stroke-width="0.8"/>
+          <text x="293" y="280" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="11" fill="#0d3d28">被証明者の識別名（CN=example.com, O=Example Corp, ...）</text>
+          <!-- SubjectPublicKey -->
+          <rect x="26" y="296" width="90" height="40" rx="3" fill="#d0f0e0" stroke="#a0d8c0" stroke-width="0.8"/>
+          <text x="71" y="312" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="9.5" fill="#155f44">Subject</text>
+          <text x="71" y="324" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="9.5" fill="#155f44">PublicKey</text>
+          <rect x="124" y="296" width="338" height="40" rx="3" fill="#eaf7f1" stroke="#a0d8c0" stroke-width="0.8"/>
+          <text x="293" y="314" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="11" fill="#0d3d28" font-weight="600">被証明者の公開鍵（証明書の主役）</text>
+          <text x="293" y="328" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#0d3d28">鍵アルゴリズム + 鍵ビット数 + 公開鍵データ</text>
+          <!-- Extensions -->
+          <rect x="26" y="342" width="90" height="40" rx="3" fill="#eeddff" stroke="#c8aaee" stroke-width="0.8"/>
+          <text x="71" y="358" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="9.5" fill="#5a1a6e">Extensions</text>
+          <text x="71" y="370" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8" fill="#5a1a6e">（v3のみ）</text>
+          <rect x="124" y="342" width="338" height="40" rx="3" fill="#f5eeff" stroke="#c8aaee" stroke-width="0.8"/>
+          <text x="293" y="358" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="11" fill="#3a006e">SAN, KeyUsage, ExtKeyUsage, CRL配布点, OCSP URL</text>
+          <text x="293" y="372" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#3a006e">BasicConstraints（CA証明書かどうかの識別フラグ）</text>
+          <!-- Signature value -->
+          <rect x="14" y="392" width="460" height="30" rx="6" fill="#141824"/>
+          <text x="244" y="409" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="11" font-weight="700" fill="white">CAのデジタル署名値（上記 TBSCertificate 全体のハッシュ値をCAの秘密鍵で署名したもの）</text>
+          <!-- Annotation right side -->
+          <text x="510" y="112" font-family="'Noto Sans JP',sans-serif" font-size="10.5" fill="#7a4208">発行者情報</text>
+          <text x="510" y="248" font-family="'Noto Sans JP',sans-serif" font-size="10.5" fill="#7a4208">要チェック項目</text>
+          <text x="510" y="316" font-family="'Noto Sans JP',sans-serif" font-size="10.5" fill="#155f44">証明書の核心</text>
+          <text x="510" y="408" font-family="'Noto Sans JP',sans-serif" font-size="10.5" fill="#141824">CAの保証</text>
+          <!-- Brackets -->
+          <line x1="500" y1="194" x2="506" y2="194" stroke="#7a4208" stroke-width="1"/>
+          <line x1="506" y1="194" x2="506" y2="256" stroke="#7a4208" stroke-width="1"/>
+          <line x1="506" y1="256" x2="500" y2="256" stroke="#7a4208" stroke-width="1"/>
+          <line x1="500" y1="262" x2="506" y2="262" stroke="#155f44" stroke-width="1"/>
+          <line x1="506" y1="262" x2="506" y2="336" stroke="#155f44" stroke-width="1"/>
+          <line x1="506" y1="336" x2="500" y2="336" stroke="#155f44" stroke-width="1"/>
+        </svg>
+      </div>
+
+      <h3>X.509 v3 証明書の主要フィールド詳細</h3>
+      <table class="cert-table">
+        <thead>
+          <tr><th>フィールド</th><th>日本語名</th><th>内容・注意点</th><th>試験重要度</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Version</td>
+            <td>バージョン</td>
+            <td>v3が現在の標準。拡張フィールド（Extensions）はv3のみ使用可能。</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td>SerialNumber</td>
+            <td>シリアル番号</td>
+            <td>同一CA内で一意の識別番号。CRL照合時に使用（「シリアル番号○○番は失効済み」）。</td>
+            <td><span class="imp">重要</span></td>
+          </tr>
+          <tr>
+            <td>Issuer</td>
+            <td>発行者</td>
+            <td>証明書を発行したCAの識別名（DN）。C=JP, O=○○CA, CN=○○ Root CA など。</td>
+            <td><span class="imp">重要</span></td>
+          </tr>
+          <tr>
+            <td>Validity（NotBefore / NotAfter）</td>
+            <td>有効期限</td>
+            <td>証明書の有効開始日時〜終了日時。現在時刻がこの範囲外なら無効。</td>
+            <td><span class="imp">最重要</span></td>
+          </tr>
+          <tr>
+            <td>Subject</td>
+            <td>サブジェクト</td>
+            <td>証明書の所有者の識別名。CN（Common Name）にドメイン名や氏名が入る。</td>
+            <td><span class="imp">最重要</span></td>
+          </tr>
+          <tr>
+            <td>SubjectPublicKeyInfo</td>
+            <td>被証明者公開鍵情報</td>
+            <td>証明書の主役。公開鍵アルゴリズム（RSA/ECDSA等）と公開鍵値が含まれる。</td>
+            <td><span class="imp">最重要</span></td>
+          </tr>
+          <tr>
+            <td>Extensions: BasicConstraints</td>
+            <td>基本制約拡張</td>
+            <td>cA=TRUE ならCA証明書、FALSE ならエンドエンティティ証明書。PathLenConstraintで中間CAの深さを制限。</td>
+            <td><span class="imp">重要</span></td>
+          </tr>
+          <tr>
+            <td>Extensions: KeyUsage</td>
+            <td>鍵用途拡張</td>
+            <td>digitalSignature, keyEncipherment, keyCertSign など。証明書の使途を制限する。</td>
+            <td><span class="imp">重要</span></td>
+          </tr>
+          <tr>
+            <td>Extensions: SubjectAltName (SAN)</td>
+            <td>サブジェクト代替名</td>
+            <td>対応するドメイン名・メールアドレスのリスト。現在のHTTPS証明書では必須。ワイルドカード（*.example.com）も記載可。</td>
+            <td><span class="imp">重要</span></td>
+          </tr>
+          <tr>
+            <td>Extensions: CRLDistributionPoints</td>
+            <td>CRL配布点</td>
+            <td>CRLの取得先URL。失効確認の際にこのURLからCRLをダウンロードする。</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td>Extensions: AuthorityInfoAccess (AIA)</td>
+            <td>発行者情報アクセス</td>
+            <td>OCSPレスポンダのURL、発行者証明書の取得URLが含まれる。</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td>Signature</td>
+            <td>CAのデジタル署名</td>
+            <td>TBSCertificateのハッシュ値をCAの秘密鍵で署名した値。改ざん防止の要。</td>
+            <td><span class="imp">最重要</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>証明書の種類（DV / OV / EV）</h3>
+      <table class="cmp-table">
+        <thead>
+          <tr>
+            <th>比較項目</th>
+            <th>DV証明書（ドメイン検証）</th>
+            <th>OV証明書（組織検証）</th>
+            <th>EV証明書（拡張検証）</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>検証内容</td><td>ドメイン所有のみ</td><td>ドメイン＋組織の実在</td><td class="cmp-good">ドメイン＋組織＋厳格な実態確認</td></tr>
+          <tr><td>発行スピード</td><td class="cmp-good">数分〜数時間</td><td class="cmp-mid">数日</td><td class="cmp-bad">数週間</td></tr>
+          <tr><td>コスト</td><td class="cmp-good">無料〜低額（Let's Encrypt等）</td><td class="cmp-mid">中程度</td><td class="cmp-bad">高額</td></tr>
+          <tr><td>信頼性</td><td class="cmp-bad">低（組織実在不明）</td><td class="cmp-mid">中</td><td class="cmp-good">高（組織情報が証明書に記載）</td></tr>
+          <tr><td>用途例</td><td>個人ブログ・テスト環境</td><td>一般企業サイト</td><td>金融機関・官公庁</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ── 03 PKCS ── -->
+    <section class="section" id="s3">
+      <div class="section-header">
+        <span class="s-num">03</span>
+        <h2>PKCS — 公開鍵暗号標準フォーマット群</h2>
+      </div>
+
+      <p>PKCS（Public Key Cryptography Standards）は RSA Security（現在はRSA Laboratoriesが主導）が策定した公開鍵暗号に関する標準規格群です。証明書・鍵・署名・暗号化データのファイル形式を定義します。</p>
+
+      <div class="note info">
+        <div class="note-i">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1570b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>
+          </svg>
+        </div>
+        <p><strong>たとえ話：書類の「書式規定集」。</strong> 役所に提出する書類は「A4、横書き、上余白3cm…」という書式が決まっています。PKCSは暗号関連データを「どの形式・ファイルで表すか」を定めた書式規定集です。証明書は.crt/.pem、秘密鍵はPKCS#8、署名済みデータはPKCS#7など、用途別にフォーマットが存在します。</p>
+      </div>
+
+      <table class="req-table">
+        <thead>
+          <tr><th>規格名</th><th>内容・用途</th><th>代表的なファイル拡張子</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>PKCS#1</td>
+            <td>RSA暗号の基本仕様。公開鍵・秘密鍵・署名・暗号化のパディング方式（RSASSA-PKCS1-v1_5, OAEP等）を定義。</td>
+            <td>.pem（-----BEGIN RSA PRIVATE KEY-----）</td>
+          </tr>
+          <tr>
+            <td>PKCS#7（CMS）</td>
+            <td>暗号化メッセージ構文。デジタル署名付きデータ・暗号化データのコンテナ形式。S/MIMEで使用。RFC 5652（CMS）として標準化。</td>
+            <td>.p7b / .p7c / .p7s</td>
+          </tr>
+          <tr>
+            <td>PKCS#8</td>
+            <td>秘密鍵の格納形式。PKCS#1より汎用的で RSA 以外の鍵も格納可能。暗号化可能（EncryptedPrivateKeyInfo）。</td>
+            <td>.pem（-----BEGIN PRIVATE KEY-----）/ .key</td>
+          </tr>
+          <tr>
+            <td>PKCS#10（CSR）</td>
+            <td>証明書署名要求（CSR）の形式。申請者が公開鍵・識別名・自己署名を含む申請書をCAに提出する際に使用。</td>
+            <td>.csr / .pem（-----BEGIN CERTIFICATE REQUEST-----）</td>
+          </tr>
+          <tr>
+            <td>PKCS#11</td>
+            <td>暗号トークン（ICカード・HSM等）へのAPIインタフェース定義。ハードウェア上の鍵を操作するプログラムが使用。</td>
+            <td>（APIライブラリ .dll/.so）</td>
+          </tr>
+          <tr>
+            <td>PKCS#12</td>
+            <td>証明書＋秘密鍵をパスワードで暗号化してひとまとめに保管するコンテナ形式。ブラウザへの証明書インポートなどに使用。</td>
+            <td>.pfx / .p12</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="note warn">
+        <div class="note-i">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#b5821e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17" stroke-width="2.5"/>
+          </svg>
+        </div>
+        <p><strong>試験頻出：</strong>PKCS#10はCSR（証明書署名要求）の形式。PKCS#12は証明書と秘密鍵をセットで扱うコンテナ。この2つは特に混同しやすいので注意。「証明書を申請する」→ PKCS#10、「証明書と秘密鍵をまとめて移行する」→ PKCS#12 と覚える。</p>
+      </div>
+    </section>
+
+    <!-- ── 04 構成要素 ── -->
+    <section class="section" id="s4">
+      <div class="section-header">
+        <span class="s-num">04</span>
+        <h2>PKIの構成要素 — CA / RA / IA の役割</h2>
+      </div>
+
+      <p>PKIは複数の機能的役割（エンティティ）から構成されます。「全部CAがやる」のではなく、証明書ポリシーの策定・本人確認・発行・失効管理が分担されます。</p>
+
+      <div class="note info">
+        <div class="note-i">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1570b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>
+          </svg>
+        </div>
+        <p><strong>たとえ話：パスポート発行機関のしくみ。</strong> パスポートを作る際、①外務省がポリシーを決め（ルールCA相当）、②市区町村窓口で本人確認を行い（RA相当）、③実際のパスポート印刷・発行は委託業者（IA相当）が行います。PKIも全く同じ権限分散の考え方で設計されています。</p>
+      </div>
+
+      <div class="threat-grid">
+        <div class="threat-card">
+          <div class="tc-head">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              <polyline points="9 12 11 14 15 10"/>
+            </svg>
+            <span>CA（認証局）Certification Authority</span>
+          </div>
+          <div class="tc-body">
+            <p>PKIの中核。デジタル証明書に自らの秘密鍵で署名し、発行・失効・失効情報公開を行う。<strong>ルートCA</strong>は自己署名証明書を持ち、信頼チェーンの起点となる。<strong>中間CA（SubCA）</strong>はルートCAから発行された証明書を持ち、エンドエンティティ向け証明書を発行する。</p>
+            <p class="tc-counter">保有するもの：秘密鍵（HSMで厳重管理）、ルート/中間証明書、CRL発行能力</p>
+          </div>
+        </div>
+        <div class="threat-card">
+          <div class="tc-head">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+            <span>RA（登録局）Registration Authority</span>
+          </div>
+          <div class="tc-body">
+            <p>申請者の<strong>本人確認・身元審査</strong>を担う機関。CSRを受け付け、申請者が証明書に記載される情報の持ち主であることを確認する。審査OKなら発行指示をCA（またはIA）に送る。CAと分離することで証明書ポリシーの厳格化と業務効率化を両立。</p>
+            <p class="tc-counter">役割：申請受付・本人確認・審査・発行承認・失効申請受付</p>
+          </div>
+        </div>
+        <div class="threat-card">
+          <div class="tc-head warn-head">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="3" width="20" height="14" rx="2"/>
+              <line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+            </svg>
+            <span>IA（発行局）Issuing Authority</span>
+          </div>
+          <div class="tc-body">
+            <p>RAの承認を受けてデジタル証明書の<strong>物理的な生成・発行</strong>を行う機関。CAとIAは同一組織が担うこともあるが、大規模な PKI では CAがポリシー決定・署名に専念し、IAが実際の発行業務を担当する形で分離される。</p>
+            <p class="tc-counter">役割：証明書の生成・署名（CAの鍵を使って）・配布・保存</p>
+          </div>
+        </div>
+        <div class="threat-card">
+          <div class="tc-head warn-head">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+            </svg>
+            <span>OCSP レスポンダ（失効確認サービス）</span>
+          </div>
+          <div class="tc-body">
+            <p>証明書の失効状態をリアルタイムに返答するオンラインサービス。クライアントが「このシリアル番号の証明書は有効か？」と問い合わせると、good/revoked/unknown で応答する。</p>
+            <p class="tc-counter">返答状態：good（有効）/ revoked（失効）/ unknown（不明）</p>
+          </div>
+        </div>
+      </div>
+
+      <h3>PKIエンティティの関係図</h3>
+      <div class="seq-wrap" style="padding:20px 18px;">
+        <p class="seq-cap">図 3 — PKI 構成要素の関係と役割</p>
+
+        <style>
+          /* ── PKI diagram ── */
+          .pki-diagram { font-family: var(--sans); min-width: 640px; }
+
+          /* ノード共通 */
+          .pki-node {
+            border-radius: 8px;
+            padding: 12px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+          }
+          .pki-node-icon { flex-shrink: 0; }
+          .pki-node-title {
+            font-size: 13px;
+            font-weight: 700;
+            line-height: 1.3;
+          }
+          .pki-node-sub {
+            font-size: 9.5px;
+            line-height: 1.5;
+            opacity: .75;
+          }
+          .pki-node-sub2 {
+            font-size: 8.5px;
+            opacity: .5;
+            font-family: var(--mono);
+          }
+
+          /* 矢印セル */
+          .pki-arrow-v {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0;
+          }
+          .pki-arrow-v .arr-line {
+            width: 2px;
+            flex: 1;
+            min-height: 12px;
+            background: currentColor;
+          }
+          .pki-arrow-v .arr-head {
+            width: 0; height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 8px solid currentColor;
+            flex-shrink: 0;
+          }
+          .pki-arrow-v .arr-label {
+            font-size: 9px;
+            white-space: nowrap;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: 600;
+            margin: 2px 0;
+          }
+
+          .pki-arrow-h {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            width: 100%;
+          }
+          .pki-arrow-h .arr-line-h {
+            flex: 1;
+            height: 2px;
+            background: currentColor;
+          }
+          .pki-arrow-h .arr-head-r {
+            width: 0; height: 0;
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+            border-left: 8px solid currentColor;
+            flex-shrink: 0;
+          }
+          .pki-arrow-h .arr-head-l {
+            width: 0; height: 0;
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+            border-right: 8px solid currentColor;
+            flex-shrink: 0;
+          }
+        </style>
+
+        <div class="pki-diagram">
+
+          <!-- ════════════════════════════════════════
+               ROW 1: ルートCA（中央）
+          ════════════════════════════════════════ -->
+          <div style="display:flex; justify-content:center; margin-bottom:0;">
+            <div class="pki-node" style="background:#141824; color:white; border:2px solid #1570b8; width:260px;">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <!-- 王冠アイコン -->
+                <svg width="36" height="36" viewBox="0 0 36 36" style="flex-shrink:0;">
+                  <circle cx="18" cy="18" r="16" fill="#1570b8" opacity="0.2"/>
+                  <!-- crown -->
+                  <path d="M8 24 L8 16 L12 20 L18 12 L24 20 L28 16 L28 24 Z"
+                        fill="none" stroke="#6ab4f5" stroke-width="1.8"
+                        stroke-linejoin="round" stroke-linecap="round"/>
+                  <rect x="8" y="24" width="20" height="4" rx="1"
+                        fill="#6ab4f5" opacity="0.8"/>
+                </svg>
+                <div>
+                  <div class="pki-node-title">ルートCA</div>
+                  <div class="pki-node-sub">自己署名 / 信頼チェーン起点</div>
+                  <div class="pki-node-sub2">オフライン保管推奨</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ════════════════════════════════════════
+               ROW 2: 垂直矢印（ルートCA → 中間CA）
+          ════════════════════════════════════════ -->
+          <div style="display:flex; justify-content:center;">
+            <div style="width:260px; display:flex; justify-content:center;">
+              <div class="pki-arrow-v" style="color:#1570b8; height:44px;">
+                <div class="arr-label" style="background:#e8f3fd; color:#0b4a82;">証明書発行</div>
+                <div class="arr-line"></div>
+                <div class="arr-head"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ════════════════════════════════════════
+               ROW 3: 中間CA（中央）
+          ════════════════════════════════════════ -->
+          <div style="display:flex; justify-content:center; margin-bottom:0;">
+            <div class="pki-node" style="background:#1e2d4a; color:white; border:2px solid #1570b8; width:340px;">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <!-- 二重盾アイコン -->
+                <svg width="36" height="36" viewBox="0 0 36 36" style="flex-shrink:0;">
+                  <circle cx="18" cy="18" r="16" fill="#1570b8" opacity="0.15"/>
+                  <path d="M6 10 L18 6 L30 10 L30 20 Q30 28 18 32 Q6 28 6 20 Z"
+                        fill="none" stroke="#6ab4f5" stroke-width="1.5" opacity="0.6"/>
+                  <path d="M10 12 L18 9 L26 12 L26 20 Q26 26 18 29 Q10 26 10 20 Z"
+                        fill="none" stroke="#6ab4f5" stroke-width="1.5" opacity="0.9"/>
+                  <path d="M14 18 L17 21 L23 15" fill="none" stroke="#6ab4f5"
+                        stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <div>
+                  <div class="pki-node-title">中間CA（SubCA）</div>
+                  <div class="pki-node-sub">ルートCAから証明書を受領 / エンド証明書の発行</div>
+                  <div class="pki-node-sub2">BasicConstraints: cA=TRUE</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ════════════════════════════════════════
+               ROW 4: 中間CAからの2本の矢印
+               左側：発行指示→IA  右側：審査依頼→RA
+          ════════════════════════════════════════ -->
+          <div style="display:flex; justify-content:center;">
+            <div style="width:340px; display:flex; justify-content:space-between; padding:0 30px;">
+              <!-- 左：発行指示 -->
+              <div style="display:flex; flex-direction:column; align-items:center; gap:2px;">
+                <div class="arr-label" style="background:#fdf5e6; color:#7a4208; font-size:9px; padding:2px 6px; border-radius:3px; font-weight:600; white-space:nowrap;">発行指示</div>
+                <div style="display:flex; flex-direction:column; align-items:center; flex:1;">
+                  <div style="width:2px; height:28px; background:#b5821e;"></div>
+                  <div style="width:0; height:0; border-left:5px solid transparent; border-right:5px solid transparent; border-top:8px solid #b5821e;"></div>
+                </div>
+              </div>
+              <!-- 右：審査依頼 -->
+              <div style="display:flex; flex-direction:column; align-items:center; gap:2px;">
+                <div class="arr-label" style="background:#eaf7f1; color:#155f44; font-size:9px; padding:2px 6px; border-radius:3px; font-weight:600; white-space:nowrap;">審査依頼</div>
+                <div style="display:flex; flex-direction:column; align-items:center; flex:1;">
+                  <div style="width:2px; height:28px; background:#155f44;"></div>
+                  <div style="width:0; height:0; border-left:5px solid transparent; border-right:5px solid transparent; border-top:8px solid #155f44;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ════════════════════════════════════════
+               ROW 5: OCSP ← IA → RA の横並び
+          ════════════════════════════════════════ -->
+          <div style="display:flex; justify-content:center; gap:0; align-items:stretch;">
+
+            <!-- OCSP -->
+            <div class="pki-node" style="background:#3d1060; color:white; border:2px solid #c8aaee; width:168px; flex-shrink:0;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <!-- レーダー波紋 -->
+                <svg width="34" height="34" viewBox="0 0 34 34" style="flex-shrink:0;">
+                  <circle cx="17" cy="17" r="15" fill="#c8aaee" opacity="0.1"/>
+                  <circle cx="17" cy="17" r="11" fill="none" stroke="#c8aaee" stroke-width="1" opacity="0.4"/>
+                  <circle cx="17" cy="17" r="7"  fill="none" stroke="#c8aaee" stroke-width="1.2" opacity="0.6"/>
+                  <circle cx="17" cy="17" r="3.5" fill="#c8aaee" opacity="0.9"/>
+                  <line x1="17" y1="2"  x2="17" y2="6"  stroke="#c8aaee" stroke-width="1.2" stroke-linecap="round" opacity="0.5"/>
+                  <line x1="17" y1="28" x2="17" y2="32" stroke="#c8aaee" stroke-width="1.2" stroke-linecap="round" opacity="0.5"/>
+                  <line x1="2"  y1="17" x2="6"  y2="17" stroke="#c8aaee" stroke-width="1.2" stroke-linecap="round" opacity="0.5"/>
+                  <line x1="28" y1="17" x2="32" y2="17" stroke="#c8aaee" stroke-width="1.2" stroke-linecap="round" opacity="0.5"/>
+                </svg>
+                <div>
+                  <div class="pki-node-title" style="font-size:11.5px;">OCSPレスポンダ</div>
+                  <div class="pki-node-sub" style="font-size:8.5px;">失効状態の<br>リアルタイム応答</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 失効情報提供 矢印（IA→OCSP 水平・左向き） -->
+            <div style="display:flex; flex-direction:column; justify-content:center; width:56px; flex-shrink:0;">
+              <div style="font-size:8.5px; color:#7a1818; text-align:center; font-weight:600; background:#fdf0f0; border-radius:3px; padding:2px 3px; margin-bottom:4px; white-space:nowrap;">失効情報提供</div>
+              <div style="display:flex; align-items:center;">
+                <div style="width:0; height:0; border-top:5px solid transparent; border-bottom:5px solid transparent; border-right:8px solid #7a1818; flex-shrink:0;"></div>
+                <div style="flex:1; height:2px; background:#7a1818;"></div>
+              </div>
+            </div>
+
+            <!-- IA -->
+            <div class="pki-node" style="background:#3a3200; color:white; border:2px solid #c8981e; width:148px; flex-shrink:0;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <!-- スタンプアイコン -->
+                <svg width="34" height="34" viewBox="0 0 34 34" style="flex-shrink:0;">
+                  <circle cx="17" cy="17" r="15" fill="#c8981e" opacity="0.15"/>
+                  <rect x="8"  y="8"  width="14" height="12" rx="2" fill="none" stroke="#f0c060" stroke-width="1.3"/>
+                  <line x1="11" y1="13" x2="19" y2="13" stroke="#f0c060" stroke-width="1"/>
+                  <line x1="11" y1="16" x2="17" y2="16" stroke="#f0c060" stroke-width="1"/>
+                  <rect x="6"  y="22" width="18" height="5" rx="1.5" fill="#f0c060" opacity="0.85"/>
+                  <rect x="11" y="27" width="8"  height="4" rx="1"   fill="#f0c060" opacity="0.6"/>
+                </svg>
+                <div>
+                  <div class="pki-node-title" style="font-size:11.5px;">IA（発行局）</div>
+                  <div class="pki-node-sub" style="font-size:8.5px;">証明書の生成・<br>署名・配布</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 審査依頼 矢印（IA→RA 水平・右向き） -->
+            <div style="display:flex; flex-direction:column; justify-content:center; width:56px; flex-shrink:0;">
+              <div style="font-size:8.5px; color:#155f44; text-align:center; font-weight:600; background:#eaf7f1; border-radius:3px; padding:2px 3px; margin-bottom:4px; white-space:nowrap;">（審査→発行）</div>
+              <div style="display:flex; align-items:center;">
+                <div style="flex:1; height:2px; background:#155f44;"></div>
+                <div style="width:0; height:0; border-top:5px solid transparent; border-bottom:5px solid transparent; border-left:8px solid #155f44; flex-shrink:0;"></div>
+              </div>
+            </div>
+
+            <!-- RA -->
+            <div class="pki-node" style="background:#155f44; color:white; border:2px solid #60c090; width:148px; flex-shrink:0;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <!-- 人物＋チェック -->
+                <svg width="34" height="34" viewBox="0 0 34 34" style="flex-shrink:0;">
+                  <circle cx="17" cy="17" r="15" fill="#60c090" opacity="0.15"/>
+                  <circle cx="14" cy="12" r="5"  fill="none" stroke="#9de8c0" stroke-width="1.4"/>
+                  <path d="M5 28 Q5 20 14 20 Q23 20 23 28"
+                        fill="none" stroke="#9de8c0" stroke-width="1.4" stroke-linecap="round"/>
+                  <circle cx="25" cy="12" r="6"  fill="#9de8c0" opacity="0.9"/>
+                  <path d="M21.5 12 L24 14.5 L29 9"
+                        fill="none" stroke="#155f44" stroke-width="1.8"
+                        stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <div>
+                  <div class="pki-node-title" style="font-size:11.5px;">RA（登録局）</div>
+                  <div class="pki-node-sub" style="font-size:8.5px;">本人確認・<br>申請受付・審査</div>
+                </div>
+              </div>
+            </div>
+
+          </div><!-- end row5 -->
+
+          <!-- ════════════════════════════════════════
+               ROW 6: OCSP下の矢印 ＋ RA下の矢印
+          ════════════════════════════════════════ -->
+          <div style="display:flex; justify-content:center; gap:0;">
+
+            <!-- OCSP下（失効確認応答↑ / 問合せ↓） -->
+            <div style="width:168px; flex-shrink:0; display:flex; justify-content:center;">
+              <div style="display:flex; flex-direction:column; align-items:center; gap:2px; padding:4px 0;">
+                <div style="width:2px; height:28px; background:#7a1818;"></div>
+                <div style="width:0; height:0; border-left:5px solid transparent; border-right:5px solid transparent; border-top:8px solid #7a1818;"></div>
+                <div style="background:#fdf0f0; color:#7a1818; font-size:8.5px; padding:2px 6px; border-radius:3px; font-weight:600; white-space:nowrap; margin-top:3px;">失効確認問合せ</div>
+              </div>
+            </div>
+
+            <!-- IA下：スペーサー -->
+            <div style="width:56px; flex-shrink:0;"></div>
+            <div style="width:148px; flex-shrink:0;"></div>
+            <div style="width:56px; flex-shrink:0;"></div>
+
+            <!-- RA下（CSR送付↑） -->
+            <div style="width:148px; flex-shrink:0; display:flex; justify-content:center;">
+              <div style="display:flex; flex-direction:column; align-items:center; gap:2px; padding:4px 0;">
+                <div style="width:2px; height:28px; background:#155f44;"></div>
+                <div style="width:0; height:0; border-left:5px solid transparent; border-right:5px solid transparent; border-top:8px solid #155f44;"></div>
+                <div style="background:#eaf7f1; color:#155f44; font-size:8.5px; padding:2px 6px; border-radius:3px; font-weight:600; white-space:nowrap; margin-top:3px;">CSR 送付</div>
+              </div>
+            </div>
+
+          </div><!-- end row6 -->
+
+          <!-- ════════════════════════════════════════
+               ROW 7: 証明書利用者 ＋ 申請者（下段）
+          ════════════════════════════════════════ -->
+          <div style="display:flex; justify-content:center; gap:0;">
+
+            <!-- 証明書利用者 -->
+            <div class="pki-node" style="background:#f3f6fb; border:1.5px solid #b0bdd0; width:168px; flex-shrink:0;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <svg width="34" height="34" viewBox="0 0 34 34" style="flex-shrink:0;">
+                  <circle cx="17" cy="17" r="15" fill="#0b4a82" opacity="0.08"/>
+                  <circle cx="13" cy="11" r="5" fill="none" stroke="#6a7a9a" stroke-width="1.4"/>
+                  <path d="M4 27 Q4 19 13 19 Q22 19 22 27"
+                        fill="none" stroke="#6a7a9a" stroke-width="1.4" stroke-linecap="round"/>
+                  <!-- cert mini -->
+                  <rect x="22" y="10" width="9" height="12" rx="2" fill="#d8eaff" stroke="#0b4a82" stroke-width="0.8"/>
+                  <rect x="22" y="10" width="9" height="4"  rx="2" fill="#0b4a82"/>
+                  <circle cx="29" cy="23" r="4" fill="#0b4a82" stroke="white" stroke-width="1"/>
+                  <path d="M27 23 L28.5 24.5 L32 21"
+                        fill="none" stroke="white" stroke-width="1"
+                        stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <div>
+                  <div class="pki-node-title" style="font-size:11px; color:#2a3a5a;">証明書利用者</div>
+                  <div class="pki-node-sub" style="color:#6a7a9a; font-size:8.5px;">証明書の正当性を検証</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- スペーサー（IAの幅 56+148+56） -->
+            <div style="width:260px; flex-shrink:0;"></div>
+
+            <!-- 申請者 -->
+            <div class="pki-node" style="background:#f3f6fb; border:1.5px solid #b0bdd0; width:148px; flex-shrink:0;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <svg width="34" height="34" viewBox="0 0 34 34" style="flex-shrink:0;">
+                  <circle cx="17" cy="17" r="15" fill="#b5821e" opacity="0.1"/>
+                  <circle cx="13" cy="11" r="5" fill="none" stroke="#6a7a9a" stroke-width="1.4"/>
+                  <path d="M4 27 Q4 19 13 19 Q22 19 22 27"
+                        fill="none" stroke="#6a7a9a" stroke-width="1.4" stroke-linecap="round"/>
+                  <!-- CSR mini -->
+                  <rect x="22" y="14" width="9" height="8" rx="2" fill="#fdf5e6" stroke="#b5821e" stroke-width="0.8"/>
+                  <path d="M22 17 L26.5 20 L31 17" fill="none" stroke="#b5821e" stroke-width="0.7"/>
+                  <polygon points="23,12 26.5,8 30,12" fill="#b5821e"/>
+                </svg>
+                <div>
+                  <div class="pki-node-title" style="font-size:11px; color:#2a3a5a;">申請者</div>
+                  <div class="pki-node-sub" style="color:#6a7a9a; font-size:8.5px;">CSRを作成・提出</div>
+                </div>
+              </div>
+            </div>
+
+          </div><!-- end row7 -->
+
+        </div><!-- end pki-diagram -->
+      </div>
+
+      <h3>CSR（証明書署名要求）とは</h3>
+      <p>CSR（Certificate Signing Request, PKCS#10形式）は、証明書の申請者が「私はこういう者です。この公開鍵に署名してください」とCAに提出する申請書です。</p>
+
+      <div class="steps">
+        <div class="step hi"><span class="sn">内容</span><div class="sb"><strong>Subject（識別名）：</strong>CN=example.com, O=Example Corp, C=JP など。<br><strong>SubjectPublicKeyInfo：</strong>申請者が生成した公開鍵。<br><strong>自己署名（Signature）：</strong>申請者の秘密鍵による署名（申請者が秘密鍵を保有することの証明）。</div></div>
+        <div class="step hi"><span class="sn">目的</span><div class="sb">CSRには<strong>秘密鍵が含まれない</strong>。公開鍵と申請情報のみを安全にCAへ送付できる。CAはCSRの自己署名を検証してから証明書を発行する。</div></div>
+        <div class="step wn"><span class="sn" style="background:var(--warn)">注意</span><div class="sb">CSRを提出した後も<strong>申請者は秘密鍵を厳重に保管</strong>し続ける必要がある。秘密鍵がCAに渡ることはない（渡してはならない）。</div></div>
+      </div>
+    </section>
+
+    <!-- ── 05 発行・検証フロー図解 ── -->
+    <section class="section" id="s5">
+      <div class="section-header">
+        <span class="s-num">05</span>
+        <h2>証明書発行・検証フロー図解</h2>
+      </div>
+      <p>PKIに登場する各要素を<strong>見た目で区別できる固定アイコン</strong>で統一します。ペアとなる公開鍵・秘密鍵は<strong>同じシルエット（形）</strong>で色が異なります。CAの鍵ペアは申請者のペアとシルエット自体が違います。</p>
+
+      <h3>アイコン凡例（フロー共通）</h3>
+      <div style="background:#fff;border:1px solid var(--line);border-radius:10px;padding:20px 22px;margin:14px 0 28px;">
+        <p style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;border-bottom:1px solid var(--line);padding-bottom:8px;">シルエットの形 = 所有者・役割 ／ 暖色 = 秘密鍵 ／ 寒色 = 公開鍵</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px 18px;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <svg width="44" height="44" viewBox="0 0 44 44"><rect x="8" y="20" width="28" height="20" rx="4" fill="#fdf0dc" stroke="#b5821e" stroke-width="1.8"/><path d="M15 20V14a7 7 0 0 1 14 0v6" fill="none" stroke="#b5821e" stroke-width="1.8" stroke-linecap="round"/><circle cx="22" cy="28" r="4" fill="#b5821e"/><line x1="22" y1="32" x2="22" y2="36" stroke="#b5821e" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <div><div style="font-size:12px;font-weight:700;color:#7a4208;">申請者の秘密鍵</div><div style="font-size:11px;color:#5a3200;">南京錠・閉（暖色）/ 端末内のみ</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <svg width="44" height="44" viewBox="0 0 44 44"><rect x="8" y="20" width="28" height="20" rx="4" fill="#e8f3fd" stroke="#1570b8" stroke-width="1.8"/><path d="M15 20V14a7 7 0 0 1 14 0" fill="none" stroke="#1570b8" stroke-width="1.8" stroke-linecap="round"/><line x1="29" y1="14" x2="36" y2="14" stroke="#1570b8" stroke-width="1.8" stroke-linecap="round"/><circle cx="22" cy="28" r="4" fill="#1570b8"/><line x1="22" y1="32" x2="22" y2="36" stroke="#1570b8" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <div><div style="font-size:12px;font-weight:700;color:#0b4a82;">申請者の公開鍵</div><div style="font-size:11px;color:#1a3a5c;">南京錠・開（寒色）/ 配布可</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <svg width="44" height="44" viewBox="0 0 44 44"><polygon points="22,2 40,12 40,32 22,42 4,32 4,12" fill="#fdf0f0" stroke="#7a1818" stroke-width="1.8"/><polygon points="22,9 34,16 34,28 22,35 10,28 10,16" fill="none" stroke="#7a1818" stroke-width="1" opacity="0.4"/><text x="22" y="24" text-anchor="middle" font-family="monospace" font-size="7" fill="#7a1818" font-weight="700">CA</text><text x="22" y="33" text-anchor="middle" font-family="monospace" font-size="6" fill="#7a1818">秘密鍵</text></svg>
+            <div><div style="font-size:12px;font-weight:700;color:#7a1818;">CAの秘密鍵</div><div style="font-size:11px;color:#5a0000;">六角盾（暖色）/ HSM内のみ</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <svg width="44" height="44" viewBox="0 0 44 44"><polygon points="22,2 40,12 40,32 22,42 4,32 4,12" fill="#eaf7f1" stroke="#155f44" stroke-width="1.8"/><polygon points="22,9 34,16 34,28 22,35 10,28 10,16" fill="none" stroke="#155f44" stroke-width="1" opacity="0.4"/><text x="22" y="24" text-anchor="middle" font-family="monospace" font-size="7" fill="#155f44" font-weight="700">CA</text><text x="22" y="33" text-anchor="middle" font-family="monospace" font-size="6" fill="#155f44">公開鍵</text></svg>
+            <div><div style="font-size:12px;font-weight:700;color:#155f44;">CAの公開鍵</div><div style="font-size:11px;color:#0d3d28;">六角盾（寒色）/ トラストストア</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <svg width="44" height="44" viewBox="0 0 44 44"><rect x="4" y="4" width="36" height="36" rx="6" fill="#f5eeff" stroke="#5a1a6e" stroke-width="1.5"/><path d="M27 10L33 16L19 30L11 32L13 24Z" fill="#5a1a6e" opacity="0.2" stroke="#5a1a6e" stroke-width="1.2" stroke-linejoin="round"/><line x1="25" y1="12" x2="31" y2="18" stroke="#5a1a6e" stroke-width="1.2"/><path d="M10 38Q14 32 18 36Q22 40 26 34Q30 28 34 32" fill="none" stroke="#5a1a6e" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <div><div style="font-size:12px;font-weight:700;color:#5a1a6e;">デジタル署名</div><div style="font-size:11px;color:#3a006e;">ペン＋波形 / 秘密鍵で生成</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <svg width="44" height="44" viewBox="0 0 44 44"><rect x="4" y="3" width="26" height="32" rx="4" fill="#d8eaff" stroke="#0b4a82" stroke-width="1.5"/><rect x="4" y="3" width="26" height="10" rx="4" fill="#0b4a82"/><rect x="4" y="9" width="26" height="4" fill="#0b4a82"/><line x1="9" y1="20" x2="26" y2="20" stroke="#0b4a82" stroke-width="1.2"/><line x1="9" y1="26" x2="22" y2="26" stroke="#0b4a82" stroke-width="1.2"/><circle cx="34" cy="34" r="8" fill="#0b4a82" stroke="white" stroke-width="2"/><path d="M29 34L32.5 37.5L40 30" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div><div style="font-size:12px;font-weight:700;color:#0b4a82;">デジタル証明書</div><div style="font-size:11px;color:#1a3a5c;">文書＋認証メダル / 公開鍵＋CA署名</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <svg width="44" height="44" viewBox="0 0 44 44"><rect x="4" y="14" width="36" height="26" rx="4" fill="#fdf5e6" stroke="#b5821e" stroke-width="1.5"/><path d="M4 19L22 29L40 19" fill="none" stroke="#b5821e" stroke-width="1.5" stroke-linejoin="round"/><polygon points="16,9 22,1 28,9" fill="#b5821e"/></svg>
+            <div><div style="font-size:12px;font-weight:700;color:#7a4208;">CSR</div><div style="font-size:11px;color:#5a3200;">封筒＋上矢印 / CAへの申請書</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <svg width="44" height="44" viewBox="0 0 44 44"><rect x="6" y="5" width="32" height="34" rx="4" fill="#e4eaf5" stroke="#1e2d4a" stroke-width="1.5"/><rect x="6" y="5" width="32" height="12" rx="4" fill="#1e2d4a"/><rect x="6" y="13" width="32" height="4" fill="#1e2d4a"/><rect x="10" y="23" width="14" height="7" rx="2" fill="none" stroke="#1e2d4a" stroke-width="1"/><circle cx="32" cy="27" r="4" fill="none" stroke="#1e2d4a" stroke-width="1.2"/><circle cx="32" cy="27" r="1.5" fill="#1e2d4a"/><text x="22" y="12" text-anchor="middle" font-family="monospace" font-size="6.5" fill="white" font-weight="700">HSM</text></svg>
+            <div><div style="font-size:12px;font-weight:700;color:#1e2d4a;">HSM</div><div style="font-size:11px;color:#3a3d52;">サーバラック / CA秘密鍵の保管庫</div></div>
+          </div>
+        </div>
+      </div>
+
+      <h3>フロー1 — デジタル証明書の発行プロセス</h3>
+      <div class="seq-wrap" style="padding:20px 18px;">
+        <p class="seq-cap">鍵の生成・CSR作成・RA審査・CA署名・配布まで</p>
+        <div style="overflow-x:auto;">
+          <div style="min-width:820px;">
+
+            <!-- ヘッダ行 -->
+            <div style="display:grid;grid-template-columns:200px 160px 220px 200px;gap:0;margin-bottom:0;">
+              <div style="background:#141824;color:white;text-align:center;padding:8px 4px;border-radius:6px 0 0 0;"><div style="font-size:11.5px;font-weight:700;">申請者</div><div style="font-size:8px;opacity:.5;font-family:monospace;">APPLICANT</div></div>
+              <div style="background:#155f44;color:white;text-align:center;padding:8px 4px;"><div style="font-size:11.5px;font-weight:700;">RA（登録局）</div><div style="font-size:8px;opacity:.5;font-family:monospace;">REG. AUTHORITY</div></div>
+              <div style="background:#0b4a82;color:white;text-align:center;padding:8px 4px;"><div style="font-size:11.5px;font-weight:700;">CA（認証局）</div><div style="font-size:8px;opacity:.5;font-family:monospace;">CERTIFICATION AUTH.</div></div>
+              <div style="background:#7a4208;color:white;text-align:center;padding:8px 4px;border-radius:0 6px 0 0;"><div style="font-size:11.5px;font-weight:700;">検証者 / 利用者</div><div style="font-size:8px;opacity:.5;font-family:monospace;">RELYING PARTY</div></div>
+            </div>
+
+            <!-- 各ステップ行 -->
+
+            <!-- Row 1: 鍵ペア生成 -->
+            <div style="display:grid;grid-template-columns:200px 160px 220px 200px;border-bottom:1px solid #e4eaf5;">
+              <div style="background:#f8f9fc;border-right:1px solid #e4eaf5;padding:16px 12px;">
+                <div style="font-size:10px;font-weight:700;color:#0b4a82;letter-spacing:.1em;margin-bottom:10px;">① 鍵ペア生成</div>
+                <div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:8px;">
+                  <div>
+                    <svg width="44" height="44" viewBox="0 0 44 44"><rect x="8" y="20" width="28" height="20" rx="4" fill="#fdf0dc" stroke="#b5821e" stroke-width="1.8"/><path d="M15 20V14a7 7 0 0 1 14 0v6" fill="none" stroke="#b5821e" stroke-width="1.8" stroke-linecap="round"/><circle cx="22" cy="28" r="4" fill="#b5821e"/><line x1="22" y1="32" x2="22" y2="36" stroke="#b5821e" stroke-width="1.8" stroke-linecap="round"/></svg>
+                    <div style="font-size:9px;color:#7a4208;text-align:center;margin-top:2px;">秘密鍵</div>
+                  </div>
+                  <div>
+                    <svg width="44" height="44" viewBox="0 0 44 44"><rect x="8" y="20" width="28" height="20" rx="4" fill="#e8f3fd" stroke="#1570b8" stroke-width="1.8"/><path d="M15 20V14a7 7 0 0 1 14 0" fill="none" stroke="#1570b8" stroke-width="1.8" stroke-linecap="round"/><line x1="29" y1="14" x2="36" y2="14" stroke="#1570b8" stroke-width="1.8" stroke-linecap="round"/><circle cx="22" cy="28" r="4" fill="#1570b8"/><line x1="22" y1="32" x2="22" y2="36" stroke="#1570b8" stroke-width="1.8" stroke-linecap="round"/></svg>
+                    <div style="font-size:9px;color:#0b4a82;text-align:center;margin-top:2px;">公開鍵</div>
+                  </div>
+                </div>
+                <div style="font-size:9.5px;color:#3a3d52;">RSA/ECDSAで生成</div>
+              </div>
+              <div style="background:#f1f8f4;border-right:1px solid #e4eaf5;padding:16px 8px;"></div>
+              <div style="background:#f3f7fd;border-right:1px solid #e4eaf5;padding:16px 8px;display:flex;flex-direction:column;justify-content:center;">
+                <!-- CA秘密鍵 HSM -->
+                <div style="background:#e4eaf5;border:1px solid #1e2d4a;border-radius:6px;padding:10px 8px;margin-bottom:6px;">
+                  <div style="font-size:8.5px;font-weight:700;color:#1e2d4a;font-family:monospace;text-align:center;margin-bottom:6px;">HSM</div>
+                  <div style="display:flex;justify-content:center;">
+                    <div>
+                      <svg width="40" height="40" viewBox="0 0 44 44"><polygon points="22,2 40,12 40,32 22,42 4,32 4,12" fill="#fdf0f0" stroke="#7a1818" stroke-width="1.8"/><polygon points="22,9 34,16 34,28 22,35 10,28 10,16" fill="none" stroke="#7a1818" stroke-width="1" opacity="0.4"/><text x="22" y="24" text-anchor="middle" font-family="monospace" font-size="7" fill="#7a1818" font-weight="700">CA</text><text x="22" y="33" text-anchor="middle" font-family="monospace" font-size="6" fill="#7a1818">秘密鍵</text></svg>
+                      <div style="font-size:8px;color:#7a1818;text-align:center;">CA秘密鍵</div>
+                    </div>
+                  </div>
+                  <div style="font-size:8px;color:#1e2d4a;text-align:center;margin-top:4px;">外部に出ない</div>
+                </div>
+              </div>
+              <div style="background:#fdfaf4;padding:16px 8px;display:flex;flex-direction:column;justify-content:center;">
+                <!-- トラストストア -->
+                <div style="background:#eaf7f1;border:1px solid #155f44;border-radius:6px;padding:10px 8px;">
+                  <div style="font-size:8.5px;font-weight:700;color:#1e2d4a;font-family:monospace;text-align:center;margin-bottom:6px;">トラストストア</div>
+                  <div style="display:flex;justify-content:center;">
+                    <div>
+                      <svg width="40" height="40" viewBox="0 0 44 44"><polygon points="22,2 40,12 40,32 22,42 4,32 4,12" fill="#eaf7f1" stroke="#155f44" stroke-width="1.8"/><polygon points="22,9 34,16 34,28 22,35 10,28 10,16" fill="none" stroke="#155f44" stroke-width="1" opacity="0.4"/><text x="22" y="24" text-anchor="middle" font-family="monospace" font-size="7" fill="#155f44" font-weight="700">CA</text><text x="22" y="33" text-anchor="middle" font-family="monospace" font-size="6" fill="#155f44">公開鍵</text></svg>
+                      <div style="font-size:8px;color:#155f44;text-align:center;">CA公開鍵</div>
+                    </div>
+                  </div>
+                  <div style="font-size:8px;color:#155f44;text-align:center;margin-top:4px;">OS/ブラウザが保持</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Row 2: 秘密鍵保管 / CSR作成 -->
+            <div style="display:grid;grid-template-columns:200px 160px 220px 200px;border-bottom:1px solid #e4eaf5;">
+              <div style="background:#f8f9fc;border-right:1px solid #e4eaf5;padding:14px 12px;">
+                <div style="font-size:10px;font-weight:700;color:#0b4a82;letter-spacing:.1em;margin-bottom:10px;">② CSR 作成（PKCS#10）</div>
+                <!-- 秘密鍵保管表示 -->
+                <div style="background:#fdf0dc;border:1px dashed #b5821e;border-radius:4px;padding:6px 8px;margin-bottom:10px;font-size:9px;color:#7a4208;">
+                  <div style="display:flex;align-items:center;gap:6px;">
+                    <svg width="16" height="16" viewBox="0 0 44 44"><rect x="8" y="20" width="28" height="20" rx="4" fill="#fdf0dc" stroke="#b5821e" stroke-width="1.8"/><path d="M15 20V14a7 7 0 0 1 14 0v6" fill="none" stroke="#b5821e" stroke-width="1.8" stroke-linecap="round"/><circle cx="22" cy="28" r="4" fill="#b5821e"/></svg>
+                    <span>秘密鍵 → 端末内に保管（外部不出）</span>
+                  </div>
+                </div>
+                <!-- CSRボックス -->
+                <div style="background:#fdf5e6;border:1.5px solid #b5821e;border-radius:6px;padding:10px;">
+                  <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">
+                    <svg width="28" height="28" viewBox="0 0 44 44"><rect x="4" y="14" width="36" height="26" rx="4" fill="#fdf5e6" stroke="#b5821e" stroke-width="1.5"/><path d="M4 19L22 29L40 19" fill="none" stroke="#b5821e" stroke-width="1.5" stroke-linejoin="round"/><polygon points="16,9 22,1 28,9" fill="#b5821e"/></svg>
+                    <span style="font-size:10px;font-weight:700;color:#7a4208;">CSR（PKCS#10）</span>
+                  </div>
+                  <div style="font-size:9px;color:#5a3200;line-height:1.7;">
+                    <div style="display:flex;align-items:center;gap:4px;">
+                      <svg width="13" height="13" viewBox="0 0 44 44"><rect x="8" y="20" width="28" height="20" rx="4" fill="#e8f3fd" stroke="#1570b8" stroke-width="1.8"/><path d="M15 20V14a7 7 0 0 1 14 0" fill="none" stroke="#1570b8" stroke-width="1.8" stroke-linecap="round"/><line x1="29" y1="14" x2="36" y2="14" stroke="#1570b8" stroke-width="1.8" stroke-linecap="round"/><circle cx="22" cy="28" r="4" fill="#1570b8"/></svg>
+                      公開鍵
+                    </div>
+                    <div>Subject DN（識別名）</div>
+                    <div style="display:flex;align-items:center;gap:4px;">
+                      <svg width="13" height="13" viewBox="0 0 44 44"><rect x="4" y="4" width="36" height="36" rx="6" fill="#f5eeff" stroke="#5a1a6e" stroke-width="1.5"/><path d="M27 10L33 16L19 30L11 32L13 24Z" fill="#5a1a6e" opacity="0.2" stroke="#5a1a6e" stroke-width="1.2" stroke-linejoin="round"/><path d="M10 38Q14 32 18 36Q22 40 26 34" fill="none" stroke="#5a1a6e" stroke-width="1.8" stroke-linecap="round"/></svg>
+                      自己署名（秘密鍵で生成）
+                    </div>
+                    <div style="color:#b5821e;font-size:8.5px;margin-top:4px;">※秘密鍵は含まれない</div>
+                  </div>
+                </div>
+              </div>
+              <div style="background:#f1f8f4;border-right:1px solid #e4eaf5;padding:14px 8px;display:flex;align-items:center;justify-content:center;">
+              </div>
+              <div style="background:#f3f7fd;border-right:1px solid #e4eaf5;padding:14px 8px;"></div>
+              <div style="background:#fdfaf4;padding:14px 8px;"></div>
+            </div>
+
+            <!-- Row 3: CSR → RA -->
+            <div style="display:grid;grid-template-columns:200px 160px 220px 200px;border-bottom:1px solid #e4eaf5;background:#f8f9fc;">
+              <div style="border-right:1px solid #e4eaf5;padding:10px 12px;display:flex;align-items:center;">
+                <div style="font-size:9.5px;color:#155f44;font-weight:700;">③ CSR を RA に送付 ――――――――――――→</div>
+              </div>
+              <div style="background:#f1f8f4;border-right:1px solid #e4eaf5;padding:10px 8px;display:flex;align-items:center;justify-content:center;">
+                <svg width="28" height="28" viewBox="0 0 44 44"><rect x="4" y="14" width="36" height="26" rx="4" fill="#fdf5e6" stroke="#b5821e" stroke-width="1.5"/><path d="M4 19L22 29L40 19" fill="none" stroke="#b5821e" stroke-width="1.5" stroke-linejoin="round"/><polygon points="16,9 22,1 28,9" fill="#b5821e"/></svg>
+              </div>
+              <div style="background:#f3f7fd;border-right:1px solid #e4eaf5;padding:10px 8px;"></div>
+              <div style="background:#fdfaf4;padding:10px 8px;"></div>
+            </div>
+
+            <!-- Row 4: RA審査 -->
+            <div style="display:grid;grid-template-columns:200px 160px 220px 200px;border-bottom:1px solid #e4eaf5;">
+              <div style="background:#f8f9fc;border-right:1px solid #e4eaf5;padding:14px 12px;"></div>
+              <div style="background:#f1f8f4;border-right:1px solid #e4eaf5;padding:14px 8px;">
+                <div style="font-size:10px;font-weight:700;color:#155f44;margin-bottom:8px;">④ RA 審査</div>
+                <div style="font-size:9px;color:#0d3d28;line-height:1.8;">
+                  <div>本人確認（DV/OV/EV）</div>
+                  <div style="display:flex;align-items:center;gap:4px;">
+                    <svg width="12" height="12" viewBox="0 0 44 44"><rect x="8" y="20" width="28" height="20" rx="4" fill="#e8f3fd" stroke="#1570b8" stroke-width="1.8"/><path d="M15 20V14a7 7 0 0 1 14 0" fill="none" stroke="#1570b8" stroke-width="1.8" stroke-linecap="round"/><line x1="29" y1="14" x2="36" y2="14" stroke="#1570b8" stroke-width="1.8" stroke-linecap="round"/><circle cx="22" cy="28" r="4" fill="#1570b8"/></svg>
+                    公開鍵・DNを確認
+                  </div>
+                  <div style="display:flex;align-items:center;gap:4px;">
+                    <svg width="12" height="12" viewBox="0 0 44 44"><rect x="4" y="4" width="36" height="36" rx="6" fill="#f5eeff" stroke="#5a1a6e" stroke-width="1.5"/><path d="M10 38Q14 32 18 36Q22 40 26 34" fill="none" stroke="#5a1a6e" stroke-width="1.8" stroke-linecap="round"/></svg>
+                    CSR自己署名を検証
+                  </div>
+                  <div style="color:#155f44;font-weight:700;margin-top:6px;">→ 発行承認</div>
+                </div>
+              </div>
+              <div style="background:#f3f7fd;border-right:1px solid #e4eaf5;padding:14px 8px;"></div>
+              <div style="background:#fdfaf4;padding:14px 8px;"></div>
+            </div>
+
+            <!-- Row 5: RA → CA転送 -->
+            <div style="display:grid;grid-template-columns:200px 160px 220px 200px;border-bottom:1px solid #e4eaf5;background:#f3f7fd;">
+              <div style="border-right:1px solid #e4eaf5;padding:10px 12px;"></div>
+              <div style="background:#f1f8f4;border-right:1px solid #e4eaf5;padding:10px 8px;display:flex;align-items:center;">
+                <div style="font-size:9.5px;color:#0b4a82;font-weight:700;">⑤ CSR転送（承認済）――→</div>
+              </div>
+              <div style="background:#f3f7fd;border-right:1px solid #e4eaf5;padding:10px 8px;display:flex;align-items:center;">
+                <svg width="28" height="28" viewBox="0 0 44 44"><rect x="4" y="14" width="36" height="26" rx="4" fill="#fdf5e6" stroke="#b5821e" stroke-width="1.5"/><path d="M4 19L22 29L40 19" fill="none" stroke="#b5821e" stroke-width="1.5" stroke-linejoin="round"/><polygon points="16,9 22,1 28,9" fill="#b5821e"/></svg>
+              </div>
+              <div style="background:#fdfaf4;padding:10px 8px;"></div>
+            </div>
+
+            <!-- Row 6: CA署名・証明書生成 -->
+            <div style="display:grid;grid-template-columns:200px 160px 220px 200px;border-bottom:1px solid #e4eaf5;">
+              <div style="background:#f8f9fc;border-right:1px solid #e4eaf5;padding:14px 12px;"></div>
+              <div style="background:#f1f8f4;border-right:1px solid #e4eaf5;padding:14px 8px;"></div>
+              <div style="background:#f3f7fd;border-right:1px solid #e4eaf5;padding:14px 10px;">
+                <div style="font-size:10px;font-weight:700;color:#0b4a82;margin-bottom:10px;">⑥ デジタル証明書 生成</div>
+                <div style="background:#d8eaff;border:1.5px solid #0b4a82;border-radius:6px;padding:10px;">
+                  <div style="font-size:9px;font-weight:700;text-align:center;color:white;background:#0b4a82;margin:-10px -10px 8px;border-radius:4px 4px 0 0;padding:5px;">デジタル証明書（X.509）</div>
+                  <div style="font-size:9px;color:#5a3200;line-height:1.8;">
+                    <div style="display:flex;align-items:center;gap:4px;">
+                      <svg width="12" height="12" viewBox="0 0 44 44"><rect x="8" y="20" width="28" height="20" rx="4" fill="#e8f3fd" stroke="#1570b8" stroke-width="1.8"/><path d="M15 20V14a7 7 0 0 1 14 0" fill="none" stroke="#1570b8" stroke-width="1.8" stroke-linecap="round"/><line x1="29" y1="14" x2="36" y2="14" stroke="#1570b8" stroke-width="1.8" stroke-linecap="round"/><circle cx="22" cy="28" r="4" fill="#1570b8"/></svg>
+                      <span style="color:#0b4a82;">申請者の公開鍵</span>
+                    </div>
+                    <div>Subject DN, Validity, SAN...</div>
+                    <div style="display:flex;align-items:center;gap:4px;">
+                      <svg width="12" height="12" viewBox="0 0 44 44"><rect x="4" y="4" width="36" height="36" rx="6" fill="#f5eeff" stroke="#5a1a6e" stroke-width="1.5"/><path d="M10 38Q14 32 18 36Q22 40 26 34" fill="none" stroke="#5a1a6e" stroke-width="1.8" stroke-linecap="round"/></svg>
+                      <span style="color:#5a1a6e;">CAのデジタル署名</span>
+                    </div>
+                  </div>
+                  <div style="font-size:8px;color:#7a1818;margin-top:6px;border-top:1px solid #b8d5f5;padding-top:5px;">← CA秘密鍵（HSM内）で署名</div>
+                </div>
+              </div>
+              <div style="background:#fdfaf4;padding:14px 8px;"></div>
+            </div>
+
+            <!-- Row 7: 証明書 → 申請者配布 -->
+            <div style="display:grid;grid-template-columns:200px 160px 220px 200px;border-bottom:1px solid #e4eaf5;background:#f3f7fd;">
+              <div style="border-right:1px solid #e4eaf5;padding:10px 12px;display:flex;align-items:center;">
+                <div style="font-size:9.5px;color:#0b4a82;font-weight:700;">←―――⑦ 証明書を申請者に配布</div>
+              </div>
+              <div style="background:#f1f8f4;border-right:1px solid #e4eaf5;padding:10px 8px;"></div>
+              <div style="background:#f3f7fd;border-right:1px solid #e4eaf5;padding:10px 8px;display:flex;align-items:center;">
+                <svg width="28" height="28" viewBox="0 0 44 44"><rect x="4" y="3" width="26" height="32" rx="4" fill="#d8eaff" stroke="#0b4a82" stroke-width="1.5"/><rect x="4" y="3" width="26" height="10" rx="4" fill="#0b4a82"/><rect x="4" y="9" width="26" height="4" fill="#0b4a82"/><line x1="9" y1="20" x2="26" y2="20" stroke="#0b4a82" stroke-width="1.2"/><circle cx="34" cy="34" r="8" fill="#0b4a82" stroke="white" stroke-width="2"/><path d="M29 34L32.5 37.5L40 30" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <div style="background:#fdfaf4;padding:10px 8px;"></div>
+            </div>
+
+            <!-- Row 8: 申請者の最終状態 -->
+            <div style="display:grid;grid-template-columns:200px 160px 220px 200px;border-bottom:1px solid #e4eaf5;">
+              <div style="background:#f8f9fc;border-right:1px solid #e4eaf5;padding:14px 12px;">
+                <div style="font-size:10px;font-weight:700;color:#141824;margin-bottom:8px;">申請者の端末（最終状態）</div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                  <div style="background:#fdf0dc;border:1px dashed #b5821e;border-radius:4px;padding:5px 6px;font-size:9px;color:#7a4208;">
+                    <div style="display:flex;align-items:center;gap:4px;"><svg width="12" height="12" viewBox="0 0 44 44"><rect x="8" y="20" width="28" height="20" rx="4" fill="#fdf0dc" stroke="#b5821e" stroke-width="1.8"/><path d="M15 20V14a7 7 0 0 1 14 0v6" fill="none" stroke="#b5821e" stroke-width="1.8" stroke-linecap="round"/><circle cx="22" cy="28" r="4" fill="#b5821e"/></svg>秘密鍵 保管中</div>
+                  </div>
+                  <div style="background:#d8eaff;border:1px solid #0b4a82;border-radius:4px;padding:5px 6px;font-size:9px;color:#0b4a82;">
+                    <div style="display:flex;align-items:center;gap:4px;"><svg width="12" height="12" viewBox="0 0 44 44"><rect x="4" y="3" width="26" height="32" rx="4" fill="#d8eaff" stroke="#0b4a82" stroke-width="1.5"/><rect x="4" y="3" width="26" height="10" rx="4" fill="#0b4a82"/><circle cx="34" cy="34" r="8" fill="#0b4a82" stroke="white" stroke-width="2"/><path d="M29 34L32.5 37.5L40 30" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>証明書 受領</div>
+                  </div>
+                </div>
+              </div>
+              <div style="background:#f1f8f4;border-right:1px solid #e4eaf5;padding:14px 8px;"></div>
+              <div style="background:#f3f7fd;border-right:1px solid #e4eaf5;padding:14px 8px;"></div>
+              <div style="background:#fdfaf4;padding:14px 8px;"></div>
+            </div>
+
+            <!-- Row 9: 証明書 → 検証者に提示 -->
+            <div style="display:grid;grid-template-columns:200px 160px 220px 200px;border-bottom:1px solid #e4eaf5;background:#fdfaf4;">
+              <div style="border-right:1px solid #e4eaf5;padding:10px 12px;display:flex;align-items:center;">
+                <div style="font-size:9.5px;color:#7a4208;font-weight:700;">⑧ 証明書を提示 ―――――――――――――――――→</div>
+              </div>
+              <div style="background:#f1f8f4;border-right:1px solid #e4eaf5;padding:10px 8px;"></div>
+              <div style="background:#f3f7fd;border-right:1px solid #e4eaf5;padding:10px 8px;"></div>
+              <div style="background:#fdfaf4;padding:10px 8px;display:flex;align-items:center;justify-content:center;">
+                <svg width="28" height="28" viewBox="0 0 44 44"><rect x="4" y="3" width="26" height="32" rx="4" fill="#d8eaff" stroke="#0b4a82" stroke-width="1.5"/><rect x="4" y="3" width="26" height="10" rx="4" fill="#0b4a82"/><rect x="4" y="9" width="26" height="4" fill="#0b4a82"/><line x1="9" y1="20" x2="26" y2="20" stroke="#0b4a82" stroke-width="1.2"/><circle cx="34" cy="34" r="8" fill="#0b4a82" stroke="white" stroke-width="2"/><path d="M29 34L32.5 37.5L40 30" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+            </div>
+
+            <!-- Row 10: 署名検証 -->
+            <div style="display:grid;grid-template-columns:200px 160px 220px 200px;">
+              <div style="background:#f8f9fc;border-right:1px solid #e4eaf5;padding:14px 12px;border-radius:0 0 0 6px;"></div>
+              <div style="background:#f1f8f4;border-right:1px solid #e4eaf5;padding:14px 8px;"></div>
+              <div style="background:#f3f7fd;border-right:1px solid #e4eaf5;padding:14px 8px;"></div>
+              <div style="background:#fdfaf4;padding:14px 10px;border-radius:0 0 6px 0;">
+                <div style="font-size:10px;font-weight:700;color:#155f44;margin-bottom:8px;">⑨ 署名検証</div>
+                <div style="background:#eaf7f1;border:1px solid #155f44;border-radius:5px;padding:8px;">
+                  <div style="display:flex;align-items:center;gap:5px;margin-bottom:5px;">
+                    <svg width="16" height="16" viewBox="0 0 44 44"><polygon points="22,2 40,12 40,32 22,42 4,32 4,12" fill="#eaf7f1" stroke="#155f44" stroke-width="1.8"/><text x="22" y="27" text-anchor="middle" font-family="monospace" font-size="8" fill="#155f44" font-weight="700">CA公開鍵</text></svg>
+                    <span style="font-size:9px;color:#155f44;font-weight:600;">CA公開鍵を参照</span>
+                  </div>
+                  <div style="font-size:9px;color:#0d3d28;line-height:1.7;">
+                    <div>CA公開鍵でCA署名を検証</div>
+                    <div>→ 証明書が正当と確認</div>
+                    <div>→ 申請者の公開鍵を信頼</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="steps">
+        <div class="step hi"><span class="sn">①②</span><div class="sb">申請者の端末で<strong>南京錠ペア（秘密鍵・公開鍵）</strong>を生成。秘密鍵（閉・暖色）は端末外に出ません。CSRには公開鍵・Subject DN・秘密鍵による自己署名が格納されます。</div></div>
+        <div class="step wn"><span class="sn" style="background:var(--warn)">⑥</span><div class="sb">CAは<strong>HSM内のCA秘密鍵（六角盾・暖色）</strong>でTBSCertificateに署名し、デジタル証明書を生成します。<strong>CA秘密鍵もHSMの外に出ません。</strong>完成した証明書には「申請者の公開鍵＋CAのデジタル署名」が含まれます。</div></div>
+        <div class="step ok"><span class="sn">⑨</span><div class="sb">検証者はトラストストアの<strong>CA公開鍵（六角盾・寒色）</strong>で証明書のCA署名を検証します。これにより証明書内の「申請者の公開鍵（南京錠・開・寒色）」が信頼できると確認されます。</div></div>
+      </div>
+
+      <h3>フロー2 — デジタル署名を使ったやり取り</h3>
+      <div class="seq-wrap" style="padding:20px 18px;">
+        <p class="seq-cap">署名の生成・送付・検証（秘密鍵・公開鍵・デジタル証明書の役割）</p>
+        <div style="overflow-x:auto;">
+          <div style="min-width:700px;">
+
+            <!-- ヘッダ行 -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;margin-bottom:0;">
+              <div style="background:#141824;color:white;text-align:center;padding:8px 4px;border-radius:6px 0 0 0;"><div style="font-size:11.5px;font-weight:700;">署名者（送信者）</div><div style="font-size:8px;opacity:.5;font-family:monospace;">SIGNER / SENDER</div></div>
+              <div style="background:#7a4208;color:white;text-align:center;padding:8px 4px;border-radius:0 6px 0 0;"><div style="font-size:11.5px;font-weight:700;">検証者（受信者）</div><div style="font-size:8px;opacity:.5;font-family:monospace;">VERIFIER / RECEIVER</div></div>
+            </div>
+
+            <!-- ステップ行 -->
+
+            <!-- Row 1: 署名者の保有物 -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid #e4eaf5;">
+              <div style="background:#f8f9fc;border-right:1px solid #e4eaf5;padding:14px 16px;">
+                <div style="font-size:10px;font-weight:700;color:#0b4a82;margin-bottom:10px;">保有物</div>
+                <div style="display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap;">
+                  <div style="text-align:center;">
+                    <svg width="44" height="44" viewBox="0 0 44 44"><rect x="8" y="20" width="28" height="20" rx="4" fill="#fdf0dc" stroke="#b5821e" stroke-width="1.8"/><path d="M15 20V14a7 7 0 0 1 14 0v6" fill="none" stroke="#b5821e" stroke-width="1.8" stroke-linecap="round"/><circle cx="22" cy="28" r="4" fill="#b5821e"/><line x1="22" y1="32" x2="22" y2="36" stroke="#b5821e" stroke-width="1.8" stroke-linecap="round"/></svg>
+                    <div style="font-size:9px;color:#7a4208;">秘密鍵</div>
+                  </div>
+                  <div style="text-align:center;">
+                    <svg width="40" height="40" viewBox="0 0 44 44"><rect x="4" y="3" width="26" height="32" rx="4" fill="#d8eaff" stroke="#0b4a82" stroke-width="1.5"/><rect x="4" y="3" width="26" height="10" rx="4" fill="#0b4a82"/><rect x="4" y="9" width="26" height="4" fill="#0b4a82"/><line x1="9" y1="20" x2="26" y2="20" stroke="#0b4a82" stroke-width="1.2"/><circle cx="34" cy="34" r="8" fill="#0b4a82" stroke="white" stroke-width="2"/><path d="M29 34L32.5 37.5L40 30" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <div style="font-size:9px;color:#0b4a82;">証明書</div>
+                  </div>
+                </div>
+              </div>
+              <div style="background:#fdfaf4;padding:14px 16px;">
+                <div style="font-size:10px;font-weight:700;color:#0b4a82;margin-bottom:10px;">トラストストア（事前保持）</div>
+                <div style="background:#eaf7f1;border:1px solid #155f44;border-radius:5px;padding:8px;display:inline-flex;align-items:center;gap:8px;">
+                  <svg width="36" height="36" viewBox="0 0 44 44"><polygon points="22,2 40,12 40,32 22,42 4,32 4,12" fill="#eaf7f1" stroke="#155f44" stroke-width="1.8"/><polygon points="22,9 34,16 34,28 22,35 10,28 10,16" fill="none" stroke="#155f44" stroke-width="1" opacity="0.4"/><text x="22" y="24" text-anchor="middle" font-family="monospace" font-size="7" fill="#155f44" font-weight="700">CA</text><text x="22" y="33" text-anchor="middle" font-family="monospace" font-size="6" fill="#155f44">公開鍵</text></svg>
+                  <div style="font-size:9px;color:#155f44;">CA公開鍵<br>OS/ブラウザが保持</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Row 2: メッセージ → ハッシュ化 -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid #e4eaf5;">
+              <div style="background:#f8f9fc;border-right:1px solid #e4eaf5;padding:14px 16px;">
+                <div style="font-size:10px;font-weight:700;color:#0b4a82;margin-bottom:10px;">① メッセージをハッシュ化</div>
+                <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                  <div style="background:white;border:1px solid #cdd7e6;border-radius:4px;padding:8px 12px;font-size:10px;color:#141824;">メッセージ（原文）</div>
+                  <div style="color:#cdd7e6;">→</div>
+                  <div style="background:#e4eaf5;border:1px solid #1e2d4a;border-radius:4px;padding:8px 12px;font-size:10px;color:#1e2d4a;">SHA-256</div>
+                  <div style="color:#cdd7e6;">→</div>
+                  <div style="background:white;border:1px solid #1e2d4a;border-radius:4px;padding:8px 12px;font-size:10px;font-family:monospace;color:#1e2d4a;font-weight:700;">ハッシュ値 H</div>
+                </div>
+              </div>
+              <div style="background:#fdfaf4;border-left:1px solid #e4eaf5;padding:14px 16px;"></div>
+            </div>
+
+            <!-- Row 3: 秘密鍵で署名 -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid #e4eaf5;">
+              <div style="background:#f8f9fc;border-right:1px solid #e4eaf5;padding:14px 16px;">
+                <div style="font-size:10px;font-weight:700;color:#7a4208;margin-bottom:10px;">② 秘密鍵でハッシュ値を暗号化 → デジタル署名</div>
+                <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                  <div>
+                    <svg width="40" height="40" viewBox="0 0 44 44"><rect x="8" y="20" width="28" height="20" rx="4" fill="#fdf0dc" stroke="#b5821e" stroke-width="1.8"/><path d="M15 20V14a7 7 0 0 1 14 0v6" fill="none" stroke="#b5821e" stroke-width="1.8" stroke-linecap="round"/><circle cx="22" cy="28" r="4" fill="#b5821e"/><line x1="22" y1="32" x2="22" y2="36" stroke="#b5821e" stroke-width="1.8" stroke-linecap="round"/></svg>
+                    <div style="font-size:8.5px;color:#7a4208;text-align:center;">秘密鍵</div>
+                  </div>
+                  <div style="font-size:12px;color:#b5821e;">+</div>
+                  <div style="background:white;border:1px solid #1e2d4a;border-radius:4px;padding:6px 10px;font-size:10px;font-family:monospace;color:#1e2d4a;font-weight:700;">H</div>
+                  <div style="color:#b5821e;font-size:13px;">→</div>
+                  <div>
+                    <svg width="40" height="40" viewBox="0 0 44 44"><rect x="4" y="4" width="36" height="36" rx="6" fill="#f5eeff" stroke="#5a1a6e" stroke-width="1.5"/><path d="M27 10L33 16L19 30L11 32L13 24Z" fill="#5a1a6e" opacity="0.2" stroke="#5a1a6e" stroke-width="1.2" stroke-linejoin="round"/><line x1="25" y1="12" x2="31" y2="18" stroke="#5a1a6e" stroke-width="1.2"/><path d="M10 38Q14 32 18 36Q22 40 26 34" fill="none" stroke="#5a1a6e" stroke-width="1.8" stroke-linecap="round"/></svg>
+                    <div style="font-size:8.5px;color:#5a1a6e;text-align:center;">デジタル署名</div>
+                  </div>
+                </div>
+              </div>
+              <div style="background:#fdfaf4;border-left:1px solid #e4eaf5;padding:14px 16px;"></div>
+            </div>
+
+            <!-- Row 4: 送信パケット -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid #e4eaf5;">
+              <div style="background:#f8f9fc;border-right:1px solid #e4eaf5;padding:14px 16px;">
+                <div style="font-size:10px;font-weight:700;color:#141824;margin-bottom:10px;">③ 送信パケット構成（秘密鍵は含まない）</div>
+                <div style="background:white;border:1px solid #cdd7e6;border-radius:6px;padding:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+                  <div style="text-align:center;">
+                    <div style="background:white;border:1px solid #cdd7e6;border-radius:4px;padding:6px 8px;font-size:9px;color:#141824;">メッセージ原文</div>
+                  </div>
+                  <div style="font-size:11px;color:#cdd7e6;">+</div>
+                  <div style="text-align:center;">
+                    <svg width="36" height="36" viewBox="0 0 44 44"><rect x="4" y="4" width="36" height="36" rx="6" fill="#f5eeff" stroke="#5a1a6e" stroke-width="1.5"/><path d="M27 10L33 16L19 30L11 32L13 24Z" fill="#5a1a6e" opacity="0.2" stroke="#5a1a6e" stroke-width="1.2" stroke-linejoin="round"/><path d="M10 38Q14 32 18 36Q22 40 26 34" fill="none" stroke="#5a1a6e" stroke-width="1.8" stroke-linecap="round"/></svg>
+                    <div style="font-size:8.5px;color:#5a1a6e;">署名</div>
+                  </div>
+                  <div style="font-size:11px;color:#cdd7e6;">+</div>
+                  <div style="text-align:center;">
+                    <svg width="36" height="36" viewBox="0 0 44 44"><rect x="4" y="3" width="26" height="32" rx="4" fill="#d8eaff" stroke="#0b4a82" stroke-width="1.5"/><rect x="4" y="3" width="26" height="10" rx="4" fill="#0b4a82"/><rect x="4" y="9" width="26" height="4" fill="#0b4a82"/><circle cx="34" cy="34" r="8" fill="#0b4a82" stroke="white" stroke-width="2"/><path d="M29 34L32.5 37.5L40 30" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <div style="font-size:8.5px;color:#0b4a82;">証明書</div>
+                  </div>
+                </div>
+              </div>
+              <div style="background:#fdfaf4;border-left:1px solid #e4eaf5;padding:14px 16px;display:flex;align-items:center;">
+              </div>
+            </div>
+
+            <!-- Row 5: 送信矢印 -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid #e4eaf5;background:#edf1f8;">
+              <div style="border-right:1px solid #e4eaf5;padding:10px 16px;display:flex;align-items:center;">
+                <div style="font-size:10px;font-weight:700;color:#141824;width:100%;">④ 送信 ――――――――――――――――――――――→</div>
+              </div>
+              <div style="padding:10px 16px;display:flex;align-items:center;">
+                <div style="display:flex;gap:6px;align-items:center;">
+                  <div style="background:white;border:1px solid #cdd7e6;border-radius:3px;padding:4px 7px;font-size:9px;color:#141824;">原文</div>
+                  <div style="font-size:10px;color:#cdd7e6;">+</div>
+                  <svg width="28" height="28" viewBox="0 0 44 44"><rect x="4" y="4" width="36" height="36" rx="6" fill="#f5eeff" stroke="#5a1a6e" stroke-width="1.5"/><path d="M10 38Q14 32 18 36Q22 40 26 34" fill="none" stroke="#5a1a6e" stroke-width="1.8" stroke-linecap="round"/></svg>
+                  <div style="font-size:10px;color:#cdd7e6;">+</div>
+                  <svg width="28" height="28" viewBox="0 0 44 44"><rect x="4" y="3" width="26" height="32" rx="4" fill="#d8eaff" stroke="#0b4a82" stroke-width="1.5"/><rect x="4" y="3" width="26" height="10" rx="4" fill="#0b4a82"/><circle cx="34" cy="34" r="8" fill="#0b4a82" stroke="white" stroke-width="2"/><path d="M29 34L32.5 37.5L40 30" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Row 6: 証明書を検証 -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid #e4eaf5;">
+              <div style="background:#f8f9fc;border-right:1px solid #e4eaf5;padding:14px 16px;"></div>
+              <div style="background:#fdfaf4;padding:14px 16px;">
+                <div style="font-size:10px;font-weight:700;color:#155f44;margin-bottom:8px;">⑤ 証明書を検証（CA公開鍵を使用）</div>
+                <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                  <svg width="36" height="36" viewBox="0 0 44 44"><polygon points="22,2 40,12 40,32 22,42 4,32 4,12" fill="#eaf7f1" stroke="#155f44" stroke-width="1.8"/><text x="22" y="27" text-anchor="middle" font-family="monospace" font-size="7" fill="#155f44" font-weight="700">CA公開鍵</text></svg>
+                  <div style="font-size:12px;color:#155f44;">→</div>
+                  <div style="background:#eaf7f1;border:1px solid #155f44;border-radius:4px;padding:6px 10px;font-size:9.5px;color:#155f44;">
+                    <div>CA署名を検証 → 証明書が正当</div>
+                    <div style="margin-top:3px;">申請者の公開鍵を信頼</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Row 7: 署名を復号 + ハッシュ比較 -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid #e4eaf5;">
+              <div style="background:#f8f9fc;border-right:1px solid #e4eaf5;padding:14px 16px;"></div>
+              <div style="background:#fdfaf4;padding:14px 16px;">
+                <div style="font-size:10px;font-weight:700;color:#0b4a82;margin-bottom:8px;">⑥ 署名を公開鍵で復号 → H を取得</div>
+                <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+                  <svg width="36" height="36" viewBox="0 0 44 44"><rect x="4" y="4" width="36" height="36" rx="6" fill="#f5eeff" stroke="#5a1a6e" stroke-width="1.5"/><path d="M10 38Q14 32 18 36Q22 40 26 34" fill="none" stroke="#5a1a6e" stroke-width="1.8" stroke-linecap="round"/></svg>
+                  <div style="font-size:10px;color:#5a1a6e;">署名</div>
+                  <div style="font-size:10px;color:#cdd7e6;">+</div>
+                  <svg width="36" height="36" viewBox="0 0 44 44"><rect x="8" y="20" width="28" height="20" rx="4" fill="#e8f3fd" stroke="#1570b8" stroke-width="1.8"/><path d="M15 20V14a7 7 0 0 1 14 0" fill="none" stroke="#1570b8" stroke-width="1.8" stroke-linecap="round"/><line x1="29" y1="14" x2="36" y2="14" stroke="#1570b8" stroke-width="1.8" stroke-linecap="round"/><circle cx="22" cy="28" r="4" fill="#1570b8"/></svg>
+                  <div style="font-size:10px;color:#1570b8;">公開鍵（証明書から取得）</div>
+                  <div style="font-size:12px;color:#0b4a82;">→</div>
+                  <div style="background:white;border:1px solid #1e2d4a;border-radius:4px;padding:6px 10px;font-size:10px;font-family:monospace;color:#1e2d4a;font-weight:700;">H</div>
+                </div>
+                <div style="font-size:10px;font-weight:700;color:#0b4a82;margin-bottom:8px;">⑦ 受信メッセージをハッシュ化 → H' を取得</div>
+                <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                  <div style="background:white;border:1px solid #cdd7e6;border-radius:4px;padding:6px 10px;font-size:10px;color:#141824;">メッセージ</div>
+                  <div style="font-size:12px;color:#cdd7e6;">→</div>
+                  <div style="background:#e4eaf5;border:1px solid #1e2d4a;border-radius:4px;padding:6px 10px;font-size:10px;color:#1e2d4a;">SHA-256</div>
+                  <div style="font-size:12px;color:#cdd7e6;">→</div>
+                  <div style="background:white;border:1px solid #1e2d4a;border-radius:4px;padding:6px 10px;font-size:10px;font-family:monospace;color:#1e2d4a;font-weight:700;">H'</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Row 8: 比較・結論 -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;">
+              <div style="background:#f8f9fc;border-right:1px solid #e4eaf5;padding:14px 16px;border-radius:0 0 0 6px;"></div>
+              <div style="background:#155f44;padding:14px 16px;border-radius:0 0 6px 0;">
+                <div style="font-size:11px;font-weight:700;color:white;margin-bottom:6px;">⑧ H = H' ならば → 署名有効</div>
+                <div style="font-size:10px;color:rgba(255,255,255,.85);line-height:1.7;">
+                  <div>✓ 改ざんなし（ハッシュ一致）</div>
+                  <div>✓ 署名者本人確認（秘密鍵の所有証明）</div>
+                  <div style="margin-top:4px;font-size:9px;color:rgba(255,255,255,.6);">※H ≠ H' の場合は改ざんまたは偽署名</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="keypoint">
+        <p class="kp-label">2段階検証の核心</p>
+        <p>
+          <strong>段階1 — 証明書の正当性確認：</strong><code>CA公開鍵（六角盾・寒色）</code>でデジタル証明書内のCA署名を検証。これにより証明書内の「申請者の公開鍵（南京錠・開・寒色）」が信頼できると確認。<br><br>
+          <strong>段階2 — デジタル署名の検証：</strong>段階1で信頼した<code>申請者の公開鍵</code>でデジタル署名を復号しハッシュ値Hを得る。メッセージを再ハッシュしたH'と一致すれば改ざんなし＋本人確認が完了する。
+        </p>
+      </div>
+
+    </section>
+
+        <!-- ── 06 証明書チェック5ポイント ── -->
+    <section class="section" id="s6">
+      <div class="section-header">
+        <span class="s-num">06</span>
+        <h2>証明書チェックの5ポイント</h2>
+      </div>
+
+      <p>ブラウザや TLS ライブラリが証明書を受け取ったとき、以下の5つのチェックをすべてパスして初めて「証明書が有効」と判断します。一つでも失敗すればエラーとなります。</p>
+
+      <div class="steps">
+        <div class="step hi">
+          <span class="sn" style="font-size:10px;width:26px;border-radius:3px">1</span>
+          <div class="sb">
+            <strong>有効期限の確認（Validity）</strong><br>
+            証明書の NotBefore〜NotAfter の範囲に現在時刻が入っているかを確認します。<code>openssl verify</code> や TLS ハンドシェイクの自動チェックで実施。<br>
+            <span style="color:var(--danger);font-size:12px">失敗例：「この証明書は2024年3月に失効しています」→ CERT_DATE_INVALID エラー</span>
+          </div>
+        </div>
+        <div class="step hi">
+          <span class="sn" style="font-size:10px;width:26px;border-radius:3px">2</span>
+          <div class="sb">
+            <strong>ルートCA・トラストストアへの到達確認</strong><br>
+            証明書チェーン（エンドエンティティ → 中間CA → ルートCA）を辿り、ルートCA証明書がOSまたはブラウザの<strong>トラストストア（信頼するルート証明書の一覧）</strong>に含まれているかを確認します。<br>
+            <span style="color:var(--danger);font-size:12px">失敗例：自己署名証明書をブラウザに登録していない → 「証明書が信頼されていません」警告</span>
+          </div>
+        </div>
+        <div class="step hi">
+          <span class="sn" style="font-size:10px;width:26px;border-radius:3px">3</span>
+          <div class="sb">
+            <strong>証明書チェーンのレベル確認（証明書パス検証）</strong><br>
+            各証明書の<code>BasicConstraints.cA</code>フラグと<code>KeyUsage</code>拡張を検証します。「エンドエンティティ証明書でCAの署名がある」「中間CAが許可されていない深さで使われている」などの異常を検出します。<br>
+            <span style="color:var(--danger);font-size:12px">失敗例：エンドエンティティ証明書（cA=FALSE）が他の証明書を署名していた → パス検証エラー</span>
+          </div>
+        </div>
+        <div class="step wn">
+          <span class="sn" style="background:var(--warn);font-size:10px;width:26px;border-radius:3px">4</span>
+          <div class="sb">
+            <strong>失効確認（CRL / OCSP）</strong><br>
+            証明書の<code>CRLDistributionPoints</code>または<code>AuthorityInfoAccess（OCSPUrl）</code>を参照し、証明書が失効していないかを確認します。OCSP Stapling が有効な場合はサーバがあらかじめレスポンスを添付します。<br>
+            <span style="color:var(--danger);font-size:12px">失敗例：秘密鍵漏洩後に失効されたはずの証明書を提示 → CERT_REVOKED エラー</span>
+          </div>
+        </div>
+        <div class="step hi">
+          <span class="sn" style="font-size:10px;width:26px;border-radius:3px">5</span>
+          <div class="sb">
+            <strong>アクセス先（ホスト名）との一致確認</strong><br>
+            証明書の<code>Subject Alternative Name（SAN）</code>拡張に、実際にアクセスしているドメイン名が含まれているかを確認します。ワイルドカード（*.example.com）も照合対象です。<br>
+            <span style="color:var(--danger);font-size:12px">失敗例：example.com の証明書を使って evil.com にアクセス → NET::ERR_CERT_COMMON_NAME_INVALID</span>
+          </div>
+        </div>
+      </div>
+
+      <h3>証明書エラーの種類と原因対照表</h3>
+      <table class="atk-table">
+        <thead>
+          <tr><th>エラーの種類</th><th>原因</th><th>対処・対策</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>CERT_DATE_INVALID</td>
+            <td>証明書の有効期限切れ、または端末の時刻ずれ</td>
+            <td>証明書の更新（自動更新設定）、端末のNTP同期確認</td>
+          </tr>
+          <tr>
+            <td>CERT_AUTHORITY_INVALID</td>
+            <td>ルートCAがトラストストアに未登録（自己署名・プライベートCA等）</td>
+            <td>ルート証明書をクライアントのトラストストアへインポート</td>
+          </tr>
+          <tr>
+            <td>CERT_REVOKED</td>
+            <td>証明書がOCSP/CRLで失効済みと確認された</td>
+            <td>新しい証明書を即時再発行・デプロイ、秘密鍵の再生成</td>
+          </tr>
+          <tr>
+            <td>CERT_COMMON_NAME_INVALID</td>
+            <td>証明書のSAN/CNとアクセス先ホスト名が不一致</td>
+            <td>正しいドメイン名を含む証明書を取得・適用</td>
+          </tr>
+          <tr>
+            <td>CERT_WEAK_SIGNATURE</td>
+            <td>MD5/SHA-1など弱いハッシュで署名された証明書を提示</td>
+            <td>SHA-256以上の証明書に再発行・更新</td>
+          </tr>
+          <tr>
+            <td>チェーンが不完全</td>
+            <td>中間CA証明書がサーバのレスポンスに含まれていない</td>
+            <td>サーバ設定で中間CA証明書もチェーンとして送信するよう設定</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ── 07 CP/CPS ── -->
+    <section class="section" id="s7">
+      <div class="section-header">
+        <span class="s-num">07</span>
+        <h2>CP / CPS — 証明書の「法律」と「運用規則」</h2>
+      </div>
+
+      <p>PKIでは証明書ポリシー（CP）と認証局運用規程（CPS）という2つの文書が、CAの運営ルールを定めます。</p>
+
+      <div class="note info">
+        <div class="note-i">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1570b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>
+          </svg>
+        </div>
+        <p><strong>たとえ話：「会社法（CP）」と「就業規則（CPS）」の関係。</strong> 会社法は「会社はどのようなルールで運営されるべきか」を定めた法律（＝CP）。就業規則は「この会社では具体的にどう動くか」を定めた内部規則（＝CPS）。法律の範囲内で就業規則が存在するように、CPで定めたポリシーの範囲内でCPSが具体的な運用手順を規定します。</p>
+      </div>
+
+      <div class="threat-grid">
+        <div class="threat-card">
+          <div class="tc-head">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+              <polyline points="10 9 9 9 8 9"/>
+            </svg>
+            <span>CP（Certificate Policy：証明書ポリシー）</span>
+          </div>
+          <div class="tc-body">
+            <p>「<strong>どのような目的・用途の証明書を、どのような条件で発行するか</strong>」を定めた文書。証明書の種類（DV/OV/EV）、本人確認の方法、有効期間、鍵長の下限、使用可能な暗号アルゴリズムなどを規定する。利用者（Relying Party）が証明書を信頼する根拠となる。</p>
+            <p class="tc-counter">用途：証明書に OID（Object Identifier）で埋め込まれ、検証側がどのポリシーで発行されたかを確認できる</p>
+          </div>
+        </div>
+        <div class="threat-card">
+          <div class="tc-head warn-head">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 11l3 3L22 4"/>
+              <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+            </svg>
+            <span>CPS（CA Practice Statement：認証局運用規程）</span>
+          </div>
+          <div class="tc-body">
+            <p>CAが「<strong>実際にどのように証明書を発行・管理・失効させるか</strong>」を具体的に記述した文書。CA施設のセキュリティ要件、鍵のHSMでの管理方法、RAによる審査手順、インシデント対応手順、監査の頻度などを詳細に規定する。</p>
+            <p class="tc-counter">用途：CA自身の運用品質保証・外部監査の基準・Relying Partyへの信頼性の開示</p>
+          </div>
+        </div>
+      </div>
+
+      <h3>CP / CPS の主な記載内容</h3>
+      <table class="req-table">
+        <thead>
+          <tr><th>記載項目</th><th>CP（ポリシー）の記載例</th><th>CPS（運用規程）の記載例</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>本人確認</td>
+            <td>OV証明書は組織の実在を確認すること</td>
+            <td>法人登記簿謄本・電話確認の両方で実施し、記録を保管する</td>
+          </tr>
+          <tr>
+            <td>鍵管理</td>
+            <td>CA秘密鍵は FIPS 140-2 Level 3以上のHSMで保管すること</td>
+            <td>使用するHSMの型番、鍵生成セレモニーの手順と立会人の要件</td>
+          </tr>
+          <tr>
+            <td>証明書有効期間</td>
+            <td>エンドエンティティ証明書の有効期間は最大398日とする</td>
+            <td>自動更新システムの運用スケジュール・アラート手順</td>
+          </tr>
+          <tr>
+            <td>失効</td>
+            <td>秘密鍵の漏洩が判明した場合、24時間以内に失効させること</td>
+            <td>失効申請の受付方法、OCSPレスポンダの更新間隔（例：4時間）</td>
+          </tr>
+          <tr>
+            <td>監査</td>
+            <td>年次でWebTrustまたは ISO 27001 監査を受けること</td>
+            <td>監査法人名、監査スケジュール、監査結果の公開方法</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="note warn">
+        <div class="note-i">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#b5821e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17" stroke-width="2.5"/>
+          </svg>
+        </div>
+        <p><strong>試験ポイント：</strong>「CP は What（何をするか）のポリシー、CPS は How（どのようにするか）の手順書」と整理すること。また、証明書に埋め込まれるのは CPS ではなく CP の OID（Object Identifier）であることに注意。</p>
+      </div>
+    </section>
+
+    <!-- ── 08 練習問題 ── -->
+    <section class="section" id="s8">
+      <div class="section-header">
+        <span class="s-num gold-bg">08</span>
+        <h2>過去問スタイル 練習問題</h2>
+      </div>
+      <p>情報処理安全確保支援士試験の出題傾向に沿った練習問題です。選択肢をクリックすると正誤と解説が表示されます。</p>
+
+      <div class="quiz-wrap">
+
+        <div class="quiz" id="q1">
+          <div class="quiz-q">
+            <span class="quiz-qn">Q1</span>
+            <span>PKIにおけるデジタル証明書（X.509 v3）に関する記述として、最も適切なものはどれか。</span>
+          </div>
+          <div class="quiz-opts">
+            <button class="quiz-opt" onclick="answer('q1','a','c')">ア. デジタル証明書には申請者の秘密鍵が含まれており、CAが秘密鍵の正当性を保証している。</button>
+            <button class="quiz-opt" onclick="answer('q1','b','c')">イ. デジタル証明書の有効期限はNotBeforeフィールドのみで定義され、終了日時は別途CRLで管理される。</button>
+            <button class="quiz-opt" onclick="answer('q1','c','c')">ウ. デジタル証明書には申請者の公開鍵が含まれており、CAがその公開鍵と申請者の身元の結びつきをCAの秘密鍵で署名して保証している。</button>
+            <button class="quiz-opt" onclick="answer('q1','d','c')">エ. X.509 v3ではBasicConstraints拡張は使用できないため、CA証明書とエンドエンティティ証明書の区別はSubjectフィールドで行う。</button>
+          </div>
+          <div class="quiz-exp" id="q1-exp">
+            <strong>正解：ウ</strong><br>
+            デジタル証明書の核心は「申請者の公開鍵と身元情報を、CAが自らの秘密鍵で署名して第三者に保証する」ことです。<br>
+            ア：誤り。証明書には公開鍵が含まれます。秘密鍵は申請者が保管し、CAには送付されません。<br>
+            イ：誤り。有効期限はValidityフィールドのNotBefore〜NotAfterで定義されます。<br>
+            エ：誤り。BasicConstraints拡張はX.509 v3の重要な拡張で、CA証明書（cA=TRUE）かエンドエンティティ（cA=FALSE）かを識別します。
+          </div>
+        </div>
+
+        <div class="quiz" id="q2">
+          <div class="quiz-q">
+            <span class="quiz-qn">Q2</span>
+            <span>PKIにおけるCSR（証明書署名要求）に関する記述として、最も適切なものはどれか。</span>
+          </div>
+          <div class="quiz-opts">
+            <button class="quiz-opt" onclick="answer('q2','a','b')">ア. CSRにはCAへ送付するため、申請者の秘密鍵と公開鍵の両方が含まれる。</button>
+            <button class="quiz-opt" onclick="answer('q2','b','b')">イ. CSRには申請者の公開鍵・識別名（DN）・申請者の秘密鍵による自己署名が含まれ、PKCS#10形式で作成される。</button>
+            <button class="quiz-opt" onclick="answer('q2','c','b')">ウ. CSRはCAが生成して申請者に提供する文書であり、申請者はそれに公開鍵を添付して返送する。</button>
+            <button class="quiz-opt" onclick="answer('q2','d','b')">エ. CSRの自己署名はRAが検証するものではなく、証明書利用者（Relying Party）が検証する。</button>
+          </div>
+          <div class="quiz-exp" id="q2-exp">
+            <strong>正解：イ</strong><br>
+            CSR（PKCS#10形式）には、申請者の公開鍵・識別名・そして申請者自身の秘密鍵による自己署名が含まれます。自己署名は「申請者が対応する秘密鍵を保有している」ことの証明です。<br>
+            ア：誤り。秘密鍵はCSRに含まれません。CSRを送付することで秘密鍵がCAに渡ることはありません。<br>
+            ウ：誤り。CSRは申請者が作成してRAに提出します。<br>
+            エ：誤り。CSRの自己署名はRAがCSR受理の際に検証します。
+          </div>
+        </div>
+
+        <div class="quiz" id="q3">
+          <div class="quiz-q">
+            <span class="quiz-qn">Q3</span>
+            <span>X.509証明書の検証において、証明書が信頼されるか否かを最終的に判断する基準として最も適切なものはどれか。</span>
+          </div>
+          <div class="quiz-opts">
+            <button class="quiz-opt" onclick="answer('q3','a','c')">ア. 証明書に記載されているIssuer（発行者）の名称が、著名なCA企業の名称と一致すること。</button>
+            <button class="quiz-opt" onclick="answer('q3','b','c')">イ. 証明書のSerialNumberが連番であり、重複がないこと。</button>
+            <button class="quiz-opt" onclick="answer('q3','c','c')">ウ. 証明書チェーンを辿った先のルートCA証明書が、検証者のトラストストア（信頼するルート証明書の一覧）に含まれていること。</button>
+            <button class="quiz-opt" onclick="answer('q3','d','c')">エ. 証明書に記載されているOCSP URLが応答可能な状態であること。</button>
+          </div>
+          <div class="quiz-exp" id="q3-exp">
+            <strong>正解：ウ</strong><br>
+            証明書の信頼の根拠は「ルートCAへの信頼」です。どれだけ著名なCAが発行した証明書でも、そのルートCA証明書がトラストストア（OSやブラウザが保持する信頼ルートCAリスト）に含まれていなければ信頼されません。<br>
+            ア：誤り。名称の一致だけでは不十分。署名の数学的な検証が必要です。<br>
+            イ：誤り。シリアル番号の連番性は信頼性の判断基準ではありません。<br>
+            エ：誤り。OCSP URLの応答可能性は失効確認に関するものであり、証明書の信頼判断の主たる基準ではありません。
+          </div>
+        </div>
+
+        <div class="quiz" id="q4">
+          <div class="quiz-q">
+            <span class="quiz-qn">Q4</span>
+            <span>PKIにおけるRAの役割として、最も適切なものはどれか。</span>
+          </div>
+          <div class="quiz-opts">
+            <button class="quiz-opt" onclick="answer('q4','a','b')">ア. デジタル証明書にCAの秘密鍵で署名し、発行する。</button>
+            <button class="quiz-opt" onclick="answer('q4','b','b')">イ. 申請者の本人確認・身元審査を行い、証明書の発行可否を判断してCAまたはIAへ発行指示を送る。</button>
+            <button class="quiz-opt" onclick="answer('q4','c','b')">ウ. 証明書の失効状態をリアルタイムに照会するサービスを提供する。</button>
+            <button class="quiz-opt" onclick="answer('q4','d','b')">エ. ルートCA証明書を自己署名し、PKI全体の信頼の起点となる。</button>
+          </div>
+          <div class="quiz-exp" id="q4-exp">
+            <strong>正解：イ</strong><br>
+            RA（登録局：Registration Authority）の主たる役割は「本人確認・審査・発行承認」です。CAとの役割分担により、CAは署名・発行に専念でき、RAが実際の審査業務を担います。<br>
+            ア：これはCA（またはIA）の役割です。<br>
+            ウ：これはOCSPレスポンダの役割です。<br>
+            エ：これはルートCAの役割です。
+          </div>
+        </div>
+
+        <div class="quiz" id="q5">
+          <div class="quiz-q">
+            <span class="quiz-qn">Q5</span>
+            <span>PKCS#12形式に関する記述として、最も適切なものはどれか。</span>
+          </div>
+          <div class="quiz-opts">
+            <button class="quiz-opt" onclick="answer('q5','a','c')">ア. 証明書署名要求（CSR）の形式を定義したもので、.csrや.pemの拡張子で扱われる。</button>
+            <button class="quiz-opt" onclick="answer('q5','b','c')">イ. S/MIMEやデジタル署名付きデータのコンテナ形式を定義したもので、.p7b拡張子で扱われる。</button>
+            <button class="quiz-opt" onclick="answer('q5','c','c')">ウ. デジタル証明書と対応する秘密鍵をパスワードで暗号化して一つのファイルにまとめたコンテナ形式で、.pfxや.p12の拡張子で扱われる。</button>
+            <button class="quiz-opt" onclick="answer('q5','d','c')">エ. ICカードやHSMなどの暗号トークンへのAPIインタフェースを定義したもので、ライブラリ形式で提供される。</button>
+          </div>
+          <div class="quiz-exp" id="q5-exp">
+            <strong>正解：ウ</strong><br>
+            PKCS#12（.pfx/.p12）は証明書と秘密鍵をまとめて暗号化して保管・移送するコンテナ形式です。ブラウザやサーバへの証明書インポート時によく使用されます。<br>
+            ア：PKCS#10の説明です（CSR形式）。<br>
+            イ：PKCS#7（CMS）の説明です（署名付きデータ・暗号化データのコンテナ）。<br>
+            エ：PKCS#11の説明です（暗号トークンAPIの定義）。
+          </div>
+        </div>
+
+        <div class="quiz" id="q6">
+          <div class="quiz-q">
+            <span class="quiz-qn">Q6</span>
+            <span>CPとCPSの関係に関する記述として、最も適切なものはどれか。</span>
+          </div>
+          <div class="quiz-opts">
+            <button class="quiz-opt" onclick="answer('q6','a','c')">ア. CPはCAが実際の運用手順を記述した文書であり、CPSは証明書ポリシーの要約版である。</button>
+            <button class="quiz-opt" onclick="answer('q6','b','c')">イ. CPはRAが定め、CPSはCAが定める。互いに独立した文書で参照関係はない。</button>
+            <button class="quiz-opt" onclick="answer('q6','c','c')">ウ. CPは「どのような目的・条件で証明書を発行するか」というポリシーを定め、CPSはそのポリシーに基づいてCAが「具体的にどう実施するか」を記述した運用規程である。</button>
+            <button class="quiz-opt" onclick="answer('q6','d','c')">エ. CPとCPSは完全に同一の内容を別の言葉で記述したもので、実質的な差異はない。</button>
+          </div>
+          <div class="quiz-exp" id="q6-exp">
+            <strong>正解：ウ</strong><br>
+            CP（Certificate Policy）は「What：何をするか」のポリシー文書。CPS（Certification Practice Statement）は「How：どのようにするか」の具体的な運用手順書です。法律（CP）と就業規則（CPS）の関係に例えられます。CPのOIDが証明書に埋め込まれることで、利用者がどのポリシーで発行されたかを確認できます。<br>
+            ア：誤り。記述が逆です。<br>
+            イ：誤り。CPSはCPに基づいて作成され、両者は密接に関連します。<br>
+            エ：誤り。抽象度・対象読者・記述の粒度が異なる別文書です。
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── 09 用語まとめ ── -->
+    <section class="section" id="s9">
+      <div class="section-header">
+        <span class="s-num">09</span>
+        <h2>重要用語まとめ</h2>
+      </div>
+
+      <h3>試験頻出キーワード</h3>
+      <table class="term-table">
+        <tr><td>PKI</td><td>Public Key Infrastructure。公開鍵暗号を安全に運用するためのインフラ全体。証明書・CA・CRL・OCSPを含む。</td></tr>
+        <tr><td>X.509</td><td>デジタル証明書の構造を定義するITU-T規格（v3が現在主流）。ITU-T X.509 ＝ ISO/IEC 9594-8。</td></tr>
+        <tr><td>TBSCertificate</td><td>To-Be-Signed Certificate。CAが署名する対象となる証明書の本体部分（Version〜Extensionsまで）。</td></tr>
+        <tr><td>Subject / Issuer</td><td>Subject：証明書の所有者（被証明者）のDN。Issuer：証明書を発行したCAのDN。</td></tr>
+        <tr><td>SubjectAltName（SAN）</td><td>証明書が有効なドメイン名・メールアドレスのリスト拡張。現代の証明書ではCNより優先される。</td></tr>
+        <tr><td>BasicConstraints</td><td>cA=TRUEでCA証明書、FALSEでエンドエンティティ証明書。X.509 v3拡張フィールド。</td></tr>
+        <tr><td>CA（認証局）</td><td>Certification Authority。証明書を発行・署名する機関。ルートCAと中間CAがある。</td></tr>
+        <tr><td>RA（登録局）</td><td>Registration Authority。本人確認・審査を担い、CAへ発行指示を送る機関。</td></tr>
+        <tr><td>IA（発行局）</td><td>Issuing Authority。実際の証明書の生成・署名・配布を行う機関。CAと統合される場合も多い。</td></tr>
+        <tr><td>CSR</td><td>Certificate Signing Request（PKCS#10形式）。申請者が公開鍵・DNと自己署名をCAへ提出する申請書。秘密鍵は含まない。</td></tr>
+        <tr><td>トラストストア</td><td>OSやブラウザが保持するルートCA証明書の一覧。証明書チェーン検証の最終判断基準。</td></tr>
+        <tr><td>PKCS#7（CMS）</td><td>署名付き・暗号化データのコンテナ形式。拡張子.p7b/.p7s。S/MIMEに使用。</td></tr>
+        <tr><td>PKCS#10</td><td>CSR（証明書署名要求）の形式。拡張子.csr。</td></tr>
+        <tr><td>PKCS#11</td><td>ICカード・HSMなど暗号トークンへのAPIインタフェース定義。</td></tr>
+        <tr><td>PKCS#12</td><td>証明書＋秘密鍵を暗号化してまとめるコンテナ形式。拡張子.pfx/.p12。</td></tr>
+        <tr><td>CP（証明書ポリシー）</td><td>「どのような条件で証明書を発行するか」のポリシー文書。OIDで証明書に埋め込まれる。</td></tr>
+        <tr><td>CPS（認証局運用規程）</td><td>「CAが具体的にどう運用するか」を記述した手順書。CPに基づいて作成。</td></tr>
+        <tr><td>DV / OV / EV証明書</td><td>Domain Validation / Organization Validation / Extended Validation。検証の厳格さと信頼度が異なる証明書の種類。</td></tr>
+        <tr><td>信頼チェーン（Chain of Trust）</td><td>ルートCA → 中間CA → エンドエンティティ証明書へと署名で連なる信頼の連鎖。</td></tr>
+        <tr><td>OCSP Stapling</td><td>サーバが事前にOCSPレスポンスを取得しTLSハンドシェイクに添付することでクライアントの負荷を軽減する手法。</td></tr>
+      </table>
+
+      <div class="keypoint" style="margin-top:28px">
+        <p class="kp-label">試験対策 6つの鉄則</p>
+        <p>
+          1. <strong>CSRに秘密鍵は含まれない</strong> — 公開鍵・DN・自己署名のみ。秘密鍵はCAに送らない<br>
+          2. <strong>証明書には公開鍵が入る、秘密鍵は入らない</strong> — CAが保証するのは「公開鍵と身元の結びつき」<br>
+          3. <strong>信頼の根拠はトラストストアにあるルートCA</strong> — 署名の数学的検証が信頼の証拠<br>
+          4. <strong>PKCS番号と用途を対応づけて覚える</strong> — #10=CSR、#12=証明書＋秘密鍵コンテナ、#7=署名付きデータ、#11=トークンAPI<br>
+          5. <strong>CPはWhat（ポリシー）、CPSはHow（手順）</strong> — 証明書に埋め込まれるのはCPのOID<br>
+          6. <strong>証明書検証は5ステップ</strong> — 有効期限・トラストストア到達・チェーンレベル・失効確認・ホスト名一致
+        </p>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  <p>PKI（公開鍵基盤）技術解説書 Ver.1 — 情報処理安全確保支援士試験 対応版</p>
+  <p>シラバス Ver.2.1 | 3-1 暗号利用及び鍵管理 / 2-4 セキュリティ機能の設計・実装 / 3-8 アカウント管理及びアクセス管理</p>
+</footer>
+
+<script>
+  function setActive(el) {
+    document.querySelectorAll('.sidebar nav a').forEach(a => a.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  function answer(qid, selected, correct) {
+    const quiz = document.getElementById(qid);
+    const opts = quiz.querySelectorAll('.quiz-opt');
+    const exp = document.getElementById(qid + '-exp');
+    const letters = ['a','b','c','d'];
+    opts.forEach((btn, i) => {
+      btn.disabled = true;
+      const letter = letters[i];
+      if (letter === correct) {
+        btn.classList.add('correct');
+      } else if (letter === selected) {
+        btn.classList.add('wrong');
+      } else {
+        btn.classList.add('reveal');
+      }
+    });
+    exp.classList.add('show');
+    exp.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  // Active sidebar on scroll
+  const sections = document.querySelectorAll('section.section');
+  const navLinks = document.querySelectorAll('.sidebar nav a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(sec => {
+      if (window.scrollY >= sec.offsetTop - 80) current = sec.id;
+    });
+    navLinks.forEach(link => {
+      link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+    });
+  }, { passive: true });
+</script>
+</body>
+</html>
