@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AZ-305 解説：AKS + API Management アーキテクチャ</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+  :root {
+    --azure-blue: #0078D4;
+    --azure-dark: #003A6C;
+    --azure-light: #EFF6FF;
+    --azure-teal: #00BCF2;
+    --azure-navy: #001E4A;
+    --accent-green: #107C10;
+    --accent-red: #D13438;
+    --accent-orange: #F7630C;
+    --accent-yellow: #FFB900;
+    --bg: #F8FAFC;
+    --surface: #FFFFFF;
+    --text: #1A1A2E;
+    --text-muted: #6B7280;
+    --border: #E2E8F0;
+    --shadow: 0 4px 24px rgba(0,120,212,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    font-size: 15px;
+  }
+
+  .hero {
+    background: linear-gradient(135deg, var(--azure-navy) 0%, var(--azure-dark) 50%, #005A9E 100%);
+    color: white;
+    padding: 48px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    background: rgba(0,188,242,0.06);
+    pointer-events: none;
+  }
+  .hero-tag {
+    display: inline-block;
+    background: rgba(0,188,242,0.2);
+    border: 1px solid rgba(0,188,242,0.4);
+    color: var(--azure-teal);
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+  }
+  .hero h1 {
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 1.4;
+    margin-bottom: 12px;
+    max-width: 800px;
+  }
+  .hero p { color: rgba(255,255,255,0.75); font-size: 14px; max-width: 700px; }
+
+  .container { max-width: 960px; margin: 0 auto; padding: 40px 24px; }
+
+  /* Question Box */
+  .question-box {
+    background: white;
+    border: 2px solid var(--azure-blue);
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 32px;
+    box-shadow: var(--shadow);
+  }
+  .question-box h2 {
+    color: var(--azure-blue);
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .req-list { list-style: none; }
+  .req-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+  }
+  .req-list li:last-child { border-bottom: none; }
+  .req-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .req-icon.lock { background: #FFF3CD; color: #856404; }
+  .req-icon.rate { background: #D1ECF1; color: #0C5460; }
+  .req-icon.cost { background: #D4EDDA; color: #155724; }
+
+  /* Answer Section */
+  .answer-section {
+    background: linear-gradient(135deg, #E8F4FD 0%, #F0F9FF 100%);
+    border: 2px solid var(--azure-teal);
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 32px;
+  }
+  .answer-section h2 {
+    color: var(--azure-dark);
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 16px;
+  }
+  .answer-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--azure-blue);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 16px;
+  }
+
+  /* Architecture SVG */
+  .arch-container {
+    background: white;
+    border-radius: 16px;
+    padding: 32px;
+    margin-bottom: 32px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .arch-container h2 {
+    color: var(--azure-dark);
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--azure-light);
+  }
+
+  /* Explanation Cards */
+  .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 32px; }
+  @media(max-width:640px){ .card-grid { grid-template-columns: 1fr; } }
+
+  .exp-card {
+    background: white;
+    border-radius: 14px;
+    padding: 22px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    border-top: 4px solid var(--azure-blue);
+  }
+  .exp-card.green { border-top-color: var(--accent-green); }
+  .exp-card.teal { border-top-color: var(--azure-teal); }
+  .exp-card.orange { border-top-color: var(--accent-orange); }
+
+  .exp-card h3 {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .exp-card p { font-size: 13px; color: #374151; line-height: 1.6; }
+
+  /* Comparison Table */
+  .section-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--azure-dark);
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 3px solid var(--azure-blue);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 32px;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    font-size: 13px;
+  }
+  .comparison-table thead tr {
+    background: var(--azure-dark);
+    color: white;
+  }
+  .comparison-table th {
+    padding: 14px 16px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 13px;
+  }
+  .comparison-table th:first-child { text-align: left; }
+  .comparison-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    text-align: center;
+    vertical-align: middle;
+  }
+  .comparison-table td:first-child {
+    text-align: left;
+    font-weight: 600;
+    color: var(--azure-dark);
+  }
+  .comparison-table tr:last-child td { border-bottom: none; }
+  .comparison-table tr:nth-child(even) td { background: #F8FAFC; }
+  .comparison-table tr.highlight td { background: #EFF6FF !important; }
+
+  .check { color: var(--accent-green); font-weight: 700; font-size: 16px; }
+  .cross { color: var(--accent-red); font-weight: 700; font-size: 16px; }
+  .partial { color: var(--accent-yellow); font-weight: 700; font-size: 16px; }
+
+  .tier-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .tier-recommended { background: #D4EDDA; color: #155724; }
+  .tier-premium { background: #CCE5FF; color: #004085; }
+  .tier-dev { background: #FFF3CD; color: #856404; }
+
+  /* Why others are wrong */
+  .wrong-section {
+    background: white;
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 32px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .wrong-item {
+    display: flex;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .wrong-item:last-child { border-bottom: none; }
+  .wrong-icon-wrap {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 18px;
+  }
+  .wrong-icon-wrap.red { background: #FDE8E8; }
+  .wrong-icon-wrap.yellow { background: #FFF3CD; }
+  .wrong-text h4 { font-size: 14px; font-weight: 700; margin-bottom: 4px; color: var(--azure-dark); }
+  .wrong-text p { font-size: 13px; color: #4B5563; line-height: 1.5; }
+
+  /* Key Points */
+  .key-points {
+    background: linear-gradient(135deg, var(--azure-dark), var(--azure-blue));
+    border-radius: 16px;
+    padding: 28px;
+    color: white;
+    margin-bottom: 32px;
+  }
+  .key-points h2 { font-size: 18px; font-weight: 700; margin-bottom: 18px; }
+  .kp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media(max-width:600px){ .kp-grid { grid-template-columns: 1fr; } }
+  .kp-item {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 10px;
+    padding: 14px;
+    font-size: 13px;
+  }
+  .kp-item strong { display: block; font-size: 14px; margin-bottom: 4px; color: var(--azure-teal); }
+
+  /* APIM feature list */
+  .feature-list { list-style: none; }
+  .feature-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 0;
+    font-size: 14px;
+    border-bottom: 1px dashed var(--border);
+  }
+  .feature-list li:last-child { border-bottom: none; }
+  .feature-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--azure-blue);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-tag">AZ-305 解説 — Infrastructure Solutions</div>
+  <h1>AKS マイクロサービス公開：単一プライベート IP + mTLS + レート制限</h1>
+  <p>Azure API Management (内部モード) を活用した、コスト最適なプライベートマイクロサービス公開アーキテクチャ</p>
+</div>
+
+<div class="container">
+
+  <!-- Question -->
+  <div class="question-box">
+    <h2>📋 問題の要件</h2>
+    <ul class="req-list">
+      <li>
+        <span class="req-icon lock">🔒</span>
+        <div><strong>要件①：単一プライベート IP + mTLS</strong><br>マイクロサービスへのイングレスアクセスは <strong>単一のプライベート IP アドレス</strong> に制限し、<strong>相互TLS (mTLS) 認証</strong>で保護する</div>
+      </li>
+      <li>
+        <span class="req-icon rate">⚡</span>
+        <div><strong>要件②：レート制限</strong><br>マイクロサービスへの受信リクエストに<strong>レート制限</strong>を適用する</div>
+      </li>
+      <li>
+        <span class="req-icon cost">💰</span>
+        <div><strong>要件③：コスト最小化</strong><br>ソリューション全体のコストを最小化する</div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Answer -->
+  <div class="answer-section">
+    <h2>✅ 正解</h2>
+    <div class="answer-badge">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+      Azure API Management (APIM) — 内部モード (Internal VNet Integration)
+    </div>
+    <p style="font-size:14px; color:#374151;">
+      APIM を <strong>内部モード（Internal）</strong> で仮想ネットワークに統合することで、3つの要件をすべて単一サービスで満たしながら、コストを最小化できます。
+    </p>
+  </div>
+
+  <!-- Architecture Diagram -->
+  <div class="arch-container">
+    <h2>🏗️ ソリューション アーキテクチャ</h2>
+    <svg width="100%" viewBox="0 0 860 460" xmlns="http://www.w3.org/2000/svg" style="max-width:860px; display:block; margin:0 auto;">
+      <defs>
+        <marker id="arrow" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#0078D4"/>
+        </marker>
+        <marker id="arrow2" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#107C10"/>
+        </marker>
+        <filter id="shadow">
+          <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="rgba(0,0,0,0.12)"/>
+        </filter>
+      </defs>
+
+      <!-- Virtual Network background -->
+      <rect x="10" y="10" width="840" height="440" rx="16" fill="#F0F9FF" stroke="#0078D4" stroke-width="2" stroke-dasharray="8,4"/>
+      <text x="24" y="34" font-family="Arial" font-size="13" font-weight="bold" fill="#003A6C">Virtual Network (同一 VNet)</text>
+
+      <!-- VM Subnet -->
+      <rect x="30" y="50" width="200" height="150" rx="12" fill="#E8F4FD" stroke="#0078D4" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="42" y="72" font-family="Arial" font-size="11" font-weight="bold" fill="#005A9E">VM サブネット</text>
+
+      <!-- Azure VM -->
+      <rect x="70" y="85" width="120" height="90" rx="10" fill="white" stroke="#0078D4" stroke-width="1.5" filter="url(#shadow)"/>
+      <!-- VM Icon (simplified) -->
+      <rect x="90" y="100" width="30" height="22" rx="3" fill="#0078D4"/>
+      <rect x="92" y="102" width="26" height="16" rx="2" fill="#50E6FF"/>
+      <rect x="95" y="120" width="20" height="3" rx="1" fill="#0078D4"/>
+      <text x="95" y="148" font-family="Arial" font-size="10" font-weight="bold" fill="#003A6C">Azure VM</text>
+      <text x="82" y="162" font-family="Arial" font-size="9" fill="#6B7280">コンシューマーアプリ</text>
+
+      <!-- APIM Subnet -->
+      <rect x="280" y="50" width="220" height="150" rx="12" fill="#E6F3FF" stroke="#0078D4" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="292" y="72" font-family="Arial" font-size="11" font-weight="bold" fill="#005A9E">APIM サブネット</text>
+
+      <!-- APIM Box -->
+      <rect x="300" y="82" width="180" height="100" rx="12" fill="white" stroke="#0078D4" stroke-width="2" filter="url(#shadow)"/>
+      <!-- APIM Icon -->
+      <circle cx="340" cy="115" r="16" fill="#0078D4"/>
+      <text x="334" y="120" font-family="Arial" font-size="13" fill="white" font-weight="bold">API</text>
+      <text x="322" y="140" font-family="Arial" font-size="11" font-weight="bold" fill="#003A6C">Azure API Management</text>
+      <text x="316" y="155" font-family="Arial" font-size="9" fill="#107C10" font-weight="bold">● Internal モード (VNet統合)</text>
+      <text x="316" y="170" font-family="Arial" font-size="9" fill="#6B7280">単一 Private IP: 10.0.X.X</text>
+
+      <!-- Feature badges on APIM -->
+      <rect x="305" y="178" width="50" height="16" rx="8" fill="#D4EDDA"/>
+      <text x="314" y="190" font-family="Arial" font-size="8" fill="#155724" font-weight="bold">mTLS</text>
+      <rect x="360" y="178" width="65" height="16" rx="8" fill="#CCE5FF"/>
+      <text x="366" y="190" font-family="Arial" font-size="8" fill="#004085" font-weight="bold">Rate Limit</text>
+      <rect x="430" y="178" width="42" height="16" rx="8" fill="#FFF3CD"/>
+      <text x="435" y="190" font-family="Arial" font-size="8" fill="#856404" font-weight="bold">Routing</text>
+
+      <!-- AKS Subnet -->
+      <rect x="550" y="50" width="280" height="390" rx="12" fill="#E8F5E9" stroke="#107C10" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="562" y="72" font-family="Arial" font-size="11" font-weight="bold" fill="#155724">AKS サブネット</text>
+
+      <!-- AKS cluster box -->
+      <rect x="565" y="82" width="250" height="340" rx="10" fill="white" stroke="#107C10" stroke-width="1.5" filter="url(#shadow)"/>
+      <!-- AKS Icon -->
+      <circle cx="620" cy="110" r="14" fill="#107C10"/>
+      <text x="610" y="115" font-family="Arial" font-size="12" fill="white" font-weight="bold">AKS</text>
+      <text x="600" y="132" font-family="Arial" font-size="10" font-weight="bold" fill="#155724">AKS クラスター</text>
+
+      <!-- Ingress Controller -->
+      <rect x="580" y="145" width="220" height="48" rx="8" fill="#F0FFF4" stroke="#107C10" stroke-width="1"/>
+      <text x="595" y="166" font-family="Arial" font-size="10" font-weight="bold" fill="#155724">🔀 Ingress Controller</text>
+      <text x="595" y="182" font-family="Arial" font-size="9" fill="#4B5563">(内部 LoadBalancer)</text>
+
+      <!-- Microservice pods -->
+      <text x="585" y="215" font-family="Arial" font-size="10" font-weight="bold" fill="#155724">マイクロサービス Pods</text>
+      
+      <!-- Pod A -->
+      <rect x="580" y="222" width="68" height="52" rx="8" fill="#F0FFF4" stroke="#107C10" stroke-width="1"/>
+      <rect x="590" y="230" width="48" height="30" rx="4" fill="#107C10" opacity="0.15"/>
+      <text x="592" y="248" font-family="Arial" font-size="9" fill="#155724" font-weight="bold">Service A</text>
+      <circle cx="594" cy="262" r="4" fill="#107C10"/>
+      <circle cx="605" cy="262" r="4" fill="#107C10"/>
+      <circle cx="616" cy="262" r="4" fill="#107C10"/>
+
+      <!-- Pod B -->
+      <rect x="656" y="222" width="68" height="52" rx="8" fill="#F0FFF4" stroke="#107C10" stroke-width="1"/>
+      <rect x="666" y="230" width="48" height="30" rx="4" fill="#107C10" opacity="0.15"/>
+      <text x="668" y="248" font-family="Arial" font-size="9" fill="#155724" font-weight="bold">Service B</text>
+      <circle cx="670" cy="262" r="4" fill="#107C10"/>
+      <circle cx="681" cy="262" r="4" fill="#107C10"/>
+      <circle cx="692" cy="262" r="4" fill="#107C10"/>
+
+      <!-- Pod C -->
+      <rect x="732" y="222" width="68" height="52" rx="8" fill="#F0FFF4" stroke="#107C10" stroke-width="1"/>
+      <rect x="742" y="230" width="48" height="30" rx="4" fill="#107C10" opacity="0.15"/>
+      <text x="744" y="248" font-family="Arial" font-size="9" fill="#155724" font-weight="bold">Service C</text>
+      <circle cx="746" cy="262" r="4" fill="#107C10"/>
+      <circle cx="757" cy="262" r="4" fill="#107C10"/>
+      <circle cx="768" cy="262" r="4" fill="#107C10"/>
+
+      <!-- ConfigMap/HPA etc -->
+      <rect x="580" y="290" width="220" height="110" rx="8" fill="#FAFAFA" stroke="#ddd" stroke-width="1"/>
+      <text x="593" y="310" font-family="Arial" font-size="9" fill="#6B7280" font-weight="bold">Node Pool / Kubernetes Resources</text>
+      <rect x="590" y="318" width="60" height="24" rx="4" fill="#E3F2FD" stroke="#2196F3" stroke-width="1"/>
+      <text x="596" y="334" font-family="Arial" font-size="8" fill="#1565C0">ConfigMap</text>
+      <rect x="658" y="318" width="60" height="24" rx="4" fill="#E3F2FD" stroke="#2196F3" stroke-width="1"/>
+      <text x="666" y="334" font-family="Arial" font-size="8" fill="#1565C0">Secrets</text>
+      <rect x="726" y="318" width="60" height="24" rx="4" fill="#E3F2FD" stroke="#2196F3" stroke-width="1"/>
+      <text x="736" y="334" font-family="Arial" font-size="8" fill="#1565C0">Services</text>
+      <rect x="590" y="350" width="90" height="40" rx="6" fill="#FFF9C4" stroke="#F9A825" stroke-width="1"/>
+      <text x="597" y="367" font-family="Arial" font-size="8" fill="#E65100" font-weight="bold">Worker Node x2</text>
+      <text x="597" y="381" font-family="Arial" font-size="8" fill="#6B7280">Standard_D2s_v3</text>
+      <rect x="690" y="350" width="98" height="40" rx="6" fill="#FFF9C4" stroke="#F9A825" stroke-width="1"/>
+      <text x="700" y="367" font-family="Arial" font-size="8" fill="#E65100" font-weight="bold">System Node x1</text>
+      <text x="700" y="381" font-family="Arial" font-size="8" fill="#6B7280">Standard_D2s_v3</text>
+
+      <!-- Arrows -->
+      <!-- VM → APIM -->
+      <line x1="190" y1="130" x2="296" y2="130" stroke="#0078D4" stroke-width="2" marker-end="url(#arrow)"/>
+      <rect x="196" y="112" width="96" height="18" rx="9" fill="white" stroke="#0078D4" stroke-width="1"/>
+      <text x="205" y="124" font-family="Arial" font-size="9" fill="#0078D4" font-weight="bold">HTTPS (mTLS)</text>
+
+      <!-- APIM → AKS Ingress -->
+      <line x1="482" y1="132" x2="562" y2="168" stroke="#107C10" stroke-width="2" marker-end="url(#arrow2)"/>
+      <rect x="484" y="138" width="74" height="18" rx="9" fill="white" stroke="#107C10" stroke-width="1"/>
+      <text x="488" y="150" font-family="Arial" font-size="9" fill="#107C10" font-weight="bold">Private Traffic</text>
+
+      <!-- Ingress → Pods -->
+      <line x1="614" y1="193" x2="614" y2="218" stroke="#107C10" stroke-width="1.5" marker-end="url(#arrow2)"/>
+      <line x1="690" y1="193" x2="690" y2="218" stroke="#107C10" stroke-width="1.5" marker-end="url(#arrow2)"/>
+      <line x1="766" y1="193" x2="766" y2="218" stroke="#107C10" stroke-width="1.5" marker-end="url(#arrow2)"/>
+
+      <!-- Private IP callout -->
+      <rect x="296" y="198" width="168" height="22" rx="11" fill="#003A6C"/>
+      <text x="314" y="213" font-family="Arial" font-size="10" fill="white" font-weight="bold">🔒 単一 Private IP のみ公開</text>
+    </svg>
+  </div>
+
+  <!-- Why APIM is the answer -->
+  <h2 class="section-title">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="#0078D4"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+    APIM Internal モードが正解の理由
+  </h2>
+
+  <div class="card-grid">
+    <div class="exp-card">
+      <h3>
+        <span style="background:#FDE8E8;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;">🔒</span>
+        要件① — 単一 Private IP + mTLS
+      </h3>
+      <p>
+        APIM を <strong>Internal VNet 統合モード</strong>でデプロイすると、パブリックエンドポイントを持たない<strong>単一のプライベート IP アドレス</strong>のみが外部に公開されます。<br><br>
+        APIM のポリシーエンジンで <code>validate-client-certificate</code> ポリシーを使用することで、<strong>相互 TLS (mTLS)</strong> — クライアント証明書の検証 — を実装できます。
+      </p>
+    </div>
+
+    <div class="exp-card green">
+      <h3>
+        <span style="background:#D4EDDA;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;">⚡</span>
+        要件② — レート制限
+      </h3>
+      <p>
+        APIM は <strong>rate-limit</strong> および <strong>rate-limit-by-key</strong> ポリシーを組み込みで提供します。<br><br>
+        コードを書かずに GUI または XML ポリシーで、呼び出し元 IP・サブスクリプションキー・カスタム変数ごとのレート制限を設定できます。追加サービス不要です。
+      </p>
+    </div>
+
+    <div class="exp-card teal">
+      <h3>
+        <span style="background:#D1ECF1;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;">💰</span>
+        要件③ — コスト最小化
+      </h3>
+      <p>
+        同等機能を実現するために <strong>Application Gateway + Istio Service Mesh</strong> などを組み合わせると、複数サービスのコストが累積します。<br><br>
+        APIM 単体ですべての要件を満たすため、追加サービスが不要でコストを最小化できます。Developer ティア（開発用）または Standard v2 ティアが最もコスト効果的です。
+      </p>
+    </div>
+
+    <div class="exp-card orange">
+      <h3>
+        <span style="background:#FDEDE8;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;">🌐</span>
+        VNet 内での動作
+      </h3>
+      <p>
+        VM と AKS が同一 VNet 内にあるため、APIM の Internal モードは<strong>パブリックインターネットを経由せず</strong>、VNet 内部の Private IP で通信します。<br><br>
+        VM → APIM → AKS Ingress の経路がすべてプライベートネットワーク内で完結します。
+      </p>
+    </div>
+  </div>
+
+  <!-- APIM Features -->
+  <div class="arch-container">
+    <h2>⚙️ APIM の主要ポリシー機能</h2>
+    <ul class="feature-list">
+      <li>
+        <span class="feature-dot">1</span>
+        <div><strong>validate-client-certificate ポリシー</strong>：クライアント証明書を検証し mTLS を実装。証明書の発行者・サブジェクト・拇印による細かい制御が可能。</div>
+      </li>
+      <li>
+        <span class="feature-dot">2</span>
+        <div><strong>rate-limit ポリシー</strong>：時間窓あたりの呼び出し回数を制限（例：60秒あたり100回）。超過時は 429 Too Many Requests を返す。</div>
+      </li>
+      <li>
+        <span class="feature-dot">3</span>
+        <div><strong>rate-limit-by-key ポリシー</strong>：IP アドレス・ユーザーID・カスタムキーごとに個別レート制限を適用。</div>
+      </li>
+      <li>
+        <span class="feature-dot">4</span>
+        <div><strong>Internal VNet モード</strong>：パブリック IP を持たず、単一 Private IP のみ公開。インターネットからのアクセスを完全にブロック。</div>
+      </li>
+      <li>
+        <span class="feature-dot">5</span>
+        <div><strong>バックエンドルーティング</strong>：受信リクエストを AKS クラスターの内部サービスエンドポイントへルーティング。ロードバランシング・フォールバックも設定可能。</div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Comparison Table -->
+  <h2 class="section-title">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="#0078D4"><path d="M3 3h18v18H3z" fill="none" stroke="#0078D4" stroke-width="2"/><path d="M3 9h18M3 15h18M9 3v18" stroke="#0078D4" stroke-width="2"/></svg>
+    類似サービスとの比較表
+  </h2>
+
+  <table class="comparison-table">
+    <thead>
+      <tr>
+        <th style="min-width:160px;">サービス/構成</th>
+        <th>単一Private IP</th>
+        <th>mTLS対応</th>
+        <th>レート制限</th>
+        <th>VNet統合</th>
+        <th>コスト効率</th>
+        <th>評価</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="highlight">
+        <td>
+          <strong>Azure API Management</strong><br>
+          <span class="tier-badge tier-recommended">Internal モード</span>
+        </td>
+        <td><span class="check">✓</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="check">✓✓</span></td>
+        <td><span class="check">✅ 正解</span></td>
+      </tr>
+      <tr>
+        <td>
+          <strong>Application Gateway</strong><br>
+          <span class="tier-badge tier-dev">WAF SKU</span>
+        </td>
+        <td><span class="check">✓</span></td>
+        <td><span class="check">✓</span><br><small>クライアント証明書</small></td>
+        <td><span class="cross">✗</span><br><small>ネイティブ非対応</small></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="partial">△</span><br><small>高コスト</small></td>
+        <td>❌ レート制限なし</td>
+      </tr>
+      <tr>
+        <td>
+          <strong>Azure Load Balancer</strong><br>
+          <span class="tier-badge tier-dev">内部 LB</span>
+        </td>
+        <td><span class="check">✓</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="check">✓✓✓</span><br><small>最安</small></td>
+        <td>❌ mTLS/レート制限なし</td>
+      </tr>
+      <tr>
+        <td>
+          <strong>Istio Service Mesh</strong><br>
+          <small>AKS アドオン</small>
+        </td>
+        <td><span class="partial">△</span><br><small>追加設定要</small></td>
+        <td><span class="check">✓</span><br><small>Pod間mTLS</small></td>
+        <td><span class="check">✓</span><br><small>Envoy経由</small></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="partial">△</span><br><small>複雑・AKS依存</small></td>
+        <td>⚠️ 単一Private IP要件が複雑</td>
+      </tr>
+      <tr>
+        <td>
+          <strong>App Gateway + APIM</strong><br>
+          <small>組み合わせ</small>
+        </td>
+        <td><span class="check">✓</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="cross">✗</span><br><small>高コスト</small></td>
+        <td>❌ コスト要件に不適合</td>
+      </tr>
+      <tr>
+        <td>
+          <strong>Azure Front Door</strong><br>
+          <small>Premium SKU</small>
+        </td>
+        <td><span class="cross">✗</span><br><small>パブリックのみ</small></td>
+        <td><span class="partial">△</span></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="cross">✗</span><br><small>内部VNet非対応</small></td>
+        <td><span class="cross">✗</span><br><small>高コスト</small></td>
+        <td>❌ パブリック前提</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- APIM Tier Comparison -->
+  <h2 class="section-title" style="margin-top:8px;">
+    💳 APIM ティア比較（VNet統合対応）
+  </h2>
+
+  <table class="comparison-table">
+    <thead>
+      <tr>
+        <th>ティア</th>
+        <th>VNet統合</th>
+        <th>Internal モード</th>
+        <th>月額コスト目安</th>
+        <th>SLA</th>
+        <th>用途</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Consumption</strong></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td>従量課金</td>
+        <td>99.95%</td>
+        <td>非VNet用途</td>
+      </tr>
+      <tr>
+        <td><strong>Developer</strong></td>
+        <td><span class="check">✓</span></td>
+        <td><span class="check">✓</span></td>
+        <td>～$50</td>
+        <td>なし</td>
+        <td>開発・テスト</td>
+      </tr>
+      <tr class="highlight">
+        <td>
+          <strong>Basic v2</strong><br>
+          <span class="tier-badge tier-recommended">コスト最小推奨</span>
+        </td>
+        <td><span class="check">✓</span></td>
+        <td><span class="check">✓</span></td>
+        <td>～$130</td>
+        <td>99.95%</td>
+        <td>本番・コスト重視</td>
+      </tr>
+      <tr>
+        <td>
+          <strong>Standard v2</strong>
+        </td>
+        <td><span class="check">✓</span></td>
+        <td><span class="check">✓</span></td>
+        <td>～$250</td>
+        <td>99.95%</td>
+        <td>中規模本番</td>
+      </tr>
+      <tr>
+        <td>
+          <strong>Premium</strong><br>
+          <span class="tier-badge tier-premium">マルチリージョン</span>
+        </td>
+        <td><span class="check">✓</span></td>
+        <td><span class="check">✓</span></td>
+        <td>～$2,800+</td>
+        <td>99.99%</td>
+        <td>大規模エンタープライズ</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Why others are wrong -->
+  <div class="wrong-section">
+    <h2 class="section-title">
+      ❌ 不正解となる選択肢とその理由
+    </h2>
+    <div class="wrong-item">
+      <div class="wrong-icon-wrap red">🔴</div>
+      <div class="wrong-text">
+        <h4>Application Gateway のみ</h4>
+        <p>Application Gateway はレイヤー7のロードバランサーで、mTLS（クライアント証明書認証）には対応していますが、<strong>ネイティブのレート制限機能を持っていません</strong>。WAF ルールで一部制御可能ですが、精密なレート制限には向かず、また APIM よりコストが高くなります。</p>
+      </div>
+    </div>
+    <div class="wrong-item">
+      <div class="wrong-icon-wrap red">🔴</div>
+      <div class="wrong-text">
+        <h4>Azure Load Balancer (Internal) のみ</h4>
+        <p>内部ロードバランサーは単一プライベート IP とレイヤー4の負荷分散を提供しますが、<strong>mTLS 認証もレート制限も提供しません</strong>。コストは最安ですが、要件を満たせません。</p>
+      </div>
+    </div>
+    <div class="wrong-item">
+      <div class="wrong-icon-wrap red">🔴</div>
+      <div class="wrong-text">
+        <h4>Azure Front Door</h4>
+        <p>Azure Front Door はグローバルな HTTP/HTTPS ロードバランサーで、<strong>パブリック インターネット向けのサービス</strong>です。内部 VNet のみでのアクセス制限（単一プライベート IP）という要件を満たせません。</p>
+      </div>
+    </div>
+    <div class="wrong-item">
+      <div class="wrong-icon-wrap yellow">⚠️</div>
+      <div class="wrong-text">
+        <h4>Application Gateway + APIM の組み合わせ</h4>
+        <p>機能的には要件をすべて満たしますが、<strong>2つのサービスのコストが累積</strong>します。「コストを最小化する」という要件に反するため、APIM 単体の Internal モードが優れた選択です。</p>
+      </div>
+    </div>
+    <div class="wrong-item">
+      <div class="wrong-icon-wrap yellow">⚠️</div>
+      <div class="wrong-text">
+        <h4>Istio Service Mesh のみ</h4>
+        <p>Istio は AKS のアドオンとして Pod 間の mTLS を実現できますが、<strong>VM からの単一プライベート IP アクセス</strong>という要件には追加のイングレス設定が必要です。また、設定の複雑さとオーバーヘッドがあり、APIM 単体より管理コストが高くなります。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Key Points Summary -->
+  <div class="key-points">
+    <h2>🎯 試験攻略ポイント まとめ</h2>
+    <div class="kp-grid">
+      <div class="kp-item">
+        <strong>単一 Private IP = APIM Internal モード</strong>
+        「単一の Private IP」「プライベートのみ公開」が出たら APIM の Internal VNet 統合を即座に想起する
+      </div>
+      <div class="kp-item">
+        <strong>mTLS = APIM validate-client-certificate ポリシー</strong>
+        APIM は組み込みで mTLS（クライアント証明書検証）に対応。追加サービス不要
+      </div>
+      <div class="kp-item">
+        <strong>レート制限 = APIM rate-limit ポリシー</strong>
+        Application Gateway・Load Balancer にはネイティブレート制限がない。APIM の強みの一つ
+      </div>
+      <div class="kp-item">
+        <strong>コスト最小 = 1サービスで複数要件を満たす</strong>
+        複数サービスの組み合わせは要件を満たしても「コスト最小」に反する場合がある
+      </div>
+      <div class="kp-item">
+        <strong>APIM の VNet 対応ティア</strong>
+        Consumption ティアは VNet 統合非対応。Developer / Basic v2 以上が必要
+      </div>
+      <div class="kp-item">
+        <strong>同一 VNet 内の通信</strong>
+        VM と AKS が同一 VNet なら、APIM Internal モードで完全にプライベートな通信経路を構築できる
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

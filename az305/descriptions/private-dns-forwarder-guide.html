@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Azure プライベート DNS ゾーン フォワーダー設定 | AZ-305</title>
+<style>
+  :root {
+    --blue:#0078D4; --dark:#003A6C; --teal:#00B294; --green:#107C10;
+    --orange:#D83B01; --purple:#5C2D91; --red:#A4262C; --gray:#605E5C;
+    --bg:#F3F2F1; --white:#fff; --border:#EDEBE9; --text:#201F1E;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Segoe UI',system-ui,sans-serif; background:var(--bg); color:var(--text); line-height:1.65; }
+
+  .hero { background:linear-gradient(135deg,#003A6C,#0078D4 60%,#00B294); color:white; padding:44px 40px; }
+  .hero-badge { display:inline-block; background:rgba(255,255,255,0.18); border:1px solid rgba(255,255,255,0.4); border-radius:20px; padding:3px 14px; font-size:11px; font-weight:700; letter-spacing:.8px; margin-bottom:12px; }
+  .hero h1 { font-size:1.75rem; font-weight:700; margin-bottom:8px; }
+  .hero p { font-size:.93rem; opacity:.88; max-width:700px; }
+
+  .container { max-width:1000px; margin:0 auto; padding:36px 24px; }
+
+  .card { background:var(--white); border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,.1); margin-bottom:28px; overflow:hidden; }
+  .card-header { display:flex; align-items:center; gap:12px; padding:18px 26px; }
+  .ch-blue   { border-bottom:3px solid var(--blue);   background:linear-gradient(90deg,rgba(0,120,212,.07),transparent); }
+  .ch-green  { border-bottom:3px solid var(--green);  background:linear-gradient(90deg,rgba(16,124,16,.07),transparent); }
+  .ch-orange { border-bottom:3px solid var(--orange); background:linear-gradient(90deg,rgba(216,59,1,.07),transparent); }
+  .ch-purple { border-bottom:3px solid var(--purple); background:linear-gradient(90deg,rgba(92,45,145,.07),transparent); }
+  .ch-red    { border-bottom:3px solid var(--red);    background:linear-gradient(90deg,rgba(164,38,44,.07),transparent); }
+  .card-header h2 { font-size:1.15rem; font-weight:700; color:var(--dark); }
+  .dot { width:16px; height:16px; border-radius:4px; flex-shrink:0; }
+  .card-body { padding:26px; }
+
+  p.note { font-size:.88rem; margin-bottom:14px; color:#323130; }
+  h3.sub { font-size:.97rem; font-weight:700; color:var(--dark); margin:22px 0 10px; }
+
+  .diagram { background:#FAFAFA; border:1px solid var(--border); border-radius:8px; padding:20px; margin:16px 0; overflow-x:auto; }
+  .dtitle { font-size:.78rem; font-weight:700; color:var(--gray); margin-bottom:14px; text-transform:uppercase; letter-spacing:.5px; }
+
+  .box { border-radius:7px; padding:9px 14px; font-size:.82rem; font-weight:600; line-height:1.35; text-align:center; }
+  .box small { display:block; font-size:.72rem; font-weight:400; opacity:.8; margin-top:2px; }
+  .box.blue   { background:#EFF6FC; border:2px solid var(--blue);   color:var(--dark); }
+  .box.green  { background:#DFF6DD; border:2px solid var(--green);  color:#0A4A0A; }
+  .box.orange { background:#FFF0EB; border:2px solid var(--orange); color:#7A2000; }
+  .box.purple { background:#F4F0FF; border:2px solid var(--purple); color:#3B0E7A; }
+  .box.gray   { background:#F3F2F1; border:2px solid var(--gray);   color:#323130; }
+  .box.dark   { background:var(--dark); border:2px solid var(--dark); color:white; }
+  .box.teal   { background:#E8FBF8; border:2px solid var(--teal);   color:#00695C; }
+  .box.red    { background:#FDE7E9; border:2px solid var(--red);    color:var(--red); }
+  .box.white  { background:white; border:1.5px solid var(--border); color:var(--text); }
+
+  .flow { display:flex; align-items:center; flex-wrap:wrap; gap:6px; margin:6px 0; }
+  .arr { font-size:1.2rem; color:var(--gray); padding:0 2px; align-self:center; flex-shrink:0; }
+  .arr.blue   { color:var(--blue); }
+  .arr.green  { color:var(--green); }
+  .arr.red    { color:var(--red); }
+  .arr.orange { color:var(--orange); }
+
+  /* 選択肢ボックス */
+  .choice { border-radius:10px; padding:16px 20px; margin:10px 0; border:2px solid; }
+  .choice-wrong  { background:#FDE7E9; border-color:var(--red); }
+  .choice-right  { background:#DFF6DD; border-color:var(--green); }
+  .choice-partial { background:#FFF4CE; border-color:#E8A600; }
+  .choice-label { font-weight:700; font-size:1rem; margin-bottom:6px; }
+  .choice-wrong .choice-label  { color:var(--red); }
+  .choice-right .choice-label  { color:var(--green); }
+  .choice-partial .choice-label { color:#7A4F01; }
+  .choice p { font-size:.87rem; margin-top:4px; }
+  .choice ul { padding-left:18px; font-size:.85rem; margin-top:6px; }
+  .choice li { margin-bottom:4px; }
+
+  table { width:100%; border-collapse:collapse; font-size:.85rem; margin:12px 0; }
+  thead th { background:var(--blue); color:white; padding:10px 14px; text-align:left; }
+  thead th:first-child { border-radius:6px 0 0 0; } thead th:last-child { border-radius:0 6px 0 0; }
+  tbody td { padding:9px 14px; border-bottom:1px solid var(--border); vertical-align:top; }
+  tbody tr:nth-child(even) td { background:#F8F8F8; }
+  tbody tr:hover td { background:#EFF6FC; }
+
+  .badge { display:inline-block; padding:2px 9px; border-radius:12px; font-size:.75rem; font-weight:600; }
+  .b-blue   { background:#EFF6FC; color:var(--blue);   border:1px solid #C7E0F4; }
+  .b-green  { background:#DFF6DD; color:var(--green);  border:1px solid #A7D8A4; }
+  .b-orange { background:#FFF4CE; color:#7A4F01;        border:1px solid #F7E28B; }
+  .b-red    { background:#FDE7E9; color:var(--red);    border:1px solid #F4A9AD; }
+
+  .alert { border-radius:8px; padding:14px 18px; margin-top:16px; }
+  .al-yellow { background:#FFF4CE; border:1.5px solid #F7E28B; border-left:5px solid #E8A600; }
+  .al-yellow .t { font-weight:700; color:#7A4F01; font-size:.9rem; margin-bottom:5px; }
+  .al-yellow ul { padding-left:18px; font-size:.84rem; color:#4A3200; }
+  .al-yellow li { margin-bottom:3px; }
+  .al-blue { background:#EFF6FC; border:1.5px solid #C7E0F4; border-left:5px solid var(--blue); }
+  .al-blue .t { font-weight:700; color:var(--dark); font-size:.9rem; margin-bottom:5px; }
+  .al-blue ul { padding-left:18px; font-size:.84rem; color:#1A3A5C; }
+  .al-blue li { margin-bottom:3px; }
+  .al-green { background:#DFF6DD; border:1.5px solid #A7D8A4; border-left:5px solid var(--green); }
+  .al-green .t { font-weight:700; color:#0A4A0A; font-size:.9rem; margin-bottom:5px; }
+  .al-green ul { padding-left:18px; font-size:.84rem; color:#0A4A0A; }
+  .al-green li { margin-bottom:3px; }
+
+  .key-box { background:var(--dark); color:white; border-radius:8px; padding:14px 20px; margin:16px 0; font-size:.9rem; line-height:1.7; }
+  .key-box strong { color:#7EC8F5; }
+
+  .steps { display:flex; flex-direction:column; gap:4px; margin:14px 0; }
+  .step  { display:flex; align-items:flex-start; gap:12px; }
+  .step-num { width:28px; height:28px; border-radius:50%; background:var(--blue); color:white; font-weight:700; font-size:.82rem; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px; }
+  .step-body { background:#F8F8F8; border:1px solid var(--border); border-radius:6px; padding:9px 14px; flex:1; font-size:.85rem; }
+  .step-body strong { color:var(--dark); }
+  .step-conn { width:28px; display:flex; justify-content:center; }
+  .step-conn::after { content:''; display:block; width:2px; height:14px; background:#C7E0F4; margin:2px auto; }
+
+  code { font-family:'Consolas',monospace; background:#F3F2F1; padding:1px 6px; border-radius:4px; font-size:.81rem; color:#A4262C; }
+  pre { background:#1E1E1E; color:#D4D4D4; padding:16px 18px; border-radius:8px; overflow-x:auto; font-family:'Consolas',monospace; font-size:.79rem; line-height:1.7; margin:12px 0; }
+  .cmt{color:#6A9955;} .prop{color:#9CDCFE;} .str{color:#CE9178;} .val{color:#B5CEA8;}
+
+  /* ゾーン区切り */
+  .zone { border-radius:10px; padding:14px 16px; margin:8px 0; }
+  .zone-onprem { background:#FFF9F0; border:2px dashed #E8A600; }
+  .zone-azure  { background:#EFF6FC; border:2px dashed var(--blue); }
+  .zone-label  { font-size:.78rem; font-weight:700; letter-spacing:.5px; margin-bottom:10px; }
+  .zone-onprem .zone-label { color:#7A4F01; }
+  .zone-azure .zone-label  { color:var(--dark); }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">🎓 AZ-305 | Networking & DNS</div>
+  <h1>Azure プライベート DNS ゾーン<br>オンプレミスからの名前解決 完全解説</h1>
+  <p>なぜ VM1 のフォワーダーを 168.63.129.16 に向けるのか。DNS の流れを図解で徹底解説します。</p>
+</div>
+
+<div class="container">
+
+<!-- ══════ SECTION 1: 前提知識 ══════ -->
+<div class="card">
+  <div class="card-header ch-blue">
+    <div class="dot" style="background:var(--blue)"></div>
+    <h2>① 前提知識：168.63.129.16 とは何者か</h2>
+  </div>
+  <div class="card-body">
+
+    <div class="key-box">
+      🔑 <strong>168.63.129.16</strong> は Azure が提供する「仮想 DNS サーバー」の IP アドレスです。<br>
+      Azure 上のすべての VNET から到達可能な特殊な予約済み IP で、<strong>Azure DNS・プライベート DNS ゾーン・パブリック DNS</strong> を解決する能力を持ちます。<br>
+      このIPは実際のサーバーではなく、Azure プラットフォームが提供する仮想エンドポイントです。
+    </div>
+
+    <table>
+      <thead><tr><th>168.63.129.16 でできること</th><th>できないこと</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>
+            ✅ Azure プライベート DNS ゾーンの解決（VNET にリンクされていれば）<br>
+            ✅ Azure パブリック DNS の解決（*.blob.core.windows.net 等）<br>
+            ✅ インターネット上のパブリック DNS の解決
+          </td>
+          <td>
+            ❌ <strong>VNET の外（オンプレミス）からは直接到達不可</strong><br>
+            ❌ オンプレミスの DNS サーバーはこの IP に問い合わせできない
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="alert al-yellow">
+      <div class="t">⚠️ これが今回の問題の核心</div>
+      <ul>
+        <li>オンプレミスのクライアントは <strong>168.63.129.16 に直接アクセスできない</strong></li>
+        <li>そのため「VNET 内にいる VM1（カスタム DNS）」を<strong>中継役（フォワーダー）</strong>として使う</li>
+        <li>VM1 は VNET 内にいるため 168.63.129.16 に到達できる → これがポイント</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ SECTION 2: 全体アーキテクチャ ══════ -->
+<div class="card">
+  <div class="card-header ch-blue">
+    <div class="dot" style="background:var(--blue)"></div>
+    <h2>② 全体アーキテクチャと DNS 解決の流れ（正解構成）</h2>
+  </div>
+  <div class="card-body">
+
+    <div class="diagram">
+      <div class="dtitle">正解構成：オンプレミス → VM1（フォワーダー） → 168.63.129.16 → プライベート DNS ゾーン</div>
+
+      <!-- オンプレミスゾーン -->
+      <div class="zone zone-onprem">
+        <div class="zone-label">🏢 オンプレミス環境</div>
+        <div class="flow">
+          <div class="box gray">💻 オンプレミスクライアント<small>「vm-a.apexcore.com の IP は？」</small></div>
+          <div class="arr orange">→ DNS クエリ</div>
+          <div class="box orange">📡 オンプレミス DNS サーバー<small>apexcore.com は自分では解決不可<br>→ VM1 に転送（条件付きフォワーダー）</small></div>
+        </div>
+      </div>
+
+      <!-- 接続 -->
+      <div style="text-align:center; padding:8px 0; font-size:.82rem; color:var(--gray);">
+        ↕ VPN Gateway / ExpressRoute（オンプレミス ↔ Azure 接続）
+      </div>
+
+      <!-- Azureゾーン -->
+      <div class="zone zone-azure">
+        <div class="zone-label">☁️ Azure 環境（VNET1）</div>
+
+        <!-- VM1 -->
+        <div class="flow" style="margin-bottom:10px;">
+          <div class="box blue" style="min-width:200px;">🖥️ VM1（カスタム DNS サーバー）<small>apexcore.com のクエリを<br><strong>168.63.129.16 に転送</strong></small></div>
+          <div class="arr blue">→ 転送</div>
+          <div class="box teal" style="min-width:180px;">🔮 168.63.129.16<br><small>Azure 提供の仮想 DNS<br>（VNET 内からのみアクセス可）</small></div>
+          <div class="arr blue">→ 問い合わせ</div>
+          <div class="box green" style="min-width:200px;">📋 プライベート DNS ゾーン<br><small>apexcore.com<br>（VNET1 にリンク済み）</small></div>
+        </div>
+
+        <!-- 応答の流れ -->
+        <div style="background:rgba(0,120,212,0.06); border-radius:6px; padding:10px 14px; font-size:.82rem; color:var(--dark);">
+          <strong>応答の流れ（逆順）：</strong><br>
+          プライベート DNS ゾーン → IPアドレス（例: 10.1.0.4）を返す<br>
+          → 168.63.129.16 → VM1 → オンプレミス DNS → クライアント ✅
+        </div>
+      </div>
+    </div>
+
+    <h3 class="sub">🔢 DNS 解決のステップ詳細</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">オンプレミスクライアントが <code>vm-a.apexcore.com</code> の名前解決を要求 → オンプレミスの DNS サーバーへ</div>
+      </div>
+      <div class="step-conn"></div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">オンプレミス DNS サーバーは <code>apexcore.com</code> を自分では解決できないため、<strong>条件付きフォワーダー</strong>の設定により VM1 の IP に転送する</div>
+      </div>
+      <div class="step-conn"></div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">VM1（VNET1 内のカスタム DNS）が <code>apexcore.com</code> クエリを受け取り、<strong>フォワーダー設定に従って 168.63.129.16 に転送する</strong>（← これが正解の設定）</div>
+      </div>
+      <div class="step-conn"></div>
+      <div class="step">
+        <div class="step-num" style="background:var(--teal);">4</div>
+        <div class="step-body">168.63.129.16 が VNET1 にリンクされたプライベート DNS ゾーン（apexcore.com）を参照し、対象リソースの <strong>プライベート IP アドレス</strong>を返す</div>
+      </div>
+      <div class="step-conn"></div>
+      <div class="step">
+        <div class="step-num" style="background:var(--green);">5</div>
+        <div class="step-body">IP アドレスが VM1 → オンプレミス DNS → クライアントと逆順に返り、<strong>オンプレミスクライアントが Azure リソースのプライベート IP を取得できる</strong> ✅</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════ SECTION 3: 各選択肢の解説 ══════ -->
+<div class="card">
+  <div class="card-header ch-orange">
+    <div class="dot" style="background:var(--orange)"></div>
+    <h2>③ 各選択肢の正誤と理由</h2>
+  </div>
+  <div class="card-body">
+
+    <!-- 選択肢 A -->
+    <div class="choice choice-wrong">
+      <div class="choice-label">❌ A：apexcore.com の DNS クエリをパブリック DNS ゾーンに転送するよう VM1 を構成する</div>
+      <p><strong>なぜ間違いか：</strong></p>
+      <ul>
+        <li>パブリック DNS ゾーンにはプライベート IP アドレスの情報が存在しません</li>
+        <li>パブリック DNS ゾーンの apexcore.com（あれば）はパブリック IP しか返せない</li>
+        <li>そもそも今回解決したいのは Azure プライベート DNS ゾーンに登録されたリソースです</li>
+        <li>パブリック DNS に転送すると「レコードが見つからない」か「パブリック IP が返ってしまう」という結果になります</li>
+      </ul>
+    </div>
+
+    <!-- 選択肢 B -->
+    <div class="choice choice-right">
+      <div class="choice-label">✅ B：apexcore.com の DNS クエリを Azure 提供の DNS（168.63.129.16）に転送するよう VM1 を構成する ← 正解</div>
+      <p><strong>なぜ正解か：</strong></p>
+      <ul>
+        <li>VM1 は VNET1 内にいるため <strong>168.63.129.16 に到達できる</strong></li>
+        <li>168.63.129.16 は VNET1 にリンクされたプライベート DNS ゾーン（apexcore.com）を参照できる</li>
+        <li>オンプレミスから直接 168.63.129.16 にアクセスできない問題を VM1 が中継することで解決する</li>
+        <li>VM1 が「橋渡し役（フォワーダー）」として機能し、オンプレミス ↔ Azure DNS の境界を越えられる</li>
+        <li>フォワーダー設定は VM1 の DNS サーバーソフト（Windows Server の場合は DNS マネージャー）の「条件付きフォワーダー」で設定する</li>
+      </ul>
+    </div>
+
+    <!-- 選択肢 C -->
+    <div class="choice choice-partial">
+      <div class="choice-label">⚠️ C：VNet1 でカスタム DNS サーバーを Azure 提供の DNS（168.63.129.16）に設定する</div>
+      <p><strong>なぜ間違いか（引っかかりやすい選択肢）：</strong></p>
+      <ul>
+        <li>VNET の DNS サーバー設定を変更すると <strong>VNET 内の VM が使う DNS が変わる</strong>だけ</li>
+        <li>この設定は「Azure VNET 内のリソース」が 168.63.129.16 を使うようになるだけで、オンプレミスクライアントには何の影響もありません</li>
+        <li>今回の問題は「オンプレミスクライアントが解決できるようにする」要件なので、この設定では解決しない</li>
+        <li>また現状 VM1 をカスタム DNS として使っているため、これを変えると VM1 が使われなくなり構成が崩れる</li>
+      </ul>
+      <div style="background:rgba(232,166,0,0.1); border-radius:6px; padding:8px 12px; margin-top:8px; font-size:.83rem; color:#7A4F01;">
+        💡 C は「VNET 内のリソースがプライベート DNS を解決できるようにする」シナリオでは正しいアプローチです。今回とは要件が異なります。
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════ SECTION 4: 設定の実装 ══════ -->
+<div class="card">
+  <div class="card-header ch-green">
+    <div class="dot" style="background:var(--green)"></div>
+    <h2>④ 実際の設定内容（VM1 のフォワーダー設定）</h2>
+  </div>
+  <div class="card-body">
+
+    <p class="note">VM1 が Windows Server の場合、DNS サーバーの「条件付きフォワーダー（Conditional Forwarder）」を設定します。</p>
+
+    <div class="diagram">
+      <div class="dtitle">VM1 の DNS フォワーダー設定のイメージ</div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; flex-wrap:wrap;">
+        <div>
+          <div style="font-size:.82rem; font-weight:700; color:var(--dark); margin-bottom:8px;">条件付きフォワーダー設定</div>
+          <div class="box blue" style="margin-bottom:6px; text-align:left; padding:12px;">
+            <div style="font-size:.78rem; color:var(--gray); margin-bottom:4px;">DNS ドメイン名（条件）</div>
+            <code>apexcore.com</code>
+          </div>
+          <div class="arr blue" style="display:block; text-align:center; margin:4px 0;">↓ このドメインのクエリは</div>
+          <div class="box teal" style="text-align:left; padding:12px;">
+            <div style="font-size:.78rem; color:#00695C; margin-bottom:4px;">転送先 DNS サーバー IP</div>
+            <code>168.63.129.16</code>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:.82rem; font-weight:700; color:var(--dark); margin-bottom:8px;">設定しない場合の挙動</div>
+          <div class="box orange" style="margin-bottom:6px; padding:10px; text-align:left; font-size:.81rem;">
+            ❌ apexcore.com のクエリがフォワードされない<br>→ VM1 が自分で解決を試みる<br>→ 解決できず NXDOMAIN（名前解決失敗）
+          </div>
+          <div style="font-size:.82rem; font-weight:700; color:var(--dark); margin:10px 0 8px;">その他のクエリはどうなるか</div>
+          <div class="box green" style="padding:10px; text-align:left; font-size:.81rem;">
+            ✅ apexcore.com 以外（例: google.com）は<br>通常のフォワーダーか VM1 のルートヒントで解決<br>→ インターネット名前解決は別設定で対応
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="sub">🖥️ Windows Server DNS での設定手順</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">VM1 に RDP ログイン → サーバーマネージャー → DNS マネージャーを開く</div>
+      </div>
+      <div class="step-conn"></div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">「条件付きフォワーダー」を右クリック → 「新しい条件付きフォワーダー」</div>
+      </div>
+      <div class="step-conn"></div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">DNS ドメイン：<code>apexcore.com</code>　マスターサーバーの IP アドレス：<code>168.63.129.16</code> を入力して OK</div>
+      </div>
+      <div class="step-conn"></div>
+      <div class="step">
+        <div class="step-num" style="background:var(--green);">4</div>
+        <div class="step-body">オンプレミス DNS サーバーに「apexcore.com のクエリを VM1 の IP に転送する」条件付きフォワーダーを追加（忘れがちなステップ）</div>
+      </div>
+    </div>
+
+    <div class="alert al-yellow">
+      <div class="t">⚠️ よく忘れる「もう1つの設定」</div>
+      <ul>
+        <li>VM1 側のフォワーダー設定だけでは不十分です</li>
+        <li><strong>オンプレミスの DNS サーバー</strong>にも「apexcore.com → VM1 の IP」という条件付きフォワーダーが必要です</li>
+        <li>この2つがセットになって初めてオンプレミスクライアントから名前解決できます</li>
+        <li>問題文では「VM1 に構成するフォワーダー設定」が問われているため、答えは B ですが、実際の構成では両方必要です</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════ SECTION 5: なぜこの構成が必要か ══════ -->
+<div class="card">
+  <div class="card-header ch-purple">
+    <div class="dot" style="background:var(--purple)"></div>
+    <h2>⑤ 各コンポーネントの役割まとめ＋試験頻出ポイント</h2>
+  </div>
+  <div class="card-body">
+
+    <table>
+      <thead><tr><th>コンポーネント</th><th>役割</th><th>なぜ必要か</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Azure プライベート DNS ゾーン</strong><br>apexcore.com</td>
+          <td>Azure リソースのプライベート IP を保持するゾーン</td>
+          <td>VNET にリンクすることで VNET 内からの名前解決が可能になる</td>
+        </tr>
+        <tr>
+          <td><strong>VNET1 へのリンク</strong></td>
+          <td>プライベート DNS ゾーンを VNET1 に紐付ける</td>
+          <td>リンクがないと 168.63.129.16 がゾーンを参照できない</td>
+        </tr>
+        <tr>
+          <td><strong>VM1（カスタム DNS）</strong></td>
+          <td>オンプレミスと Azure DNS の橋渡し役</td>
+          <td>オンプレミスからは 168.63.129.16 に直接届かないため中継が必要</td>
+        </tr>
+        <tr>
+          <td><strong>168.63.129.16</strong></td>
+          <td>Azure の仮想 DNS サーバー</td>
+          <td>VNET 内からプライベート DNS ゾーンを解決できる唯一のエンドポイント</td>
+        </tr>
+        <tr>
+          <td><strong>条件付きフォワーダー</strong><br>（VM1 上）</td>
+          <td>apexcore.com のクエリだけを 168.63.129.16 に転送</td>
+          <td>他のドメインには影響を与えず、対象ゾーンだけを Azure DNS に委ねる</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 class="sub">🎯 試験頻出ポイント</h3>
+
+    <div class="alert al-blue">
+      <div class="t">📌 必ず覚える3点</div>
+      <ul>
+        <li><strong>168.63.129.16 はオンプレミスから直接届かない</strong>：VNET 内のリソースからしかアクセスできない特殊 IP</li>
+        <li><strong>VM1（カスタム DNS）が中継役</strong>：VNET 内にいる VM1 だけが 168.63.129.16 にアクセスできるため、オンプレミスとの橋渡し役になる</li>
+        <li><strong>VNET リンクが前提</strong>：プライベート DNS ゾーンが VNET1 にリンクされていないと、168.63.129.16 がそのゾーンを参照できない</li>
+      </ul>
+    </div>
+
+    <div class="alert al-yellow" style="margin-top:12px;">
+      <div class="t">⚠️ 引っかかりやすいパターン</div>
+      <ul>
+        <li>「VNET の DNS サーバー設定を 168.63.129.16 にする」→ VNET 内のリソース向けの設定であり、オンプレミスには効果なし（選択肢 C）</li>
+        <li>「プライベート DNS ゾーンを作るだけで解決できる」→ VNET リンクとフォワーダー設定がなければオンプレミスからは解決不可</li>
+        <li>「VM1 のフォワーダーだけ設定すればよい」→ オンプレミス DNS にも条件付きフォワーダーが必要（両方必要）</li>
+        <li>「パブリック DNS に転送すればよい」→ プライベート IP はパブリック DNS には存在しない（選択肢 A）</li>
+      </ul>
+    </div>
+
+    <div style="background:#DFF6DD; border:2px solid var(--green); border-radius:8px; padding:16px 20px; margin-top:16px;">
+      <div style="font-weight:700; color:#0A4A0A; margin-bottom:8px;">🎯 最終まとめ：正解は B の理由</div>
+      <div style="font-size:.88rem; color:#0A4A0A; line-height:1.8;">
+        オンプレミスのクライアントは <code>168.63.129.16</code> に直接アクセスできません。<br>
+        そこで VNET1 内にいる VM1 を中継役として使い、<br>
+        <strong>「apexcore.com → 168.63.129.16」というフォワーダーを VM1 に設定する</strong>ことで、<br>
+        オンプレミス → VM1 → 168.63.129.16 → プライベート DNS ゾーン という経路で名前解決が実現します。<br>
+        これが選択肢 B が正解の理由です。
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</div>
+</body>
+</html>

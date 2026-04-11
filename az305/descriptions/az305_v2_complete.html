@@ -1,0 +1,2404 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AZ-305 完全攻略 | エンドポイント・強制トンネリング</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;600&family=Outfit:wght@700;900&display=swap');
+
+:root {
+  --az:#0078D4; --az2:#005A9E; --az3:#003D6B;
+  --aq:#00B7C3; --aq2:#008A94;
+  --pu:#7719AA; --pu2:#5A1280;
+  --gn:#107C10; --gn2:#0A5C0A;
+  --or:#D83B01; --or2:#A02800;
+  --ye:#FFB900; --ye2:#C78F00;
+  --rd:#D13438; --rd2:#A0272A;
+  --bg:#050D1C; --bg2:#091424; --bg3:#0D1B2E;
+  --s1:#122238; --s2:#182D48; --s3:#1E3858;
+  --bd:rgba(24,45,72,0.9); --bd2:rgba(0,120,212,0.25);
+  --t1:#EEF5FF; --t2:#8BAECB; --t3:#4A7A9B; --t4:#2A4A6B;
+  --ok:#00C853; --wn:#FFB300; --er:#FF3D00;
+  --ok2:rgba(0,200,83,0.1); --wn2:rgba(255,179,0,0.1); --er2:rgba(255,61,0,0.1);
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--t1);line-height:1.8;min-height:100vh;overflow-x:hidden;}
+
+/* ANIMATED BACKGROUND */
+body::before{
+  content:'';position:fixed;inset:0;
+  background:
+    radial-gradient(ellipse 800px 500px at 15% 10%,rgba(0,120,212,0.055) 0%,transparent 70%),
+    radial-gradient(ellipse 600px 800px at 85% 85%,rgba(119,25,170,0.04) 0%,transparent 70%),
+    radial-gradient(ellipse 400px 400px at 50% 50%,rgba(0,183,195,0.02) 0%,transparent 70%);
+  pointer-events:none;z-index:0;
+}
+
+/* ─── HEADER ─── */
+.hdr{
+  background:linear-gradient(180deg,rgba(3,8,18,0.98) 0%,rgba(5,13,28,0.95) 100%);
+  border-bottom:1px solid var(--bd);
+  padding:0;position:sticky;top:0;z-index:200;
+  backdrop-filter:blur(20px);
+}
+.hdr-top{
+  max-width:1440px;margin:0 auto;
+  padding:14px 36px;
+  display:flex;align-items:center;justify-content:space-between;gap:20px;
+}
+.brand{display:flex;align-items:center;gap:14px;}
+.brand-logo{
+  width:38px;height:38px;border-radius:9px;
+  background:linear-gradient(135deg,#0078D4 0%,#50E6FF 100%);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.brand-text{line-height:1.2;}
+.brand-name{font-family:'Outfit',sans-serif;font-size:16px;font-weight:900;color:#fff;}
+.brand-sub{font-size:10.5px;color:var(--t3);letter-spacing:0.5px;}
+.hdr-badges{display:flex;gap:8px;align-items:center;}
+.hdr-badge{
+  padding:4px 12px;border-radius:20px;font-size:10px;font-weight:700;
+  letter-spacing:1px;text-transform:uppercase;
+}
+.hdr-badge.b1{background:rgba(0,120,212,0.15);border:1px solid rgba(0,120,212,0.4);color:#50E6FF;}
+.hdr-badge.b2{background:rgba(255,185,0,0.12);border:1px solid rgba(255,185,0,0.4);color:#FFD060;}
+
+/* ─── NAV ─── */
+.nav{
+  display:flex;gap:0;overflow-x:auto;
+  max-width:1440px;margin:0 auto;padding:0 36px;
+  scrollbar-width:none;
+}
+.nav::-webkit-scrollbar{display:none;}
+.nb{
+  display:flex;align-items:center;gap:7px;
+  padding:11px 16px;
+  font-size:12px;font-weight:500;color:var(--t3);
+  cursor:pointer;border:none;background:transparent;
+  border-bottom:2px solid transparent;
+  white-space:nowrap;transition:all .2s;
+  font-family:'Noto Sans JP',sans-serif;
+}
+.nb:hover{color:var(--t1);background:rgba(255,255,255,0.03);}
+.nb.on{color:#50E6FF;border-bottom-color:var(--az);background:rgba(0,120,212,0.07);}
+.nb-num{
+  width:18px;height:18px;border-radius:50%;
+  background:var(--s2);font-size:9px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;color:var(--t3);
+}
+.nb.on .nb-num{background:rgba(0,120,212,0.3);color:#50E6FF;}
+
+/* ─── PAGES ─── */
+.pg{display:none;max-width:1440px;margin:0 auto;padding:44px 36px 100px;position:relative;z-index:1;}
+.pg.on{display:block;}
+
+/* ─── SECTION HEADERS ─── */
+.sh{margin-bottom:6px;}
+.sh h2{
+  font-family:'Outfit',sans-serif;font-size:21px;font-weight:900;
+  display:flex;align-items:center;gap:10px;
+  color:var(--t1);
+}
+.sh h2 .accent{color:#50E6FF;}
+.sh-bar{height:2px;background:linear-gradient(90deg,rgba(0,120,212,0.6),transparent);margin-top:8px;margin-bottom:4px;}
+.sh-desc{font-size:13px;color:var(--t3);margin-bottom:26px;line-height:1.7;}
+
+/* ─── HERO ─── */
+.hero{
+  border-radius:22px;padding:44px 48px;margin-bottom:44px;
+  position:relative;overflow:hidden;
+  background:linear-gradient(135deg,rgba(0,120,212,0.1) 0%,rgba(0,183,195,0.06) 50%,rgba(119,25,170,0.06) 100%);
+  border:1px solid rgba(0,120,212,0.3);
+}
+.hero::before{
+  content:'';position:absolute;top:-80px;right:-80px;
+  width:400px;height:400px;border-radius:50%;
+  background:radial-gradient(circle,rgba(0,120,212,0.1) 0%,transparent 70%);
+}
+.hero::after{
+  content:'';position:absolute;bottom:-60px;left:-60px;
+  width:300px;height:300px;border-radius:50%;
+  background:radial-gradient(circle,rgba(119,25,170,0.07) 0%,transparent 70%);
+}
+.hero-content{position:relative;z-index:1;}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(0,120,212,0.18);border:1px solid rgba(0,120,212,0.5);
+  border-radius:20px;padding:5px 16px;
+  font-size:10.5px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  color:#50E6FF;margin-bottom:20px;
+}
+.hero h1{
+  font-family:'Outfit',sans-serif;font-size:clamp(26px,3.5vw,44px);font-weight:900;
+  line-height:1.15;margin-bottom:18px;
+  background:linear-gradient(135deg,#fff 0%,#A8D8FF 40%,#50E6FF 70%,#00B7C3 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.hero-desc{font-size:14.5px;color:var(--t2);max-width:760px;line-height:1.85;margin-bottom:24px;}
+.hero-pills{display:flex;flex-wrap:wrap;gap:10px;}
+.pill{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:6px 16px;border-radius:22px;
+  font-size:12px;font-weight:600;
+}
+.pill-b{background:rgba(0,120,212,0.2);border:1px solid rgba(0,120,212,0.45);color:#50E6FF;}
+.pill-p{background:rgba(119,25,170,0.2);border:1px solid rgba(119,25,170,0.45);color:#D4A0FF;}
+.pill-o{background:rgba(216,59,1,0.2);border:1px solid rgba(216,59,1,0.45);color:#FF9060;}
+.pill-g{background:rgba(16,124,16,0.2);border:1px solid rgba(16,124,16,0.45);color:#70E070;}
+.pill-y{background:rgba(255,185,0,0.15);border:1px solid rgba(255,185,0,0.45);color:#FFD060;}
+
+/* ─── INFO BOXES ─── */
+.ib{display:flex;gap:14px;border-radius:14px;padding:18px 22px;margin-bottom:20px;font-size:13.5px;line-height:1.8;}
+.ib-ico{font-size:22px;flex-shrink:0;margin-top:1px;}
+.ib strong{display:block;font-size:14.5px;margin-bottom:6px;font-weight:700;}
+.ib.tip{background:rgba(0,120,212,0.08);border:1px solid rgba(0,120,212,0.3);}
+.ib.warn{background:rgba(255,179,0,0.08);border:1px solid rgba(255,179,0,0.35);}
+.ib.danger{background:rgba(255,61,0,0.08);border:1px solid rgba(255,61,0,0.38);}
+.ib.ok{background:rgba(0,200,83,0.08);border:1px solid rgba(0,200,83,0.3);}
+.ib.purple{background:rgba(119,25,170,0.08);border:1px solid rgba(119,25,170,0.35);}
+
+/* ─── CONCEPT CARDS ─── */
+.cg2{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-bottom:30px;}
+.cg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:22px;margin-bottom:30px;}
+.card{border-radius:18px;padding:26px;border:1px solid var(--bd);background:var(--bg3);transition:transform .2s,box-shadow .2s;}
+.card:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,0.35);}
+.card.cb{background:linear-gradient(145deg,rgba(0,120,212,0.1),rgba(0,120,212,0.04));border-color:rgba(0,120,212,0.35);}
+.card.cp{background:linear-gradient(145deg,rgba(119,25,170,0.1),rgba(119,25,170,0.04));border-color:rgba(119,25,170,0.35);}
+.card.co{background:linear-gradient(145deg,rgba(216,59,1,0.1),rgba(216,59,1,0.04));border-color:rgba(216,59,1,0.35);}
+.card.cg{background:linear-gradient(145deg,rgba(16,124,16,0.1),rgba(16,124,16,0.04));border-color:rgba(16,124,16,0.35);}
+.card.cy{background:linear-gradient(145deg,rgba(255,185,0,0.1),rgba(255,185,0,0.04));border-color:rgba(255,185,0,0.35);}
+.card-hd{display:flex;align-items:flex-start;gap:14px;margin-bottom:14px;}
+.card-ico{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.card.cb .card-ico{background:rgba(0,120,212,0.2);}
+.card.cp .card-ico{background:rgba(119,25,170,0.2);}
+.card.co .card-ico{background:rgba(216,59,1,0.2);}
+.card.cy .card-ico{background:rgba(255,185,0,0.15);}
+.card h3{font-size:16px;font-weight:700;margin-bottom:4px;line-height:1.3;}
+.card.cb h3{color:#50E6FF;} .card.cp h3{color:#D4A0FF;} .card.co h3{color:#FF9060;}
+.card.cy h3{color:#FFD060;} .card.cg h3{color:#70E070;}
+.card p{font-size:13px;color:var(--t2);line-height:1.8;}
+.card ul{font-size:13px;color:var(--t2);padding-left:18px;line-height:1.8;}
+.card li{margin-bottom:3px;}
+
+/* ─── TAGS ─── */
+.tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px;}
+.tag{padding:3px 11px;border-radius:20px;font-size:11px;font-weight:600;}
+.tb{background:rgba(0,120,212,0.2);color:#50E6FF;}
+.tp{background:rgba(119,25,170,0.2);color:#D4A0FF;}
+.tg{background:rgba(16,124,16,0.2);color:#70E070;}
+.to{background:rgba(216,59,1,0.2);color:#FF9060;}
+.ty{background:rgba(255,185,0,0.15);color:#FFD060;}
+.tr{background:rgba(209,52,56,0.2);color:#FF7070;}
+
+/* ─── DIAGRAM WRAPPER ─── */
+.dw{
+  background:var(--bg2);border:1px solid var(--bd);
+  border-radius:22px;padding:32px 28px 24px;margin-bottom:30px;overflow:hidden;
+}
+.dw-title{
+  font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:2px;
+  color:var(--t4);margin-bottom:22px;display:flex;align-items:center;gap:10px;
+}
+.dw-title::after{content:'';flex:1;height:1px;background:var(--bd);}
+.dw-title span{color:var(--t3);}
+svg.diag{width:100%;height:auto;display:block;}
+
+/* ─── COMPARISON TABLES ─── */
+.tw{overflow-x:auto;border-radius:18px;border:1px solid var(--bd);margin-bottom:30px;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+thead tr{background:var(--s2);}
+th{
+  padding:14px 18px;text-align:left;
+  font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;
+}
+.th-gray{color:var(--t3);}
+.th-b{color:#50E6FF;} .th-p{color:#D4A0FF;} .th-o{color:#FF9060;} .th-g{color:#70E070;}
+td{padding:13px 18px;border-top:1px solid rgba(24,45,72,0.7);vertical-align:top;line-height:1.7;}
+td:first-child{color:var(--t2);font-weight:600;}
+tr:hover td{background:rgba(255,255,255,0.015);}
+.tok{color:var(--ok);} .twn{color:var(--wn);} .ter{color:var(--er);}
+.tb2{color:#50E6FF;} .tp2{color:#D4A0FF;} .to2{color:#FF9060;}
+td code{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:#9CDCFE;background:rgba(0,0,0,0.3);padding:1px 6px;border-radius:4px;}
+.badge-cell{display:flex;flex-wrap:wrap;gap:5px;}
+
+/* ─── EXAM CARDS ─── */
+.ec{
+  background:linear-gradient(135deg,rgba(255,179,0,0.07),rgba(255,179,0,0.02));
+  border:1px solid rgba(255,179,0,0.35);
+  border-radius:18px;padding:24px 28px;margin-bottom:20px;
+}
+.ec-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(255,179,0,0.15);border:1px solid rgba(255,179,0,0.4);
+  border-radius:20px;padding:3px 12px;
+  font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--wn);margin-bottom:14px;
+}
+.ec h4{font-size:15.5px;font-weight:700;margin-bottom:10px;color:var(--t1);}
+.ec p{font-size:13.5px;color:var(--t2);line-height:1.8;}
+.ec .ans{
+  background:rgba(0,200,83,0.08);border:1px solid rgba(0,200,83,0.3);
+  border-radius:10px;padding:13px 18px;margin-top:14px;
+  font-size:13px;color:#60D860;font-weight:600;line-height:1.7;
+}
+.ec .wrong{
+  background:rgba(255,61,0,0.07);border:1px solid rgba(255,61,0,0.3);
+  border-radius:10px;padding:13px 18px;margin-top:10px;
+  font-size:13px;color:#FF7060;line-height:1.7;
+}
+
+/* ─── SCENARIO CARDS ─── */
+.sc{background:var(--bg3);border:1px solid var(--bd);border-radius:18px;padding:26px;margin-bottom:22px;}
+.sc-hd{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.sc-num{
+  width:32px;height:32px;border-radius:50%;
+  background:rgba(0,120,212,0.2);border:2px solid rgba(0,120,212,0.4);
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:800;color:#50E6FF;flex-shrink:0;
+}
+.sc h4{font-size:15px;font-weight:700;color:#50E6FF;}
+.sc .q{font-size:13.5px;color:var(--t1);line-height:1.8;margin-bottom:14px;}
+.sc .choices{list-style:none;padding:0;}
+.sc .choices li{
+  padding:9px 14px;border-radius:8px;margin-bottom:6px;
+  font-size:13px;color:var(--t2);
+  background:var(--s1);border:1px solid var(--bd);cursor:pointer;
+  transition:all .2s;
+}
+.sc .choices li:hover{background:var(--s2);color:var(--t1);}
+.sc .choices li.correct{background:rgba(0,200,83,0.1);border-color:rgba(0,200,83,0.4);color:#60D860;}
+.sc .choices li.wrong{background:rgba(255,61,0,0.08);border-color:rgba(255,61,0,0.3);color:#FF7060;}
+.sc .explanation{
+  background:var(--s2);border-left:3px solid var(--az);
+  border-radius:0 10px 10px 0;padding:16px 20px;
+  font-size:13px;color:var(--t2);margin-top:14px;
+  display:none;line-height:1.8;
+}
+.sc .explanation.show{display:block;}
+.sc .exp-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  margin-top:12px;padding:7px 16px;border-radius:8px;
+  background:rgba(0,120,212,0.15);border:1px solid rgba(0,120,212,0.35);
+  color:#50E6FF;font-size:12px;font-weight:600;cursor:pointer;
+  font-family:'Noto Sans JP',sans-serif;
+}
+
+/* ─── FLOW STEPS ─── */
+.flow{display:flex;flex-direction:column;gap:0;margin-bottom:28px;}
+.fstep{display:flex;gap:18px;padding:16px 0;border-bottom:1px dashed rgba(24,45,72,0.9);}
+.fstep:last-child{border-bottom:none;}
+.fnum{
+  width:32px;height:32px;border-radius:50%;flex-shrink:0;margin-top:3px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:800;
+}
+.fnum.b{background:rgba(0,120,212,0.15);border:2px solid rgba(0,120,212,0.45);color:#50E6FF;}
+.fnum.p{background:rgba(119,25,170,0.15);border:2px solid rgba(119,25,170,0.45);color:#D4A0FF;}
+.fnum.o{background:rgba(216,59,1,0.15);border:2px solid rgba(216,59,1,0.45);color:#FF9060;}
+.fc h5{font-size:14.5px;font-weight:700;margin-bottom:5px;color:var(--t1);}
+.fc p{font-size:13px;color:var(--t2);line-height:1.8;}
+.fc code{font-family:'JetBrains Mono',monospace;font-size:12px;color:#9CDCFE;}
+
+/* ─── CODE BLOCKS ─── */
+.code{
+  background:rgba(0,0,0,0.55);border:1px solid var(--bd);
+  border-radius:12px;padding:18px 22px;
+  font-family:'JetBrains Mono',monospace;font-size:12px;color:#9CDCFE;
+  overflow-x:auto;margin-bottom:20px;line-height:1.8;
+}
+.kw{color:#569CD6;}.str{color:#CE9178;}.cm{color:#6A9955;}.prop{color:#9CDCFE;}.val{color:#B5CEA8;}
+
+/* ─── HIGHLIGHT BLOCKS ─── */
+.hl{border-left:3px solid var(--az);background:rgba(0,120,212,0.06);padding:14px 20px;border-radius:0 12px 12px 0;margin-bottom:18px;}
+.hl strong{color:#50E6FF;font-size:14px;}
+.hl p{font-size:13px;color:var(--t2);margin-top:5px;line-height:1.8;}
+
+/* ─── COMPARISON HIGHLIGHT ─── */
+.vs-wrap{display:grid;grid-template-columns:1fr auto 1fr;gap:0;margin-bottom:30px;align-items:stretch;}
+.vs-card{padding:26px;border-radius:18px;border:1px solid;}
+.vs-card.left{background:linear-gradient(145deg,rgba(0,120,212,0.1),rgba(0,120,212,0.04));border-color:rgba(0,120,212,0.35);border-radius:18px 0 0 18px;}
+.vs-card.right{background:linear-gradient(145deg,rgba(119,25,170,0.1),rgba(119,25,170,0.04));border-color:rgba(119,25,170,0.35);border-radius:0 18px 18px 0;}
+.vs-mid{
+  display:flex;align-items:center;justify-content:center;
+  background:var(--s1);border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);
+  width:60px;flex-shrink:0;
+  font-family:'Outfit',sans-serif;font-size:20px;font-weight:900;color:var(--t4);
+}
+.vs-title{font-size:17px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.vs-card.left .vs-title{color:#50E6FF;}
+.vs-card.right .vs-title{color:#D4A0FF;}
+.vs-list{list-style:none;padding:0;}
+.vs-list li{font-size:13px;color:var(--t2);padding:5px 0;border-bottom:1px dashed rgba(24,45,72,0.7);display:flex;align-items:flex-start;gap:8px;}
+.vs-list li:last-child{border-bottom:none;}
+.vs-list li .ico{flex-shrink:0;margin-top:2px;}
+
+/* ─── KEY DIFF TABLE ─── */
+.kd-row{display:flex;border-bottom:1px solid rgba(24,45,72,0.6);}
+.kd-row:last-child{border-bottom:none;}
+.kd-label{width:22%;padding:12px 16px;font-size:12.5px;font-weight:700;color:var(--t3);background:var(--s1);display:flex;align-items:center;}
+.kd-b{flex:1;padding:12px 16px;font-size:13px;color:var(--t2);background:rgba(0,120,212,0.04);}
+.kd-p{flex:1;padding:12px 16px;font-size:13px;color:var(--t2);background:rgba(119,25,170,0.03);}
+
+/* ─── SUMMARY BOX ─── */
+.sum-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:28px;}
+.sum-item{
+  background:var(--s1);border:1px solid var(--bd);border-radius:14px;
+  padding:20px;text-align:center;
+}
+.sum-icon{font-size:32px;margin-bottom:10px;}
+.sum-label{font-size:11px;color:var(--t3);font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
+.sum-val{font-size:17px;font-weight:700;color:var(--t1);}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .cg2,.cg3,.vs-wrap{grid-template-columns:1fr;}
+  .vs-mid{display:none;}
+  .vs-card.left,.vs-card.right{border-radius:18px;}
+  .sum-grid{grid-template-columns:1fr 1fr;}
+  .pg{padding:28px 20px 80px;}
+  .nav{padding:0 20px;}
+  .hdr-top{padding:12px 20px;}
+  .hero{padding:30px 24px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══ -->
+<header class="hdr">
+  <div class="hdr-top">
+    <div class="brand">
+      <div class="brand-logo">
+        <svg width="22" height="22" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="1" y="1" width="10" height="10" fill="white"/>
+          <rect x="12" y="1" width="10" height="10" fill="white" opacity="0.7"/>
+          <rect x="1" y="12" width="10" height="10" fill="white" opacity="0.7"/>
+          <rect x="12" y="12" width="10" height="10" fill="white" opacity="0.4"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <div class="brand-name">AZ-305 完全攻略ガイド</div>
+        <div class="brand-sub">エンドポイント戦略 + 強制トンネリング</div>
+      </div>
+    </div>
+    <div class="hdr-badges">
+      <div class="hdr-badge b1">Microsoft Azure</div>
+      <div class="hdr-badge b2">試験対策</div>
+    </div>
+  </div>
+  <nav>
+    <div class="nav">
+      <button class="nb on" onclick="go('p0',this)"><span class="nb-num">1</span>概要・問題定義</button>
+      <button class="nb" onclick="go('p1',this)"><span class="nb-num">2</span>サービスEP 完全解説</button>
+      <button class="nb" onclick="go('p2',this)"><span class="nb-num">3</span>プライベートEP 完全解説</button>
+      <button class="nb" onclick="go('p3',this)"><span class="nb-num">4</span>強制トンネリング</button>
+      <button class="nb" onclick="go('p4',this)"><span class="nb-num">5</span>DNS深掘り</button>
+      <button class="nb" onclick="go('p5',this)"><span class="nb-num">6</span>徹底比較・選択基準</button>
+      <button class="nb" onclick="go('p6',this)"><span class="nb-num">7</span>アーキテクチャ実例</button>
+      <button class="nb" onclick="go('p7',this)"><span class="nb-num">8</span>間違えやすいポイント</button>
+      <button class="nb" onclick="go('p8',this)"><span class="nb-num">9</span>試験問題演習</button>
+    </div>
+  </nav>
+</header>
+
+<!-- ═══════════════════════════════════════════════
+     PAGE 0: 概要・問題定義
+═══════════════════════════════════════════════ -->
+<main>
+<div class="pg on" id="p0">
+
+<div class="hero">
+  <div class="hero-content">
+    <div class="hero-eyebrow">🎯 AZ-305 Designing Azure Infrastructure Solutions</div>
+    <h1>サービスEP・プライベートEP・強制トンネリング<br>完全理解ガイド</h1>
+    <p class="hero-desc">
+      AZ-305試験でネットワークセキュリティ領域は配点が高く、「なぜそのサービスを選ぶか」という
+      アーキテクチャ判断が問われます。本ガイドでは3つの技術を根本から理解し、
+      どのシナリオで何を使うべきかを確実に判断できるレベルまで解説します。
+    </p>
+    <div class="hero-pills">
+      <span class="pill pill-b">🔷 VNet Service Endpoint</span>
+      <span class="pill pill-p">🔮 Private Endpoint</span>
+      <span class="pill pill-o">🚇 Forced Tunneling</span>
+      <span class="pill pill-g">🌐 Private DNS Zone</span>
+      <span class="pill pill-y">📋 UDR / BGP</span>
+    </div>
+  </div>
+</div>
+
+<!-- ─── PROBLEM STATEMENT ─── -->
+<div class="sh"><h2><span class="accent">01.</span> そもそも何が問題なのか</h2><div class="sh-bar"></div></div>
+<p class="sh-desc">Azureでリソースをデプロイしただけでは、通信はインターネット経由になります。これがどういうリスクを生むかを理解することが出発点です。</p>
+
+<div class="dw">
+  <div class="dw-title"><span>デフォルト構成の問題点 vs エンドポイント適用後の改善</span></div>
+  <svg class="diag" viewBox="0 0 1060 400" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="ar0" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#FF3D00"/></marker>
+      <marker id="ag0" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#00C853"/></marker>
+      <marker id="ab0" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#0078D4"/></marker>
+      <marker id="ap0" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#A040D0"/></marker>
+    </defs>
+
+    <!-- ── ZONE 1: BEFORE ── -->
+    <rect x="8" y="8" width="310" height="380" rx="16" fill="rgba(255,61,0,0.04)" stroke="rgba(255,61,0,0.2)" stroke-width="1"/>
+    <text x="163" y="30" text-anchor="middle" fill="#FF7050" font-size="12" font-family="sans-serif" font-weight="700">⚠ BEFORE — デフォルト</text>
+
+    <rect x="24" y="44" width="130" height="100" rx="10" fill="rgba(0,120,212,0.1)" stroke="#0078D4" stroke-width="1.5"/>
+    <text x="89" y="64" text-anchor="middle" fill="#50E6FF" font-size="10" font-family="sans-serif" font-weight="700">Azure VNet</text>
+    <!-- VM icon -->
+    <rect x="38" y="74" width="102" height="56" rx="8" fill="rgba(0,80,160,0.4)" stroke="#0078D4" stroke-width="1.2"/>
+    <rect x="48" y="82" width="82" height="36" rx="4" fill="#0078D4" opacity="0.55"/>
+    <text x="89" y="105" text-anchor="middle" fill="white" font-size="11" font-family="sans-serif" font-weight="700">🖥️ VM</text>
+    <text x="89" y="120" text-anchor="middle" fill="#A0D0FF" font-size="8" font-family="sans-serif">10.0.0.4</text>
+
+    <!-- Internet (danger) -->
+    <ellipse cx="89" cy="220" rx="60" ry="34" fill="rgba(80,80,80,0.12)" stroke="#555" stroke-width="1.5" stroke-dasharray="4,3"/>
+    <text x="89" y="215" text-anchor="middle" fill="#999" font-size="14">🌐</text>
+    <text x="89" y="232" text-anchor="middle" fill="#888" font-size="10" font-family="sans-serif">Internet</text>
+
+    <!-- Storage (public) -->
+    <rect x="40" y="276" width="100" height="64" rx="10" fill="rgba(0,120,212,0.1)" stroke="#0078D4" stroke-width="1.5"/>
+    <rect x="50" y="284" width="80" height="16" rx="3" fill="#0078D4" opacity="0.6"/>
+    <text x="90" y="296" text-anchor="middle" fill="white" font-size="8" font-family="sans-serif">Blob Storage</text>
+    <rect x="50" y="304" width="80" height="8" rx="2" fill="#0078D4" opacity="0.3"/>
+    <rect x="50" y="316" width="50" height="8" rx="2" fill="#0078D4" opacity="0.3"/>
+    <text x="90" y="335" text-anchor="middle" fill="#FF6040" font-size="9" font-family="sans-serif">Public IP 経由</text>
+
+    <line x1="89" y1="144" x2="89" y2="184" stroke="#FF3D00" stroke-width="2.5" stroke-dasharray="5,3" marker-end="url(#ar0)"/>
+    <line x1="89" y1="254" x2="89" y2="274" stroke="#FF3D00" stroke-width="2.5" stroke-dasharray="5,3" marker-end="url(#ar0)"/>
+
+    <!-- Risk bubbles -->
+    <rect x="155" y="140" width="148" height="50" rx="10" fill="rgba(255,61,0,0.1)" stroke="rgba(255,61,0,0.3)" stroke-width="1"/>
+    <text x="229" y="158" text-anchor="middle" fill="#FF6040" font-size="10" font-family="sans-serif" font-weight="700">リスク:</text>
+    <text x="229" y="172" text-anchor="middle" fill="#FF8060" font-size="9" font-family="sans-serif">・パブリックIP露出</text>
+    <text x="229" y="185" text-anchor="middle" fill="#FF8060" font-size="9" font-family="sans-serif">・盗聴・中間者攻撃</text>
+
+    <!-- ── ZONE 2: SERVICE EP ── -->
+    <rect x="366" y="8" width="310" height="380" rx="16" fill="rgba(0,120,212,0.04)" stroke="rgba(0,120,212,0.2)" stroke-width="1"/>
+    <text x="521" y="30" text-anchor="middle" fill="#50A0FF" font-size="12" font-family="sans-serif" font-weight="700">✓ Service Endpoint 適用後</text>
+
+    <rect x="382" y="44" width="130" height="100" rx="10" fill="rgba(0,120,212,0.1)" stroke="#0078D4" stroke-width="1.5"/>
+    <text x="447" y="64" text-anchor="middle" fill="#50E6FF" font-size="10" font-family="sans-serif" font-weight="700">Azure VNet</text>
+    <rect x="396" y="74" width="102" height="56" rx="8" fill="rgba(0,80,160,0.4)" stroke="#0078D4" stroke-width="1.2"/>
+    <rect x="406" y="82" width="82" height="36" rx="4" fill="#0078D4" opacity="0.55"/>
+    <text x="447" y="105" text-anchor="middle" fill="white" font-size="11" font-family="sans-serif" font-weight="700">🖥️ VM</text>
+    <text x="447" y="120" text-anchor="middle" fill="#A0D0FF" font-size="8" font-family="sans-serif">Service EP 有効</text>
+
+    <!-- MS Backbone -->
+    <rect x="382" y="172" width="270" height="44" rx="10" fill="rgba(0,183,195,0.1)" stroke="#00B7C3" stroke-width="1.5" stroke-dasharray="6,3"/>
+    <text x="517" y="191" text-anchor="middle" fill="#00D7E0" font-size="10" font-family="sans-serif" font-weight="700">Microsoft Global Network (Backbone)</text>
+    <text x="517" y="207" text-anchor="middle" fill="#50E6FF" font-size="9" font-family="sans-serif">インターネットを通らずMSバックボーン経由</text>
+
+    <rect x="390" y="240" width="248" height="64" rx="10" fill="rgba(0,120,212,0.08)" stroke="#0078D4" stroke-width="1.5"/>
+    <rect x="400" y="248" width="80" height="16" rx="3" fill="#0078D4" opacity="0.6"/>
+    <text x="440" y="260" text-anchor="middle" fill="white" font-size="8" font-family="sans-serif">Blob Storage</text>
+    <text x="440" y="293" text-anchor="middle" fill="#FFB000" font-size="9" font-family="sans-serif">パブリックIPは残存</text>
+    <!-- Firewall label -->
+    <rect x="494" y="248" width="130" height="48" rx="8" fill="rgba(0,200,83,0.1)" stroke="rgba(0,200,83,0.35)" stroke-width="1"/>
+    <text x="559" y="268" text-anchor="middle" fill="#60D860" font-size="22">🛡️</text>
+    <text x="559" y="288" text-anchor="middle" fill="#60D860" font-size="9" font-family="sans-serif">VNetのみ許可 FW</text>
+
+    <line x1="447" y1="144" x2="447" y2="170" stroke="#00C853" stroke-width="2.5" marker-end="url(#ag0)"/>
+    <line x1="447" y1="216" x2="447" y2="238" stroke="#00C853" stroke-width="2.5" marker-end="url(#ag0)"/>
+
+    <!-- ── ZONE 3: PRIVATE EP ── -->
+    <rect x="732" y="8" width="320" height="380" rx="16" fill="rgba(119,25,170,0.04)" stroke="rgba(119,25,170,0.2)" stroke-width="1"/>
+    <text x="892" y="30" text-anchor="middle" fill="#C080FF" font-size="12" font-family="sans-serif" font-weight="700">✓ Private Endpoint 適用後</text>
+
+    <rect x="748" y="44" width="140" height="140" rx="10" fill="rgba(119,25,170,0.08)" stroke="#7719AA" stroke-width="1.5"/>
+    <text x="818" y="64" text-anchor="middle" fill="#D4A0FF" font-size="10" font-family="sans-serif" font-weight="700">Azure VNet</text>
+    <rect x="758" y="74" width="102" height="44" rx="8" fill="rgba(0,80,160,0.4)" stroke="#0078D4" stroke-width="1.2"/>
+    <text x="809" y="100" text-anchor="middle" fill="white" font-size="11" font-family="sans-serif" font-weight="700">🖥️ VM</text>
+    <!-- PE NIC -->
+    <rect x="758" y="128" width="114" height="44" rx="8" fill="rgba(119,25,170,0.3)" stroke="#7719AA" stroke-width="2"/>
+    <text x="815" y="148" text-anchor="middle" fill="#D4A0FF" font-size="9" font-family="sans-serif" font-weight="700">🔮 Private Endpoint</text>
+    <text x="815" y="162" text-anchor="middle" fill="#A070C0" font-size="8" font-family="sans-serif">NIC: 10.0.0.5</text>
+
+    <!-- Private DNS -->
+    <rect x="748" y="202" width="280" height="36" rx="8" fill="rgba(119,25,170,0.1)" stroke="rgba(119,25,170,0.4)" stroke-width="1"/>
+    <text x="888" y="219" text-anchor="middle" fill="#D4A0FF" font-size="10" font-family="sans-serif" font-weight="700">🌐 Private DNS Zone</text>
+    <text x="888" y="232" text-anchor="middle" fill="#9060B0" font-size="9" font-family="sans-serif">myaccount.blob... → 10.0.0.5</text>
+
+    <rect x="748" y="260" width="280" height="70" rx="10" fill="rgba(119,25,170,0.08)" stroke="#7719AA" stroke-width="1.5"/>
+    <rect x="758" y="270" width="80" height="16" rx="3" fill="rgba(119,25,170,0.4)"/>
+    <text x="798" y="282" text-anchor="middle" fill="#D4A0FF" font-size="8" font-family="sans-serif">Blob Storage</text>
+    <text x="798" y="316" text-anchor="middle" fill="#60D860" font-size="9" font-family="sans-serif">パブリックIP無効化可</text>
+    <rect x="848" y="270" width="164" height="52" rx="8" fill="rgba(0,200,83,0.08)" stroke="rgba(0,200,83,0.35)" stroke-width="1"/>
+    <text x="930" y="296" text-anchor="middle" fill="#60D860" font-size="22">🔒</text>
+    <text x="930" y="315" text-anchor="middle" fill="#60D860" font-size="9" font-family="sans-serif">完全プライベート</text>
+
+    <line x1="815" y1="172" x2="815" y2="200" stroke="#A040D0" stroke-width="2.5" marker-end="url(#ap0)"/>
+    <line x1="815" y1="238" x2="815" y2="258" stroke="#A040D0" stroke-width="2.5" marker-end="url(#ap0)"/>
+  </svg>
+</div>
+
+<!-- Key insight -->
+<div class="ib tip">
+  <div class="ib-ico">💡</div>
+  <div>
+    <strong>試験を解く上での最も重要な概念的違い</strong>
+    <b style="color:#50E6FF">サービスエンドポイント</b>は「経路（ルート）の最適化 ＋ ファイアウォール保護」です。Storageアカウントのパブリックエンドポイント（パブリックIP）は残ります。<br>
+    <b style="color:#D4A0FF">プライベートエンドポイント</b>は「サービスそのものをVNet内のNICとして出現させる」技術です。プライベートIPでアクセスし、パブリックアクセスを<b style="color:#00C853">完全に無効化</b>できます。
+  </div>
+</div>
+
+<!-- ─── WHY THIS MATTERS ─── -->
+<div class="sh"><h2><span class="accent">02.</span> 試験における重要度</h2><div class="sh-bar"></div></div>
+<div class="sum-grid">
+  <div class="sum-item">
+    <div class="sum-icon">🎯</div>
+    <div class="sum-label">試験での出題頻度</div>
+    <div class="sum-val" style="color:#50E6FF">高い</div>
+  </div>
+  <div class="sum-item">
+    <div class="sum-icon">🧩</div>
+    <div class="sum-label">関連するAzureサービス数</div>
+    <div class="sum-val" style="color:#D4A0FF">150以上（PE対応）</div>
+  </div>
+  <div class="sum-item">
+    <div class="sum-icon">⚠️</div>
+    <div class="sum-label">間違えやすいポイント</div>
+    <div class="sum-val" style="color:#FFD060">多数</div>
+  </div>
+</div>
+
+<div class="cg3">
+  <div class="card cb">
+    <div class="card-hd">
+      <div class="card-ico">🔷</div>
+      <div><h3>サービスエンドポイント</h3><div class="tags"><span class="tag tb">無料</span><span class="tag tg">シンプル</span></div></div>
+    </div>
+    <p>VNetのサブネットとAzureサービス間のルートをMSバックボーン経由に変更します。サービス側のファイアウォールでVNetのみ許可することで保護します。</p>
+    <ul style="margin-top:10px;">
+      <li>対象: ストレージ・SQL・KeyVaultなど約8種</li>
+      <li>コスト: <b style="color:#60D860">無料</b></li>
+      <li>DNSの変更: 不要</li>
+      <li>オンプレからの利用: <b style="color:#FF7060">不可</b></li>
+    </ul>
+  </div>
+  <div class="card cp">
+    <div class="card-hd">
+      <div class="card-ico">🔮</div>
+      <div><h3>プライベートエンドポイント</h3><div class="tags"><span class="tag tp">有料</span><span class="tag tg">最高セキュリティ</span></div></div>
+    </div>
+    <p>AzureサービスをVNet内にNICとして「移植」します。プライベートIPでアクセスでき、パブリックアクセスを完全に無効化できます。</p>
+    <ul style="margin-top:10px;">
+      <li>対象: 150以上のAzureサービス</li>
+      <li>コスト: <b style="color:#FFB000">NIC料金+データ転送</b></li>
+      <li>DNSの変更: <b style="color:#FF7060">必須</b></li>
+      <li>オンプレからの利用: <b style="color:#60D860">可能</b></li>
+    </ul>
+  </div>
+  <div class="card co">
+    <div class="card-hd">
+      <div class="card-ico">🚇</div>
+      <div><h3>強制トンネリング</h3><div class="tags"><span class="tag to">コンプライアンス</span><span class="tag ty">全通信制御</span></div></div>
+    </div>
+    <p>VMからのインターネット宛トラフィックをすべてオンプレFWや Azure Firewallに迂回させます。UDRまたはBGPで0.0.0.0/0ルートを上書きします。</p>
+    <ul style="margin-top:10px;">
+      <li>制御対象: インターネット宛の全通信</li>
+      <li>方式: UDR または BGPルートアドバタイズ</li>
+      <li>注意: <b style="color:#FF7060">GatewaySubnetへの適用禁止</b></li>
+      <li>EPとの組合せ: <b style="color:#60D860">推奨</b></li>
+    </ul>
+  </div>
+</div>
+
+</div><!-- end page 0 -->
+
+
+<!-- ═══════════════════════════════════════════════
+     PAGE 1: サービスエンドポイント完全解説
+═══════════════════════════════════════════════ -->
+<div class="pg" id="p1">
+
+<div class="hero">
+  <div class="hero-content">
+    <div class="hero-eyebrow">🔷 VNet Service Endpoint — 完全解説</div>
+    <h1>サービスエンドポイント<br>仕組みから制限まで</h1>
+    <p class="hero-desc">
+      サービスエンドポイントは「ルーティング変更」と「ファイアウォール保護」の2つがセットで初めて意味を持ちます。
+      片方だけでは不完全です。この仕組みを根本から理解することが試験合格の鍵です。
+    </p>
+  </div>
+</div>
+
+<div class="sh"><h2><span class="accent">01.</span> 技術的な仕組み</h2><div class="sh-bar"></div></div>
+<p class="sh-desc">サービスEPを有効にすると何が起きるのか — Azureの内部動作を理解する</p>
+
+<div class="dw">
+  <div class="dw-title"><span>サービスエンドポイント — 動作フロー詳細図</span></div>
+  <svg class="diag" viewBox="0 0 1060 460" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="sep1" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#00C853"/></marker>
+      <marker id="sep2" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#FF3D00"/></marker>
+      <marker id="sep3" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#0078D4"/></marker>
+    </defs>
+    <!-- Azure cloud boundary -->
+    <rect x="8" y="8" width="1044" height="444" rx="20" fill="rgba(0,120,212,0.02)" stroke="rgba(0,120,212,0.12)" stroke-width="1"/>
+    <text x="524" y="28" text-anchor="middle" fill="rgba(0,120,212,0.4)" font-size="11" font-family="sans-serif" font-weight="700">Microsoft Azure Cloud</text>
+
+    <!-- VNet -->
+    <rect x="24" y="44" width="420" height="390" rx="16" fill="rgba(0,120,212,0.05)" stroke="#0078D4" stroke-width="2"/>
+    <text x="44" y="66" fill="#50E6FF" font-size="12" font-family="sans-serif" font-weight="700">🌐 Azure VNet — 10.0.0.0/16</text>
+
+    <!-- GatewaySubnet -->
+    <rect x="40" y="80" width="390" height="56" rx="10" fill="rgba(0,120,212,0.08)" stroke="#0078D4" stroke-width="1" stroke-dasharray="5,3"/>
+    <text x="56" y="100" fill="#7BA7CC" font-size="10" font-family="sans-serif">GatewaySubnet</text>
+    <rect x="56" y="106" width="220" height="22" rx="6" fill="rgba(0,120,212,0.2)"/>
+    <text x="166" y="121" text-anchor="middle" fill="#50E6FF" font-size="9" font-family="sans-serif">VPN Gateway / ExpressRoute GW</text>
+    <rect x="286" y="106" width="130" height="22" rx="6" fill="rgba(0,120,212,0.15)"/>
+    <text x="351" y="121" text-anchor="middle" fill="#7BA7CC" font-size="9" font-family="sans-serif">※ UDR適用禁止</text>
+
+    <!-- Subnet with Service Endpoint -->
+    <rect x="40" y="150" width="390" height="200" rx="10" fill="rgba(0,120,212,0.06)" stroke="#0078D4" stroke-width="1.5" stroke-dasharray="6,4"/>
+    <text x="56" y="170" fill="#7BA7CC" font-size="10" font-family="sans-serif">📦 AppSubnet: 10.0.1.0/24</text>
+    <!-- Service EP badge on subnet -->
+    <rect x="196" y="156" width="224" height="20" rx="10" fill="rgba(0,120,212,0.25)" stroke="#0078D4" stroke-width="1"/>
+    <text x="308" y="170" text-anchor="middle" fill="#50E6FF" font-size="9" font-family="sans-serif" font-weight="700">✓ serviceEndpoints: Microsoft.Storage</text>
+
+    <!-- VM -->
+    <rect x="56" y="184" width="140" height="80" rx="10" fill="rgba(0,60,120,0.45)" stroke="#0078D4" stroke-width="1.5"/>
+    <rect x="70" y="196" width="112" height="52" rx="6" fill="#0078D4" opacity="0.5"/>
+    <text x="126" y="223" text-anchor="middle" fill="white" font-size="11" font-family="sans-serif" font-weight="700">🖥️ Azure VM</text>
+    <text x="126" y="240" text-anchor="middle" fill="#A0D0FF" font-size="9" font-family="sans-serif">10.0.1.4</text>
+
+    <!-- Route Table (auto-added) -->
+    <rect x="214" y="184" width="206" height="100" rx="10" fill="rgba(0,80,40,0.25)" stroke="rgba(0,200,83,0.5)" stroke-width="1.5"/>
+    <text x="317" y="204" text-anchor="middle" fill="#60D860" font-size="10" font-family="sans-serif" font-weight="700">📋 有効ルートテーブル（自動）</text>
+    <rect x="224" y="212" width="186" height="18" rx="5" fill="rgba(0,200,83,0.15)" stroke="rgba(0,200,83,0.3)" stroke-width="1"/>
+    <text x="317" y="225" text-anchor="middle" fill="#60D860" font-size="9" font-family="sans-serif">Storage PrefixIP → VNetSvcEndpoint ← ★自動追加</text>
+    <rect x="224" y="234" width="186" height="18" rx="5" fill="rgba(0,120,212,0.1)"/>
+    <text x="317" y="247" text-anchor="middle" fill="#50E6FF" font-size="9" font-family="sans-serif">10.0.0.0/8 → VirtualNetwork</text>
+    <rect x="224" y="256" width="186" height="18" rx="5" fill="rgba(60,60,60,0.1)"/>
+    <text x="317" y="269" text-anchor="middle" fill="#888" font-size="9" font-family="sans-serif">0.0.0.0/0 → Internet</text>
+
+    <!-- NSG on subnet -->
+    <rect x="40" y="368" width="390" height="56" rx="10" fill="rgba(255,140,0,0.08)" stroke="rgba(255,140,0,0.4)" stroke-width="1.5"/>
+    <text x="56" y="388" fill="#FFB000" font-size="10" font-family="sans-serif" font-weight="700">🛡️ NSG (サブネット適用推奨)</text>
+    <rect x="166" y="378" width="250" height="18" rx="5" fill="rgba(255,140,0,0.12)"/>
+    <text x="291" y="391" text-anchor="middle" fill="#FFD060" font-size="9" font-family="sans-serif">Outbound Allow: ServiceTag=Storage (宛先方向)</text>
+
+    <!-- Azure Backbone -->
+    <rect x="482" y="190" width="240" height="52" rx="12" fill="rgba(0,183,195,0.1)" stroke="#00B7C3" stroke-width="1.5" stroke-dasharray="8,4"/>
+    <text x="602" y="211" text-anchor="middle" fill="#00D7E0" font-size="11" font-family="sans-serif" font-weight="700">🌐 Microsoft Global Network</text>
+    <text x="602" y="228" text-anchor="middle" fill="#50E6FF" font-size="9" font-family="sans-serif">Azure Backbone — インターネット経由しない</text>
+
+    <!-- Storage Account -->
+    <rect x="762" y="44" width="282" height="260" rx="16" fill="rgba(0,120,212,0.06)" stroke="#0078D4" stroke-width="2"/>
+    <text x="903" y="66" text-anchor="middle" fill="#50E6FF" font-size="12" font-family="sans-serif" font-weight="700">🗄️ Storage Account</text>
+
+    <!-- Storage visual -->
+    <rect x="778" y="80" width="110" height="110" rx="10" fill="rgba(0,120,212,0.2)" stroke="#0078D4" stroke-width="1.2"/>
+    <rect x="788" y="90" width="90" height="16" rx="3" fill="#0078D4" opacity="0.7"/>
+    <text x="833" y="102" text-anchor="middle" fill="white" font-size="8" font-family="sans-serif">Blob / File</text>
+    <rect x="788" y="110" width="90" height="10" rx="2" fill="#0078D4" opacity="0.4"/>
+    <rect x="788" y="124" width="90" height="10" rx="2" fill="#0078D4" opacity="0.4"/>
+    <rect x="788" y="138" width="90" height="10" rx="2" fill="#0078D4" opacity="0.4"/>
+    <rect x="788" y="152" width="60" height="10" rx="2" fill="#0078D4" opacity="0.4"/>
+    <text x="833" y="182" text-anchor="middle" fill="#FFB000" font-size="9" font-family="sans-serif">Public IP: 残存</text>
+
+    <!-- Firewall rules -->
+    <rect x="900" y="80" width="130" height="130" rx="10" fill="rgba(0,80,0,0.2)" stroke="rgba(0,200,83,0.4)" stroke-width="1.5"/>
+    <text x="965" y="100" text-anchor="middle" fill="#60D860" font-size="10" font-family="sans-serif" font-weight="700">🛡️ Firewall Rules</text>
+    <rect x="910" y="108" width="110" height="20" rx="5" fill="rgba(0,200,83,0.15)" stroke="rgba(0,200,83,0.3)" stroke-width="1"/>
+    <text x="965" y="122" text-anchor="middle" fill="#60D860" font-size="8.5" font-family="sans-serif">✓ VNet: 10.0.1.0/24</text>
+    <rect x="910" y="132" width="110" height="20" rx="5" fill="rgba(255,61,0,0.1)" stroke="rgba(255,61,0,0.3)" stroke-width="1"/>
+    <text x="965" y="146" text-anchor="middle" fill="#FF6040" font-size="8.5" font-family="sans-serif">✗ Internet: ブロック</text>
+    <rect x="910" y="156" width="110" height="20" rx="5" fill="rgba(255,61,0,0.1)" stroke="rgba(255,61,0,0.3)" stroke-width="1"/>
+    <text x="965" y="170" text-anchor="middle" fill="#FF6040" font-size="8.5" font-family="sans-serif">✗ On-premises: ブロック</text>
+    <rect x="910" y="180" width="110" height="22" rx="5" fill="rgba(255,179,0,0.1)" stroke="rgba(255,179,0,0.3)" stroke-width="1"/>
+    <text x="965" y="195" text-anchor="middle" fill="#FFB000" font-size="8" font-family="sans-serif">⚠ Public IP は残るが</text>
+    <text x="965" y="207" text-anchor="middle" fill="#FFB000" font-size="8" font-family="sans-serif">FWで保護している</text>
+
+    <!-- On-prem (BLOCKED) -->
+    <rect x="762" y="324" width="282" height="80" rx="12" fill="rgba(60,60,60,0.1)" stroke="#555" stroke-width="1.5" stroke-dasharray="4,3"/>
+    <text x="903" y="350" text-anchor="middle" fill="#888" font-size="11" font-family="sans-serif">🏢 On-premises</text>
+    <text x="903" y="370" text-anchor="middle" fill="#FF6040" font-size="10" font-family="sans-serif" font-weight="700">× サービスEPは使用不可</text>
+    <text x="903" y="388" text-anchor="middle" fill="#777" font-size="9" font-family="sans-serif">VPN/ER経由でもアクセス不可 → Private EP を使うこと</text>
+
+    <!-- Internet (blocked) -->
+    <ellipse cx="602" cy="360" rx="80" ry="38" fill="rgba(60,60,60,0.1)" stroke="#555" stroke-width="1.5" stroke-dasharray="4,3"/>
+    <text x="602" y="355" text-anchor="middle" fill="#777" font-size="13">🌐</text>
+    <text x="602" y="372" text-anchor="middle" fill="#666" font-size="10" font-family="sans-serif">Internet（使用しない）</text>
+    <line x1="548" y1="320" x2="656" y2="400" stroke="#FF3D00" stroke-width="3" opacity="0.5"/>
+    <line x1="656" y1="320" x2="548" y2="400" stroke="#FF3D00" stroke-width="3" opacity="0.5"/>
+
+    <!-- Arrows -->
+    <line x1="196" y1="224" x2="480" y2="216" stroke="#00C853" stroke-width="2.5" marker-end="url(#sep1)"/>
+    <text x="340" y="210" text-anchor="middle" fill="#60D860" font-size="10" font-family="sans-serif" font-weight="600">バックボーン経由（最適化ルート）</text>
+    <line x1="722" y1="216" x2="760" y2="180" stroke="#00C853" stroke-width="2.5" marker-end="url(#sep1)"/>
+  </svg>
+</div>
+
+<div class="ib warn">
+  <div class="ib-ico">⚠️</div>
+  <div>
+    <strong>重要: サービスEPは「ルート変更」と「ファイアウォール設定」の両方が必要</strong>
+    サービスEPをサブネットで有効化しただけでは保護になりません。Storageアカウント側の
+    「ネットワーク → ファイアウォールと仮想ネットワーク → 選択した仮想ネットワーク」でVNetを追加する設定を必ず実施してください。
+  </div>
+</div>
+
+<!-- ─── SUPPORTED SERVICES ─── -->
+<div class="sh"><h2><span class="accent">02.</span> 対応サービスと特徴</h2><div class="sh-bar"></div></div>
+
+<div class="tw">
+  <table>
+    <thead>
+      <tr>
+        <th class="th-b">Azureサービス</th>
+        <th class="th-b">サービスタグ</th>
+        <th class="th-b">主なサブリソース</th>
+        <th class="th-gray">試験頻出度</th>
+        <th class="th-gray">注意点</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Azure Storage</td><td><code>Microsoft.Storage</code></td><td>Blob, File, Queue, Table</td><td class="tok">★★★ 最頻出</td><td>同一リージョンのStorageのみ。RegionalEndpointもある</td></tr>
+      <tr><td>Azure SQL Database</td><td><code>Microsoft.Sql</code></td><td>SQL DB, SQL Managed Instance</td><td class="tok">★★★ 最頻出</td><td>SQL MIとの組合せも問われる</td></tr>
+      <tr><td>Azure Key Vault</td><td><code>Microsoft.KeyVault</code></td><td>vault</td><td class="twn">★★☆ 中程度</td><td>Key VaultファイアウォールでVNet許可が必要</td></tr>
+      <tr><td>Azure Service Bus</td><td><code>Microsoft.ServiceBus</code></td><td>namespace</td><td class="twn">★★☆ 中程度</td><td>Premiumレベルのみプライベートエンドポイントも対応</td></tr>
+      <tr><td>Azure Event Hubs</td><td><code>Microsoft.EventHub</code></td><td>namespace</td><td class="twn">★★☆ 中程度</td><td>Standardレベル以上</td></tr>
+      <tr><td>Azure Cosmos DB</td><td><code>Microsoft.AzureCosmosDB</code></td><td>Sql, MongoDB, Cassandra...</td><td class="twn">★★☆ 中程度</td><td>APIの種類によって対応状況が異なる</td></tr>
+      <tr><td>Azure App Service</td><td><code>Microsoft.Web</code></td><td>送信のみ</td><td class="ter">★☆☆ 低</td><td>送信（アウトバウンド）のみ。受信はPrivate EP</td></tr>
+      <tr><td>Azure Container Registry</td><td><code>Microsoft.ContainerRegistry</code></td><td>registry</td><td class="ter">★☆☆ 低</td><td>Premium SKU必要</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ─── SETUP STEPS ─── -->
+<div class="sh"><h2><span class="accent">03.</span> 設定手順と実装</h2><div class="sh-bar"></div></div>
+
+<div class="flow">
+  <div class="fstep">
+    <div class="fnum b">1</div>
+    <div class="fc">
+      <h5>サブネットでサービスエンドポイントを有効化</h5>
+      <p>Portal: VNet → サブネット → サービスエンドポイント → 対象サービスを選択<br>
+      これによりAzureがそのサブネットのルートテーブルに <code>VirtualNetworkServiceEndpoint</code> ネクストホップを自動追加します</p>
+    </div>
+  </div>
+  <div class="fstep">
+    <div class="fnum b">2</div>
+    <div class="fc">
+      <h5>Azureサービス側のファイアウォール設定</h5>
+      <p>Storage → ネットワーク → 「選択した仮想ネットワークとIPアドレス」を選択 → VNet/サブネットを追加<br>
+      <b style="color:#FF7060">これをしないとデータは保護されません（EPは経路変更するだけ）</b></p>
+    </div>
+  </div>
+  <div class="fstep">
+    <div class="fnum b">3</div>
+    <div class="fc">
+      <h5>NSGにServiceTagを設定（推奨）</h5>
+      <p>NSGの送信規則で <code>Storage</code> ServiceTagへのアクセスを許可。これにより特定サービスへのアクセスのみ許可し、それ以外はデフォルト拒否にできます</p>
+    </div>
+  </div>
+  <div class="fstep">
+    <div class="fnum b">4</div>
+    <div class="fc">
+      <h5>確認: 有効なルートの確認</h5>
+      <p>VM → ネットワーク → 有効なルート で、Storageのプレフィックス宛に <code>VirtualNetworkServiceEndpoint</code> が表示されていれば正常</p>
+    </div>
+  </div>
+</div>
+
+<div class="code"><span class="cm"># Azure CLI: サービスEPを有効化</span>
+az network vnet subnet update \
+  --resource-group myRG \
+  --vnet-name myVNet \
+  --name mySubnet \
+  <span class="kw">--service-endpoints</span> <span class="str">Microsoft.Storage</span>
+
+<span class="cm"># StorageアカウントにVNetルールを追加</span>
+az storage account network-rule add \
+  --resource-group myRG \
+  --account-name myStorage \
+  <span class="kw">--vnet-name</span> myVNet \
+  <span class="kw">--subnet</span> mySubnet
+
+<span class="cm"># 確認: 有効なルートを表示</span>
+az network nic show-effective-route-table \
+  --resource-group myRG \
+  --name myVMnic \
+  --output table</div>
+
+<!-- ─── LIMITATIONS ─── -->
+<div class="sh"><h2><span class="accent">04.</span> 制限事項 — 試験で問われる落とし穴</h2><div class="sh-bar"></div></div>
+
+<div class="cg2">
+  <div class="card co">
+    <div class="card-hd"><div class="card-ico">🚫</div><div><h3>オンプレミスから使えない</h3></div></div>
+    <p>サービスEPはVNetのサブネット単位の設定です。VPN/ExpressRoute経由でオンプレミスから接続しても、サービスEPのルートは適用されません。<b style="color:#FF9060">オンプレからの安全なアクセスが必要な場合は必ずPrivate Endpointを使用します。</b></p>
+    <div class="tags"><span class="tag to">試験頻出の引っかけ</span></div>
+  </div>
+  <div class="card co">
+    <div class="card-hd"><div class="card-ico">🚫</div><div><h3>ピアリングVNetをまたがない</h3></div></div>
+    <p>VNet-AでService EPを有効にしても、ピアリングしたVNet-BのVMはそのEPを使用できません。各VNetのサブネットで個別にEPを有効にする必要があります。<b style="color:#FF9060">Hub-Spokeアーキテクチャで見落としやすいポイントです。</b></p>
+    <div class="tags"><span class="tag to">試験頻出の引っかけ</span></div>
+  </div>
+</div>
+
+<div class="cg2">
+  <div class="card cy">
+    <div class="card-hd"><div class="card-ico">⚠️</div><div><h3>パブリックIPが残る</h3></div></div>
+    <p>サービスEPを使用しても、Storageアカウント等のパブリックIPエンドポイントは残ります。コンプライアンス要件で「パブリックアクセスを完全に無効化」が必要な場合は<b style="color:#FFD060">プライベートEPのみが対応</b>します。</p>
+  </div>
+  <div class="card cy">
+    <div class="card-hd"><div class="card-ico">⚠️</div><div><h3>リージョン制限</h3></div></div>
+    <p>サービスEPは原則として<b style="color:#FFD060">同一リージョン内のサービス</b>に対してのみ有効です（一部例外あり）。例えば東日本リージョンのVNetから西日本リージョンのStorageへのEPは機能しません。</p>
+  </div>
+</div>
+
+</div><!-- end page 1 -->
+
+
+<!-- ═══════════════════════════════════════════════
+     PAGE 2: プライベートエンドポイント完全解説
+═══════════════════════════════════════════════ -->
+<div class="pg" id="p2">
+
+<div class="hero" style="background:linear-gradient(135deg,rgba(119,25,170,0.1),rgba(119,25,170,0.05),rgba(0,120,212,0.04));border-color:rgba(119,25,170,0.4);">
+  <div class="hero-content">
+    <div class="hero-eyebrow" style="background:rgba(119,25,170,0.2);border-color:rgba(119,25,170,0.5);color:#D4A0FF;">🔮 Private Endpoint — 完全解説</div>
+    <h1 style="background:linear-gradient(135deg,#fff,#D4A0FF,#A040D0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">プライベートエンドポイント<br>NICからDNSまで完全理解</h1>
+    <p class="hero-desc">
+      プライベートエンドポイントはAzureサービスをVNet内にNIC（ネットワークインターフェースカード）として
+      「出現させる」技術です。DNSの設定を含めた全体フローを理解することが合格への鍵です。
+    </p>
+    <div class="hero-pills">
+      <span class="pill pill-p">🔮 プライベートIP割り当て</span>
+      <span class="pill pill-g">✅ パブリックIP完全無効化可</span>
+      <span class="pill pill-b">🌐 Private DNS Zone必須</span>
+      <span class="pill pill-g">✅ オンプレからもアクセス可</span>
+    </div>
+  </div>
+</div>
+
+<div class="sh"><h2><span class="accent">01.</span> 技術的な仕組み — NICとPrivate Link</h2><div class="sh-bar"></div></div>
+<p class="sh-desc">「サービスがVNetの中に引っ越してくる」イメージで理解してください。でも実際には「Private Link」という仕組みでサービスへの接続をプロキシしています。</p>
+
+<div class="dw">
+  <div class="dw-title"><span>プライベートエンドポイント — 全体アーキテクチャ（DNS解決含む）</span></div>
+  <svg class="diag" viewBox="0 0 1060 500" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="pe1" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#A040D0"/></marker>
+      <marker id="pe2" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#00C853"/></marker>
+      <marker id="pe3" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#FFB000"/></marker>
+      <marker id="pe4" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#50E6FF"/></marker>
+    </defs>
+
+    <!-- VNet (large) -->
+    <rect x="8" y="8" width="640" height="480" rx="18" fill="rgba(119,25,170,0.04)" stroke="#7719AA" stroke-width="2"/>
+    <text x="28" y="32" fill="#D4A0FF" font-size="13" font-family="sans-serif" font-weight="700">🌐 Azure VNet (10.0.0.0/16)</text>
+
+    <!-- Subnet A: App -->
+    <rect x="24" y="46" width="280" height="176" rx="12" fill="rgba(0,120,212,0.06)" stroke="#0078D4" stroke-width="1.5" stroke-dasharray="5,3"/>
+    <text x="40" y="66" fill="#7BA7CC" font-size="10" font-family="sans-serif">📦 AppSubnet: 10.0.1.0/24</text>
+    <!-- VM -->
+    <rect x="40" y="78" width="120" height="60" rx="10" fill="rgba(0,60,120,0.45)" stroke="#0078D4" stroke-width="1.5"/>
+    <rect x="52" y="88" width="96" height="38" rx="5" fill="#0078D4" opacity="0.5"/>
+    <text x="100" y="111" text-anchor="middle" fill="white" font-size="11" font-family="sans-serif" font-weight="700">🖥️ VM</text>
+    <text x="100" y="127" text-anchor="middle" fill="#A0D0FF" font-size="8" font-family="sans-serif">10.0.1.4</text>
+    <!-- App Service (VNet integrated) -->
+    <rect x="176" y="78" width="118" height="60" rx="10" fill="rgba(0,120,212,0.2)" stroke="#0078D4" stroke-width="1.2"/>
+    <text x="235" y="103" text-anchor="middle" fill="#50E6FF" font-size="9" font-family="sans-serif" font-weight="700">⚡ App Service</text>
+    <text x="235" y="118" text-anchor="middle" fill="#7BA7CC" font-size="8" font-family="sans-serif">(VNet Integration)</text>
+    <!-- DNS query box -->
+    <rect x="40" y="152" width="254" height="60" rx="8" fill="rgba(255,179,0,0.08)" stroke="rgba(255,179,0,0.35)" stroke-width="1"/>
+    <text x="167" y="172" text-anchor="middle" fill="#FFD060" font-size="10" font-family="sans-serif" font-weight="700">① DNS クエリ（名前解決）</text>
+    <text x="167" y="190" text-anchor="middle" fill="#B0A040" font-size="9" font-family="sans-serif">myaccount.blob.core.windows.net</text>
+    <text x="167" y="204" text-anchor="middle" fill="#B0A040" font-size="9" font-family="sans-serif">→ Azure DNS (168.63.129.16) へ問い合わせ</text>
+
+    <!-- Subnet B: Private Endpoint -->
+    <rect x="24" y="240" width="610" height="110" rx="12" fill="rgba(119,25,170,0.08)" stroke="#7719AA" stroke-width="1.5" stroke-dasharray="5,3"/>
+    <text x="40" y="260" fill="#D4A0FF" font-size="10" font-family="sans-serif">📦 PrivateEndpointSubnet: 10.0.2.0/24</text>
+
+    <!-- PE NIC -->
+    <rect x="40" y="270" width="240" height="64" rx="10" fill="rgba(119,25,170,0.3)" stroke="#7719AA" stroke-width="2"/>
+    <rect x="54" y="280" width="56" height="40" rx="6" fill="rgba(119,25,170,0.4)"/>
+    <rect x="60" y="287" width="44" height="8" rx="2" fill="#D4A0FF" opacity="0.6"/>
+    <rect x="60" y="299" width="44" height="8" rx="2" fill="#D4A0FF" opacity="0.4"/>
+    <rect x="60" y="311" width="44" height="8" rx="2" fill="#D4A0FF" opacity="0.3"/>
+    <text x="170" y="292" text-anchor="middle" fill="#D4A0FF" font-size="10" font-family="sans-serif" font-weight="700">🔮 Private Endpoint NIC</text>
+    <text x="170" y="307" text-anchor="middle" fill="#A080C0" font-size="9" font-family="sans-serif">プライベートIP: 10.0.2.5</text>
+    <text x="170" y="321" text-anchor="middle" fill="#8060A0" font-size="8" font-family="sans-serif">privateLinkServiceConnections</text>
+
+    <!-- Private DNS Zone (in subnet row) -->
+    <rect x="296" y="270" width="328" height="64" rx="10" fill="rgba(119,25,170,0.12)" stroke="rgba(119,25,170,0.5)" stroke-width="1.5"/>
+    <text x="460" y="292" text-anchor="middle" fill="#D4A0FF" font-size="11" font-family="sans-serif" font-weight="700">🌐 Private DNS Zone</text>
+    <text x="460" y="308" text-anchor="middle" fill="#9060B0" font-size="9.5" font-family="sans-serif">privatelink.blob.core.windows.net</text>
+    <text x="460" y="323" text-anchor="middle" fill="#7050A0" font-size="9" font-family="sans-serif">Aレコード: myaccount.blob.core.windows.net → 10.0.2.5</text>
+
+    <!-- On-premises -->
+    <rect x="24" y="370" width="610" height="106" rx="12" fill="rgba(0,100,0,0.06)" stroke="rgba(0,200,83,0.3)" stroke-width="1.5"/>
+    <text x="40" y="392" fill="#60D860" font-size="11" font-family="sans-serif">🏢 On-premises / ピアリングVNet</text>
+    <text x="40" y="408" fill="#4ABA4A" font-size="10" font-family="sans-serif" font-weight="700">✓ プライベートエンドポイントはここからもアクセス可能!</text>
+    <rect x="40" y="416" width="280" height="50" rx="8" fill="rgba(0,80,0,0.2)" stroke="rgba(0,200,83,0.3)" stroke-width="1"/>
+    <text x="180" y="437" text-anchor="middle" fill="#60D860" font-size="9.5" font-family="sans-serif">VPN / ExpressRoute経由で10.0.2.5にアクセス</text>
+    <text x="180" y="453" text-anchor="middle" fill="#4ABA4A" font-size="9" font-family="sans-serif">※ オンプレDNSからPrivate DNS Zoneへの</text>
+    <text x="180" y="465" text-anchor="middle" fill="#4ABA4A" font-size="9" font-family="sans-serif">条件付きフォワーダーが必要</text>
+    <rect x="336" y="416" width="288" height="50" rx="8" fill="rgba(255,179,0,0.06)" stroke="rgba(255,179,0,0.25)" stroke-width="1"/>
+    <text x="480" y="436" text-anchor="middle" fill="#FFB000" font-size="9.5" font-family="sans-serif">オンプレDNS設定例:</text>
+    <text x="480" y="452" text-anchor="middle" fill="#B09000" font-size="9" font-family="sans-serif">privatelink.blob.core.windows.net</text>
+    <text x="480" y="464" text-anchor="middle" fill="#B09000" font-size="9" font-family="sans-serif">→ Forward to: 168.63.129.16 (Azure DNS)</text>
+
+    <!-- Azure Services (right) -->
+    <rect x="668" y="8" width="384" height="370" rx="18" fill="rgba(0,0,0,0.18)" stroke="rgba(0,120,212,0.2)" stroke-width="1"/>
+    <text x="860" y="30" text-anchor="middle" fill="#7BA7CC" font-size="12" font-family="sans-serif" font-weight="700">Azure PaaS Services</text>
+
+    <!-- Storage -->
+    <rect x="684" y="46" width="352" height="120" rx="14" fill="rgba(0,120,212,0.08)" stroke="#0078D4" stroke-width="1.5"/>
+    <text x="860" y="68" text-anchor="middle" fill="#50E6FF" font-size="12" font-family="sans-serif" font-weight="700">🗄️ Storage Account</text>
+    <!-- Storage icon -->
+    <rect x="700" y="80" width="100" height="72" rx="10" fill="rgba(0,120,212,0.2)"/>
+    <rect x="710" y="88" width="80" height="14" rx="3" fill="#0078D4" opacity="0.7"/>
+    <text x="750" y="99" text-anchor="middle" fill="white" font-size="8" font-family="sans-serif">Blob Storage</text>
+    <rect x="710" y="106" width="80" height="9" rx="2" fill="#0078D4" opacity="0.35"/>
+    <rect x="710" y="118" width="80" height="9" rx="2" fill="#0078D4" opacity="0.35"/>
+    <rect x="710" y="130" width="50" height="9" rx="2" fill="#0078D4" opacity="0.35"/>
+    <!-- Public disabled badge -->
+    <rect x="812" y="80" width="210" height="72" rx="10" fill="rgba(0,200,83,0.08)" stroke="rgba(0,200,83,0.4)" stroke-width="1.5"/>
+    <text x="917" y="108" text-anchor="middle" fill="#60D860" font-size="26">🔒</text>
+    <text x="917" y="130" text-anchor="middle" fill="#60D860" font-size="10" font-family="sans-serif" font-weight="700">Public Network Access</text>
+    <text x="917" y="145" text-anchor="middle" fill="#60D860" font-size="10" font-family="sans-serif">Disabled ← 完全無効化可!</text>
+
+    <!-- Private Link -->
+    <rect x="684" y="182" width="352" height="52" rx="10" fill="rgba(119,25,170,0.1)" stroke="rgba(119,25,170,0.5)" stroke-width="1.5"/>
+    <text x="860" y="203" text-anchor="middle" fill="#D4A0FF" font-size="11" font-family="sans-serif" font-weight="700">🔗 Azure Private Link</text>
+    <text x="860" y="222" text-anchor="middle" fill="#9060B0" font-size="9.5" font-family="sans-serif">Private Endpoint NIC ↔ Storageサービス間の接続を管理</text>
+
+    <!-- Other services -->
+    <rect x="684" y="250" width="168" height="60" rx="10" fill="rgba(255,185,0,0.08)" stroke="rgba(255,185,0,0.4)" stroke-width="1.5"/>
+    <text x="768" y="276" text-anchor="middle" fill="#FFD060" font-size="13">🔑</text>
+    <text x="768" y="296" text-anchor="middle" fill="#FFD060" font-size="10" font-family="sans-serif" font-weight="700">Key Vault</text>
+    <rect x="864" y="250" width="172" height="60" rx="10" fill="rgba(0,183,195,0.08)" stroke="rgba(0,183,195,0.4)" stroke-width="1.5"/>
+    <text x="950" y="276" text-anchor="middle" fill="#00D7E0" font-size="13">🗃️</text>
+    <text x="950" y="296" text-anchor="middle" fill="#00D7E0" font-size="10" font-family="sans-serif" font-weight="700">SQL Database</text>
+    <rect x="684" y="320" width="168" height="44" rx="10" fill="rgba(0,120,212,0.08)" stroke="rgba(0,120,212,0.3)" stroke-width="1"/>
+    <text x="768" y="346" text-anchor="middle" fill="#50E6FF" font-size="10" font-family="sans-serif">📦 Container Registry</text>
+    <rect x="864" y="320" width="172" height="44" rx="10" fill="rgba(16,124,16,0.08)" stroke="rgba(16,124,16,0.3)" stroke-width="1"/>
+    <text x="950" y="346" text-anchor="middle" fill="#70E070" font-size="10" font-family="sans-serif">⚡ App Service (受信)</text>
+
+    <!-- Arrows: DNS flow -->
+    <path d="M 100 152 Q 100 256 100 268" stroke="#FFB000" stroke-width="2" stroke-dasharray="4,3" fill="none" marker-end="url(#pe3)"/>
+    <text x="108" y="220" fill="#FFD060" font-size="8.5" font-family="sans-serif">② DNSクエリ</text>
+
+    <!-- DNS answer -->
+    <path d="M 295 300 L 252 300" stroke="#00C853" stroke-width="2" stroke-dasharray="4,3" fill="none" marker-end="url(#pe2)"/>
+    <text x="272" y="295" fill="#60D860" font-size="8" text-anchor="middle" font-family="sans-serif">③ 10.0.2.5 を返す</text>
+
+    <!-- VM to PE traffic -->
+    <path d="M 100 140 Q 100 185 100 268" stroke="#A040D0" stroke-width="2.5" fill="none" marker-end="url(#pe1)"/>
+    <text x="115" y="210" fill="#D4A0FF" font-size="8.5" font-family="sans-serif">④ 実トラフィック</text>
+
+    <!-- PE to Private Link -->
+    <path d="M 282 302 Q 600 302 666 208" stroke="#A040D0" stroke-width="2.5" fill="none" marker-end="url(#pe1)"/>
+
+    <!-- Private Link to Storage -->
+    <line x1="860" y1="166" x2="860" y2="180" stroke="#D4A0FF" stroke-width="2" marker-end="url(#pe1)"/>
+  </svg>
+</div>
+
+<!-- ─── DNS TABLE ─── -->
+<div class="sh"><h2><span class="accent">02.</span> Private DNS Zoneの名前一覧（重要）</h2><div class="sh-bar"></div></div>
+<p class="sh-desc">試験では「どのPrivate DNS Zone名を作成するか」が問われます。サービスごとに決まった名前があります。</p>
+
+<div class="tw">
+  <table>
+    <thead>
+      <tr>
+        <th class="th-p">Azureサービス</th>
+        <th class="th-p">Private DNS Zone の名前</th>
+        <th class="th-p">サブリソース</th>
+        <th class="th-gray">備考</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Azure Blob Storage</td><td><code>privatelink.blob.core.windows.net</code></td><td>blob</td><td>最頻出。ファイルとは別のゾーン</td></tr>
+      <tr><td>Azure File Storage</td><td><code>privatelink.file.core.windows.net</code></td><td>file</td><td>BlobとFileは別々のPEを作成</td></tr>
+      <tr><td>Azure Queue Storage</td><td><code>privatelink.queue.core.windows.net</code></td><td>queue</td><td>個別にPEが必要</td></tr>
+      <tr><td>Azure Table Storage</td><td><code>privatelink.table.core.windows.net</code></td><td>table</td><td>個別にPEが必要</td></tr>
+      <tr><td>Azure SQL Database</td><td><code>privatelink.database.windows.net</code></td><td>sqlServer</td><td>SQL MIは別のゾーン名</td></tr>
+      <tr><td>Azure SQL Managed Instance</td><td><code>privatelink.{dnsZone}.database.windows.net</code></td><td>managedInstance</td><td>ゾーン名は自動生成</td></tr>
+      <tr><td>Azure Key Vault</td><td><code>privatelink.vaultcore.azure.net</code></td><td>vault</td><td>高頻出。RBAC or アクセスポリシーも確認</td></tr>
+      <tr><td>Azure Cosmos DB (SQL)</td><td><code>privatelink.documents.azure.com</code></td><td>Sql</td><td>APIの種類でゾーン名が変わる</td></tr>
+      <tr><td>Azure Container Registry</td><td><code>privatelink.azurecr.io</code></td><td>registry</td><td>Premium SKU必要</td></tr>
+      <tr><td>Azure App Service</td><td><code>privatelink.azurewebsites.net</code></td><td>sites</td><td>受信用。関数アプリも同じ</td></tr>
+      <tr><td>Azure Service Bus</td><td><code>privatelink.servicebus.windows.net</code></td><td>namespace</td><td>Premium tierのみ</td></tr>
+      <tr><td>Azure Event Hubs</td><td><code>privatelink.servicebus.windows.net</code></td><td>namespace</td><td>Service Busと<b style="color:#FF7060">同じゾーン名!</b></td></tr>
+      <tr><td>Azure Kubernetes Service</td><td><code>privatelink.{region}.azmk8s.io</code></td><td>management</td><td>Private Clusterで使用</td></tr>
+      <tr><td>Azure Monitor (Log Analytics)</td><td><code>privatelink.ods.opinsights.azure.com</code>他</td><td>azuremonitor</td><td>複数のゾーンが必要</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="ib danger">
+  <div class="ib-ico">🚨</div>
+  <div>
+    <strong>Event HubsとService Busは同じPrivate DNS Zone名を使用する！</strong>
+    <code>privatelink.servicebus.windows.net</code> という名前はAzure Event HubsとService Busの<b>両方</b>で使用されます。
+    同一VNetに両方のPEを作る場合は同じPrivate DNS Zoneに両方のAレコードを追加します（ゾーンは1つで共有）。
+  </div>
+</div>
+
+<!-- ─── PE vs Service Flow ─── -->
+<div class="sh"><h2><span class="accent">03.</span> プライベートEPの承認フロー</h2><div class="sh-bar"></div></div>
+
+<div class="cg2">
+  <div class="card cb">
+    <div class="card-hd"><div class="card-ico">✅</div><div><h3>自動承認（同一テナント・サブスク）</h3></div></div>
+    <p>同一テナントまたはサブスクリプション内のリソースに対してPEを作成する場合、<b style="color:#50E6FF">対象リソースのRBACで「Network Contributor」または「Owner」ロールを持っていれば自動承認</b>されます。接続状態が「Approved」になります。</p>
+    <div class="tags"><span class="tag tg">✓ 自動承認</span><span class="tag tb">即時利用可能</span></div>
+  </div>
+  <div class="card cy">
+    <div class="card-hd"><div class="card-ico">🔄</div><div><h3>手動承認（クロステナント・クロスサブスク）</h3></div></div>
+    <p>異なるテナントやサブスクリプションのリソースに対してPEを作成する場合、接続リクエストが「Pending（保留中）」状態になります。<b style="color:#FFD060">対象リソースの管理者が手動で承認</b>する必要があります。</p>
+    <div class="tags"><span class="tag ty">⏳ 手動承認が必要</span><span class="tag to">クロステナント注意</span></div>
+  </div>
+</div>
+
+</div><!-- end page 2 -->
+
+
+<!-- ═══════════════════════════════════════════════
+     PAGE 3: 強制トンネリング完全解説
+═══════════════════════════════════════════════ -->
+<div class="pg" id="p3">
+
+<div class="hero" style="background:linear-gradient(135deg,rgba(216,59,1,0.1),rgba(216,59,1,0.04),rgba(255,185,0,0.03));border-color:rgba(216,59,1,0.4);">
+  <div class="hero-content">
+    <div class="hero-eyebrow" style="background:rgba(216,59,1,0.2);border-color:rgba(216,59,1,0.5);color:#FF9060;">🚇 Forced Tunneling — 完全解説</div>
+    <h1 style="background:linear-gradient(135deg,#fff,#FF9060,#D83B01);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">強制トンネリング<br>全通信をコントロールする</h1>
+    <p class="hero-desc">
+      強制トンネリングは、VNet内VMからのインターネット向け通信を、すべてオンプレFW・Azure Firewallを
+      経由させる技術です。コンプライアンス要件や規制産業で必須とされることが多く、
+      UDRまたはBGPで実装します。エンドポイントとの組み合わせ方も試験頻出です。
+    </p>
+    <div class="hero-pills">
+      <span class="pill pill-o">🔴 0.0.0.0/0 デフォルトルート上書き</span>
+      <span class="pill pill-y">📋 UDR方式</span>
+      <span class="pill pill-b">📡 BGP方式</span>
+      <span class="pill pill-g">✅ EPとの組合せ対応</span>
+    </div>
+  </div>
+</div>
+
+<div class="sh"><h2><span class="accent">01.</span> 強制トンネリングの仕組み</h2><div class="sh-bar"></div></div>
+
+<div class="dw">
+  <div class="dw-title"><span>BEFORE / AFTER 比較 ＋ エンドポイントとの組み合わせ</span></div>
+  <svg class="diag" viewBox="0 0 1060 520" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="ft1" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#FF3D00"/></marker>
+      <marker id="ft2" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#00C853"/></marker>
+      <marker id="ft3" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#0078D4"/></marker>
+      <marker id="ft4" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#FFB000"/></marker>
+    </defs>
+
+    <!-- ZONE 1: BEFORE -->
+    <rect x="8" y="8" width="318" height="500" rx="16" fill="rgba(255,61,0,0.03)" stroke="rgba(255,61,0,0.2)" stroke-width="1"/>
+    <text x="167" y="30" text-anchor="middle" fill="#FF7050" font-size="12" font-family="sans-serif" font-weight="700">⚠ BEFORE — 強制Tなし</text>
+
+    <rect x="24" y="44" width="288" height="266" rx="12" fill="rgba(0,120,212,0.05)" stroke="#0078D4" stroke-width="1.5"/>
+    <text x="168" y="64" text-anchor="middle" fill="#50E6FF" font-size="11" font-family="sans-serif" font-weight="700">Azure VNet</text>
+    <!-- GW subnet -->
+    <rect x="40" y="76" width="256" height="48" rx="8" fill="rgba(0,120,212,0.1)" stroke="#0078D4" stroke-width="1" stroke-dasharray="4,2"/>
+    <text x="168" y="95" text-anchor="middle" fill="#7BA7CC" font-size="9" font-family="sans-serif">GatewaySubnet</text>
+    <rect x="56" y="102" width="224" height="16" rx="5" fill="rgba(0,120,212,0.2)"/>
+    <text x="168" y="114" text-anchor="middle" fill="#50E6FF" font-size="8.5" font-family="sans-serif">VPN Gateway (BGP有効)</text>
+    <!-- App subnet -->
+    <rect x="40" y="136" width="256" height="160" rx="8" fill="rgba(0,120,212,0.05)" stroke="#0078D4" stroke-width="1" stroke-dasharray="4,2"/>
+    <text x="168" y="155" text-anchor="middle" fill="#7BA7CC" font-size="9" font-family="sans-serif">AppSubnet</text>
+    <rect x="56" y="163" width="110" height="48" rx="8" fill="rgba(0,60,120,0.4)" stroke="#0078D4" stroke-width="1.2"/>
+    <text x="111" y="190" text-anchor="middle" fill="white" font-size="10" font-family="sans-serif" font-weight="700">🖥️ VM</text>
+    <!-- Route (default) -->
+    <rect x="178" y="163" width="108" height="48" rx="8" fill="rgba(255,61,0,0.1)" stroke="rgba(255,61,0,0.3)" stroke-width="1"/>
+    <text x="232" y="182" text-anchor="middle" fill="#FF7050" font-size="9" font-family="sans-serif" font-weight="700">デフォルトルート</text>
+    <text x="232" y="197" text-anchor="middle" fill="#FF5030" font-size="8.5" font-family="sans-serif">0.0.0.0/0 →</text>
+    <text x="232" y="209" text-anchor="middle" fill="#FF5030" font-size="8.5" font-family="sans-serif">Internet (直接)</text>
+
+    <!-- Internet direct -->
+    <ellipse cx="168" cy="365" rx="70" ry="36" fill="rgba(60,60,60,0.12)" stroke="#555" stroke-width="1.5" stroke-dasharray="4,3"/>
+    <text x="168" y="360" text-anchor="middle" fill="#aaa" font-size="14">🌐</text>
+    <text x="168" y="377" text-anchor="middle" fill="#888" font-size="10" font-family="sans-serif">Internet</text>
+
+    <line x1="168" y1="296" x2="168" y2="327" stroke="#FF3D00" stroke-width="3" marker-end="url(#ft1)"/>
+    <text x="188" y="316" fill="#FF6040" font-size="9" font-family="sans-serif">直接到達</text>
+    <text x="188" y="328" fill="#FF4020" font-size="9" font-family="sans-serif">FWスキップ!</text>
+
+    <!-- Onprem (blocked) -->
+    <rect x="40" y="420" width="256" height="70" rx="10" fill="rgba(80,80,80,0.1)" stroke="#555" stroke-width="1.5" stroke-dasharray="4,3"/>
+    <text x="168" y="447" text-anchor="middle" fill="#888" font-size="11" font-family="sans-serif">🏢 オンプレFW</text>
+    <text x="168" y="465" text-anchor="middle" fill="#FF5030" font-size="9" font-family="sans-serif" font-weight="700">バイパスされてしまう!</text>
+    <text x="168" y="480" text-anchor="middle" fill="#666" font-size="9" font-family="sans-serif">ログ取得・検査ができない</text>
+
+    <!-- ZONE 2: AFTER FT -->
+    <rect x="370" y="8" width="318" height="500" rx="16" fill="rgba(0,200,83,0.03)" stroke="rgba(0,200,83,0.2)" stroke-width="1"/>
+    <text x="529" y="30" text-anchor="middle" fill="#60D860" font-size="12" font-family="sans-serif" font-weight="700">✓ AFTER — 強制T有効 (UDR)</text>
+
+    <rect x="386" y="44" width="288" height="266" rx="12" fill="rgba(0,120,212,0.05)" stroke="#0078D4" stroke-width="1.5"/>
+    <text x="530" y="64" text-anchor="middle" fill="#50E6FF" font-size="11" font-family="sans-serif" font-weight="700">Azure VNet</text>
+    <!-- GW subnet -->
+    <rect x="402" y="76" width="256" height="48" rx="8" fill="rgba(0,120,212,0.1)" stroke="#0078D4" stroke-width="1" stroke-dasharray="4,2"/>
+    <text x="530" y="95" text-anchor="middle" fill="#7BA7CC" font-size="9" font-family="sans-serif">GatewaySubnet — ※UDR適用不可!</text>
+    <rect x="418" y="102" width="224" height="16" rx="5" fill="rgba(0,120,212,0.2)"/>
+    <text x="530" y="114" text-anchor="middle" fill="#50E6FF" font-size="8.5" font-family="sans-serif">VPN GW (オンプレへトンネル)</text>
+    <!-- App subnet -->
+    <rect x="402" y="136" width="256" height="160" rx="8" fill="rgba(0,120,212,0.05)" stroke="#0078D4" stroke-width="1" stroke-dasharray="4,2"/>
+    <text x="530" y="155" text-anchor="middle" fill="#7BA7CC" font-size="9" font-family="sans-serif">AppSubnet (UDR付き)</text>
+    <rect x="418" y="163" width="100" height="48" rx="8" fill="rgba(0,60,120,0.4)" stroke="#0078D4" stroke-width="1.2"/>
+    <text x="468" y="190" text-anchor="middle" fill="white" font-size="10" font-family="sans-serif" font-weight="700">🖥️ VM</text>
+    <!-- UDR box -->
+    <rect x="530" y="163" width="118" height="48" rx="8" fill="rgba(255,179,0,0.1)" stroke="rgba(255,179,0,0.5)" stroke-width="1.5"/>
+    <text x="589" y="182" text-anchor="middle" fill="#FFD060" font-size="9" font-family="sans-serif" font-weight="700">📋 UDR</text>
+    <text x="589" y="196" text-anchor="middle" fill="#FFB000" font-size="8.5" font-family="sans-serif">0.0.0.0/0 →</text>
+    <text x="589" y="208" text-anchor="middle" fill="#FFB000" font-size="8.5" font-family="sans-serif">VNetGW (強制T)</text>
+
+    <!-- Arrows: VM up to GW -->
+    <line x1="468" y1="212" x2="468" y2="134" stroke="#FF6040" stroke-width="2.5" marker-end="url(#ft1)"/>
+    <text x="478" y="175" fill="#FF9060" font-size="8.5" font-family="sans-serif">① Internet宛</text>
+    <text x="478" y="187" fill="#FF9060" font-size="8.5" font-family="sans-serif">→ GW へ転送</text>
+
+    <!-- Tunnel -->
+    <rect x="402" y="315" width="256" height="52" rx="10" fill="rgba(0,183,195,0.1)" stroke="#00B7C3" stroke-width="1.5" stroke-dasharray="6,3"/>
+    <text x="530" y="337" text-anchor="middle" fill="#00D7E0" font-size="10" font-family="sans-serif" font-weight="700">🔐 VPN/ER 暗号化トンネル</text>
+    <text x="530" y="353" text-anchor="middle" fill="#50E6FF" font-size="9" font-family="sans-serif">→ オンプレミスFWへ転送</text>
+    <line x1="530" y1="122" x2="530" y2="313" stroke="#FF6040" stroke-width="2.5" marker-end="url(#ft1)"/>
+
+    <!-- Onprem FW (active) -->
+    <rect x="402" y="382" width="256" height="88" rx="10" fill="rgba(0,80,0,0.15)" stroke="rgba(0,200,83,0.5)" stroke-width="2"/>
+    <text x="530" y="405" text-anchor="middle" fill="#60D860" font-size="11" font-family="sans-serif" font-weight="700">🏢 On-premises Firewall</text>
+    <rect x="418" y="413" width="106" height="48" rx="7" fill="rgba(0,100,0,0.25)" stroke="rgba(0,200,83,0.4)" stroke-width="1"/>
+    <text x="471" y="434" text-anchor="middle" fill="#60D860" font-size="20">🛡️</text>
+    <text x="471" y="452" text-anchor="middle" fill="#4ABA4A" font-size="9" font-family="sans-serif">検査・ログ</text>
+    <rect x="534" y="413" width="110" height="48" rx="7" fill="rgba(0,100,0,0.2)" stroke="rgba(0,200,83,0.3)" stroke-width="1"/>
+    <text x="589" y="434" text-anchor="middle" fill="#60D860" font-size="20">🔍</text>
+    <text x="589" y="452" text-anchor="middle" fill="#4ABA4A" font-size="9" font-family="sans-serif">Proxy/SIEM</text>
+    <line x1="530" y1="370" x2="530" y2="380" stroke="#00C853" stroke-width="2.5" marker-end="url(#ft2)"/>
+
+    <!-- ZONE 3: FT + Service EP combo -->
+    <rect x="740" y="8" width="312" height="500" rx="16" fill="rgba(255,179,0,0.03)" stroke="rgba(255,179,0,0.2)" stroke-width="1"/>
+    <text x="896" y="30" text-anchor="middle" fill="#FFD060" font-size="11" font-family="sans-serif" font-weight="700">✓ 強制T + Service EP 組合せ</text>
+
+    <rect x="756" y="44" width="280" height="310" rx="12" fill="rgba(0,120,212,0.05)" stroke="#0078D4" stroke-width="1.5"/>
+    <text x="896" y="64" text-anchor="middle" fill="#50E6FF" font-size="11" font-family="sans-serif" font-weight="700">Azure VNet</text>
+    <!-- App subnet with both -->
+    <rect x="772" y="76" width="248" height="260" rx="8" fill="rgba(0,120,212,0.05)" stroke="#0078D4" stroke-width="1" stroke-dasharray="4,2"/>
+    <text x="896" y="94" text-anchor="middle" fill="#7BA7CC" font-size="9" font-family="sans-serif">AppSubnet (強制T + Service EP)</text>
+    <!-- VM -->
+    <rect x="788" y="102" width="100" height="48" rx="8" fill="rgba(0,60,120,0.4)" stroke="#0078D4" stroke-width="1.2"/>
+    <text x="838" y="130" text-anchor="middle" fill="white" font-size="10" font-family="sans-serif" font-weight="700">🖥️ VM</text>
+    <!-- Route table detailed -->
+    <rect x="788" y="162" width="222" height="100" rx="8" fill="rgba(0,0,0,0.2)" stroke="rgba(255,179,0,0.3)" stroke-width="1.5"/>
+    <text x="899" y="180" text-anchor="middle" fill="#FFD060" font-size="9" font-family="sans-serif" font-weight="700">有効ルートテーブル（優先順位順）</text>
+    <rect x="798" y="186" width="202" height="16" rx="4" fill="rgba(0,200,83,0.15)"/>
+    <text x="899" y="198" text-anchor="middle" fill="#60D860" font-size="8.5" font-family="sans-serif">① Storage /18 → VNetServiceEP ← ★最優先!</text>
+    <rect x="798" y="206" width="202" height="16" rx="4" fill="rgba(255,61,0,0.08)"/>
+    <text x="899" y="218" text-anchor="middle" fill="#FF7050" font-size="8.5" font-family="sans-serif">② 0.0.0.0/0 → VNetGW (強制T)</text>
+    <rect x="798" y="226" width="202" height="16" rx="4" fill="rgba(0,120,212,0.08)"/>
+    <text x="899" y="238" text-anchor="middle" fill="#50E6FF" font-size="8.5" font-family="sans-serif">③ 10.0.0.0/8 → VNet内部</text>
+    <text x="899" y="256" text-anchor="middle" fill="#FFB000" font-size="9" font-family="sans-serif">最長プレフィックスマッチで①が優先</text>
+
+    <!-- Two flows -->
+    <rect x="788" y="280" width="106" height="48" rx="8" fill="rgba(0,200,83,0.08)" stroke="rgba(0,200,83,0.35)" stroke-width="1"/>
+    <text x="841" y="300" text-anchor="middle" fill="#60D860" font-size="9" font-family="sans-serif" font-weight="700">🗄️ Storage宛</text>
+    <text x="841" y="315" text-anchor="middle" fill="#4ABA4A" font-size="8.5" font-family="sans-serif">EP経由（直接）</text>
+    <rect x="904" y="280" width="106" height="48" rx="8" fill="rgba(255,61,0,0.08)" stroke="rgba(255,61,0,0.3)" stroke-width="1"/>
+    <text x="957" y="300" text-anchor="middle" fill="#FF7050" font-size="9" font-family="sans-serif" font-weight="700">🌐 Internet宛</text>
+    <text x="957" y="315" text-anchor="middle" fill="#FF5030" font-size="8.5" font-family="sans-serif">GW→FW経由</text>
+
+    <line x1="838" y1="150" x2="838" y2="160" stroke="#00C853" stroke-width="2" marker-end="url(#ft2)"/>
+    <line x1="960" y1="150" x2="960" y2="160" stroke="#FF6040" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#ft1)"/>
+
+    <!-- MS backbone for storage -->
+    <rect x="756" y="370" width="280" height="52" rx="10" fill="rgba(0,183,195,0.08)" stroke="#00B7C3" stroke-width="1.5" stroke-dasharray="6,3"/>
+    <text x="896" y="391" text-anchor="middle" fill="#00D7E0" font-size="10" font-family="sans-serif" font-weight="700">🌐 MSバックボーン</text>
+    <text x="896" y="408" text-anchor="middle" fill="#50E6FF" font-size="9" font-family="sans-serif">Storage宛は強制TでもFW経由にならない</text>
+    <line x1="841" y1="328" x2="841" y2="368" stroke="#00C853" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#ft2)"/>
+
+    <rect x="756" y="436" width="280" height="52" rx="10" fill="rgba(0,80,0,0.12)" stroke="rgba(0,200,83,0.35)" stroke-width="1.5"/>
+    <text x="896" y="459" text-anchor="middle" fill="#60D860" font-size="10" font-family="sans-serif" font-weight="700">🛡️ オンプレFW</text>
+    <text x="896" y="476" text-anchor="middle" fill="#4ABA4A" font-size="9" font-family="sans-serif">Internet宛のみFW経由で検査</text>
+    <line x1="957" y1="328" x2="896" y2="434" stroke="#FF6040" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#ft1)"/>
+  </svg>
+</div>
+
+<!-- ─── UDR vs BGP ─── -->
+<div class="sh"><h2><span class="accent">02.</span> UDR方式 vs BGP方式</h2><div class="sh-bar"></div></div>
+
+<div class="tw">
+  <table>
+    <thead>
+      <tr>
+        <th class="th-gray">比較項目</th>
+        <th class="th-o">📋 UDR (User Defined Route)</th>
+        <th style="color:#00D7E0">📡 BGPルートアドバタイズ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>設定場所</td>
+        <td>Azureポータル / CLIでRoute Tableを作成し、サブネットに関連付ける</td>
+        <td>オンプレルーターからExpressRoute/VPN GW経由でAzureにルートをアドバタイズ</td>
+      </tr>
+      <tr>
+        <td>設定の複雑さ</td>
+        <td>比較的シンプル。Azure側だけで完結</td>
+        <td>BGP設定の知識が必要。オンプレルーターの設定も必要</td>
+      </tr>
+      <tr>
+        <td>適用スコープ</td>
+        <td class="twn">サブネット単位で手動適用。各サブネットにRoute Tableをアタッチする必要あり</td>
+        <td class="tok">VNet全体に自動適用される（BGPルートが伝播）</td>
+      </tr>
+      <tr>
+        <td>GatewaySubnetへの適用</td>
+        <td class="ter">❌ <b>絶対に不可</b>（ゲートウェイがループし接続断）</td>
+        <td class="tok">✅ GWはオンプレへの接続を維持できる（ループしない）</td>
+      </tr>
+      <tr>
+        <td>必要なAzureコンポーネント</td>
+        <td>Route Table リソース（無料）+ VPN GW または ExpressRoute GW</td>
+        <td>VPN GW (BGP有効) または ExpressRoute GW</td>
+      </tr>
+      <tr>
+        <td>ルートの優先順位</td>
+        <td>Service EP ルート &gt; UDRの0.0.0.0/0（最長プレフィックスマッチ）</td>
+        <td>Service EP ルート &gt; BGP由来の0.0.0.0/0（同様のルール）</td>
+      </tr>
+      <tr>
+        <td>典型的なシナリオ</td>
+        <td>Azureのみ環境・ハイブリッドの一部サブネットだけFW経由にしたい場合</td>
+        <td>大規模ハイブリッド環境・オンプレネットワーク管理者がルート管理する場合</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="ib danger">
+  <div class="ib-ico">🚨</div>
+  <div>
+    <strong>GatewaySubnetにUDR (0.0.0.0/0 → VNet GW) を適用するのは絶対にNG</strong>
+    ゲートウェイ自身の通信がゲートウェイに向かうループが発生し、VPN/ExpressRoute接続が切断されます。
+    UDRによる強制トンネリングは<b>アプリケーション用サブネット（AppSubnet等）のみ</b>に適用してください。
+    試験では「どのサブネットにUDRを適用するか」という選択問題が頻出です。
+  </div>
+</div>
+
+<!-- ─── FT + EP interaction ─── -->
+<div class="sh"><h2><span class="accent">03.</span> 強制トンネリングとエンドポイントの相互作用</h2><div class="sh-bar"></div></div>
+<p class="sh-desc">強制トンネリング環境でサービスEP/プライベートEPを使うとどうなるか — これが試験でよく問われます</p>
+
+<div class="tw">
+  <table>
+    <thead>
+      <tr>
+        <th class="th-gray">組み合わせ</th>
+        <th class="th-gray">Storageへのトラフィック</th>
+        <th class="th-gray">Internetへのトラフィック</th>
+        <th class="th-gray">オンプレFW経由か？</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>強制Tのみ</td>
+        <td class="twn">⚠ オンプレFW経由でInternet経由</td>
+        <td class="tok">✅ オンプレFW経由</td>
+        <td class="tok">✅ すべてFW経由</td>
+      </tr>
+      <tr>
+        <td>強制T + Service EP</td>
+        <td class="tok">✅ MSバックボーン直接（FW経由にならない）</td>
+        <td class="tok">✅ オンプレFW経由</td>
+        <td class="twn">⚠ StorageはFWスキップ（EP優先）</td>
+      </tr>
+      <tr>
+        <td>強制T + Private EP</td>
+        <td class="tok">✅ VNet内のPE NIC経由（完全プライベート）</td>
+        <td class="tok">✅ オンプレFW経由</td>
+        <td class="twn">⚠ StorageはFWスキップ（PE優先）</td>
+      </tr>
+      <tr>
+        <td>強制T + Azure Firewall</td>
+        <td class="tok">✅ Azure FW経由でStorage（FW内でのログ/フィルタ可）</td>
+        <td class="tok">✅ Azure FW経由</td>
+        <td class="tok">✅ すべてAzure FW経由（可視性高い）</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="ib ok">
+  <div class="ib-ico">✅</div>
+  <div>
+    <strong>ルートの優先順位ルール（Azureのルート選択基準）</strong>
+    Azureは<b>最長プレフィックスマッチ（Longest Prefix Match）</b>でルートを選択します。
+    Service EPが有効な場合、Storageへの具体的なプレフィックス（例: /16, /18）が
+    デフォルトルート（0.0.0.0/0）より具体的なため、<b>Service EPのルートが必ず優先されます</b>。
+    これにより強制トンネリングが有効でも、Storageへの通信はMSバックボーン直接になります。
+  </div>
+</div>
+
+</div><!-- end page 3 -->
+
+
+<!-- ═══════════════════════════════════════════════
+     PAGE 4: DNS深掘り
+═══════════════════════════════════════════════ -->
+<div class="pg" id="p4">
+
+<div class="hero" style="background:linear-gradient(135deg,rgba(0,183,195,0.1),rgba(0,183,195,0.04));border-color:rgba(0,183,195,0.4);">
+  <div class="hero-content">
+    <div class="hero-eyebrow" style="background:rgba(0,183,195,0.18);border-color:rgba(0,183,195,0.5);color:#00D7E0;">🌐 DNS — 深掘り解説</div>
+    <h1 style="background:linear-gradient(135deg,#fff,#50E6FF,#00B7C3);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">プライベートEPのDNS<br>完全攻略</h1>
+    <p class="hero-desc">
+      プライベートエンドポイントで最も間違えやすいのがDNSです。
+      「PE作ったのに接続できない」の原因はほぼDNS設定ミスです。
+      Azure→オンプレ、ハイブリッド環境での名前解決フローを完全理解しましょう。
+    </p>
+  </div>
+</div>
+
+<div class="sh"><h2><span class="accent">01.</span> DNS解決フロー — なぜデフォルトでは動かないのか</h2><div class="sh-bar"></div></div>
+
+<div class="dw">
+  <div class="dw-title"><span>PEが存在するときのDNS名前解決の流れ（詳細）</span></div>
+  <svg class="diag" viewBox="0 0 1060 420" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="dns1" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#FFB000"/></marker>
+      <marker id="dns2" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#00C853"/></marker>
+      <marker id="dns3" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#FF3D00"/></marker>
+    </defs>
+
+    <!-- LEFT: WITHOUT private DNS zone (broken) -->
+    <rect x="8" y="8" width="500" height="400" rx="16" fill="rgba(255,61,0,0.03)" stroke="rgba(255,61,0,0.2)" stroke-width="1"/>
+    <text x="258" y="30" text-anchor="middle" fill="#FF7050" font-size="12" font-family="sans-serif" font-weight="700">❌ Private DNS Zone なし（接続失敗）</text>
+
+    <!-- VM -->
+    <rect x="24" y="50" width="130" height="60" rx="10" fill="rgba(0,60,120,0.4)" stroke="#0078D4" stroke-width="1.5"/>
+    <text x="89" y="85" text-anchor="middle" fill="white" font-size="11" font-family="sans-serif" font-weight="700">🖥️ VM</text>
+    <text x="89" y="100" text-anchor="middle" fill="#A0D0FF" font-size="8" font-family="sans-serif">10.0.1.4</text>
+
+    <!-- Step 1: DNS query -->
+    <rect x="24" y="132" width="460" height="44" rx="8" fill="rgba(255,179,0,0.08)" stroke="rgba(255,179,0,0.3)" stroke-width="1"/>
+    <text x="254" y="152" text-anchor="middle" fill="#FFD060" font-size="10" font-family="sans-serif" font-weight="700">① DNS: myaccount.blob.core.windows.net は？</text>
+    <text x="254" y="167" text-anchor="middle" fill="#B0A040" font-size="9" font-family="sans-serif">→ Azure DNS (168.63.129.16) へ問い合わせ</text>
+    <line x1="89" y1="112" x2="89" y2="130" stroke="#FFB000" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#dns1)"/>
+
+    <!-- Azure Public DNS -->
+    <rect x="24" y="192" width="220" height="60" rx="10" fill="rgba(80,80,80,0.12)" stroke="#555" stroke-width="1.5"/>
+    <text x="134" y="217" text-anchor="middle" fill="#aaa" font-size="11" font-family="sans-serif" font-weight="700">Azure Public DNS</text>
+    <text x="134" y="235" text-anchor="middle" fill="#FF6040" font-size="9" font-family="sans-serif">⚠ パブリックIPを返答</text>
+    <text x="134" y="248" text-anchor="middle" fill="#FF4020" font-size="9" font-family="sans-serif">52.xxx.xxx.xxx (Public IP)</text>
+    <line x1="89" y1="176" x2="134" y2="190" stroke="#FFB000" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#dns1)"/>
+
+    <!-- Result: VM connects to public IP -->
+    <line x1="134" y1="252" x2="89" y2="290" stroke="#FF3D00" stroke-width="2.5" stroke-dasharray="4,3" marker-end="url(#dns3)"/>
+    <rect x="24" y="292" width="460" height="44" rx="8" fill="rgba(255,61,0,0.1)" stroke="rgba(255,61,0,0.35)" stroke-width="1.5"/>
+    <text x="254" y="312" text-anchor="middle" fill="#FF6040" font-size="10" font-family="sans-serif" font-weight="700">❌ VM → Public IP (52.xxx.xxx.xxx) に接続しようとする</text>
+    <text x="254" y="328" text-anchor="middle" fill="#FF4020" font-size="9" font-family="sans-serif">Storageのパブリックアクセスが無効化されていれば → 接続拒否!</text>
+
+    <!-- PE NIC (exists but unreachable via wrong IP) -->
+    <rect x="24" y="356" width="460" height="44" rx="8" fill="rgba(119,25,170,0.1)" stroke="rgba(119,25,170,0.3)" stroke-width="1"/>
+    <text x="254" y="376" text-anchor="middle" fill="#D4A0FF" font-size="10" font-family="sans-serif" font-weight="700">🔮 PE NIC (10.0.2.5) は存在するが...</text>
+    <text x="254" y="392" text-anchor="middle" fill="#A080C0" font-size="9" font-family="sans-serif">VMはパブリックIPに接続しようとしているのでPEは使われない!</text>
+
+    <!-- RIGHT: WITH private DNS zone (works) -->
+    <rect x="556" y="8" width="496" height="400" rx="16" fill="rgba(0,200,83,0.03)" stroke="rgba(0,200,83,0.2)" stroke-width="1"/>
+    <text x="804" y="30" text-anchor="middle" fill="#60D860" font-size="12" font-family="sans-serif" font-weight="700">✅ Private DNS Zone あり（接続成功）</text>
+
+    <!-- VM -->
+    <rect x="572" y="50" width="130" height="60" rx="10" fill="rgba(0,60,120,0.4)" stroke="#0078D4" stroke-width="1.5"/>
+    <text x="637" y="85" text-anchor="middle" fill="white" font-size="11" font-family="sans-serif" font-weight="700">🖥️ VM</text>
+    <text x="637" y="100" text-anchor="middle" fill="#A0D0FF" font-size="8" font-family="sans-serif">10.0.1.4</text>
+
+    <!-- Step 1: DNS query to Private Zone -->
+    <rect x="572" y="132" width="460" height="44" rx="8" fill="rgba(255,179,0,0.08)" stroke="rgba(255,179,0,0.3)" stroke-width="1"/>
+    <text x="802" y="152" text-anchor="middle" fill="#FFD060" font-size="10" font-family="sans-serif" font-weight="700">① DNS: myaccount.blob.core.windows.net は？</text>
+    <text x="802" y="167" text-anchor="middle" fill="#B0A040" font-size="9" font-family="sans-serif">→ Azure DNS (168.63.129.16) へ問い合わせ</text>
+    <line x1="637" y1="112" x2="637" y2="130" stroke="#FFB000" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#dns1)"/>
+
+    <!-- Private DNS Zone answers -->
+    <rect x="572" y="192" width="460" height="60" rx="10" fill="rgba(119,25,170,0.12)" stroke="rgba(119,25,170,0.5)" stroke-width="1.5"/>
+    <text x="802" y="215" text-anchor="middle" fill="#D4A0FF" font-size="11" font-family="sans-serif" font-weight="700">🌐 Private DNS Zone が応答!</text>
+    <text x="802" y="232" text-anchor="middle" fill="#9060B0" font-size="9.5" font-family="sans-serif">privatelink.blob.core.windows.net ゾーン検索</text>
+    <text x="802" y="247" text-anchor="middle" fill="#D4A0FF" font-size="9.5" font-family="sans-serif">→ Aレコード: 10.0.2.5 (プライベートIP) を返答!</text>
+    <line x1="637" y1="176" x2="802" y2="190" stroke="#FFB000" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#dns1)"/>
+    <line x1="802" y1="252" x2="637" y2="290" stroke="#00C853" stroke-width="2.5" stroke-dasharray="4,3" marker-end="url(#dns2)"/>
+
+    <!-- Result: VM connects to Private IP -->
+    <rect x="572" y="292" width="460" height="44" rx="8" fill="rgba(0,200,83,0.1)" stroke="rgba(0,200,83,0.35)" stroke-width="1.5"/>
+    <text x="802" y="312" text-anchor="middle" fill="#60D860" font-size="10" font-family="sans-serif" font-weight="700">✅ VM → プライベートIP (10.0.2.5) に接続!</text>
+    <text x="802" y="328" text-anchor="middle" fill="#4ABA4A" font-size="9" font-family="sans-serif">インターネットを経由せず、VNet内部でPE NICに到達</text>
+
+    <!-- PE NIC used correctly -->
+    <rect x="572" y="356" width="460" height="44" rx="8" fill="rgba(119,25,170,0.15)" stroke="#7719AA" stroke-width="2"/>
+    <text x="802" y="376" text-anchor="middle" fill="#D4A0FF" font-size="10" font-family="sans-serif" font-weight="700">🔮 PE NIC (10.0.2.5) → Private Link → Storage へ</text>
+    <text x="802" y="392" text-anchor="middle" fill="#A080C0" font-size="9" font-family="sans-serif">完全にプライベートな経路で通信成功!</text>
+  </svg>
+</div>
+
+<div class="sh"><h2><span class="accent">02.</span> ハイブリッド環境でのDNS構成</h2><div class="sh-bar"></div></div>
+<p class="sh-desc">オンプレミスとAzureのハイブリッド環境でPrivate Endpointを使う場合のDNS構成は試験頻出です</p>
+
+<div class="cg2">
+  <div class="card cb">
+    <div class="card-hd">
+      <div class="card-ico">🌐</div>
+      <div><h3>Azure DNSプライベートリゾルバー（推奨）</h3></div>
+    </div>
+    <p>Azure DNS Private Resolverは<b style="color:#50E6FF">ハイブリッド環境のDNS統合のベストプラクティス</b>です。</p>
+    <ul style="margin-top:10px;">
+      <li><b>インバウンドエンドポイント:</b> オンプレのDNSからAzureへのクエリを受け付け</li>
+      <li><b>アウトバウンドエンドポイント:</b> AzureからオンプレのDNSへフォワード</li>
+      <li>VNetにデプロイし、Private DNS Zoneにリンク</li>
+      <li>従来のDNS VMが不要に（管理が楽）</li>
+    </ul>
+    <div class="tags"><span class="tag tb">AZ-305推奨構成</span><span class="tag tg">サーバレス</span></div>
+  </div>
+  <div class="card cy">
+    <div class="card-hd">
+      <div class="card-ico">🔧</div>
+      <div><h3>従来の条件付きフォワーダー方式</h3></div>
+    </div>
+    <p>既存のDNSサーバー（Active Directory DNS等）がある場合の設定方法です。</p>
+    <ul style="margin-top:10px;">
+      <li>オンプレDNSに条件付きフォワーダーを設定</li>
+      <li><code>privatelink.blob.core.windows.net</code> → <code>168.63.129.16</code> にフォワード</li>
+      <li>168.63.129.16 はAzureの魔法のIP（Azure内からのみ到達可能）</li>
+      <li>各privatelink.* ゾーンに個別のフォワーダーが必要</li>
+    </ul>
+    <div class="tags"><span class="tag ty">既存DNS活用</span><span class="tag to">設定が複雑</span></div>
+  </div>
+</div>
+
+<div class="dw">
+  <div class="dw-title"><span>ハイブリッド環境DNS構成 — DNS Private Resolver使用</span></div>
+  <svg class="diag" viewBox="0 0 1060 340" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="hd1" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#FFB000"/></marker>
+      <marker id="hd2" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#00C853"/></marker>
+    </defs>
+
+    <!-- On-premises -->
+    <rect x="8" y="30" width="200" height="280" rx="14" fill="rgba(60,60,60,0.15)" stroke="#666" stroke-width="1.5"/>
+    <text x="108" y="52" text-anchor="middle" fill="#aaa" font-size="11" font-family="sans-serif" font-weight="700">🏢 On-premises</text>
+    <rect x="24" y="66" width="168" height="56" rx="8" fill="rgba(60,60,60,0.2)" stroke="#666" stroke-width="1"/>
+    <text x="108" y="90" text-anchor="middle" fill="#ccc" font-size="10" font-family="sans-serif" font-weight="700">🔧 DNS Server</text>
+    <text x="108" y="108" text-anchor="middle" fill="#999" font-size="8.5" font-family="sans-serif">Conditional Forwarder:</text>
+    <rect x="24" y="136" width="168" height="56" rx="8" fill="rgba(60,60,60,0.15)" stroke="#555" stroke-width="1"/>
+    <text x="108" y="157" text-anchor="middle" fill="#888" font-size="9" font-family="sans-serif">privatelink.* → </text>
+    <text x="108" y="173" text-anchor="middle" fill="#70D0FF" font-size="9" font-family="sans-serif">Inbound EP IP</text>
+    <rect x="24" y="206" width="168" height="56" rx="8" fill="rgba(0,60,120,0.25)" stroke="#0078D4" stroke-width="1"/>
+    <text x="108" y="230" text-anchor="middle" fill="#50E6FF" font-size="10" font-family="sans-serif">🖥️ On-prem VM</text>
+    <text x="108" y="247" text-anchor="middle" fill="#7BA7CC" font-size="8.5" font-family="sans-serif">privatelink.blob... を解決したい</text>
+    <rect x="24" y="276" width="168" height="26" rx="6" fill="rgba(0,183,195,0.1)" stroke="#00B7C3" stroke-width="1"/>
+    <text x="108" y="293" text-anchor="middle" fill="#00D7E0" font-size="9" font-family="sans-serif">ExpressRoute / VPN</text>
+
+    <!-- Azure Hub VNet -->
+    <rect x="256" y="8" width="540" height="322" rx="16" fill="rgba(0,120,212,0.04)" stroke="#0078D4" stroke-width="2"/>
+    <text x="526" y="30" text-anchor="middle" fill="#50E6FF" font-size="12" font-family="sans-serif" font-weight="700">Azure Hub VNet</text>
+
+    <!-- DNS Private Resolver -->
+    <rect x="272" y="44" width="250" height="170" rx="12" fill="rgba(0,183,195,0.08)" stroke="#00B7C3" stroke-width="2"/>
+    <text x="397" y="64" text-anchor="middle" fill="#00D7E0" font-size="11" font-family="sans-serif" font-weight="700">🌐 DNS Private Resolver</text>
+    <!-- Inbound EP -->
+    <rect x="288" y="76" width="218" height="52" rx="8" fill="rgba(0,183,195,0.15)" stroke="#00B7C3" stroke-width="1"/>
+    <text x="397" y="98" text-anchor="middle" fill="#00D7E0" font-size="10" font-family="sans-serif" font-weight="700">📥 Inbound Endpoint</text>
+    <text x="397" y="115" text-anchor="middle" fill="#50E6FF" font-size="9" font-family="sans-serif">IP: 10.1.0.4 (オンプレからの受口)</text>
+    <!-- Outbound EP -->
+    <rect x="288" y="136" width="218" height="52" rx="8" fill="rgba(0,183,195,0.1)" stroke="#00B7C3" stroke-width="1"/>
+    <text x="397" y="158" text-anchor="middle" fill="#00D7E0" font-size="10" font-family="sans-serif" font-weight="700">📤 Outbound Endpoint</text>
+    <text x="397" y="175" text-anchor="middle" fill="#50E6FF" font-size="9" font-family="sans-serif">オンプレのゾーン → オンプレDNSへ</text>
+
+    <!-- Private DNS Zone linked -->
+    <rect x="272" y="226" width="250" height="88" rx="12" fill="rgba(119,25,170,0.1)" stroke="rgba(119,25,170,0.4)" stroke-width="1.5"/>
+    <text x="397" y="248" text-anchor="middle" fill="#D4A0FF" font-size="10" font-family="sans-serif" font-weight="700">🌐 Private DNS Zone</text>
+    <text x="397" y="264" text-anchor="middle" fill="#9060B0" font-size="9" font-family="sans-serif">privatelink.blob.core.windows.net</text>
+    <text x="397" y="280" text-anchor="middle" fill="#D4A0FF" font-size="9" font-family="sans-serif">A: myaccount.blob... → 10.0.2.5</text>
+    <text x="397" y="296" text-anchor="middle" fill="#7050A0" font-size="8.5" font-family="sans-serif">← VNetリンク（Hub VNetにリンク）</text>
+    <rect x="272" y="306" width="250" height="16" rx="5" fill="rgba(119,25,170,0.2)"/>
+    <text x="397" y="318" text-anchor="middle" fill="#D4A0FF" font-size="8" font-family="sans-serif">Spoke VNetにもリンクすること（忘れやすい!）</text>
+
+    <!-- Spoke VNet with PE -->
+    <rect x="552" y="44" width="228" height="282" rx="12" fill="rgba(119,25,170,0.05)" stroke="#7719AA" stroke-width="1.5"/>
+    <text x="666" y="64" text-anchor="middle" fill="#D4A0FF" font-size="11" font-family="sans-serif" font-weight="700">Spoke VNet (App)</text>
+    <rect x="568" y="76" width="196" height="56" rx="8" fill="rgba(0,60,120,0.35)" stroke="#0078D4" stroke-width="1"/>
+    <text x="666" y="107" text-anchor="middle" fill="white" font-size="10" font-family="sans-serif">🖥️ Azure VM / App Service</text>
+    <rect x="568" y="146" width="196" height="64" rx="8" fill="rgba(119,25,170,0.2)" stroke="#7719AA" stroke-width="1.5"/>
+    <text x="666" y="170" text-anchor="middle" fill="#D4A0FF" font-size="10" font-family="sans-serif" font-weight="700">🔮 PE NIC</text>
+    <text x="666" y="186" text-anchor="middle" fill="#A080C0" font-size="9" font-family="sans-serif">10.0.2.5</text>
+    <text x="666" y="200" text-anchor="middle" fill="#8060A0" font-size="8.5" font-family="sans-serif">Storage Account へのPE</text>
+
+    <!-- Storage Account -->
+    <rect x="568" y="226" width="196" height="84" rx="8" fill="rgba(0,120,212,0.08)" stroke="#0078D4" stroke-width="1.5"/>
+    <text x="666" y="248" text-anchor="middle" fill="#50E6FF" font-size="10" font-family="sans-serif" font-weight="700">🗄️ Storage Account</text>
+    <rect x="586" y="258" width="160" height="20" rx="5" fill="rgba(0,200,83,0.1)" stroke="rgba(0,200,83,0.35)" stroke-width="1"/>
+    <text x="666" y="272" text-anchor="middle" fill="#60D860" font-size="9" font-family="sans-serif">🔒 Public Access: Disabled</text>
+    <text x="666" y="297" text-anchor="middle" fill="#A040D0" font-size="8.5" font-family="sans-serif">🔗 Private Link</text>
+
+    <!-- Arrows -->
+    <line x1="208" y1="247" x2="254" y2="247" stroke="#FFB000" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#hd1)"/>
+    <text x="231" y="240" text-anchor="middle" fill="#FFD060" font-size="8" font-family="sans-serif">DNS</text>
+    <line x1="522" y1="102" x2="550" y2="102" stroke="#00C853" stroke-width="2" marker-end="url(#hd2)"/>
+    <line x1="397" y1="190" x2="397" y2="224" stroke="#00D7E0" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#hd2)"/>
+    <text x="405" y="212" fill="#00D7E0" font-size="8" font-family="sans-serif">リンク</text>
+  </svg>
+</div>
+
+<div class="ib tip">
+  <div class="ib-ico">💡</div>
+  <div>
+    <strong>Private DNS ZoneのVNetリンクは「アクセスする側のVNet」すべてに必要</strong>
+    Spoke VNetにデプロイしたPEのPrivate DNS Zoneは、そのSpokeのVNetにリンクするだけでなく、
+    <b>名前解決が必要なすべてのVNet</b>（Hubを含む）にリンクする必要があります。
+    Hub-Spoke構成では「Hub VNetにリンク = Spoke全体でも使える」わけではありません。
+    VNetピアリングを通じてDNSクエリは転送されないため、各VNet個別のリンクが必要です。
+  </div>
+</div>
+
+</div><!-- end page 4 -->
+
+<!-- ═══════════════════════════════════════════════
+     PAGE 5: 徹底比較
+═══════════════════════════════════════════════ -->
+<div class="pg" id="p5">
+
+<div class="hero">
+  <div class="hero-content">
+    <div class="hero-eyebrow">⚖️ 徹底比較 — 選択基準を完全マスター</div>
+    <h1>どれを選ぶべきか？<br>判断基準の完全ガイド</h1>
+    <p class="hero-desc">試験では「このシナリオには何が正解か？」を問う問題が多く出ます。シナリオのキーワードから瞬時に正しい技術を選べるようにします。</p>
+  </div>
+</div>
+
+<div class="sh"><h2><span class="accent">01.</span> 主要比較表 — 12の観点で比較</h2><div class="sh-bar"></div></div>
+
+<div class="tw">
+  <table>
+    <thead>
+      <tr>
+        <th class="th-gray" style="width:20%">比較観点</th>
+        <th class="th-b">🔷 サービスEP</th>
+        <th class="th-p">🔮 プライベートEP</th>
+        <th style="color:#FF9060">🚇 強制トンネリング</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>目的・概要</td>
+        <td>ルート最適化 + FW保護</td>
+        <td>サービスをVNet内にNICとして出現</td>
+        <td>インターネット宛をFW経由に強制</td>
+      </tr>
+      <tr>
+        <td>コスト</td>
+        <td class="tok">✅ 無料</td>
+        <td class="twn">⚠ 有料 (NIC + データ転送)</td>
+        <td class="tok">✅ GW料金のみ（UDR自体は無料）</td>
+      </tr>
+      <tr>
+        <td>IPアドレスの種類</td>
+        <td class="twn">パブリックIP（ルートだけ変わる）</td>
+        <td class="tok">プライベートIP (VNet内)</td>
+        <td>N/A（サービスへのアクセス方法ではない）</td>
+      </tr>
+      <tr>
+        <td>パブリックアクセス無効化</td>
+        <td class="ter">❌ 不可（パブリックIPは残る）</td>
+        <td class="tok">✅ 可能（Public Network Access: Disabled）</td>
+        <td>N/A</td>
+      </tr>
+      <tr>
+        <td>DNS変更の要否</td>
+        <td class="tok">✅ 不要（既存DNS名で動作）</td>
+        <td class="ter">❌ 必須（Private DNS Zone設定）</td>
+        <td class="tok">✅ 不要</td>
+      </tr>
+      <tr>
+        <td>オンプレミスからのアクセス</td>
+        <td class="ter">❌ 不可（VNetのみ）</td>
+        <td class="tok">✅ 可能（ER/VPN経由）</td>
+        <td>N/A（EPではない）</td>
+      </tr>
+      <tr>
+        <td>ピアリングVNetからのアクセス</td>
+        <td class="ter">❌ 不可（伝播しない）</td>
+        <td class="tok">✅ 可能（ルーティング次第）</td>
+        <td>N/A</td>
+      </tr>
+      <tr>
+        <td>設定の複雑さ</td>
+        <td class="tok">✅ 簡単（サブネット設定+FWルール）</td>
+        <td class="twn">⚠ 複雑（NIC+DNS+接続承認）</td>
+        <td class="twn">⚠ 中程度（UDR設計が必要）</td>
+      </tr>
+      <tr>
+        <td>対応サービス数</td>
+        <td class="twn">限定的（約8サービス）</td>
+        <td class="tok">豊富（150以上）</td>
+        <td>N/A</td>
+      </tr>
+      <tr>
+        <td>NSGによる制御</td>
+        <td class="tok">✅ ServiceTag使用で制御可</td>
+        <td class="twn">⚠ PEのNIC自体には適用不可（サブネットNSGで制御）</td>
+        <td class="tok">✅ NSGとUDRの組み合わせで制御</td>
+      </tr>
+      <tr>
+        <td>セキュリティレベル</td>
+        <td><span style="color:#50E6FF">⭐⭐⭐ 高い</span><br>MSバックボーン経由</td>
+        <td><span style="color:#D4A0FF">⭐⭐⭐⭐⭐ 最高</span><br>完全プライベート化</td>
+        <td><span style="color:#FF9060">⭐⭐⭐⭐ 高い</span><br>全通信を可視化・制御</td>
+      </tr>
+      <tr>
+        <td>試験のキーワード</td>
+        <td class="tb2">「コスト最小」「VNetのみ」「設定シンプル」「MSバックボーン」</td>
+        <td class="tp2">「オンプレからも」「完全プライベート」「コンプライアンス」「パブリックIP不要」</td>
+        <td class="to2">「全通信検査」「FW経由」「0.0.0.0/0」「コンプライアンス」</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="sh"><h2><span class="accent">02.</span> 選択フローチャート</h2><div class="sh-bar"></div></div>
+<div class="dw">
+  <div class="dw-title"><span>シナリオから正しい技術を選ぶ — 判断ツリー</span></div>
+  <svg class="diag" viewBox="0 0 1060 460" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="fc1" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#0078D4"/></marker>
+      <marker id="fc2" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#00C853"/></marker>
+      <marker id="fc3" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#A040D0"/></marker>
+      <marker id="fc4" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#FF6040"/></marker>
+    </defs>
+
+    <!-- Start -->
+    <ellipse cx="530" cy="36" rx="200" ry="26" fill="rgba(0,120,212,0.18)" stroke="#0078D4" stroke-width="2"/>
+    <text x="530" y="41" text-anchor="middle" fill="#50E6FF" font-size="13" font-family="sans-serif" font-weight="700">Azureネットワークセキュリティの要件</text>
+
+    <!-- Q1: FW inspection? -->
+    <polygon points="530,82 720,136 530,190 340,136" fill="rgba(0,0,0,0.3)" stroke="#0078D4" stroke-width="2"/>
+    <text x="530" y="130" text-anchor="middle" fill="#50E6FF" font-size="11" font-family="sans-serif" font-weight="700">インターネット宛の通信を</text>
+    <text x="530" y="148" text-anchor="middle" fill="#50E6FF" font-size="11" font-family="sans-serif" font-weight="700">FWで検査・記録したい？</text>
+    <line x1="530" y1="62" x2="530" y2="80" stroke="#0078D4" stroke-width="2" marker-end="url(#fc1)"/>
+
+    <!-- YES → Forced Tunneling -->
+    <line x1="720" y1="136" x2="830" y2="136" stroke="#00C853" stroke-width="2.5" marker-end="url(#fc2)"/>
+    <text x="775" y="128" fill="#60D860" font-size="11" font-family="sans-serif" font-weight="700">Yes</text>
+    <rect x="830" y="104" width="192" height="64" rx="14" fill="rgba(216,59,1,0.2)" stroke="#D83B01" stroke-width="2.5"/>
+    <text x="926" y="130" text-anchor="middle" fill="#FF9060" font-size="16">🚇</text>
+    <text x="926" y="150" text-anchor="middle" fill="#FF9060" font-size="12" font-family="sans-serif" font-weight="700">強制トンネリング</text>
+    <text x="926" y="164" text-anchor="middle" fill="#C07050" font-size="9.5" font-family="sans-serif">+ EPと組み合わせ可</text>
+
+    <!-- NO → Q2 -->
+    <line x1="530" y1="190" x2="530" y2="230" stroke="#FF6040" stroke-width="2.5" marker-end="url(#fc4)"/>
+    <text x="544" y="215" fill="#FF8060" font-size="11" font-family="sans-serif" font-weight="700">No</text>
+
+    <!-- Q2: On-prem access? -->
+    <polygon points="530,230 720,286 530,342 340,286" fill="rgba(0,0,0,0.3)" stroke="#7719AA" stroke-width="1.5"/>
+    <text x="530" y="280" text-anchor="middle" fill="#D4A0FF" font-size="11" font-family="sans-serif" font-weight="700">オンプレ/ピアVNetから</text>
+    <text x="530" y="298" text-anchor="middle" fill="#D4A0FF" font-size="11" font-family="sans-serif" font-weight="700">もアクセスが必要？</text>
+
+    <!-- YES → PE -->
+    <line x1="720" y1="286" x2="830" y2="286" stroke="#00C853" stroke-width="2.5" marker-end="url(#fc2)"/>
+    <text x="775" y="278" fill="#60D860" font-size="11" font-family="sans-serif" font-weight="700">Yes</text>
+    <rect x="830" y="254" width="192" height="64" rx="14" fill="rgba(119,25,170,0.2)" stroke="#7719AA" stroke-width="2.5"/>
+    <text x="926" y="280" text-anchor="middle" fill="#D4A0FF" font-size="16">🔮</text>
+    <text x="926" y="300" text-anchor="middle" fill="#D4A0FF" font-size="12" font-family="sans-serif" font-weight="700">プライベートEP</text>
+    <text x="926" y="314" text-anchor="middle" fill="#9060B0" font-size="9.5" font-family="sans-serif">DNS設定必須</text>
+
+    <!-- NO → Q3 -->
+    <line x1="530" y1="342" x2="530" y2="380" stroke="#FF6040" stroke-width="2.5" marker-end="url(#fc4)"/>
+    <text x="544" y="366" fill="#FF8060" font-size="11" font-family="sans-serif" font-weight="700">No</text>
+
+    <!-- Q3: Need to disable public IP? -->
+    <polygon points="530,380 680,420 530,460 380,420" fill="rgba(0,0,0,0.3)" stroke="#0078D4" stroke-width="1.5"/>
+    <text x="530" y="414" text-anchor="middle" fill="#50E6FF" font-size="11" font-family="sans-serif" font-weight="700">パブリックIPを完全</text>
+    <text x="530" y="431" text-anchor="middle" fill="#50E6FF" font-size="11" font-family="sans-serif" font-weight="700">無効化が必要？</text>
+
+    <!-- YES → PE -->
+    <line x1="680" y1="420" x2="828" y2="420" stroke="#A040D0" stroke-width="2.5" marker-end="url(#fc3)"/>
+    <text x="754" y="412" fill="#D4A0FF" font-size="11" font-family="sans-serif" font-weight="700">Yes</text>
+    <rect x="830" y="392" width="192" height="56" rx="14" fill="rgba(119,25,170,0.18)" stroke="#7719AA" stroke-width="2"/>
+    <text x="926" y="418" text-anchor="middle" fill="#D4A0FF" font-size="12" font-family="sans-serif" font-weight="700">🔮 プライベートEP</text>
+    <text x="926" y="436" text-anchor="middle" fill="#9060B0" font-size="9.5" font-family="sans-serif">Public Access を無効化</td>
+
+    <!-- NO → Service EP -->
+    <line x1="380" y1="420" x2="220" y2="420" stroke="#00C853" stroke-width="2.5" marker-end="url(#fc2)"/>
+    <text x="300" y="412" fill="#60D860" font-size="11" font-family="sans-serif" font-weight="700">No</text>
+    <rect x="38" y="392" width="180" height="56" rx="14" fill="rgba(0,120,212,0.2)" stroke="#0078D4" stroke-width="2.5"/>
+    <text x="128" y="418" text-anchor="middle" fill="#50E6FF" font-size="12" font-family="sans-serif" font-weight="700">🔷 サービスEP</text>
+    <text x="128" y="436" text-anchor="middle" fill="#3070A0" font-size="9.5" font-family="sans-serif">コスト最小・簡単</text>
+  </svg>
+</div>
+
+<div class="sh"><h2><span class="accent">03.</span> キーワード別 正解早見表</h2><div class="sh-bar"></div></div>
+
+<div class="tw">
+  <table>
+    <thead>
+      <tr>
+        <th class="th-gray">シナリオのキーワード</th>
+        <th class="th-gray" style="width:26%">正解の技術</th>
+        <th class="th-gray">理由</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>「コスト効率よく」「費用を最小化」「VNet内のVMのみアクセス」</td><td class="tb2">🔷 サービスEP</td><td>無料で実装できる唯一の選択肢</td></tr>
+      <tr><td>「MSバックボーン経由」「インターネット経由しない」（コスト重視）</td><td class="tb2">🔷 サービスEP</td><td>サービスEPの本質的な動作</td></tr>
+      <tr><td>「オンプレミスからもアクセス」「ExpressRoute経由でも使えるように」</td><td class="tp2">🔮 プライベートEP</td><td>サービスEPはオンプレから使用不可</td></tr>
+      <tr><td>「ピアリングした別のVNetからもアクセス」</td><td class="tp2">🔮 プライベートEP</td><td>サービスEPはVNet間で伝播しない</td></tr>
+      <tr><td>「パブリックアクセスを完全に無効化」「パブリックエンドポイント不要」</td><td class="tp2">🔮 プライベートEP</td><td>Public Network Accessをオフにできる</td></tr>
+      <tr><td>「コンプライアンス要件」「監査要件」「規制産業」（ストレージアクセス）</td><td class="tp2">🔮 プライベートEP</td><td>最高レベルのプライベート接続</td></tr>
+      <tr><td>「すべてのインターネット通信をFWで検査」「Outbound通信の制御」</td><td class="to2">🚇 強制トンネリング</td><td>デフォルトルートをGW経由に変更</td></tr>
+      <tr><td>「0.0.0.0/0のルートを変更」「すべてのトラフィックをオンプレFW経由」</td><td class="to2">🚇 強制トンネリング</td><td>強制トンネリングの定義そのもの</td></tr>
+      <tr><td>「GatewaySubnetにUDRを適用する」</td><td class="ter">❌ 誤り・不可</td><td>GatewaySubnetへのUDR適用は禁止</td></tr>
+      <tr><td>「サービスEPでオンプレからStorageにアクセス」</td><td class="ter">❌ 誤り・不可</td><td>サービスEPはVNetのサブネット単位のみ</td></tr>
+      <tr><td>「プライベートEPのDNS設定不要」</td><td class="ter">❌ 誤り</td><td>プライベートEPには必ずPrivate DNS Zone設定が必要</td></tr>
+      <tr><td>「Service Bus NamespaceのPEのDNS Zone」</td><td class="twn">⚠ EH共通</td><td>Event HubsとService Busは同じゾーン名(servicebus.windows.net)</td></tr>
+    </tbody>
+  </table>
+</div>
+
+</div><!-- end page 5 -->
+
+
+<!-- ═══════════════════════════════════════════════
+     PAGE 6: アーキテクチャ実例
+═══════════════════════════════════════════════ -->
+<div class="pg" id="p6">
+
+<div class="hero">
+  <div class="hero-content">
+    <div class="hero-eyebrow">🏗️ Architecture Patterns</div>
+    <h1>実務・試験頻出<br>アーキテクチャパターン</h1>
+    <p class="hero-desc">エンタープライズのHub-Spoke構成に3技術すべてを組み込んだ本番想定のアーキテクチャを解説します。「なぜそのコンポーネントがそこに配置されるか」を理解してください。</p>
+  </div>
+</div>
+
+<div class="sh"><h2><span class="accent">01.</span> エンタープライズ Hub-Spoke + 強制トンネリング + PE</h2><div class="sh-bar"></div></div>
+
+<div class="dw">
+  <div class="dw-title"><span>金融/規制産業向け エンタープライズアーキテクチャ（本番想定）</span></div>
+  <svg class="diag" viewBox="0 0 1060 560" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="arc1" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#A040D0"/></marker>
+      <marker id="arc2" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#FF6040"/></marker>
+      <marker id="arc3" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#00C853"/></marker>
+      <marker id="arc4" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#0078D4"/></marker>
+    </defs>
+
+    <!-- On-prem -->
+    <rect x="8" y="150" width="150" height="200" rx="12" fill="rgba(60,60,60,0.18)" stroke="#666" stroke-width="1.5"/>
+    <text x="83" y="172" text-anchor="middle" fill="#aaa" font-size="10" font-family="sans-serif" font-weight="700">🏢 On-prem</text>
+    <rect x="22" y="182" width="122" height="34" rx="6" fill="rgba(0,100,0,0.2)" stroke="rgba(0,200,83,0.4)" stroke-width="1"/>
+    <text x="83" y="204" text-anchor="middle" fill="#60D860" font-size="9.5" font-family="sans-serif">🛡️ Firewall</text>
+    <rect x="22" y="222" width="122" height="34" rx="6" fill="rgba(0,60,120,0.2)" stroke="#0078D4" stroke-width="1"/>
+    <text x="83" y="244" text-anchor="middle" fill="#50E6FF" font-size="9.5" font-family="sans-serif">🔧 DNS Server</text>
+    <rect x="22" y="262" width="122" height="34" rx="6" fill="rgba(60,60,60,0.2)" stroke="#555" stroke-width="1"/>
+    <text x="83" y="282" text-anchor="middle" fill="#888" font-size="9.5" font-family="sans-serif">👤 Users</text>
+    <rect x="22" y="310" width="122" height="32" rx="6" fill="rgba(0,183,195,0.1)" stroke="#00B7C3" stroke-width="1"/>
+    <text x="83" y="330" text-anchor="middle" fill="#00D7E0" font-size="9" font-family="sans-serif">ExpressRoute/VPN</text>
+
+    <!-- ER/VPN line -->
+    <line x1="158" y1="250" x2="200" y2="250" stroke="#00B7C3" stroke-width="3" stroke-dasharray="8,4"/>
+
+    <!-- HUB VNet -->
+    <rect x="200" y="40" width="300" height="460" rx="16" fill="rgba(0,120,212,0.05)" stroke="#0078D4" stroke-width="2.5"/>
+    <text x="350" y="62" text-anchor="middle" fill="#50E6FF" font-size="13" font-family="sans-serif" font-weight="700">🌐 Hub VNet</text>
+
+    <!-- GatewaySubnet -->
+    <rect x="216" y="74" width="268" height="52" rx="10" fill="rgba(0,120,212,0.1)" stroke="#0078D4" stroke-width="1.2" stroke-dasharray="5,3"/>
+    <text x="350" y="93" text-anchor="middle" fill="#7BA7CC" font-size="9" font-family="sans-serif">GatewaySubnet ← UDR適用禁止!</text>
+    <rect x="228" y="100" width="244" height="18" rx="5" fill="rgba(0,120,212,0.25)"/>
+    <text x="350" y="113" text-anchor="middle" fill="#50E6FF" font-size="9" font-family="sans-serif">VPN GW / ExpressRoute GW</text>
+
+    <!-- Azure Firewall subnet -->
+    <rect x="216" y="138" width="268" height="62" rx="10" fill="rgba(216,59,1,0.1)" stroke="rgba(216,59,1,0.45)" stroke-width="1.5"/>
+    <text x="350" y="157" text-anchor="middle" fill="#FF9060" font-size="9" font-family="sans-serif">AzureFirewallSubnet</text>
+    <rect x="228" y="162" width="244" height="28" rx="6" fill="rgba(216,59,1,0.2)" stroke="rgba(216,59,1,0.4)" stroke-width="1.2"/>
+    <text x="350" y="181" text-anchor="middle" fill="#FF9060" font-size="11" font-family="sans-serif" font-weight="700">🔥 Azure Firewall</text>
+
+    <!-- DNS Resolver subnet -->
+    <rect x="216" y="214" width="268" height="62" rx="10" fill="rgba(0,183,195,0.08)" stroke="rgba(0,183,195,0.45)" stroke-width="1.5"/>
+    <text x="350" y="233" text-anchor="middle" fill="#00D7E0" font-size="9" font-family="sans-serif">DNSResolverSubnet</text>
+    <rect x="228" y="238" width="244" height="28" rx="6" fill="rgba(0,183,195,0.15)" stroke="#00B7C3" stroke-width="1.2"/>
+    <text x="350" y="257" text-anchor="middle" fill="#00D7E0" font-size="11" font-family="sans-serif" font-weight="700">🌐 DNS Private Resolver</text>
+
+    <!-- PE Subnet in Hub -->
+    <rect x="216" y="290" width="268" height="70" rx="10" fill="rgba(119,25,170,0.1)" stroke="rgba(119,25,170,0.4)" stroke-width="1.5"/>
+    <text x="350" y="309" text-anchor="middle" fill="#D4A0FF" font-size="9" font-family="sans-serif">PrivateEndpointSubnet (Hub)</text>
+    <rect x="228" y="316" width="108" height="34" rx="7" fill="rgba(119,25,170,0.25)" stroke="#7719AA" stroke-width="1.2"/>
+    <text x="282" y="337" text-anchor="middle" fill="#D4A0FF" font-size="9" font-family="sans-serif">🔮 PE → KV</text>
+    <rect x="346" y="316" width="108" height="34" rx="7" fill="rgba(119,25,170,0.25)" stroke="#7719AA" stroke-width="1.2"/>
+    <text x="400" y="337" text-anchor="middle" fill="#D4A0FF" font-size="9" font-family="sans-serif">🔮 PE → ACR</text>
+
+    <!-- Private DNS Zones in Hub -->
+    <rect x="216" y="374" width="268" height="110" rx="10" fill="rgba(119,25,170,0.07)" stroke="rgba(119,25,170,0.35)" stroke-width="1.5"/>
+    <text x="350" y="393" text-anchor="middle" fill="#D4A0FF" font-size="10" font-family="sans-serif" font-weight="700">🌐 Private DNS Zones</text>
+    <rect x="228" y="400" width="246" height="16" rx="4" fill="rgba(119,25,170,0.12)"/>
+    <text x="351" y="412" text-anchor="middle" fill="#A080C0" font-size="8" font-family="sans-serif">privatelink.vaultcore.azure.net (KV)</text>
+    <rect x="228" y="420" width="246" height="16" rx="4" fill="rgba(119,25,170,0.12)"/>
+    <text x="351" y="432" text-anchor="middle" fill="#A080C0" font-size="8" font-family="sans-serif">privatelink.azurecr.io (ACR)</text>
+    <rect x="228" y="440" width="246" height="16" rx="4" fill="rgba(119,25,170,0.12)"/>
+    <text x="351" y="452" text-anchor="middle" fill="#A080C0" font-size="8" font-family="sans-serif">privatelink.blob.core.windows.net (Storage)</text>
+    <rect x="228" y="460" width="246" height="16" rx="4" fill="rgba(119,25,170,0.12)"/>
+    <text x="351" y="472" text-anchor="middle" fill="#A080C0" font-size="8" font-family="sans-serif">privatelink.database.windows.net (SQL)</text>
+
+    <!-- Spoke 1: App -->
+    <rect x="548" y="40" width="218" height="220" rx="14" fill="rgba(0,120,212,0.04)" stroke="#0078D4" stroke-width="1.5"/>
+    <text x="657" y="60" text-anchor="middle" fill="#50E6FF" font-size="11" font-family="sans-serif" font-weight="700">Spoke VNet 1 (App)</text>
+    <rect x="564" y="72" width="186" height="90" rx="10" fill="rgba(0,120,212,0.07)" stroke="#0078D4" stroke-width="1" stroke-dasharray="4,2"/>
+    <text x="657" y="90" text-anchor="middle" fill="#7BA7CC" font-size="9" font-family="sans-serif">AppSubnet</text>
+    <rect x="572" y="100" width="84" height="52" rx="7" fill="rgba(0,60,120,0.35)" stroke="#0078D4" stroke-width="1"/>
+    <text x="614" y="130" text-anchor="middle" fill="white" font-size="9" font-family="sans-serif">🖥️ VMs</text>
+    <rect x="668" y="100" width="74" height="52" rx="7" fill="rgba(0,120,212,0.2)" stroke="#0078D4" stroke-width="1"/>
+    <text x="705" y="130" text-anchor="middle" fill="#50E6FF" font-size="9" font-family="sans-serif">⚡ VMSS</text>
+    <!-- UDR badge -->
+    <rect x="564" y="172" width="186" height="26" rx="6" fill="rgba(255,179,0,0.08)" stroke="rgba(255,179,0,0.35)" stroke-width="1"/>
+    <text x="657" y="189" text-anchor="middle" fill="#FFD060" font-size="8.5" font-family="sans-serif">📋 UDR: 0.0.0.0/0 → Azure FW IP (強制T)</text>
+    <!-- PE in spoke 1 -->
+    <rect x="564" y="210" width="186" height="40" rx="8" fill="rgba(119,25,170,0.1)" stroke="rgba(119,25,170,0.35)" stroke-width="1"/>
+    <text x="657" y="228" text-anchor="middle" fill="#D4A0FF" font-size="8.5" font-family="sans-serif">PrivateEndpointSubnet</text>
+    <text x="657" y="244" text-anchor="middle" fill="#A080C0" font-size="8.5" font-family="sans-serif">🔮 PE → SQL DB / Storage</text>
+
+    <!-- Spoke 2: Data -->
+    <rect x="548" y="280" width="218" height="220" rx="14" fill="rgba(119,25,170,0.04)" stroke="#7719AA" stroke-width="1.5"/>
+    <text x="657" y="300" text-anchor="middle" fill="#D4A0FF" font-size="11" font-family="sans-serif" font-weight="700">Spoke VNet 2 (Data)</text>
+    <rect x="564" y="314" width="186" height="90" rx="10" fill="rgba(119,25,170,0.07)" stroke="#7719AA" stroke-width="1" stroke-dasharray="4,2"/>
+    <text x="657" y="333" text-anchor="middle" fill="#B080C0" font-size="9" font-family="sans-serif">DataSubnet</text>
+    <rect x="572" y="342" width="160" height="52" rx="7" fill="rgba(119,25,170,0.2)" stroke="#7719AA" stroke-width="1"/>
+    <text x="652" y="372" text-anchor="middle" fill="#D4A0FF" font-size="9" font-family="sans-serif">🔮 PE → SQL DB / Storage</text>
+    <rect x="564" y="414" width="186" height="26" rx="6" fill="rgba(255,179,0,0.06)" stroke="rgba(255,179,0,0.3)" stroke-width="1"/>
+    <text x="657" y="431" text-anchor="middle" fill="#FFD060" font-size="8.5" font-family="sans-serif">📋 UDR: 0.0.0.0/0 → Azure FW (強制T)</text>
+    <rect x="564" y="454" width="186" height="36" rx="8" fill="rgba(0,183,195,0.07)" stroke="rgba(0,183,195,0.3)" stroke-width="1"/>
+    <text x="657" y="472" text-anchor="middle" fill="#00D7E0" font-size="8.5" font-family="sans-serif">🌐 Private DNS Zoneリンク</text>
+    <text x="657" y="484" text-anchor="middle" fill="#007880" font-size="8" font-family="sans-serif">(Hub DNSゾーンをSpokeにもリンク)</text>
+
+    <!-- Azure Services (right) -->
+    <rect x="800" y="40" width="252" height="460" rx="14" fill="rgba(0,0,0,0.2)" stroke="rgba(0,120,212,0.2)" stroke-width="1"/>
+    <text x="926" y="62" text-anchor="middle" fill="#7BA7CC" font-size="11" font-family="sans-serif" font-weight="700">Azure PaaS Services</text>
+    <rect x="816" y="76" width="220" height="56" rx="10" fill="rgba(255,185,0,0.08)" stroke="rgba(255,185,0,0.4)" stroke-width="1.5"/>
+    <text x="926" y="108" text-anchor="middle" fill="#FFD060" font-size="12">🔑 Key Vault</text>
+    <rect x="816" y="146" width="220" height="56" rx="10" fill="rgba(0,120,212,0.1)" stroke="rgba(0,120,212,0.4)" stroke-width="1.5"/>
+    <text x="926" y="178" text-anchor="middle" fill="#50E6FF" font-size="12">📦 Container Registry</text>
+    <rect x="816" y="216" width="220" height="56" rx="10" fill="rgba(0,183,195,0.08)" stroke="rgba(0,183,195,0.4)" stroke-width="1.5"/>
+    <text x="926" y="248" text-anchor="middle" fill="#00D7E0" font-size="12">🗃️ SQL Database</text>
+    <rect x="816" y="286" width="220" height="56" rx="10" fill="rgba(0,120,212,0.08)" stroke="rgba(0,120,212,0.35)" stroke-width="1.5"/>
+    <text x="926" y="318" text-anchor="middle" fill="#50E6FF" font-size="12">🗄️ Storage Account</text>
+    <rect x="816" y="356" width="220" height="40" rx="10" fill="rgba(255,179,0,0.06)" stroke="rgba(255,179,0,0.3)" stroke-width="1"/>
+    <text x="926" y="380" text-anchor="middle" fill="#FFB000" font-size="10" font-family="sans-serif">各サービス: Public Access Disabled</text>
+    <rect x="816" y="410" width="220" height="78" rx="10" fill="rgba(0,200,83,0.06)" stroke="rgba(0,200,83,0.3)" stroke-width="1"/>
+    <text x="926" y="432" text-anchor="middle" fill="#60D860" font-size="10" font-family="sans-serif" font-weight="700">🔒 セキュリティまとめ</text>
+    <text x="926" y="450" text-anchor="middle" fill="#4ABA4A" font-size="9" font-family="sans-serif">・PE経由のみアクセス可</text>
+    <text x="926" y="466" text-anchor="middle" fill="#4ABA4A" font-size="9" font-family="sans-serif">・パブリックIP完全無効</text>
+    <text x="926" y="482" text-anchor="middle" fill="#4ABA4A" font-size="9" font-family="sans-serif">・Private Link経由でのみ通信</text>
+
+    <!-- Peering lines -->
+    <line x1="500" y1="180" x2="546" y2="150" stroke="#0078D4" stroke-width="2" stroke-dasharray="5,3"/>
+    <text x="527" y="162" fill="#50E6FF" font-size="8" font-family="sans-serif">Peering</text>
+    <line x1="500" y1="340" x2="546" y2="370" stroke="#7719AA" stroke-width="2" stroke-dasharray="5,3"/>
+    <text x="527" y="363" fill="#D4A0FF" font-size="8" font-family="sans-serif">Peering</text>
+
+    <!-- PE connection arrows -->
+    <line x1="766" y1="240" x2="798" y2="248" stroke="#D4A0FF" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#arc1)"/>
+    <line x1="766" y1="327" x2="798" y2="304" stroke="#D4A0FF" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#arc1)"/>
+    <line x1="766" y1="230" x2="798" y2="174" stroke="#D4A0FF" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#arc1)"/>
+    <line x1="766" y1="358" x2="798" y2="338" stroke="#D4A0FF" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#arc1)"/>
+
+    <!-- Forced T arrows -->
+    <line x1="657" y1="199" x2="434" y2="181" stroke="#FF6040" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#arc2)"/>
+    <text x="548" y="188" fill="#FF9060" font-size="8.5" font-family="sans-serif">強制T(FW経由)</text>
+
+    <!-- Internet -->
+    <ellipse cx="657" cy="530" rx="80" ry="28" fill="rgba(60,60,60,0.12)" stroke="#555" stroke-width="1.5" stroke-dasharray="4,3"/>
+    <text x="657" y="524" text-anchor="middle" fill="#aaa" font-size="11">🌐 Internet</text>
+    <text x="657" y="540" text-anchor="middle" fill="#666" font-size="8.5" font-family="sans-serif">(FW検査後に許可/拒否)</text>
+    <line x1="380" y1="200" x2="600" y2="520" stroke="#FF6040" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arc2)"/>
+  </svg>
+</div>
+
+<div class="ib tip">
+  <div class="ib-ico">💡</div>
+  <div>
+    <strong>このアーキテクチャの5つのポイント</strong><br>
+    ① <b style="color:#FF9060">Azure Firewallを中央に配置</b>し、Spoke全体のOutbound通信を集中管理（強制トンネリング）<br>
+    ② <b style="color:#D4A0FF">Private Endpointは各SpokeとHubのPEサブネット</b>に配置し、PaaSサービスをプライベート化<br>
+    ③ <b style="color:#00D7E0">DNS Private ResolverをHub</b>に配置してオンプレとAzureのDNSを統合<br>
+    ④ <b style="color:#FFD060">Private DNS ZoneはSpokeのVNetにもリンク</b>（Hub-Spoke間でDNSは自動伝播しない）<br>
+    ⑤ <b style="color:#FF7060">GatewaySubnetにUDRは絶対に適用しない</b>（接続断の原因になる）
+  </div>
+</div>
+
+</div><!-- end page 6 -->
+
+
+<!-- ═══════════════════════════════════════════════
+     PAGE 7: 間違えやすいポイント
+═══════════════════════════════════════════════ -->
+<div class="pg" id="p7">
+
+<div class="hero" style="background:linear-gradient(135deg,rgba(209,52,56,0.1),rgba(209,52,56,0.04));border-color:rgba(209,52,56,0.4);">
+  <div class="hero-content">
+    <div class="hero-eyebrow" style="background:rgba(209,52,56,0.18);border-color:rgba(209,52,56,0.5);color:#FF7070;">🚫 間違えやすいポイント 完全解説</div>
+    <h1 style="background:linear-gradient(135deg,#fff,#FF7070,#D13438);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">試験でやられる<br>間違えポイント18選</h1>
+    <p class="hero-desc">
+      実際の試験で多くの受験者が誤る問題のパターンを集めました。
+      「知ってるつもり」だったのに間違えた、というものばかりです。
+      正確な理解で確実に得点しましょう。
+    </p>
+  </div>
+</div>
+
+<div class="sh"><h2><span class="accent">01.</span> サービスエンドポイント関連の落とし穴</h2><div class="sh-bar"></div></div>
+
+<div class="ec">
+  <div class="ec-badge">⚠️ 落とし穴 #1</div>
+  <h4>「サービスEPを有効にするだけでデータは保護される」→ 間違い</h4>
+  <p>サービスEPをサブネットで有効化しても、それだけでは保護されません。
+  <b>2つのことが必要</b>です: ①サブネットでEPを有効化、②Azureサービス側のファイアウォールで対象VNet/サブネットを「許可」に追加。
+  サービス側の設定をしないと、依然としてすべてのIPからアクセス可能な状態です。</p>
+  <div class="wrong">❌ 誤った理解: サービスEP有効化 = セキュリティ完成</div>
+  <div class="ans">✅ 正しい理解: サービスEP有効化 + サービス側ファイアウォール設定 = セキュリティ完成</div>
+</div>
+
+<div class="ec">
+  <div class="ec-badge">⚠️ 落とし穴 #2</div>
+  <h4>「VPN経由でオンプレからサービスEPを使える」→ 使えない</h4>
+  <p>サービスエンドポイントは<b>VNetのサブネットに対して有効化する設定</b>です。VPN/ExpressRouteでオンプレミスからAzure VNetに接続しても、
+  そのトラフィックはサービスEPのルートを通りません。オンプレからAzureサービスにプライベートアクセスするには必ず<b>プライベートエンドポイント</b>を使います。</p>
+  <div class="wrong">❌ 誤った設計: オンプレ → VPN → VNet → サービスEP → Storage (これは動作しない)</div>
+  <div class="ans">✅ 正しい設計: オンプレ → VPN → VNet → PE NIC (10.0.2.5) → Storage</div>
+</div>
+
+<div class="ec">
+  <div class="ec-badge">⚠️ 落とし穴 #3</div>
+  <h4>「ピアリングVNetのVMもサービスEPを使える」→ 使えない</h4>
+  <p>VNet-AのSubnet-1でService EPを有効にしても、ピアリングしているVNet-BのVMはこのEPを使用できません。
+  各VNetのサブネットで個別に有効化が必要です。<b>Hub-Spoke構成でHubのサービスEPをSpokeが共有できると思い込む</b>ことが多いです。</p>
+  <div class="wrong">❌ 誤った期待: Hub VNet Service EP → Spoke VMs も使える</div>
+  <div class="ans">✅ 正しい動作: 各Spoke VNetのサブネットで個別にService EPを有効化する必要あり（またはPrivate EP使用）</div>
+</div>
+
+<div class="sh"><h2><span class="accent">02.</span> プライベートエンドポイント関連の落とし穴</h2><div class="sh-bar"></div></div>
+
+<div class="ec">
+  <div class="ec-badge">⚠️ 落とし穴 #4</div>
+  <h4>「プライベートEPを作れば自動的にプライベートIPでアクセスできる」→ DNS設定なしでは動かない</h4>
+  <p>プライベートEPのNICが作成されても、VMがDNS名前解決する際に<b>適切なPrivate DNS Zoneが設定されていない</b>と、
+  パブリックIPアドレスが返ってきます。Storageのパブリックアクセスを無効化していれば接続失敗します。</p>
+  <div class="wrong">❌ 接続失敗の原因: VM → DNS解決 → パブリックIP → Storage（パブリック無効なので拒否）</div>
+  <div class="ans">✅ 正しい動作: VM → DNS解決（Private DNS Zone） → 10.0.2.5 → PE NIC → Storage</div>
+</div>
+
+<div class="ec">
+  <div class="ec-badge">⚠️ 落とし穴 #5</div>
+  <h4>「NSGをプライベートEPのNICに直接適用できる」→ 適用されない</h4>
+  <p>プライベートエンドポイントのNICに直接NSGを関連付けることはできません（設定しても無視されます）。
+  代わりに、<b>プライベートEPが存在するサブネットにNSGを適用する</b>ことで制御します。
+  このサブネットNSGは既存のアクセス制御に加えて、PE宛のトラフィックを制御できます。</p>
+  <div class="wrong">❌ 誤った設定: PE NIC → 直接NSG適用（適用されない）</div>
+  <div class="ans">✅ 正しい設定: PE NIC のあるサブネット → NSG適用（サブネットレベルでの制御）</div>
+</div>
+
+<div class="ec">
+  <div class="ec-badge">⚠️ 落とし穴 #6</div>
+  <h4>「Blob StorageとFile StorageのPEは同じDNS Zoneを共有する」→ 別々のゾーンが必要</h4>
+  <p>同一Storageアカウントに対してBlobとFileの両方をプライベートにしたい場合、<b>それぞれ別のPEと別のPrivate DNS Zone</b>が必要です。
+  <code>privatelink.blob.core.windows.net</code> と <code>privatelink.file.core.windows.net</code> は別のゾーンです。</p>
+  <div class="wrong">❌ 誤り: 1つのPEで Blob と File 両方をカバーできる</div>
+  <div class="ans">✅ 正しい: Blob用PE + blob DNS Zone / File用PE + file DNS Zone — それぞれ個別に作成</div>
+</div>
+
+<div class="ec">
+  <div class="ec-badge">⚠️ 落とし穴 #7</div>
+  <h4>「Hub VNetにPrivate DNS ZoneをリンクすればSpokeからも名前解決できる」→ できない</h4>
+  <p>Private DNS ZoneのVNetリンクは、そのVNet内からの名前解決にのみ有効です。
+  ピアリングを通じてDNSクエリが伝播することはありません。
+  <b>Spoke VNetからも名前解決が必要なら、SpokeのVNetにもPrivate DNS Zoneをリンクする必要があります</b>。</p>
+  <div class="wrong">❌ 誤った期待: Private DNS Zone → Hub VNetにリンク = Spoke VNet も解決できる</div>
+  <div class="ans">✅ 正しい動作: Private DNS Zone → Hub VNet ＋ Spoke VNet の両方にリンクが必要</div>
+</div>
+
+<div class="sh"><h2><span class="accent">03.</span> 強制トンネリング関連の落とし穴</h2><div class="sh-bar"></div></div>
+
+<div class="ec">
+  <div class="ec-badge">⚠️ 落とし穴 #8 — 最重要!</div>
+  <h4>「GatewaySubnetにも0.0.0.0/0 → VNetGWのUDRを適用する」→ 接続断！</h4>
+  <p>これは試験で最も狙われる引っかけです。GatewaySubnetに
+  <b><code>0.0.0.0/0 → Virtual Network Gateway</code></b> のUDRを適用すると、
+  VPN GatewayがすべてのトラフィックをVPN Gatewayに転送しようとしてループが発生し、
+  <b>オンプレミスとのVPN/ExpressRoute接続が完全に切断</b>されます。</p>
+  <div class="wrong">❌ 危険: GatewaySubnet + UDR (0.0.0.0/0 → VNetGW) = 接続断・ループ</div>
+  <div class="ans">✅ 正しい: UDRは AppSubnet, DataSubnet等のアプリ用サブネットのみに適用。GatewaySubnetは絶対に除外。</div>
+</div>
+
+<div class="ec">
+  <div class="ec-badge">⚠️ 落とし穴 #9</div>
+  <h4>「強制トンネリングがあるとAzureサービスへの通信もFW経由になる」→ Service EPがある場合は違う</h4>
+  <p>強制トンネリング（0.0.0.0/0 → GW）が有効でも、Service EPが有効なサブネットでは
+  <b>Storageへの通信はService EPのより具体的なルートが優先</b>されます（最長プレフィックスマッチ）。
+  Storage宛の通信はMSバックボーン直接になり、FWを経由しません。
+  これを意図しない場合は、すべての通信をFW経由にしたいならService EPを使わずPrivate EP + Azure FW経由の構成にします。</p>
+  <div class="wrong">❌ 誤った理解: 強制T + Service EP = Storage通信もFW経由になる</div>
+  <div class="ans">✅ 正しい動作: 強制T + Service EP = Storage通信はEP経由（FWスキップ）、他のInternet通信のみFW経由</div>
+</div>
+
+<div class="sh"><h2><span class="accent">04.</span> NSG・ルーティング関連の落とし穴</h2><div class="sh-bar"></div></div>
+
+<div class="ec">
+  <div class="ec-badge">⚠️ 落とし穴 #10</div>
+  <h4>「NSGだけでAzureサービスへのトラフィックをMSバックボーン経由にできる」→ できない</h4>
+  <p>NSGはトラフィックを許可/拒否するためのもので、ルートを変更しません。
+  MSバックボーン経由のルート最適化は<b>Service Endpoint</b>が担当します。
+  NSGとService EPは役割が異なる補完的な機能です。</p>
+  <div class="wrong">❌ 誤り: NSG に ServiceTag=Storage を設定 → バックボーン経由になる</div>
+  <div class="ans">✅ 正しい役割: NSG = トラフィック許可/拒否制御 / Service EP = ルーティング変更</div>
+</div>
+
+<div class="ec">
+  <div class="ec-badge">⚠️ 落とし穴 #11</div>
+  <h4>「BGPで強制トンネリングを設定するとGatewaySubnetにも自動でUDRが付く」→ BGPは別の仕組み</h4>
+  <p>BGPによる強制トンネリングはUDRとは異なる仕組みです。
+  オンプレルーターからBGPで0.0.0.0/0をアドバタイズすると、VNet GWがBGP由来のルートとして学習し、
+  VNet全体にルートが伝播します。UDRのようなサブネット個別の設定は不要で、
+  GatewaySubnetもループせずに動作します（ゲートウェイはオンプレへのルートを持っているため）。</p>
+  <div class="ans">✅ BGP方式: UDRの設定不要。GatewaySubnetもループしない。VNet全体に自動伝播。</div>
+</div>
+
+<div class="sh"><h2><span class="accent">05.</span> サービス固有の落とし穴</h2><div class="sh-bar"></div></div>
+
+<div class="cg2">
+  <div class="ec" style="margin-bottom:0;">
+    <div class="ec-badge">⚠️ 落とし穴 #12</div>
+    <h4>Azure SQL DatabaseとSQL Managed Instanceは同じPrivate DNS Zone?</h4>
+    <p>異なります。SQL DBは <code>privatelink.database.windows.net</code>、SQL MIは <code>privatelink.{dnsZone}.database.windows.net</code>（dnsZoneは自動生成）です。</p>
+    <div class="ans">✅ SQL DBとSQL MIは別々のPrivate DNS Zoneが必要</div>
+  </div>
+  <div class="ec" style="margin-bottom:0;">
+    <div class="ec-badge">⚠️ 落とし穴 #13</div>
+    <h4>Event HubsとService BusのPrivate DNS Zoneは同じ名前?</h4>
+    <p>はい、両方とも <code>privatelink.servicebus.windows.net</code> を使用します。同一VNetに両サービスのPEがある場合、同じゾーンに複数のAレコードを追加します。</p>
+    <div class="ans">✅ 1つのゾーンに両方のAレコードを追加（ゾーンを2つ作らない）</div>
+  </div>
+</div>
+<div style="margin-bottom:20px;"></div>
+<div class="cg2">
+  <div class="ec" style="margin-bottom:0;">
+    <div class="ec-badge">⚠️ 落とし穴 #14</div>
+    <h4>Container RegistryのService EndpointはBasic SKUでも使える?</h4>
+    <p>Container RegistryのPrivate Endpointは<b>Premium SKUのみ</b>対応です。Basic/Standard SKUではPrivate EPは使用できません。Service Endpointも同様にPremiumのみです。</p>
+    <div class="ans">✅ ACR Private EP = Premium SKU のみ</div>
+  </div>
+  <div class="ec" style="margin-bottom:0;">
+    <div class="ec-badge">⚠️ 落とし穴 #15</div>
+    <h4>App ServiceのService EPは受信トラフィックも保護できる?</h4>
+    <p>App ServiceのService Endpointは<b>アウトバウンド（送信）方向のみ</b>です（App ServiceからVNet経由でAzureサービスへ）。受信トラフィックの保護にはPrivate Endpointを使います。</p>
+    <div class="ans">✅ App Service送信 → Service EP / App Service受信 → Private EP</div>
+  </div>
+</div>
+<div style="margin-bottom:20px;"></div>
+<div class="cg2">
+  <div class="ec" style="margin-bottom:0;">
+    <div class="ec-badge">⚠️ 落とし穴 #16</div>
+    <h4>Service Bus NamespaceのPrivate EPはStandard tierでも使える?</h4>
+    <p>Service BusのPrivate Endpointは<b>Premium tierのみ</b>対応です。StandardではPEは使用できず、Service Endpointも使えません。Premiumへのアップグレードが必要です。</p>
+    <div class="ans">✅ Service Bus PE = Premium tier のみ</div>
+  </div>
+  <div class="ec" style="margin-bottom:0;">
+    <div class="ec-badge">⚠️ 落とし穴 #17</div>
+    <h4>Private EndpointとPrivate Link Serviceは同じもの?</h4>
+    <p>異なります。<b>Private Endpoint</b>はAzureサービスをVNet内に露出する「消費者側」の仕組みです。<b>Private Link Service</b>は自分のサービスを他のVNetに公開する「提供者側」の仕組みです。Load Balancerの背後に置いたカスタムサービスをPrivate EP経由で提供できます。</p>
+    <div class="ans">✅ PE = サービスを使う側 / Private Link Service = サービスを提供する側</div>
+  </div>
+</div>
+<div style="margin-bottom:20px;"></div>
+<div class="ec">
+  <div class="ec-badge">⚠️ 落とし穴 #18 — 超重要!</div>
+  <h4>「プライベートEPを使えば自動的に承認される」→ クロステナント/クロスサブスクリプションでは手動承認が必要</h4>
+  <p>同一テナント・同一サブスクリプション内のリソースへのPE作成は、適切なRBACロールがあれば自動承認されます。
+  しかし<b>異なるテナントや異なるサブスクリプション（例: Shared Services環境）</b>では、
+  接続リクエストが「Pending」状態になり、対象リソースの管理者が手動で承認するまで接続できません。
+  マルチテナント・マルチサブスクリプション設計では、この承認フローを考慮した運用設計が必要です。</p>
+  <div class="wrong">❌ 誤った想定: クロステナントPE = 自動承認 → 接続できない（Pending状態のまま）</div>
+  <div class="ans">✅ 正しい理解: クロステナント/サブスク = 手動承認が必要（ポータルまたはARMテンプレートで承認）</div>
+</div>
+
+</div><!-- end page 7 -->
+
+
+<!-- ═══════════════════════════════════════════════
+     PAGE 8: 試験問題演習
+═══════════════════════════════════════════════ -->
+<div class="pg" id="p8">
+
+<div class="hero" style="background:linear-gradient(135deg,rgba(16,124,16,0.1),rgba(16,124,16,0.04));border-color:rgba(16,124,16,0.4);">
+  <div class="hero-content">
+    <div class="hero-eyebrow" style="background:rgba(16,124,16,0.2);border-color:rgba(16,124,16,0.5);color:#70E070;">🧩 試験問題演習</div>
+    <h1 style="background:linear-gradient(135deg,#fff,#70E070,#107C10);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">AZ-305形式<br>シナリオ問題演習</h1>
+    <p class="hero-desc">
+      実際の試験に近い形式のシナリオ問題です。選択肢をクリックして正誤を確認し、解説を読んでください。
+      「なぜ他の選択肢は間違いなのか」まで理解することが合格の鍵です。
+    </p>
+  </div>
+</div>
+
+<!-- ─── Q1 ─── -->
+<div class="sc" id="q1">
+  <div class="sc-hd"><div class="sc-num">1</div><h4>シナリオ: コスト効率・VNetのみアクセス</h4></div>
+  <p class="q">
+    あなたは Azure VNet 内の複数の VM から Azure Blob Storage にアクセスするシステムを設計しています。
+    要件は次のとおりです：<br>
+    ・トラフィックをインターネット経由にしたくない<br>
+    ・コストを最小化したい<br>
+    ・アクセスするのは同じ VNet 内の VM のみ<br>
+    最も適切な構成はどれですか？
+  </p>
+  <ul class="choices">
+    <li onclick="answer(this,'q1',false)">A. プライベートエンドポイントを作成し、Private DNS Zone を設定する</li>
+    <li onclick="answer(this,'q1',true)">B. VNet サービスエンドポイントを有効化し、Storage アカウントのファイアウォールで対象 VNet を許可する</li>
+    <li onclick="answer(this,'q1',false)">C. VPN Gateway を展開し、Storage へのサイト間 VPN を構成する</li>
+    <li onclick="answer(this,'q1',false)">D. NSG に Storage サービスタグへのアウトバウンドルールのみを追加する</li>
+  </ul>
+  <button class="exp-btn" onclick="toggleExp('q1')">💬 解説を表示</button>
+  <div class="explanation" id="exp-q1">
+    <b style="color:#60D860">✅ 正解: B</b><br><br>
+    <b>なぜBが正解か:</b> 要件は「VNet内VMのみ」「インターネット経由しない」「コスト最小化」の3点。サービスエンドポイントは<b>無料</b>でMSバックボーン経由のルートを設定し、Storageのファイアウォールと組み合わせることで要件をすべて満たします。<br><br>
+    <b>なぜAは不正解か:</b> プライベートエンドポイントはNIC料金+データ転送料が発生し、DNS設定も必要。「コスト最小化」という要件に反します。VNet内のみのアクセスならサービスEPで十分です。<br><br>
+    <b>なぜCは不正解か:</b> VPN GatewayはVM同士の接続やオンプレとの接続に使うもので、StorageへのアクセスにVPN GWを使うのは設計として不適切かつ高コストです。<br><br>
+    <b>なぜDは不正解か:</b> NSGはトラフィックの許可/拒否を制御しますが、<b>ルートは変更しません</b>。NSGだけではトラフィックはインターネット経由のままです。
+  </div>
+</div>
+
+<!-- ─── Q2 ─── -->
+<div class="sc" id="q2">
+  <div class="sc-hd"><div class="sc-num">2</div><h4>シナリオ: オンプレミスからの安全なアクセス</h4></div>
+  <p class="q">
+    金融機関のシステムで、オンプレミスデータセンターから ExpressRoute 経由で Azure SQL Database にアクセスします。
+    セキュリティポリシーにより、SQL Database のパブリックエンドポイントをすべてのネットワークから無効化することが義務付けられています。
+    DNS の設定を含む最も適切な構成はどれですか？
+  </p>
+  <ul class="choices">
+    <li onclick="answer(this,'q2',false)">A. サービスエンドポイントを設定し、SQL DB のファイアウォールでオンプレミスの IP レンジを許可する</li>
+    <li onclick="answer(this,'q2',true)">B. プライベートエンドポイントを作成し、Private DNS Zone を設定し、オンプレ DNS サーバーに条件付きフォワーダーを設定する</li>
+    <li onclick="answer(this,'q2',false)">C. サービスエンドポイントを設定し、Public Network Access を Disabled にする</li>
+    <li onclick="answer(this,'q2',false)">D. プライベートエンドポイントを作成するだけで、DNS の追加設定は不要</li>
+  </ul>
+  <button class="exp-btn" onclick="toggleExp('q2')">💬 解説を表示</button>
+  <div class="explanation" id="exp-q2">
+    <b style="color:#60D860">✅ 正解: B</b><br><br>
+    <b>なぜBが正解か:</b> 要件は①オンプレからのアクセス②パブリックIP完全無効化。この2点を満たせるのはプライベートEPのみ。さらにオンプレのDNSサーバーから <code>privatelink.database.windows.net</code> を Azure DNS（168.63.129.16）にフォワードする条件付きフォワーダーの設定が必要です。<br><br>
+    <b>なぜAは不正解か:</b> サービスエンドポイントはオンプレミスから使用できません。VPN/ER経由でもサービスEPのルートはオンプレトラフィックに適用されません。<br><br>
+    <b>なぜCは不正解か:</b> Public Network Access を Disabled にするとパブリックIPからのアクセスが禁止されます。しかしサービスEPはオンプレからアクセスできないため、オンプレからも接続不能になります。<br><br>
+    <b>なぜDは不正解か:</b> プライベートEPを作成しただけでは、オンプレDNSが <code>myserver.database.windows.net</code> を解決するとパブリックIPが返ります。Private DNS Zoneの設定とオンプレDNSの条件付きフォワーダー設定が必須です。
+  </div>
+</div>
+
+<!-- ─── Q3 ─── -->
+<div class="sc" id="q3">
+  <div class="sc-hd"><div class="sc-num">3</div><h4>シナリオ: 強制トンネリングの設計</h4></div>
+  <p class="q">
+    規制産業のお客様から「Azure VNet 内のすべての VM からのインターネット宛トラフィックを、
+    オンプレミスの既存ファイアウォールで検査・ログ記録したい」という要件があります。
+    VNet には VPN Gateway が展開済みで、サブネットは GatewaySubnet・AppSubnet・DataSubnet の3つがあります。
+    最も適切な構成はどれですか？
+  </p>
+  <ul class="choices">
+    <li onclick="answer(this,'q3',false)">A. GatewaySubnet・AppSubnet・DataSubnet すべてに 0.0.0.0/0 → Virtual Network Gateway の UDR を適用する</li>
+    <li onclick="answer(this,'q3',true)">B. AppSubnet と DataSubnet のみに 0.0.0.0/0 → Virtual Network Gateway の UDR を適用する。GatewaySubnet には適用しない</li>
+    <li onclick="answer(this,'q3',false)">C. すべてのサブネットの NSG にインターネットへのアウトバウンドを拒否するルールを追加する</li>
+    <li onclick="answer(this,'q3',false)">D. Azure Firewall を展開し、すべてのトラフィックを Azure Firewall 経由にする</li>
+  </ul>
+  <button class="exp-btn" onclick="toggleExp('q3')">💬 解説を表示</button>
+  <div class="explanation" id="exp-q3">
+    <b style="color:#60D860">✅ 正解: B</b><br><br>
+    <b>なぜBが正解か:</b> 強制トンネリングの要件です。UDR（0.0.0.0/0 → VNetGW）をアプリ用サブネットに適用し、GWからオンプレFWへトンネリングします。<b>GatewaySubnetへのUDR適用は絶対禁止</b>（接続ループが発生）。<br><br>
+    <b>なぜAは不正解か:</b> GatewaySubnetに 0.0.0.0/0 → VNetGW のUDRを適用すると、GW自身の通信がGWに向かうループが発生し、VPN接続が完全に切断されます。試験で最も狙われる引っかけです。<br><br>
+    <b>なぜCは不正解か:</b> NSGはトラフィックを拒否できますが、「オンプレFWで検査・ログ記録する」という要件を満たしません。拒否するだけで、FWを経由させることができません。<br><br>
+    <b>なぜDは不正解か:</b> Azure Firewallは有効な選択肢ですが、要件は「オンプレミスの既存ファイアウォール」での検査です。Azure Firewallを展開すると新規コストが発生し、「既存FWの活用」という要件に合いません。
+  </div>
+</div>
+
+<!-- ─── Q4 ─── -->
+<div class="sc" id="q4">
+  <div class="sc-hd"><div class="sc-num">4</div><h4>シナリオ: ルートの優先順位</h4></div>
+  <p class="q">
+    Azure VNet の AppSubnet に以下の設定がされています：<br>
+    ・強制トンネリング用UDR: 0.0.0.0/0 → Virtual Network Gateway<br>
+    ・Service Endpoint: Microsoft.Storage が有効<br>
+    このサブネット上の VM が Azure Blob Storage（東日本）にアクセスするとき、トラフィックはどの経路をたどりますか？
+  </p>
+  <ul class="choices">
+    <li onclick="answer(this,'q4',false)">A. VPN Gateway → オンプレミス Firewall → インターネット → Storage</li>
+    <li onclick="answer(this,'q4',true)">B. Microsoft Azure バックボーンネットワーク → Storage（FW を経由しない）</li>
+    <li onclick="answer(this,'q4',false)">C. インターネット直接 → Storage</li>
+    <li onclick="answer(this,'q4',false)">D. 設定が競合するためトラフィックはドロップされる</li>
+  </ul>
+  <button class="exp-btn" onclick="toggleExp('q4')">💬 解説を表示</button>
+  <div class="explanation" id="exp-q4">
+    <b style="color:#60D860">✅ 正解: B</b><br><br>
+    <b>なぜBが正解か:</b> Azureのルート選択は<b>最長プレフィックスマッチ（Longest Prefix Match）</b>で決まります。Service Endpointが有効な場合、StorageのIPアドレスへの具体的なルート（例: /16, /18）が自動追加されます。これは 0.0.0.0/0 よりプレフィックスが具体的なため優先され、トラフィックはMSバックボーン経由でStorageに直接到達します。FWを経由しません。<br><br>
+    <b>なぜAは不正解か:</b> 強制トンネリング（0.0.0.0/0）はService EPの具体的ルートより優先度が低いため、Storage宛はGW経由になりません。<br><br>
+    <b>なぜCは不正解か:</b> 強制トンネリングが有効なため、デフォルトルート（0.0.0.0/0）はGW方向に向いています。ただしStorage宛はService EPが優先するので、Cも誤りです。<br><br>
+    <b>なぜDは不正解か:</b> ルートが競合しても最長プレフィックスマッチで正しく処理されます。ドロップは発生しません。
+  </div>
+</div>
+
+<!-- ─── Q5 ─── -->
+<div class="sc" id="q5">
+  <div class="sc-hd"><div class="sc-num">5</div><h4>シナリオ: Hub-Spoke DNS設計</h4></div>
+  <p class="q">
+    Hub-Spoke 構成（Hub VNet + Spoke-A VNet + Spoke-B VNet）があります。
+    Hub VNet 内に Private DNS Zone <code>privatelink.blob.core.windows.net</code> を作成し、
+    Hub VNet にリンクしました。
+    Spoke-A VNet 上の VM からプライベートエンドポイント経由で Storage にアクセスしようとしましたが、
+    パブリック IP に解決されてしまいます。原因として最も可能性が高いものはどれですか？
+  </p>
+  <ul class="choices">
+    <li onclick="answer(this,'q5',false)">A. プライベートエンドポイントが正しく作成されていない</li>
+    <li onclick="answer(this,'q5',false)">B. Storage アカウントのファイアウォール設定が誤っている</li>
+    <li onclick="answer(this,'q5',true)">C. Private DNS Zone が Spoke-A VNet にリンクされていない</li>
+    <li onclick="answer(this,'q5',false)">D. Hub-Spoke ピアリングが正しく設定されていない</li>
+  </ul>
+  <button class="exp-btn" onclick="toggleExp('q5')">💬 解説を表示</button>
+  <div class="explanation" id="exp-q5">
+    <b style="color:#60D860">✅ 正解: C</b><br><br>
+    <b>なぜCが正解か:</b> Private DNS ZoneのVNetリンクはVNet間で自動的に伝播しません。Spoke-A VNetの VM がDNSクエリを送信すると、Spoke-A VNetにリンクされているPrivate DNS Zoneを検索します。Hub VNetにリンクしていてもSpokeには伝播しないため、パブリックIPが返ります。<b>アクセスするVNetそれぞれに個別リンクが必要です</b>。<br><br>
+    <b>なぜAは不正解か:</b> PE自体が問題なら接続エラーになりますが、症状は「パブリックIPに解決される」なのでDNS問題です。<br><br>
+    <b>なぜBは不正解か:</b> ファイアウォール設定の問題は接続拒否エラーを引き起こしますが、DNS解決の段階での問題ではありません。<br><br>
+    <b>なぜDは不正解か:</b> ピアリングの問題なら通信自体ができませんが、問題はDNS名前解決の段階でパブリックIPが返ることです。ピアリングはDNS解決には関係しません。
+  </div>
+</div>
+
+<!-- ─── Q6 ─── -->
+<div class="sc" id="q6">
+  <div class="sc-hd"><div class="sc-num">6</div><h4>シナリオ: SKU制限とPE</h4></div>
+  <p class="q">
+    開発チームが Azure Container Registry（Standard SKU）を使用しており、
+    セキュリティチームから「CI/CD パイプラインからのコンテナイメージのプルをプライベートネットワーク経由のみに制限し、
+    パブリックアクセスを無効化してほしい」と要請があります。
+    現状の Standard SKU のまま要件を達成するために何をすべきですか？
+  </p>
+  <ul class="choices">
+    <li onclick="answer(this,'q6',false)">A. Standard SKU の ACR にプライベートエンドポイントを作成し、パブリックアクセスを無効化する</li>
+    <li onclick="answer(this,'q6',false)">B. Standard SKU の ACR にサービスエンドポイントを設定し、特定 VNet のみ許可する</li>
+    <li onclick="answer(this,'q6',true)">C. ACR を Premium SKU にアップグレードしてからプライベートエンドポイントを作成し、パブリックアクセスを無効化する</li>
+    <li onclick="answer(this,'q6',false)">D. NSG でACRへのインターネットからのアクセスをブロックする</li>
+  </ul>
+  <button class="exp-btn" onclick="toggleExp('q6')">💬 解説を表示</button>
+  <div class="explanation" id="exp-q6">
+    <b style="color:#60D860">✅ 正解: C</b><br><br>
+    <b>なぜCが正解か:</b> Azure Container Registry のプライベートエンドポイントは<b>Premium SKU のみ</b>サポートされています。Standard SKU では Private Endpoint を作成できません。要件を達成するにはまず Premium SKU へのアップグレードが必要です。<br><br>
+    <b>なぜAは不正解か:</b> Standard SKU の ACR に Private Endpoint を作成しようとするとエラーになります。Premium SKU が必要です。<br><br>
+    <b>なぜBは不正解か:</b> ACR の Service Endpoint も Premium SKU のみ対応です。また Service Endpoint ではパブリックアクセスを完全に無効化することはできません。<br><br>
+    <b>なぜDは不正解か:</b> NSG はサブネットへのトラフィックを制御しますが、ACR 自体のパブリックエンドポイントへのアクセスを制限するものではありません。ACR へのアクセス元が VNet 外にある場合は NSG では制御できません。
+  </div>
+</div>
+
+<!-- ─── Q7 ─── -->
+<div class="sc" id="q7">
+  <div class="sc-hd"><div class="sc-num">7</div><h4>シナリオ: BGPによる強制トンネリング</h4></div>
+  <p class="q">
+    大規模なハイブリッド環境で、ネットワーク管理者はオンプレミス側から BGP でルートを管理しています。
+    Azure VNet 内のすべての VM のインターネット宛トラフィックをオンプレ Firewall 経由にしたいと考えています。
+    BGP を使った強制トンネリングを実現するために必要な設定はどれですか？
+  </p>
+  <ul class="choices">
+    <li onclick="answer(this,'q7',false)">A. すべてのサブネット（GatewaySubnet 含む）に UDR を作成し 0.0.0.0/0 → VNetGW を設定する</li>
+    <li onclick="answer(this,'q7',false)">B. GatewaySubnet にのみ UDR を作成し 0.0.0.0/0 → VNetGW を設定する</li>
+    <li onclick="answer(this,'q7',true)">C. オンプレミスルーターから BGP で 0.0.0.0/0 デフォルトルートを Azure VPN Gateway にアドバタイズする</li>
+    <li onclick="answer(this,'q7',false)">D. Azure Portal で VNet の「強制トンネリング」オプションを有効にする</li>
+  </ul>
+  <button class="exp-btn" onclick="toggleExp('q7')">💬 解説を表示</button>
+  <div class="explanation" id="exp-q7">
+    <b style="color:#60D860">✅ 正解: C</b><br><br>
+    <b>なぜCが正解か:</b> BGPを使った強制トンネリングは、オンプレルーターから 0.0.0.0/0 のデフォルトルートをBGPでアドバタイズすることで実現します。Azure VPN GatewayがこのBGPルートを学習し、VNet全体に伝播させます。UDRを手動で設定する必要がなく、GatewaySubnetのループ問題も発生しません。<br><br>
+    <b>なぜAは不正解か:</b> GatewaySubnetにUDRを適用するのは禁止です（接続断の原因）。<br><br>
+    <b>なぜBは不正解か:</b> GatewaySubnetへのUDR適用は禁止です。また GatewaySubnetのみに適用してもアプリVMには効果がありません。<br><br>
+    <b>なぜDは不正解か:</b> Azure Portal に「強制トンネリング」という単独のトグルオプションは存在しません。UDRまたはBGPで実装します。
+  </div>
+</div>
+
+<!-- ─── SCORE SUMMARY ─── -->
+<div class="dw" style="margin-top:40px;">
+  <div class="dw-title"><span>重要ポイント まとめ</span></div>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr>
+          <th class="th-gray">問題</th>
+          <th class="th-g">問われたポイント</th>
+          <th class="th-b">正解</th>
+          <th class="th-gray">核心的な理解</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Q1</td><td>コスト最小・VNetのみ</td><td class="tb2">🔷 サービスEP</td><td>無料で要件を満たす。DNSも不要</td></tr>
+        <tr><td>Q2</td><td>オンプレアクセス+パブリックIP無効化</td><td class="tp2">🔮 プライベートEP + DNS</td><td>条件付きフォワーダーまでセット</td></tr>
+        <tr><td>Q3</td><td>強制トンネリングのUDR適用範囲</td><td class="to2">🚇 AppSubnet/DataSubnetのみ</td><td>GatewaySubnetへのUDR適用は禁止</td></tr>
+        <tr><td>Q4</td><td>強制T + Service EPのルート優先順位</td><td class="tb2">🔷 最長プレフィックスマッチ</td><td>Service EPルートが0.0.0.0/0より優先</td></tr>
+        <tr><td>Q5</td><td>Hub-Spoke DNS Zoneリンク</td><td class="tp2">🔮 Spoke VNetへの個別リンク必要</td><td>DNSはピアリングを通じて伝播しない</td></tr>
+        <tr><td>Q6</td><td>ACRのSKU制限</td><td class="tp2">🔮 Premium SKUへアップグレード</td><td>ACR PE = Premium SKUのみ</td></tr>
+        <tr><td>Q7</td><td>BGPによる強制トンネリング</td><td class="to2">🚇 BGPアドバタイズ</td><td>UDR不要・GatewaySubnetループなし</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+</div><!-- end page 8 -->
+
+</main>
+
+<script>
+function go(id, btn) {
+  document.querySelectorAll('.pg').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(b => b.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  btn.classList.add('on');
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function answer(el, qid, correct) {
+  const container = document.getElementById(qid);
+  const choices = container.querySelectorAll('.choices li');
+  choices.forEach(li => {
+    li.onclick = null;
+    li.style.cursor = 'default';
+  });
+  if (correct) {
+    el.classList.add('correct');
+    el.innerHTML = '✅ ' + el.innerHTML;
+  } else {
+    el.classList.add('wrong');
+    el.innerHTML = '❌ ' + el.innerHTML;
+    // Highlight correct answer
+    choices.forEach(li => {
+      if (li.getAttribute('onclick') && li.getAttribute('onclick').includes('true')) {
+        // already removed onclick, find via data
+      }
+    });
+  }
+  // Auto-show explanation
+  toggleExp(qid, true);
+}
+
+function toggleExp(qid, forceShow) {
+  const exp = document.getElementById('exp-' + qid);
+  if (forceShow || !exp.classList.contains('show')) {
+    exp.classList.add('show');
+    const btn = exp.previousElementSibling;
+    if (btn && btn.classList.contains('exp-btn')) {
+      btn.style.display = 'none';
+    }
+  } else {
+    exp.classList.remove('show');
+  }
+}
+</script>
+</body>
+</html>
