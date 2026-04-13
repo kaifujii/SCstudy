@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Azure SQL — デプロイモデル × サービスティア 完全マトリクス</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&family=Syne:wght@700;800&display=swap');
+
+:root {
+  --bg: #03070F;
+  --bg2: #060C18;
+  --bg3: #090F1F;
+  --s1: #0D1628;
+  --s2: #121E34;
+  --s3: #182640;
+  --bd: rgba(255,255,255,0.07);
+  --t1: #EEF4FF;
+  --t2: #9BB8D4;
+  --t3: #5A82A8;
+  --az: #0078D4;
+  --azl: #50E6FF;
+  --ok: #00C878;
+  --wn: #F0A800;
+  --er: #F03040;
+
+  /* tier colors */
+  --basic:    #607090;
+  --std:      #0078D4;
+  --prem:     #7B1FA2;
+  --gp:       #0097A7;
+  --bc:       #C62828;
+  --hs:       #E65100;
+  --fs:       #558B2F;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Noto Sans JP', sans-serif;
+  background: var(--bg);
+  color: var(--t1);
+  line-height: 1.75;
+  min-height: 100vh;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background:
+    radial-gradient(ellipse 800px 500px at 20% 10%, rgba(0,120,212,.07) 0%, transparent 65%),
+    radial-gradient(ellipse 600px 700px at 80% 90%, rgba(0,150,167,.05) 0%, transparent 65%);
+  pointer-events: none; z-index: 0;
+}
+
+/* ── HEADER ── */
+.hdr {
+  background: rgba(3,7,15,.96);
+  border-bottom: 1px solid var(--bd);
+  padding: 0;
+  position: sticky; top: 0; z-index: 100;
+  backdrop-filter: blur(16px);
+}
+.hdr-inner {
+  max-width: 1440px; margin: 0 auto;
+  padding: 14px 36px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.hdr-brand {
+  display: flex; align-items: center; gap: 12px;
+}
+.hdr-icon {
+  width: 34px; height: 34px; border-radius: 8px;
+  background: linear-gradient(135deg, #0078D4, #50E6FF);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.hdr-title { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 800; color: #fff; }
+.hdr-sub { font-size: 10px; color: var(--t3); margin-top: 1px; }
+.hdr-badge {
+  padding: 4px 14px; border-radius: 20px; font-size: 10px; font-weight: 700;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  background: rgba(0,120,212,.15); border: 1px solid rgba(0,120,212,.4); color: var(--azl);
+}
+
+/* ── NAV TABS ── */
+.nav {
+  display: flex; overflow-x: auto;
+  max-width: 1440px; margin: 0 auto; padding: 0 36px;
+  background: var(--bg2); border-bottom: 1px solid var(--bd);
+  scrollbar-width: none;
+}
+.nav::-webkit-scrollbar { display: none; }
+.nb {
+  display: flex; align-items: center; gap: 6px;
+  padding: 10px 16px; font-size: 12.5px; font-weight: 500;
+  color: var(--t3); cursor: pointer; border: none; background: none;
+  border-bottom: 2px solid transparent; white-space: nowrap;
+  transition: all .2s; font-family: 'Noto Sans JP', sans-serif;
+}
+.nb:hover { color: var(--t1); }
+.nb.on { color: var(--azl); border-bottom-color: var(--az); background: rgba(0,120,212,.06); }
+.nb-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+/* ── PAGES ── */
+.pg { display: none; max-width: 1440px; margin: 0 auto; padding: 40px 36px 100px; position: relative; z-index: 1; }
+.pg.on { display: block; }
+
+/* ── HERO ── */
+.hero {
+  border-radius: 20px; padding: 40px 44px; margin-bottom: 40px;
+  position: relative; overflow: hidden;
+  background: linear-gradient(135deg, rgba(0,120,212,.1) 0%, rgba(0,150,167,.06) 60%, rgba(198,40,40,.04) 100%);
+  border: 1px solid rgba(0,120,212,.3);
+}
+.hero::after {
+  content: ''; position: absolute; top: -80px; right: -80px;
+  width: 360px; height: 360px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,120,212,.1) 0%, transparent 70%);
+}
+.hero-content { position: relative; z-index: 1; }
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: rgba(0,120,212,.18); border: 1px solid rgba(0,120,212,.45);
+  border-radius: 20px; padding: 4px 14px;
+  font-size: 10.5px; font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase;
+  color: var(--azl); margin-bottom: 16px;
+}
+.hero h1 {
+  font-family: 'Syne', sans-serif; font-size: clamp(22px, 3vw, 38px); font-weight: 800;
+  line-height: 1.2; margin-bottom: 14px;
+  background: linear-gradient(135deg, #fff 0%, #90D4FF 50%, #50E6FF 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.hero-sub { font-size: 14px; color: #B8D4E8; max-width: 700px; line-height: 1.85; margin-bottom: 22px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 13px; border-radius: 20px; font-size: 11.5px; font-weight: 600;
+}
+
+/* ── SECTION HEADERS ── */
+.sh { margin-bottom: 6px; }
+.sh h2 {
+  font-family: 'Syne', sans-serif; font-size: 19px; font-weight: 800;
+  display: flex; align-items: center; gap: 9px; color: var(--t1);
+}
+.sh h2 .n { color: var(--azl); font-size: 14px; font-weight: 700; }
+.sh-line { height: 1.5px; background: linear-gradient(90deg, rgba(0,120,212,.5), transparent); margin: 7px 0 4px; }
+.sh-sub { font-size: 13px; color: var(--t2); margin-bottom: 24px; line-height: 1.7; }
+
+/* ── TABLE ── */
+.tw { overflow-x: auto; border-radius: 16px; border: 1px solid var(--bd); margin-bottom: 28px; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead tr { background: var(--s2); }
+th { padding: 13px 16px; text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; white-space: nowrap; }
+.thg { color: var(--t3); }
+.thb { color: var(--azl); }
+.thp { color: #CE90FF; }
+.thteal { color: #40E0D0; }
+.thred { color: #FF7070; }
+.thorange { color: #FFB060; }
+.thgreen { color: #80D860; }
+.thbasic { color: #90A8C0; }
+.thstd { color: #60B0FF; }
+.thprem { color: #CC80FF; }
+td { padding: 12px 16px; border-top: 1px solid rgba(255,255,255,.05); vertical-align: top; line-height: 1.7; color: #D0E4F0; }
+td:first-child { color: #B8D0E8; font-weight: 600; }
+tr:hover td { background: rgba(255,255,255,.012); }
+.ok { color: var(--ok); } .wn { color: var(--wn); } .er { color: var(--er); }
+.cb { color: var(--azl); } .cp { color: #CE90FF; } .ct { color: #40E0D0; }
+.co { color: #FFB060; } .cr { color: #FF7070; } .cg { color: #80D860; }
+.cbasic { color: #90A8C0; } .cstd { color: #60B0FF; }
+
+/* ── TIER BADGE ── */
+.tier-badge {
+  display: inline-block; padding: 3px 10px; border-radius: 6px;
+  font-size: 11px; font-weight: 700; letter-spacing: .5px;
+  white-space: nowrap;
+}
+.t-basic  { background: rgba(96,112,144,.2);  border: 1px solid rgba(96,112,144,.5);  color: #90A8C0; }
+.t-std    { background: rgba(0,120,212,.18);  border: 1px solid rgba(0,120,212,.5);   color: #60B0FF; }
+.t-prem   { background: rgba(123,31,162,.2);  border: 1px solid rgba(123,31,162,.5);  color: #CE80FF; }
+.t-gp     { background: rgba(0,151,167,.18);  border: 1px solid rgba(0,151,167,.5);   color: #40E0D0; }
+.t-hs     { background: rgba(230,81,0,.18);   border: 1px solid rgba(230,81,0,.5);    color: #FFB060; }
+.t-bc     { background: rgba(198,40,40,.18);  border: 1px solid rgba(198,40,40,.5);   color: #FF7070; }
+.t-fs     { background: rgba(85,139,47,.18);  border: 1px solid rgba(85,139,47,.5);   color: #80D860; }
+.t-na     { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.12); color: var(--t3); }
+
+/* ── INFO / WARN BOXES ── */
+.ib {
+  display: flex; gap: 13px; border-radius: 12px; padding: 16px 20px;
+  margin-bottom: 20px; font-size: 13px; line-height: 1.8; color: #C8E0F4;
+}
+.ib strong { display: block; font-size: 14px; font-weight: 700; margin-bottom: 5px; }
+.ib.tip    { background: rgba(0,120,212,.08);  border: 1px solid rgba(0,120,212,.3);  }
+.ib.warn   { background: rgba(240,168,0,.08);  border: 1px solid rgba(240,168,0,.35); }
+.ib.danger { background: rgba(240,48,64,.08);  border: 1px solid rgba(240,48,64,.35); }
+.ib.ok     { background: rgba(0,200,120,.07);  border: 1px solid rgba(0,200,120,.3);  }
+.ib-ico { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+
+/* ── MATRIX CARD GRID ── */
+.matrix-wrap { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
+.m-card {
+  border-radius: 14px; padding: 20px; border: 1px solid var(--bd);
+  background: var(--bg3); transition: transform .18s, box-shadow .18s;
+}
+.m-card:hover { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(0,0,0,.35); }
+.m-card-title {
+  font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 800;
+  margin-bottom: 8px; display: flex; align-items: center; gap: 8px;
+}
+.m-card p { font-size: 12.5px; color: #A8C4DA; line-height: 1.75; }
+.m-card .tier-list { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 5px; }
+
+/* ── DEPLOY ICON (MS style inline SVG) ── */
+.d-ico { width: 28px; height: 28px; flex-shrink: 0; }
+
+/* ── COMPARISON HIGHLIGHT ── */
+.highlight-row td { background: rgba(0,120,212,.06); }
+.best { font-size: 10px; font-weight: 700; color: var(--ok); letter-spacing: .5px; }
+.limited { font-size: 10px; font-weight: 700; color: var(--wn); }
+.unavail { font-size: 10px; font-weight: 700; color: var(--er); }
+
+/* ── EXAM CARD ── */
+.ec {
+  background: linear-gradient(135deg, rgba(240,168,0,.07), rgba(240,168,0,.02));
+  border: 1px solid rgba(240,168,0,.35); border-radius: 16px; padding: 22px 26px; margin-bottom: 20px;
+}
+.ec-lbl {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(240,168,0,.15); border: 1px solid rgba(240,168,0,.4);
+  border-radius: 20px; padding: 3px 11px; font-size: 9.5px; font-weight: 700;
+  letter-spacing: 1.5px; text-transform: uppercase; color: var(--wn); margin-bottom: 12px;
+}
+.ec h4 { font-size: 15px; font-weight: 700; margin-bottom: 8px; color: var(--t1); }
+.ec p  { font-size: 13px; color: #B8D0E8; line-height: 1.8; }
+.ans   { background: rgba(0,200,120,.09); border: 1px solid rgba(0,200,120,.3); border-radius: 9px; padding: 12px 16px; margin-top: 12px; font-size: 13px; color: #50D898; font-weight: 600; line-height: 1.7; }
+.no    { background: rgba(240,48,64,.09); border: 1px solid rgba(240,48,64,.3);  border-radius: 9px; padding: 12px 16px; margin-top: 8px;  font-size: 13px; color: #F08090; line-height: 1.7; }
+
+/* ── DTU BOX ── */
+.dtu-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 28px; }
+.dtu-card { background: var(--bg3); border: 1px solid var(--bd); border-radius: 14px; padding: 22px; }
+.dtu-card h3 { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 800; margin-bottom: 10px; }
+.dtu-card p  { font-size: 13px; color: #A8C4DA; line-height: 1.8; }
+.dtu-card ul { font-size: 12.5px; color: #A8C4DA; padding-left: 18px; line-height: 1.85; margin-top: 8px; }
+
+/* ── SVG DIAGRAM ── */
+.dw { background: var(--bg2); border: 1px solid var(--bd); border-radius: 18px; padding: 26px 22px 20px; margin-bottom: 26px; overflow: hidden; }
+.dw-hd { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--t3); margin-bottom: 18px; display: flex; align-items: center; gap: 9px; }
+.dw-hd::after { content: ''; flex: 1; height: 1px; background: var(--bd); }
+svg.d { width: 100%; height: auto; display: block; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1000px) {
+  .matrix-wrap { grid-template-columns: 1fr 1fr; }
+  .dtu-wrap { grid-template-columns: 1fr; }
+  .pg { padding: 28px 20px 80px; }
+  .nav { padding: 0 20px; }
+  .hdr-inner { padding: 12px 20px; }
+  .hero { padding: 28px 22px; }
+}
+@media (max-width: 640px) {
+  .matrix-wrap { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- HIDDEN SVG DEFS -->
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Azure SQL Database (single DB) -->
+    <symbol id="ico-sqldb" viewBox="0 0 18 18">
+      <ellipse cx="9" cy="5" rx="6.5" ry="2.2" fill="#0078D4"/>
+      <rect x="2.5" y="5" width="13" height="6" fill="#0078D4"/>
+      <ellipse cx="9" cy="11" rx="6.5" ry="2.2" fill="#50E6FF"/>
+      <rect x="2.5" y="5" width="13" height="6" fill="rgba(0,0,0,.12)"/>
+      <path d="M2.5 7.5 Q9 9.5 15.5 7.5" stroke="rgba(255,255,255,.28)" stroke-width=".8" fill="none"/>
+    </symbol>
+    <!-- Elastic Pool (multiple cylinders) -->
+    <symbol id="ico-pool" viewBox="0 0 18 18">
+      <rect x="1" y="4" width="16" height="11" rx="2" fill="#0078D4" opacity=".25" stroke="#0078D4" stroke-width="1"/>
+      <ellipse cx="5.5" cy="8.5" rx="2.8" ry="1.2" fill="#0078D4"/>
+      <rect x="2.7" y="8.5" width="5.6" height="3.5" fill="#0078D4"/>
+      <ellipse cx="5.5" cy="12" rx="2.8" ry="1.2" fill="#50E6FF"/>
+      <ellipse cx="12.5" cy="7" rx="2.8" ry="1.2" fill="#0078D4"/>
+      <rect x="9.7" y="7" width="5.6" height="3.5" fill="#0078D4"/>
+      <ellipse cx="12.5" cy="10.5" rx="2.8" ry="1.2" fill="#50E6FF"/>
+    </symbol>
+    <!-- SQL Managed Instance -->
+    <symbol id="ico-mi" viewBox="0 0 18 18">
+      <ellipse cx="9" cy="4.5" rx="6.5" ry="2" fill="#6B69D6"/>
+      <rect x="2.5" y="4.5" width="13" height="7" fill="#6B69D6"/>
+      <ellipse cx="9" cy="11.5" rx="6.5" ry="2" fill="#9B99FF"/>
+      <path d="M2.5 7.5 Q9 9 15.5 7.5 M2.5 9.5 Q9 11 15.5 9.5" stroke="rgba(255,255,255,.22)" stroke-width=".8" fill="none"/>
+      <path d="M7 13.5 L11 13.5 M9 12.5 L9 15.5" stroke="#9B99FF" stroke-width="1.3" stroke-linecap="round"/>
+    </symbol>
+    <!-- SQL Server on VM -->
+    <symbol id="ico-vm" viewBox="0 0 18 18">
+      <rect x="1" y="3" width="16" height="11" rx="1.5" fill="#0078D4"/>
+      <rect x="1" y="3" width="16" height="4" rx="1.5" fill="#50E6FF"/>
+      <rect x="3" y="8" width="12" height="1.5" rx=".75" fill="rgba(255,255,255,.4)"/>
+      <rect x="3" y="10.5" width="8" height="1.5" rx=".75" fill="rgba(255,255,255,.3)"/>
+      <rect x="7" y="14" width="4" height="1.5" rx=".5" fill="#0078D4"/>
+      <rect x="5" y="15.5" width="8" height="1" rx=".5" fill="#0078D4"/>
+    </symbol>
+    <!-- vCore -->
+    <symbol id="ico-vcore" viewBox="0 0 18 18">
+      <rect x="4" y="4" width="10" height="10" rx="2" fill="none" stroke="#50E6FF" stroke-width="1.5"/>
+      <rect x="6.5" y="6.5" width="5" height="5" rx="1" fill="#0078D4"/>
+      <line x1="9" y1="1" x2="9" y2="4" stroke="#50E6FF" stroke-width="1.3" stroke-linecap="round"/>
+      <line x1="9" y1="14" x2="9" y2="17" stroke="#50E6FF" stroke-width="1.3" stroke-linecap="round"/>
+      <line x1="1" y1="9" x2="4" y2="9" stroke="#50E6FF" stroke-width="1.3" stroke-linecap="round"/>
+      <line x1="14" y1="9" x2="17" y2="9" stroke="#50E6FF" stroke-width="1.3" stroke-linecap="round"/>
+    </symbol>
+    <!-- DTU -->
+    <symbol id="ico-dtu" viewBox="0 0 18 18">
+      <circle cx="9" cy="9" r="7.5" fill="none" stroke="#0078D4" stroke-width="1.5"/>
+      <path d="M5 12 L9 5 L13 12" stroke="#50E6FF" stroke-width="1.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+      <line x1="6.5" y1="10" x2="11.5" y2="10" stroke="#50E6FF" stroke-width="1" stroke-linecap="round"/>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- HEADER -->
+<header class="hdr">
+  <div class="hdr-inner">
+    <div class="hdr-brand">
+      <div class="hdr-icon">
+        <svg width="20" height="20" viewBox="0 0 18 18"><use href="#ico-sqldb"/></svg>
+      </div>
+      <div>
+        <div class="hdr-title">Azure SQL — デプロイモデル × サービスティア</div>
+        <div class="hdr-sub">AZ-305 完全攻略ガイド</div>
+      </div>
+    </div>
+    <div class="hdr-badge">AZ-305</div>
+  </div>
+  <nav>
+    <div class="nav">
+      <button class="nb on" onclick="go('p0',this)"><span class="nb-dot" style="background:#50E6FF"></span>全体マップ</button>
+      <button class="nb" onclick="go('p1',this)"><span class="nb-dot" style="background:#50E6FF"></span>Single DB</button>
+      <button class="nb" onclick="go('p2',this)"><span class="nb-dot" style="background:#50E6FF"></span>Elastic Pool</button>
+      <button class="nb" onclick="go('p3',this)"><span class="nb-dot" style="background:#9B99FF"></span>Managed Instance</button>
+      <button class="nb" onclick="go('p4',this)"><span class="nb-dot" style="background:#60B0FF"></span>SQL on VM</button>
+      <button class="nb" onclick="go('p5',this)"><span class="nb-dot" style="background:#40E0D0"></span>ティア詳細比較</button>
+      <button class="nb" onclick="go('p6',this)"><span class="nb-dot" style="background:#F0A800"></span>選択ガイド</button>
+      <button class="nb" onclick="go('p7',this)"><span class="nb-dot" style="background:#80D860"></span>試験演習</button>
+    </div>
+  </nav>
+</header>
+
+<main>
+<!-- ═══ PAGE 0: 全体マップ ═══ -->
+<div class="pg on" id="p0">
+  <div class="hero">
+    <div class="hero-content">
+      <div class="eyebrow">
+        <svg width="14" height="14" viewBox="0 0 18 18"><use href="#ico-sqldb"/></svg>
+        Azure SQL Family
+      </div>
+      <h1>4つのデプロイモデル<br>× サービスティア 完全マトリクス</h1>
+      <p class="hero-sub">
+        Azure SQL は「どこに」デプロイするか（デプロイモデル）と「どのくらいのリソースを使うか」（サービスティア）の
+        組み合わせで設計します。試験では「このシナリオに最適な組み合わせはどれか」が問われます。
+      </p>
+      <div class="chips">
+        <span class="chip" style="background:rgba(0,120,212,.18);border:1px solid rgba(0,120,212,.4);color:#60B0FF;">Single Database</span>
+        <span class="chip" style="background:rgba(0,120,212,.18);border:1px solid rgba(0,120,212,.4);color:#60B0FF;">Elastic Pool</span>
+        <span class="chip" style="background:rgba(107,105,214,.18);border:1px solid rgba(107,105,214,.4);color:#9B99FF;">Managed Instance</span>
+        <span class="chip" style="background:rgba(0,120,212,.12);border:1px solid rgba(0,120,212,.3);color:#50E6FF;">SQL on Azure VM</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- OVERVIEW MATRIX SVG -->
+  <div class="sh"><h2><span class="n">01</span> デプロイモデル vs サービスティア 対応マトリクス</h2><div class="sh-line"></div></div>
+  <p class="sh-sub">どのデプロイモデルにどのサービスティアが使えるかを一覧で確認します。試験頻出の「使えない組み合わせ」を覚えることが重要です。</p>
+
+  <div class="tw">
+    <table>
+      <thead>
+        <tr>
+          <th class="thg">デプロイモデル</th>
+          <th class="thbasic">Basic</th>
+          <th class="thstd">Standard</th>
+          <th class="thprem">Premium</th>
+          <th class="thteal">General Purpose</th>
+          <th class="thorange">Hyperscale</th>
+          <th class="thred">Business Critical</th>
+          <th class="thgreen">Free Tier</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <svg width="20" height="20" viewBox="0 0 18 18"><use href="#ico-sqldb"/></svg>
+              <strong>Single Database</strong>
+            </div>
+          </td>
+          <td><span class="tier-badge t-basic">Basic</span><br><span style="font-size:11px;color:var(--t2);">DTUモデル</span></td>
+          <td><span class="tier-badge t-std">Standard</span><br><span style="font-size:11px;color:var(--t2);">DTUモデル</span></td>
+          <td><span class="tier-badge t-prem">Premium</span><br><span style="font-size:11px;color:var(--t2);">DTUモデル</span></td>
+          <td><span class="tier-badge t-gp">General Purpose</span><br><span style="font-size:11px;color:var(--t2);">vCoreモデル</span></td>
+          <td><span class="tier-badge t-hs">Hyperscale</span><br><span style="font-size:11px;color:var(--t2);">vCoreモデル</span></td>
+          <td><span class="tier-badge t-bc">Business Critical</span><br><span style="font-size:11px;color:var(--t2);">vCoreモデル</span></td>
+          <td><span class="tier-badge t-fs">Free Tier</span><br><span style="font-size:11px;color:var(--t2);">vCore (1 vCore)</span></td>
+        </tr>
+        <tr>
+          <td>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <svg width="20" height="20" viewBox="0 0 18 18"><use href="#ico-pool"/></svg>
+              <strong>Elastic Pool</strong>
+            </div>
+          </td>
+          <td><span class="tier-badge t-basic">Basic</span><br><span style="font-size:11px;color:var(--t2);">DTUモデル</span></td>
+          <td><span class="tier-badge t-std">Standard</span><br><span style="font-size:11px;color:var(--t2);">DTUモデル</span></td>
+          <td><span class="tier-badge t-prem">Premium</span><br><span style="font-size:11px;color:var(--t2);">DTUモデル</span></td>
+          <td><span class="tier-badge t-gp">General Purpose</span><br><span style="font-size:11px;color:var(--t2);">vCoreモデル</span></td>
+          <td><span class="tier-badge t-na">非対応</span></td>
+          <td><span class="tier-badge t-bc">Business Critical</span><br><span style="font-size:11px;color:var(--t2);">vCoreモデル</span></td>
+          <td><span class="tier-badge t-na">非対応</span></td>
+        </tr>
+        <tr>
+          <td>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <svg width="20" height="20" viewBox="0 0 18 18"><use href="#ico-mi"/></svg>
+              <strong>Managed Instance</strong>
+            </div>
+          </td>
+          <td><span class="tier-badge t-na">非対応</span></td>
+          <td><span class="tier-badge t-na">非対応</span></td>
+          <td><span class="tier-badge t-na">非対応</span></td>
+          <td><span class="tier-badge t-gp">General Purpose</span><br><span style="font-size:11px;color:var(--t2);">vCoreのみ</span></td>
+          <td><span class="tier-badge t-na">非対応</span></td>
+          <td><span class="tier-badge t-bc">Business Critical</span><br><span style="font-size:11px;color:var(--t2);">vCoreのみ</span></td>
+          <td><span class="tier-badge t-na">非対応</span></td>
+        </tr>
+        <tr>
+          <td>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <svg width="20" height="20" viewBox="0 0 18 18"><use href="#ico-vm"/></svg>
+              <strong>SQL on Azure VM</strong>
+            </div>
+          </td>
+          <td colspan="7" style="color:#8AAEC8;">
+            SQL Serverのエディション（Developer / Express / Standard / Enterprise）で管理。<br>
+            Azureのサービスティア概念は適用されない。VMのサイズ（vCore・RAM・ディスク）を自分で選択。
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="ib warn">
+    <div class="ib-ico">!</div>
+    <div>
+      <strong>試験で最も間違えやすいマトリクスのポイント</strong>
+      Managed Instance に <strong>Basic / Standard / Premium / Hyperscale</strong> は存在しません。MI は vCore モデルの <strong>General Purpose</strong> か <strong>Business Critical</strong> のみです。
+      Elastic Pool に <strong>Hyperscale</strong> は存在しません。
+      SQL on VM には Azure のサービスティアの概念がなく、VM サイズと SQL Server エディションを直接選択します。
+    </div>
+  </div>
+
+  <!-- DEPLOY MODEL OVERVIEW CARDS -->
+  <div class="sh"><h2><span class="n">02</span> 4つのデプロイモデル — 特徴と選択基準</h2><div class="sh-line"></div></div>
+  <div class="matrix-wrap">
+    <div class="m-card" style="border-color:rgba(0,120,212,.35);">
+      <div class="m-card-title" style="color:#60B0FF;">
+        <svg class="d-ico" viewBox="0 0 18 18"><use href="#ico-sqldb"/></svg>
+        Single Database
+      </div>
+      <p>独立した1つのDBに専用リソースを割り当てる。最もシンプルで、他DBの影響を受けない。スケールアップ/アウトが柔軟。</p>
+      <div class="tier-list">
+        <span class="tier-badge t-basic">Basic</span>
+        <span class="tier-badge t-std">Standard</span>
+        <span class="tier-badge t-prem">Premium</span>
+        <span class="tier-badge t-gp">GP</span>
+        <span class="tier-badge t-hs">Hyperscale</span>
+        <span class="tier-badge t-bc">BC</span>
+        <span class="tier-badge t-fs">Free</span>
+      </div>
+    </div>
+    <div class="m-card" style="border-color:rgba(0,120,212,.3);">
+      <div class="m-card-title" style="color:#60B0FF;">
+        <svg class="d-ico" viewBox="0 0 18 18"><use href="#ico-pool"/></svg>
+        Elastic Pool
+      </div>
+      <p>複数のDBがリソースプールを共有。使用率にバラつきのある多数のDB（SaaS等）をコスト効率よく運用できる。</p>
+      <div class="tier-list">
+        <span class="tier-badge t-basic">Basic</span>
+        <span class="tier-badge t-std">Standard</span>
+        <span class="tier-badge t-prem">Premium</span>
+        <span class="tier-badge t-gp">GP</span>
+        <span class="tier-badge t-bc">BC</span>
+      </div>
+    </div>
+    <div class="m-card" style="border-color:rgba(107,105,214,.35);">
+      <div class="m-card-title" style="color:#9B99FF;">
+        <svg class="d-ico" viewBox="0 0 18 18"><use href="#ico-mi"/></svg>
+        Managed Instance
+      </div>
+      <p>SQL Server インスタンス単位の完全PaaS。クロスDBクエリ・SQL Agent・CLR等、SQL Serverほぼ100%の互換性。VNet内にデプロイ。</p>
+      <div class="tier-list">
+        <span class="tier-badge t-gp">General Purpose</span>
+        <span class="tier-badge t-bc">Business Critical</span>
+      </div>
+    </div>
+    <div class="m-card" style="border-color:rgba(0,120,212,.25);">
+      <div class="m-card-title" style="color:#50E6FF;">
+        <svg class="d-ico" viewBox="0 0 18 18"><use href="#ico-vm"/></svg>
+        SQL on Azure VM
+      </div>
+      <p>Azure VMにSQL Serverをインストール。OS/DB設定を完全制御。IaaSのため管理負荷は高いが、最大の互換性・柔軟性を持つ。</p>
+      <div class="tier-list">
+        <span class="tier-badge" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.2);color:var(--t2);">SQL Enterprise</span>
+        <span class="tier-badge" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.15);color:var(--t2);">Standard</span>
+        <span class="tier-badge" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.15);color:var(--t2);">Developer</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PaaS vs IaaS -->
+  <div class="sh"><h2><span class="n">03</span> PaaS vs IaaS — 管理責任の違い</h2><div class="sh-line"></div></div>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr>
+          <th class="thg">管理責任</th>
+          <th class="thb">Single DB</th>
+          <th class="thb">Elastic Pool</th>
+          <th class="thp">Managed Instance</th>
+          <th class="thg">SQL on VM</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>OSパッチ適用</td><td class="ok">Azure管理</td><td class="ok">Azure管理</td><td class="ok">Azure管理</td><td class="er">顧客管理</td></tr>
+        <tr><td>SQL Serverパッチ</td><td class="ok">Azure管理</td><td class="ok">Azure管理</td><td class="ok">Azure管理</td><td class="er">顧客管理</td></tr>
+        <tr><td>バックアップ</td><td class="ok">自動（35日保持まで）</td><td class="ok">自動</td><td class="ok">自動</td><td class="er">顧客設定</td></tr>
+        <tr><td>HA/フェイルオーバー</td><td class="ok">組み込み</td><td class="ok">組み込み</td><td class="ok">組み込み</td><td class="er">AlwaysOn等を自分で構成</td></tr>
+        <tr><td>スケーリング</td><td class="ok">数秒〜数分</td><td class="ok">数秒〜数分</td><td class="wn">数時間（プロビジョニング）</td><td class="er">VM停止が必要</td></tr>
+        <tr><td>VNet統合</td><td class="wn">Private EP / Service EP</td><td class="wn">Private EP / Service EP</td><td class="ok">VNet内にデプロイ（ネイティブ）</td><td class="ok">VNet内のVM</td></tr>
+        <tr><td>SQL Server Agent</td><td class="er">非対応</td><td class="er">非対応</td><td class="ok">完全対応</td><td class="ok">完全対応</td></tr>
+        <tr><td>クロスDBクエリ</td><td class="er">非対応</td><td class="wn">同一Pool内のみ</td><td class="ok">完全対応</td><td class="ok">完全対応</td></tr>
+        <tr><td>CLR/Service Broker</td><td class="er">非対応</td><td class="er">非対応</td><td class="ok">完全対応</td><td class="ok">完全対応</td></tr>
+        <tr><td>コスト効率</td><td class="ok">高い</td><td class="ok">多数DB時に最高</td><td class="wn">中程度（インスタンス単位）</td><td class="wn">VM+ライセンス</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div><!-- /p0 -->
+
+<!-- ═══ PAGE 1: Single Database ═══ -->
+<div class="pg" id="p1">
+  <div class="hero">
+    <div class="hero-content">
+      <div class="eyebrow"><svg width="14" height="14" viewBox="0 0 18 18"><use href="#ico-sqldb"/></svg> Single Database</div>
+      <h1>Azure SQL Database<br>Single Database 詳細</h1>
+      <p class="hero-sub">最も利用されるデプロイモデル。DBごとに独立したリソースを持ち、DTUモデルとvCoreモデルのすべてのティアが使えます。</p>
+    </div>
+  </div>
+
+  <div class="sh"><h2><span class="n">01</span> DTUモデル — Basic / Standard / Premium</h2><div class="sh-line"></div></div>
+  <p class="sh-sub">DTU（Database Transaction Unit）は CPU・メモリ・I/O を一体化したブレンド指標です。シンプルですが細かいチューニングが不可。</p>
+
+  <div class="tw">
+    <table>
+      <thead>
+        <tr>
+          <th class="thg">比較項目</th>
+          <th class="thbasic">Basic</th>
+          <th class="thstd">Standard (S0〜S12)</th>
+          <th class="thprem">Premium (P1〜P15)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>DTU範囲</td><td class="cbasic">5 DTU（固定）</td><td class="cstd">10〜3,000 DTU</td><td class="cp">125〜4,000 DTU</td></tr>
+        <tr><td>最大ストレージ</td><td class="cbasic">2 GB</td><td class="cstd">250 GB〜4 TB</td><td class="cp">1 TB〜4 TB</td></tr>
+        <tr><td>最大データサイズ</td><td class="cbasic">2 GB</td><td class="cstd">250 MB〜1 TB</td><td class="cp">500 GB〜4 TB</td></tr>
+        <tr><td>In-Memory OLTP</td><td class="er">非対応</td><td class="er">非対応</td><td class="ok">対応（P1以上）</td></tr>
+        <tr><td>バックアップ保持</td><td>7日</td><td>7〜35日</td><td>7〜35日</td></tr>
+        <tr><td>読み取りレプリカ</td><td class="er">なし</td><td class="er">なし</td><td class="ok">あり（P15まで4個）</td></tr>
+        <tr><td>ゾーン冗長</td><td class="er">非対応</td><td class="er">非対応</td><td class="ok">対応（P1以上）</td></tr>
+        <tr><td>接続暗号化（TDE）</td><td class="ok">標準</td><td class="ok">標準</td><td class="ok">標準</td></tr>
+        <tr><td>コスト感</td><td class="cbasic">非常に低コスト</td><td class="cstd">中程度</td><td class="cp">高め</td></tr>
+        <tr><td>最適ユースケース</td><td>開発/テスト・小規模アプリ・ほぼ未使用のDB</td><td>中規模業務アプリ・変動するワークロード</td><td>高IOPSが必要・In-Memory OLTPが必要・低レイテンシが必須</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sh"><h2><span class="n">02</span> vCoreモデル — General Purpose / Hyperscale / Business Critical</h2><div class="sh-line"></div></div>
+  <p class="sh-sub">vCoreモデルは CPU コア数・メモリ・ストレージを個別に選択できます。Azure Hybrid Benefit（Windows Server / SQL Server ライセンス持ち込み）が適用可能です。</p>
+
+  <div class="tw">
+    <table>
+      <thead>
+        <tr>
+          <th class="thg">比較項目</th>
+          <th class="thteal">General Purpose</th>
+          <th class="thorange">Hyperscale</th>
+          <th class="thred">Business Critical</th>
+          <th class="thgreen">Free Tier</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>vCore範囲</td><td class="ct">2〜128 vCore</td><td class="co">2〜128 vCore</td><td class="cr">4〜128 vCore</td><td class="cg">1 vCore（固定）</td></tr>
+        <tr><td>最大ストレージ</td><td class="ct">4 TB</td><td class="co">100 TB（自動拡張）</td><td class="cr">4 TB</td><td class="cg">32 GB</td></tr>
+        <tr><td>ストレージ種類</td><td class="ct">リモートSSD（Premium）</td><td class="co">分散ストレージ層</td><td class="cr">ローカルSSD（超高速）</td><td class="cg">リモートSSD</td></tr>
+        <tr><td>読み取りレプリカ</td><td class="ct">1個（HA用）</td><td class="co">最大30個（Named replicas）</td><td class="cr">3個（HA用）</td><td class="cg">なし</td></tr>
+        <tr><td>読み取りスケールアウト</td><td class="er">非対応（HA用は内部）</td><td class="ok">Named replicaで完全対応</td><td class="ok">対応（read-only replica）</td><td class="er">非対応</td></tr>
+        <tr><td>In-Memory OLTP</td><td class="er">非対応</td><td class="er">非対応</td><td class="ok">対応</td><td class="er">非対応</td></tr>
+        <tr><td>ゾーン冗長</td><td class="ok">対応</td><td class="ok">対応</td><td class="ok">対応</td><td class="er">非対応</td></tr>
+        <tr><td>バックアップ方式</td><td>スナップショット（35日）</td><td>スナップショット（35日）高速RTO</td><td>スナップショット（35日）</td><td>スナップショット（7日）</td></tr>
+        <tr><td>フェイルオーバー時間</td><td class="ct">20〜30秒</td><td class="co">60秒以下</td><td class="cr">数秒（ローカルHA）</td><td>—</td></tr>
+        <tr><td>Azure Hybrid Benefit</td><td class="ok">対応</td><td class="ok">対応</td><td class="ok">対応</td><td class="er">非対応</td></tr>
+        <tr><td>コスト感</td><td class="ct">中程度</td><td class="co">高め（ストレージ自動課金）</td><td class="cr">非常に高い</td><td class="cg">無料（制限あり）</td></tr>
+        <tr><td>最適ユースケース</td><td>汎用的な本番ワークロード・コスト重視・IO変動が少ない</td><td>数TB以上の超大規模DB・高速バックアップが必要・読み取りスケールアウト</td><td>OLTP・最低レイテンシ・高IOPS・In-Memory・読み取りレプリカが必要</td><td>開発・学習・小規模プロト（制限多い）</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="ib tip">
+    <div class="ib-ico">i</div>
+    <div>
+      <strong>DTUモデル vs vCoreモデル — どちらを選ぶか？</strong>
+      <strong style="color:#60B0FF">DTUモデル</strong>はシンプルな設定を好む場合・コスト予測をしやすくしたい場合に適しています。
+      <strong style="color:#40E0D0">vCoreモデル</strong>はより詳細なリソース制御・Azure Hybrid Benefit（ライセンス持ち込みコスト削減）・より大きなストレージが必要な場合に選択します。
+      試験では「コスト削減・ライセンス持ち込み」→ vCore、「シンプルな設定・DTU共有」→ DTU/Elastic Pool という判断をします。
+    </div>
+  </div>
+
+  <div class="ec">
+    <div class="ec-lbl">試験ポイント</div>
+    <h4>「既存の SQL Server Enterprise ライセンスを持っている。Azure SQL Database でコストを最小化したい」</h4>
+    <p>「既存のSQL Serverライセンス持ち込み」のキーワードは Azure Hybrid Benefit = vCore モデルを選びます。</p>
+    <div class="ans">✅ vCoreモデル（General Purpose または Business Critical）+ Azure Hybrid Benefit で最大55%コスト削減</div>
+    <div class="no">❌ DTUモデル（Basic/Standard/Premium）— Azure Hybrid Benefit が適用できない</div>
+  </div>
+</div><!-- /p1 -->
+
+<!-- ═══ PAGE 2: Elastic Pool ═══ -->
+<div class="pg" id="p2">
+  <div class="hero">
+    <div class="hero-content">
+      <div class="eyebrow"><svg width="14" height="14" viewBox="0 0 18 18"><use href="#ico-pool"/></svg> Elastic Pool</div>
+      <h1>Elastic Pool<br>複数DBがリソースを共有</h1>
+      <p class="hero-sub">複数のデータベースが「プール」内のリソース（DTU または vCore）を共有します。各DBの使用率にピーク時間のバラつきがある場合に最大のコスト効果を発揮します。</p>
+    </div>
+  </div>
+
+  <div class="sh"><h2><span class="n">01</span> Elastic Pool の仕組みとコスト効果</h2><div class="sh-line"></div></div>
+
+  <div class="dw">
+    <div class="dw-hd"><span>Elastic Pool — リソース共有の仕組み</span></div>
+    <svg class="d" viewBox="0 0 960 320" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="ep1" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto"><polygon points="0 0,7 2.5,0 5" fill="#0078D4"/></marker>
+      </defs>
+      <!-- Pool boundary -->
+      <rect x="20" y="20" width="580" height="280" rx="16" fill="rgba(0,120,212,.05)" stroke="rgba(0,120,212,.35)" stroke-width="2"/>
+      <text x="310" y="44" text-anchor="middle" fill="#50E6FF" font-size="13" font-family="sans-serif" font-weight="700">Elastic Pool (例: 100 eDTU プール)</text>
+
+      <!-- DB cylinders -->
+      <ellipse cx="90" cy="100" rx="40" ry="14" fill="#0078D4"/>
+      <rect x="50" y="100" width="80" height="50" fill="#0078D4"/>
+      <ellipse cx="90" cy="150" rx="40" ry="14" fill="#50E6FF"/>
+      <text x="90" y="130" text-anchor="middle" fill="white" font-size="10" font-family="sans-serif" font-weight="700">DB-A</text>
+      <!-- Usage bar -->
+      <rect x="52" y="172" width="76" height="10" rx="3" fill="rgba(255,255,255,.1)"/>
+      <rect x="52" y="172" width="22" height="10" rx="3" fill="#00C878"/>
+      <text x="90" y="197" text-anchor="middle" fill="#A8D0E8" font-size="9" font-family="sans-serif">8:00 AM 使用低</text>
+
+      <ellipse cx="220" cy="100" rx="40" ry="14" fill="#0078D4"/>
+      <rect x="180" y="100" width="80" height="50" fill="#0078D4"/>
+      <ellipse cx="220" cy="150" rx="40" ry="14" fill="#50E6FF"/>
+      <text x="220" y="130" text-anchor="middle" fill="white" font-size="10" font-family="sans-serif" font-weight="700">DB-B</text>
+      <rect x="182" y="172" width="76" height="10" rx="3" fill="rgba(255,255,255,.1)"/>
+      <rect x="182" y="172" width="60" height="10" rx="3" fill="#F0A800"/>
+      <text x="220" y="197" text-anchor="middle" fill="#A8D0E8" font-size="9" font-family="sans-serif">8:00 AM 使用高</text>
+
+      <ellipse cx="350" cy="100" rx="40" ry="14" fill="#0078D4"/>
+      <rect x="310" y="100" width="80" height="50" fill="#0078D4"/>
+      <ellipse cx="350" cy="150" rx="40" ry="14" fill="#50E6FF"/>
+      <text x="350" y="130" text-anchor="middle" fill="white" font-size="10" font-family="sans-serif" font-weight="700">DB-C</text>
+      <rect x="312" y="172" width="76" height="10" rx="3" fill="rgba(255,255,255,.1)"/>
+      <rect x="312" y="172" width="14" height="10" rx="3" fill="#00C878"/>
+      <text x="350" y="197" text-anchor="middle" fill="#A8D0E8" font-size="9" font-family="sans-serif">8:00 AM 使用低</text>
+
+      <ellipse cx="480" cy="100" rx="40" ry="14" fill="#0078D4"/>
+      <rect x="440" y="100" width="80" height="50" fill="#0078D4"/>
+      <ellipse cx="480" cy="150" rx="40" ry="14" fill="#50E6FF"/>
+      <text x="480" y="130" text-anchor="middle" fill="white" font-size="10" font-family="sans-serif" font-weight="700">DB-D</text>
+      <rect x="442" y="172" width="76" height="10" rx="3" fill="rgba(255,255,255,.1)"/>
+      <rect x="442" y="172" width="38" height="10" rx="3" fill="#F0A800"/>
+      <text x="480" y="197" text-anchor="middle" fill="#A8D0E8" font-size="9" font-family="sans-serif">8:00 AM 中程度</text>
+
+      <!-- Shared resource indicator -->
+      <rect x="50" y="220" width="510" height="50" rx="10" fill="rgba(0,180,216,.08)" stroke="rgba(0,180,216,.4)" stroke-width="1.5"/>
+      <text x="305" y="240" text-anchor="middle" fill="#40D0E0" font-size="11" font-family="sans-serif" font-weight="700">プール共有リソース: 100 eDTU</text>
+      <text x="305" y="258" text-anchor="middle" fill="#3090A0" font-size="9.5" font-family="sans-serif">どのDBでも最大100 eDTUまで使用可能（ただし合計は100以内）</text>
+
+      <!-- Right side: benefit explanation -->
+      <rect x="640" y="20" width="300" height="280" rx="14" fill="rgba(0,200,120,.05)" stroke="rgba(0,200,120,.3)" stroke-width="1.5"/>
+      <text x="790" y="46" text-anchor="middle" fill="#00C878" font-size="12" font-family="sans-serif" font-weight="700">コスト効果が出る条件</text>
+
+      <rect x="658" y="58" width="264" height="46" rx="8" fill="rgba(0,200,120,.1)"/>
+      <text x="790" y="76" text-anchor="middle" fill="#50E878" font-size="10" font-family="sans-serif" font-weight="700">ピーク時間がバラバラ</text>
+      <text x="790" y="92" text-anchor="middle" fill="#408050" font-size="9" font-family="sans-serif">DB-Aが忙しい時 DB-B は暇、逆も然り</text>
+
+      <rect x="658" y="116" width="264" height="46" rx="8" fill="rgba(0,200,120,.08)"/>
+      <text x="790" y="134" text-anchor="middle" fill="#50E878" font-size="10" font-family="sans-serif" font-weight="700">DBが多数ある（10〜500+）</text>
+      <text x="790" y="150" text-anchor="middle" fill="#408050" font-size="9" font-family="sans-serif">SaaSアプリでテナントごとにDB</text>
+
+      <rect x="658" y="174" width="264" height="46" rx="8" fill="rgba(240,48,64,.07)" stroke="rgba(240,48,64,.25)" stroke-width="1"/>
+      <text x="790" y="192" text-anchor="middle" fill="#F08090" font-size="10" font-family="sans-serif" font-weight="700">コスト効果が出ない条件</text>
+      <text x="790" y="208" text-anchor="middle" fill="#A06070" font-size="9" font-family="sans-serif">全DBが同時にピークを迎える場合</text>
+
+      <rect x="658" y="232" width="264" height="46" rx="8" fill="rgba(0,120,212,.08)"/>
+      <text x="790" y="250" text-anchor="middle" fill="#60B0FF" font-size="10" font-family="sans-serif" font-weight="700">最適: SaaS マルチテナント</text>
+      <text x="790" y="266" text-anchor="middle" fill="#3070A0" font-size="9" font-family="sans-serif">テナントごとに1DBを持つ構成</text>
+    </svg>
+  </div>
+
+  <div class="sh"><h2><span class="n">02</span> Elastic Pool のサービスティア比較</h2><div class="sh-line"></div></div>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr>
+          <th class="thg">比較項目</th>
+          <th class="thbasic">Basic Pool</th>
+          <th class="thstd">Standard Pool</th>
+          <th class="thprem">Premium Pool</th>
+          <th class="thteal">GP Pool (vCore)</th>
+          <th class="thred">BC Pool (vCore)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>課金モデル</td><td class="cbasic">DTU (eDTU)</td><td class="cstd">DTU (eDTU)</td><td class="cp">DTU (eDTU)</td><td class="ct">vCore</td><td class="cr">vCore</td></tr>
+        <tr><td>最大プールサイズ</td><td class="cbasic">1,600 eDTU</td><td class="cstd">3,000 eDTU</td><td class="cp">4,000 eDTU</td><td class="ct">128 vCore</td><td class="cr">128 vCore</td></tr>
+        <tr><td>プール最大ストレージ</td><td class="cbasic">156 GB</td><td class="cstd">4 TB</td><td class="cp">4 TB</td><td class="ct">4 TB</td><td class="cr">4 TB</td></tr>
+        <tr><td>最大DB数</td><td class="cbasic">500</td><td class="cstd">500</td><td class="cp">500</td><td class="ct">500</td><td class="cr">500</td></tr>
+        <tr><td>In-Memory OLTP</td><td class="er">非対応</td><td class="er">非対応</td><td class="ok">対応</td><td class="er">非対応</td><td class="ok">対応</td></tr>
+        <tr><td>ゾーン冗長</td><td class="er">非対応</td><td class="er">非対応</td><td class="ok">対応</td><td class="ok">対応</td><td class="ok">対応</td></tr>
+        <tr><td>Hyperscale対応</td><td colspan="5" style="text-align:center;"><span class="tier-badge t-na">Elastic Pool に Hyperscale は存在しない</span></td></tr>
+        <tr><td>最適ユースケース</td><td>開発DBの集約・小規模SaaS</td><td>中規模SaaS・変動するWorkload</td><td>高性能が必要なSaaSテナント群</td><td>本番SaaS・コスト重視</td><td>低レイテンシが必要なSaaS</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="ec">
+    <div class="ec-lbl">試験ポイント</div>
+    <h4>「SaaSアプリでテナントごとにデータを分離する必要がある。テナント数は500社で、各テナントのDBアクティビティ時間はバラバラ。コストを最適化したい」</h4>
+    <div class="ans">✅ Elastic Pool — テナントごとにDB（マルチテナント分離）・ピーク時間のばらつきを利用したリソース共有でコスト削減</div>
+    <div class="no">❌ Single Database x 500 — 各DBに専用リソースを持つため、同じリソース量を確保すると5〜10倍のコストになる</div>
+  </div>
+</div><!-- /p2 -->
+
+<!-- ═══ PAGE 3: Managed Instance ═══ -->
+<div class="pg" id="p3">
+  <div class="hero" style="background:linear-gradient(135deg,rgba(107,105,214,.12),rgba(107,105,214,.05));border-color:rgba(107,105,214,.35);">
+    <div class="hero-content">
+      <div class="eyebrow" style="background:rgba(107,105,214,.2);border-color:rgba(107,105,214,.45);color:#9B99FF;">
+        <svg width="14" height="14" viewBox="0 0 18 18"><use href="#ico-mi"/></svg>
+        Managed Instance
+      </div>
+      <h1 style="background:linear-gradient(135deg,#fff,#C8C0FF,#9B99FF);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">SQL Managed Instance<br>SQL Serverほぼ完全互換のPaaS</h1>
+      <p class="hero-sub">SQL Server インスタンス単位で提供される完全 PaaS サービスです。SQL Agent・CLR・Service Broker・クロスDBクエリなど、SQL DB では使えない機能が利用可能。VNet 内にデプロイされます。</p>
+    </div>
+  </div>
+
+  <div class="sh"><h2><span class="n">01</span> General Purpose vs Business Critical</h2><div class="sh-line"></div></div>
+  <p class="sh-sub">MI はこの2つのサービスティアのみです。DTUモデルは存在しません。</p>
+
+  <div class="tw">
+    <table>
+      <thead>
+        <tr>
+          <th class="thg">比較項目</th>
+          <th class="thteal">General Purpose</th>
+          <th class="thred">Business Critical</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>vCore範囲</td><td class="ct">4〜96 vCore</td><td class="cr">4〜96 vCore</td></tr>
+        <tr><td>メモリ</td><td class="ct">vCoreあたり5.1 GB</td><td class="cr">vCoreあたり5.1 GB（BC は vCore数多い）</td></tr>
+        <tr><td>ストレージ種類</td><td class="ct">リモートSSD (Premium)</td><td class="cr">ローカルSSD（超高速 NVMe）</td></tr>
+        <tr><td>最大ストレージ</td><td class="ct">16 TB</td><td class="cr">4 TB</td></tr>
+        <tr><td>IOPS（最大）</td><td class="ct">最大204,800 IOPS（リモート）</td><td class="cr">最大4,000 × vCore（ローカル・超高速）</td></tr>
+        <tr><td>読み取りレプリカ</td><td class="er">なし（HA用に内部に持つ）</td><td class="ok">1個（同一リージョン・無料）</td></tr>
+        <tr><td>組み込みHAレプリカ数</td><td class="ct">3ノード（1プライマリ+2HA）</td><td class="cr">4ノード（1プライマリ+3HA）Always On AG</td></tr>
+        <tr><td>フェイルオーバー時間</td><td class="ct">20〜30秒</td><td class="cr">数秒（ローカルAG）</td></tr>
+        <tr><td>In-Memory OLTP</td><td class="er">非対応</td><td class="ok">対応</td></tr>
+        <tr><td>ゾーン冗長</td><td class="ok">対応（プレビュー→GA）</td><td class="ok">対応</td></tr>
+        <tr><td>MI Link 対応</td><td class="ok">対応</td><td class="ok">対応（DMSオンラインは不可）</td></tr>
+        <tr><td>コスト感</td><td class="ct">Business Criticalの約2〜3割のコスト</td><td class="cr">非常に高い（ローカルSSD分の上乗せ）</td></tr>
+        <tr><td>最適ユースケース</td><td>SQL Serverからの移行・一般的なOLTP・コスト重視</td><td>最低レイテンシが必要・In-Memory OLTP・読み取りレプリカが必須・フェイルオーバー数秒以内</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sh"><h2><span class="n">02</span> SQL MI が必要なケース（SQL DB との違い）</h2><div class="sh-line"></div></div>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr>
+          <th class="thg">機能</th>
+          <th class="thb">SQL Database (Single/Pool)</th>
+          <th class="thp">SQL Managed Instance</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>SQL Server Agent ジョブ</td><td class="er">非対応</td><td class="ok">完全対応</td></tr>
+        <tr><td>クロスデータベースクエリ</td><td class="er">非対応（同Pool内は可）</td><td class="ok">完全対応（インスタンス内）</td></tr>
+        <tr><td>CLR (Common Language Runtime)</td><td class="er">非対応</td><td class="ok">対応</td></tr>
+        <tr><td>Service Broker</td><td class="er">非対応</td><td class="ok">対応</td></tr>
+        <tr><td>Database Mail</td><td class="er">非対応</td><td class="ok">対応</td></tr>
+        <tr><td>リンクサーバー</td><td class="er">非対応</td><td class="ok">対応</td></tr>
+        <tr><td>フルテキスト検索</td><td class="ok">対応（一部制限）</td><td class="ok">完全対応</td></tr>
+        <tr><td>バックアップ先（Azure Blob）</td><td class="ok">自動管理</td><td class="ok">自動 + 手動バックアップ可</td></tr>
+        <tr><td>ネイティブVNet統合</td><td class="er">非対応（Private EP/Service EP）</td><td class="ok">VNet サブネット内にデプロイ</td></tr>
+        <tr><td>SQL Server 認証</td><td class="ok">対応</td><td class="ok">対応（Windows Auth も可）</td></tr>
+        <tr><td>Azure AD 認証</td><td class="ok">対応（Entra ID）</td><td class="ok">対応</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="ec">
+    <div class="ec-lbl">試験ポイント</div>
+    <h4>「SQL Server 2019 のオンプレ環境で SQL Server Agent を多用している。Azure に移行したいが、SQL Agent を維持する必要がある」</h4>
+    <div class="ans">✅ SQL Managed Instance — SQL Server Agentが完全対応。SQL DBではAgentが使えないためMIが唯一の選択肢</div>
+    <div class="no">❌ SQL Database (Single/Pool) — SQL Server Agent に非対応。Azure Functions や Elastic Jobs で代替が必要になる</div>
+  </div>
+</div><!-- /p3 -->
+
+<!-- ═══ PAGE 4: SQL on VM ═══ -->
+<div class="pg" id="p4">
+  <div class="hero">
+    <div class="hero-content">
+      <div class="eyebrow"><svg width="14" height="14" viewBox="0 0 18 18"><use href="#ico-vm"/></svg> SQL on Azure VM</div>
+      <h1>SQL Server on Azure VM<br>最大の制御・最大の管理負荷</h1>
+      <p class="hero-sub">Azure IaaS の VM に SQL Server をインストールして使用します。OS・ネットワーク・SQL 設定を完全に制御でき、SQL Server のほぼすべての機能を利用できますが、パッチ・バックアップ・HA 構成はすべて顧客が管理します。</p>
+    </div>
+  </div>
+
+  <div class="sh"><h2><span class="n">01</span> SQL Server エディション vs PaaS サービスティア</h2><div class="sh-line"></div></div>
+  <p class="sh-sub">SQL on VM には Azure の「サービスティア」はありません。代わりに SQL Server のエディションと VM サイズの組み合わせで性能が決まります。</p>
+
+  <div class="tw">
+    <table>
+      <thead>
+        <tr>
+          <th class="thg">SQL Serverエディション</th>
+          <th class="thg">主な機能</th>
+          <th class="thg">AlwaysOn AG</th>
+          <th class="thg">ライセンス</th>
+          <th class="thg">コスト</th>
+          <th class="thg">推奨VM</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Enterprise</strong></td>
+          <td>全機能（In-Memory OLTP・可用性グループ等）</td>
+          <td class="ok">最大9セカンダリ</td>
+          <td class="wn">高コスト</td>
+          <td class="wn">高い</td>
+          <td>Eシリーズ・Mシリーズ（メモリ最適化）</td>
+        </tr>
+        <tr>
+          <td><strong>Standard</strong></td>
+          <td>一般的な業務機能・AG制限あり</td>
+          <td class="wn">2セカンダリまで（Basic AG）</td>
+          <td class="wn">中程度</td>
+          <td class="wn">中程度</td>
+          <td>Dシリーズ・Eシリーズ</td>
+        </tr>
+        <tr>
+          <td><strong>Developer</strong></td>
+          <td>Enterpriseと同等（本番利用不可）</td>
+          <td class="ok">Enterpriseと同等</td>
+          <td class="ok">無料</td>
+          <td class="ok">VM費用のみ</td>
+          <td>開発・テスト環境</td>
+        </tr>
+        <tr>
+          <td><strong>Express</strong></td>
+          <td>制限多（DB 10 GB まで）</td>
+          <td class="er">非対応</td>
+          <td class="ok">無料</td>
+          <td class="ok">VM費用のみ</td>
+          <td>小規模アプリ・無料枠で動かしたい</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sh"><h2><span class="n">02</span> SQL on VM を選ぶべきシナリオ</h2><div class="sh-line"></div></div>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr>
+          <th class="thg">要件</th>
+          <th class="thb">SQL DB</th>
+          <th class="thp">SQL MI</th>
+          <th class="thg">SQL on VM</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Windows 認証（Active Directory）</td><td class="wn">⚠ Entra ID連携のみ</td><td class="ok">対応</td><td class="ok">完全対応</td></tr>
+        <tr><td>SQL Server のすべての機能（100%互換）</td><td class="er">非対応</td><td class="wn">ほぼ対応（一部制限）</td><td class="ok">完全対応</td></tr>
+        <tr><td>OS レベルのカスタマイズが必要</td><td class="er">不可</td><td class="er">不可</td><td class="ok">完全に可能</td></tr>
+        <tr><td>サードパーティ製アプリとの密結合（OSファイルシステム等）</td><td class="er">不可</td><td class="er">不可</td><td class="ok">可能</td></tr>
+        <tr><td>特定バージョンの SQL Server が必要（例: 2012）</td><td class="er">不可（最新自動更新）</td><td class="er">不可</td><td class="ok">可能</td></tr>
+        <tr><td>既存のHA構成（AlwaysOn AG）をそのまま移行</td><td class="er">不可</td><td class="er">MI独自のHAに変わる</td><td class="ok">そのまま再構築可能</td></tr>
+        <tr><td>管理負荷を最小化したい</td><td class="ok">最小</td><td class="ok">低い</td><td class="er">高い（OS管理も必要）</td></tr>
+        <tr><td>コスト最適化</td><td class="ok">最良</td><td class="wn">中程度</td><td class="wn">VM+ライセンス（Hybrid Benefit可）</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="ec">
+    <div class="ec-lbl">試験ポイント</div>
+    <h4>「OSレベルのカスタマイズが必要なSQL Server 2016 のアプリがある。特定のOS設定に依存している」</h4>
+    <div class="ans">✅ SQL on Azure VM — OS完全制御・特定のSQL Serverバージョン維持・OSレベル依存のアプリをそのまま移行可能</div>
+    <div class="no">❌ SQL MI — OS制御は不可。SQL DB — OS・バージョン制御は完全不可。Lift&Shift = SQL on VM</div>
+  </div>
+</div><!-- /p4 -->
+
+<!-- ═══ PAGE 5: ティア詳細比較 ═══ -->
+<div class="pg" id="p5">
+  <div class="hero">
+    <div class="hero-content">
+      <div class="eyebrow"><svg width="14" height="14" viewBox="0 0 18 18"><use href="#ico-vcore"/></svg> サービスティア詳細比較</div>
+      <h1>全サービスティア<br>徹底比較マトリクス</h1>
+      <p class="hero-sub">Basic から Business Critical まで、全ティアを同じ軸で比較します。どのシナリオにどのティアが最適かを確実に判断できるようにします。</p>
+    </div>
+  </div>
+
+  <div class="sh"><h2><span class="n">01</span> DTUモデル 3ティア詳細</h2><div class="sh-line"></div></div>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr>
+          <th class="thg">項目</th>
+          <th class="thbasic">Basic</th>
+          <th class="thstd">Standard</th>
+          <th class="thprem">Premium</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>適用モデル</td><td colspan="3" style="text-align:center;color:#B8D0E8;">Single Database / Elastic Pool のみ（Managed Instance では使用不可）</td></tr>
+        <tr><td>DTU値</td><td class="cbasic">5（固定）</td><td class="cstd">10 / 20 / 50 / 100 / 200 / 400 / 800 / 1600 / 3000</td><td class="cp">125 / 250 / 500 / 1000 / 1750 / 4000</td></tr>
+        <tr><td>最大ストレージ / DB</td><td class="cbasic">2 GB</td><td class="cstd">S0-S2: 250GB / S3-S12: 1TB</td><td class="cp">P1-P2: 500GB / P4+: 1TB〜4TB</td></tr>
+        <tr><td>最大並列クエリ</td><td class="cbasic">30</td><td class="cstd">60〜6400</td><td class="cp">200〜6400</td></tr>
+        <tr><td>In-Memory OLTP</td><td class="er">非対応</td><td class="er">非対応</td><td class="ok">P1以上で対応</td></tr>
+        <tr><td>ゾーン冗長</td><td class="er">非対応</td><td class="er">非対応</td><td class="ok">P1以上で対応</td></tr>
+        <tr><td>読み取りスケールアウト</td><td class="er">非対応</td><td class="er">非対応</td><td class="ok">P11/P15で対応（最大4レプリカ）</td></tr>
+        <tr><td>SLA（稼働率）</td><td>99.99%</td><td>99.99%</td><td>99.99%</td></tr>
+        <tr><td>バックアップ保持</td><td>7日</td><td>7〜35日</td><td>7〜35日</td></tr>
+        <tr><td>Azure Hybrid Benefit</td><td class="er">非対応</td><td class="er">非対応</td><td class="er">非対応</td></tr>
+        <tr><td>代表的なユースケース</td>
+          <td>
+            <ul style="padding-left:14px;font-size:12px;color:#A8C4DA;">
+              <li>開発・テスト</li>
+              <li>ほぼ未使用の小規模DB</li>
+              <li>5 DTU 超えない小アプリ</li>
+            </ul>
+          </td>
+          <td>
+            <ul style="padding-left:14px;font-size:12px;color:#A8C4DA;">
+              <li>中規模Webアプリ</li>
+              <li>変動するトランザクション</li>
+              <li>月次バッチ処理</li>
+            </ul>
+          </td>
+          <td>
+            <ul style="padding-left:14px;font-size:12px;color:#A8C4DA;">
+              <li>高IOPSが必要なOLTP</li>
+              <li>In-Memory が必要</li>
+              <li>読み取りスケールが必要</li>
+            </ul>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sh"><h2><span class="n">02</span> vCoreモデル 4ティア詳細</h2><div class="sh-line"></div></div>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr>
+          <th class="thg">項目</th>
+          <th class="thteal">General Purpose</th>
+          <th class="thorange">Hyperscale</th>
+          <th class="thred">Business Critical</th>
+          <th class="thgreen">Free Tier</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>適用モデル</td>
+          <td class="ct">Single / Pool / MI</td>
+          <td class="co">Single DBのみ</td>
+          <td class="cr">Single / Pool / MI</td>
+          <td class="cg">Single DBのみ</td>
+        </tr>
+        <tr><td>アーキテクチャ</td>
+          <td class="ct">プライマリ1 + HAセカンダリ（リモートストレージ）</td>
+          <td class="co">分散ストレージ層（Page Server・Log Service分離）</td>
+          <td class="cr">Always On AG（ローカルSSD、4ノード）</td>
+          <td class="cg">General Purposeと同アーキ（制限版）</td>
+        </tr>
+        <tr><td>vCore</td><td>2〜128</td><td>2〜128</td><td>4〜128</td><td>1（固定）</td></tr>
+        <tr><td>最大RAM</td><td class="ct">最大624 GB</td><td class="co">最大624 GB</td><td class="cr">最大4 TB（Mシリーズ）</td><td class="cg">3 GB</td></tr>
+        <tr><td>最大ストレージ</td><td class="ct">4 TB</td><td class="co">100 TB（自動拡張）</td><td class="cr">4 TB</td><td class="cg">32 GB</td></tr>
+        <tr><td>読み取りレプリカ（スケールアウト用）</td><td class="ct">1 (HA用、追加費用なし)</td><td class="co">最大30 Named Replicas</td><td class="cr">1 (無料)</td><td class="cg">なし</td></tr>
+        <tr><td>フェイルオーバー時間</td><td class="ct">20〜30秒</td><td class="co">60秒以下</td><td class="cr">数秒（ローカルAG）</td><td class="cg">20〜30秒</td></tr>
+        <tr><td>In-Memory OLTP</td><td class="er">非対応</td><td class="er">非対応</td><td class="ok">対応</td><td class="er">非対応</td></tr>
+        <tr><td>バックアップ速度</td><td class="ct">標準（スナップショット）</td><td class="co">超高速（分散ストレージでほぼ瞬時）</td><td class="cr">標準</td><td class="cg">標準</td></tr>
+        <tr><td>リストア速度</td><td class="ct">標準（最大数時間）</td><td class="co">超高速（数分）</td><td class="cr">標準</td><td class="cg">標準</td></tr>
+        <tr><td>Azure Hybrid Benefit</td><td class="ok">対応（最大55%削減）</td><td class="ok">対応</td><td class="ok">対応</td><td class="er">非対応</td></tr>
+        <tr><td>ゾーン冗長</td><td class="ok">対応</td><td class="ok">対応</td><td class="ok">対応</td><td class="er">非対応</td></tr>
+        <tr><td>Managed Instance対応</td><td class="ok">GP-MI として対応</td><td class="er">非対応</td><td class="ok">BC-MI として対応</td><td class="er">非対応</td></tr>
+        <tr><td>Elastic Pool対応</td><td class="ok">対応</td><td class="er">非対応</td><td class="ok">対応</td><td class="er">非対応</td></tr>
+        <tr><td>月間コスト感（2vCore例）</td><td class="ct">約$370〜/月</td><td class="co">約$370〜+ストレージ課金</td><td class="cr">約$910〜/月</td><td class="cg">無料（制限内）</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="ib tip">
+    <div class="ib-ico">i</div>
+    <div>
+      <strong>Hyperscale の「分散ストレージ」アーキテクチャ</strong>
+      Hyperscale は他のティアと根本的にアーキテクチャが異なります。データは <strong>Page Server</strong>（分散ストレージノード群）に分散保存され、
+      <strong>Log Service</strong> がトランザクションログを管理します。これにより、バックアップがほぼ瞬時、リストアも数分で完了します。
+      また <strong>Named Replica</strong>（最大30個）で読み取りスケールアウトが可能です。ただし Elastic Pool と Managed Instance には非対応です。
+    </div>
+  </div>
+</div><!-- /p5 -->
+
+<!-- ═══ PAGE 6: 選択ガイド ═══ -->
+<div class="pg" id="p6">
+  <div class="hero">
+    <div class="hero-content">
+      <div class="eyebrow">選択ガイド</div>
+      <h1>シナリオから<br>最適な組み合わせを選ぶ</h1>
+      <p class="hero-sub">試験では「このシナリオに最適なデプロイモデルとサービスティアの組み合わせはどれか」という問題が出ます。判断フローを頭に入れましょう。</p>
+    </div>
+  </div>
+
+  <div class="sh"><h2><span class="n">01</span> キーワード別 即決チート表</h2><div class="sh-line"></div></div>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr>
+          <th class="thg">シナリオのキーワード</th>
+          <th class="thb">正解の組み合わせ</th>
+          <th class="thg">理由</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>「開発・テスト用・コスト最小・アイドル時間が多い」</td>
+          <td><span class="tier-badge t-basic">Basic</span> Single DB</td>
+          <td>最低コスト（5 DTU固定）。本番ワークロードには不向き</td>
+        </tr>
+        <tr>
+          <td>「中規模Webアプリ・変動するトランザクション」</td>
+          <td><span class="tier-badge t-std">Standard</span> Single DB / Elastic Pool</td>
+          <td>DTUを柔軟に選択・コストと性能のバランス</td>
+        </tr>
+        <tr>
+          <td>「高IOPS・In-Memory OLTP・最低レイテンシ（SQL DB内で）」</td>
+          <td><span class="tier-badge t-prem">Premium</span> Single DB</td>
+          <td>In-Memory OLTPはDTUモデルではPremiumのみ</td>
+        </tr>
+        <tr>
+          <td>「SaaSアプリ・500テナント・各DBのピーク時間がバラバラ・コスト最適化」</td>
+          <td><span class="tier-badge t-std">Standard</span>/<span class="tier-badge t-gp">GP</span> Elastic Pool</td>
+          <td>Elastic Poolでリソース共有・テナントごとにDB分離</td>
+        </tr>
+        <tr>
+          <td>「既存のSQL Serverライセンス持ち込みでコスト削減」</td>
+          <td>vCoreモデル（<span class="tier-badge t-gp">GP</span> or <span class="tier-badge t-bc">BC</span>）</td>
+          <td>Azure Hybrid BenefitはvCoreモデルのみ適用可能</td>
+        </tr>
+        <tr>
+          <td>「汎用的な本番OLTP・コスト重視・IO変動が少ない」</td>
+          <td><span class="tier-badge t-gp">General Purpose</span></td>
+          <td>vCoreの標準。BCの1/3程度のコスト</td>
+        </tr>
+        <tr>
+          <td>「DBサイズが数TB以上・高速バックアップ/リストアが必要・読み取りを大量にスケールアウト」</td>
+          <td><span class="tier-badge t-hs">Hyperscale</span> Single DB</td>
+          <td>100TBまで自動拡張・Named Replicaで読み取り30個・バックアップ瞬時</td>
+        </tr>
+        <tr>
+          <td>「最低レイテンシのOLTP・フェイルオーバー数秒以内・読み取りレプリカ必要」</td>
+          <td><span class="tier-badge t-bc">Business Critical</span></td>
+          <td>ローカルNVMe SSD・Always On AG・内蔵読み取りレプリカ</td>
+        </tr>
+        <tr>
+          <td>「SQL Server Agent・クロスDBクエリ・CLR が必要」</td>
+          <td><span class="tier-badge t-gp">GP</span>/<span class="tier-badge t-bc">BC</span> Managed Instance</td>
+          <td>SQL DB (Single/Pool) はSQL Agent等に非対応</td>
+        </tr>
+        <tr>
+          <td>「SQL MI Business Critical に最小ダウンタイムで移行・フェイルバックも必要」</td>
+          <td>MI Link (SQL Server 2022) →<span class="tier-badge t-bc">BC</span> MI</td>
+          <td>DMSのオンライン移行はBusiness Critical非対応</td>
+        </tr>
+        <tr>
+          <td>「OSレベルのカスタマイズ・特定のSQL Serverバージョン・フルIaaS制御」</td>
+          <td>SQL Server on Azure VM</td>
+          <td>PaaSでは不可能。VMに直接インストールが唯一の手段</td>
+        </tr>
+        <tr>
+          <td>「学習・プロト・無料でAzure SQLを使いたい」</td>
+          <td><span class="tier-badge t-fs">Free Tier</span> Single DB</td>
+          <td>月32GB・1 vCore・無料（1サブスクに1DB制限あり）</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sh"><h2><span class="n">02</span> 間違えやすいポイント集</h2><div class="sh-line"></div></div>
+
+  <div class="ec">
+    <div class="ec-lbl">落とし穴 #1</div>
+    <h4>「Managed Instance には Basic / Standard / Premium がある」→ ない</h4>
+    <p>MI は vCore モデルの General Purpose と Business Critical のみです。DTU モデルは MI に存在しません。</p>
+    <div class="ans">✅ MI = General Purpose または Business Critical（vCoreのみ）</div>
+    <div class="no">❌ Basic/Standard/Premium MI — 存在しない。これを選んだら即不正解</div>
+  </div>
+
+  <div class="ec">
+    <div class="ec-lbl">落とし穴 #2</div>
+    <h4>「Elastic Pool に Hyperscale がある」→ ない</h4>
+    <p>Hyperscale は分散ストレージアーキテクチャのため、Pool でのリソース共有と互換性がありません。Elastic Pool は Basic / Standard / Premium / GP / BC のみです。</p>
+    <div class="ans">✅ Elastic Pool = Basic / Standard / Premium / General Purpose / Business Critical</div>
+    <div class="no">❌ Hyperscale Elastic Pool — 存在しない</div>
+  </div>
+
+  <div class="ec">
+    <div class="ec-lbl">落とし穴 #3</div>
+    <h4>「Azure Hybrid Benefit は DTU モデルにも使える」→ 使えない</h4>
+    <p>Azure Hybrid Benefit（既存 SQL Server / Windows Server ライセンスを Azure で活用してコスト削減する仕組み）は vCore モデルのみです。</p>
+    <div class="ans">✅ Hybrid Benefit = vCore モデル（GP / Hyperscale / BC）に適用可能。最大55%削減</div>
+    <div class="no">❌ DTUモデル（Basic/Standard/Premium）には Hybrid Benefit 適用不可</div>
+  </div>
+
+  <div class="ec">
+    <div class="ec-lbl">落とし穴 #4</div>
+    <h4>「GP は Business Critical の廉価版で機能が少ない」→ 大半の機能は同じ</h4>
+    <p>GP と BC の主な違いは「ストレージ種類（リモート vs ローカルSSD）」「フェイルオーバー時間（20秒 vs 数秒）」「In-Memory OLTP」「読み取りレプリカ」です。SQL Server の機能面での差は少なく、主にパフォーマンス・可用性の差です。</p>
+    <div class="ans">✅ GP と BC の違い: ストレージ速度・フェイルオーバー時間・In-Memory・読み取りレプリカ</div>
+  </div>
+</div><!-- /p6 -->
+
+<!-- ═══ PAGE 7: 試験演習 ═══ -->
+<div class="pg" id="p7">
+  <div class="hero" style="background:linear-gradient(135deg,rgba(0,200,120,.08),rgba(0,200,120,.03));border-color:rgba(0,200,120,.3);">
+    <div class="hero-content">
+      <div class="eyebrow" style="background:rgba(0,200,120,.18);border-color:rgba(0,200,120,.45);color:#00C878;">試験演習</div>
+      <h1 style="background:linear-gradient(135deg,#fff,#80E8C0,#00C878);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">AZ-305 形式<br>シナリオ問題演習</h1>
+      <p class="hero-sub" style="color:#A8D8C0;">選択肢をクリックして正誤を確認。解説で「なぜ他は間違いか」まで理解してください。</p>
+    </div>
+  </div>
+
+  <!-- Q1 -->
+  <div style="background:var(--bg3);border:1px solid var(--bd);border-radius:16px;padding:24px;margin-bottom:20px;" id="q1">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+      <div style="width:28px;height:28px;border-radius:50%;background:rgba(0,120,212,.2);border:2px solid rgba(0,120,212,.4);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#60B0FF;flex-shrink:0;">1</div>
+      <h4 style="font-size:14.5px;font-weight:700;color:#60B0FF;">デプロイモデル選択 — SQL Agent が必要</h4>
+    </div>
+    <p style="font-size:13px;color:#C0D8EC;margin-bottom:14px;">オンプレミスのSQL Server 2019では、SQL Server Agentで夜間バッチジョブを多数実行しています。Azureに移行後もこの構成を維持する必要があります。最適なAzureサービスはどれですか？</p>
+    <ul style="list-style:none;padding:0;">
+      <li onclick="qa(this,'q1',false)" style="padding:9px 14px;border-radius:8px;margin-bottom:6px;font-size:13px;color:#C0D8EC;background:var(--s1);border:1px solid var(--bd);cursor:pointer;">A. Azure SQL Database Single Database (General Purpose)</li>
+      <li onclick="qa(this,'q1',false)" style="padding:9px 14px;border-radius:8px;margin-bottom:6px;font-size:13px;color:#C0D8EC;background:var(--s1);border:1px solid var(--bd);cursor:pointer;">B. Azure SQL Database Elastic Pool (Standard)</li>
+      <li onclick="qa(this,'q1',true)" style="padding:9px 14px;border-radius:8px;margin-bottom:6px;font-size:13px;color:#C0D8EC;background:var(--s1);border:1px solid var(--bd);cursor:pointer;">C. Azure SQL Managed Instance (General Purpose)</li>
+      <li onclick="qa(this,'q1',false)" style="padding:9px 14px;border-radius:8px;margin-bottom:6px;font-size:13px;color:#C0D8EC;background:var(--s1);border:1px solid var(--bd);cursor:pointer;">D. SQL Server on Azure VM</li>
+    </ul>
+    <div id="ex-q1" style="display:none;background:var(--s2);border-left:3px solid var(--az);border-radius:0 9px 9px 0;padding:14px 18px;font-size:13px;color:#C0D8EC;margin-top:12px;line-height:1.8;">
+      <strong style="color:#00C878">✅ 正解: C — Azure SQL Managed Instance (General Purpose)</strong><br><br>
+      SQL Server Agent は Azure SQL Database（Single / Pool）では<strong>非対応</strong>です。SQL MI では SQL Server Agent が完全に対応しています。<br><br>
+      <strong>なぜDは不正解か:</strong> SQL on VM でも Agent は動きますが、OS管理も必要になります。要件に「OS制御が必要」はないため、フル PaaS の MI が最適です。<br>
+      <strong>なぜABは不正解か:</strong> SQL Database（Single/Pool）は SQL Server Agent に非対応です。Azure Functions や Elastic Jobs で代替が必要になります。
+    </div>
+  </div>
+
+  <!-- Q2 -->
+  <div style="background:var(--bg3);border:1px solid var(--bd);border-radius:16px;padding:24px;margin-bottom:20px;" id="q2">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+      <div style="width:28px;height:28px;border-radius:50%;background:rgba(0,120,212,.2);border:2px solid rgba(0,120,212,.4);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#60B0FF;flex-shrink:0;">2</div>
+      <h4 style="font-size:14.5px;font-weight:700;color:#60B0FF;">サービスティア — In-Memory OLTP</h4>
+    </div>
+    <p style="font-size:13px;color:#C0D8EC;margin-bottom:14px;">オンライン小売のトランザクション処理システムで、ピーク時に毎秒10,000件以上のトランザクションを処理する必要があります。In-Memory OLTPを使用してパフォーマンスを最大化したい場合、Azure SQL Database のどのサービスティアが適切ですか？</p>
+    <ul style="list-style:none;padding:0;">
+      <li onclick="qa(this,'q2',false)" style="padding:9px 14px;border-radius:8px;margin-bottom:6px;font-size:13px;color:#C0D8EC;background:var(--s1);border:1px solid var(--bd);cursor:pointer;">A. Standard (S4)</li>
+      <li onclick="qa(this,'q2',false)" style="padding:9px 14px;border-radius:8px;margin-bottom:6px;font-size:13px;color:#C0D8EC;background:var(--s1);border:1px solid var(--bd);cursor:pointer;">B. General Purpose (8 vCore)</li>
+      <li onclick="qa(this,'q2',true)" style="padding:9px 14px;border-radius:8px;margin-bottom:6px;font-size:13px;color:#C0D8EC;background:var(--s1);border:1px solid var(--bd);cursor:pointer;">C. Business Critical (8 vCore)</li>
+      <li onclick="qa(this,'q2',false)" style="padding:9px 14px;border-radius:8px;margin-bottom:6px;font-size:13px;color:#C0D8EC;background:var(--s1);border:1px solid var(--bd);cursor:pointer;">D. Hyperscale (8 vCore)</li>
+    </ul>
+    <div id="ex-q2" style="display:none;background:var(--s2);border-left:3px solid var(--az);border-radius:0 9px 9px 0;padding:14px 18px;font-size:13px;color:#C0D8EC;margin-top:12px;line-height:1.8;">
+      <strong style="color:#00C878">✅ 正解: C — Business Critical</strong><br><br>
+      In-Memory OLTPが使えるのは vCore モデルでは <strong>Business Critical のみ</strong>、DTU モデルでは <strong>Premium のみ</strong>です。General Purpose と Hyperscale は In-Memory OLTP に非対応です。<br><br>
+      さらに BC はローカル NVMe SSD を使用するため、高 IOPS ワークロードに最適です。<br><br>
+      <strong>なぜBは不正解か:</strong> General Purpose は In-Memory OLTP 非対応。<br>
+      <strong>なぜDは不正解か:</strong> Hyperscale は In-Memory OLTP 非対応。大容量DBや読み取りスケールアウトが得意。
+    </div>
+  </div>
+
+  <!-- Q3 -->
+  <div style="background:var(--bg3);border:1px solid var(--bd);border-radius:16px;padding:24px;margin-bottom:20px;" id="q3">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+      <div style="width:28px;height:28px;border-radius:50%;background:rgba(0,120,212,.2);border:2px solid rgba(0,120,212,.4);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#60B0FF;flex-shrink:0;">3</div>
+      <h4 style="font-size:14.5px;font-weight:700;color:#60B0FF;">Elastic Pool — SaaS マルチテナント</h4>
+    </div>
+    <p style="font-size:13px;color:#C0D8EC;margin-bottom:14px;">SaaS アプリケーションで、1,000社のテナントそれぞれに独立したデータベースを提供しています。各テナントのアクティブ時間帯は業種によって異なり（小売は夜間、金融は日中等）、平均使用率は低いです。コストを最適化するために最も適切な構成はどれですか？</p>
+    <ul style="list-style:none;padding:0;">
+      <li onclick="qa(this,'q3',false)" style="padding:9px 14px;border-radius:8px;margin-bottom:6px;font-size:13px;color:#C0D8EC;background:var(--s1);border:1px solid var(--bd);cursor:pointer;">A. Standard S2 の Single Database を 1,000 個作成する</li>
+      <li onclick="qa(this,'q3',true)" style="padding:9px 14px;border-radius:8px;margin-bottom:6px;font-size:13px;color:#C0D8EC;background:var(--s1);border:1px solid var(--bd);cursor:pointer;">B. Standard の Elastic Pool を作成し、1,000 個の DB をプールに追加する</li>
+      <li onclick="qa(this,'q3',false)" style="padding:9px 14px;border-radius:8px;margin-bottom:6px;font-size:13px;color:#C0D8EC;background:var(--s1);border:1px solid var(--bd);cursor:pointer;">C. Hyperscale の Single Database を 1,000 個作成する</li>
+      <li onclick="qa(this,'q3',false)" style="padding:9px 14px;border-radius:8px;margin-bottom:6px;font-size:13px;color:#C0D8EC;background:var(--s1);border:1px solid var(--bd);cursor:pointer;">D. Managed Instance を作成し、すべてのテナントのデータを1つのインスタンスに格納する</li>
+    </ul>
+    <div id="ex-q3" style="display:none;background:var(--s2);border-left:3px solid var(--az);border-radius:0 9px 9px 0;padding:14px 18px;font-size:13px;color:#C0D8EC;margin-top:12px;line-height:1.8;">
+      <strong style="color:#00C878">✅ 正解: B — Elastic Pool</strong><br><br>
+      「ピーク時間帯がバラバラ」「平均使用率が低い」「多数のDB（1,000個）」という条件は Elastic Pool のコスト効果が最大になるケースです。プールのリソースをテナントが時差で共有することで、1,000個×専用リソースより大幅にコスト削減できます。<br><br>
+      <strong>なぜAは不正解か:</strong> 各DBに専用リソースを持つため、平均使用率が低くてもリソースを確保し続けます。Elastic Poolの5〜10倍のコストになります。<br>
+      <strong>なぜDは不正解か:</strong> MI はインスタンス単位の課金で高コスト。また全テナントを1インスタンスに入れるとデータ分離が弱まります。
+    </div>
+  </div>
+
+  <!-- Q4 -->
+  <div style="background:var(--bg3);border:1px solid var(--bd);border-radius:16px;padding:24px;margin-bottom:20px;" id="q4">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+      <div style="width:28px;height:28px;border-radius:50%;background:rgba(0,120,212,.2);border:2px solid rgba(0,120,212,.4);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#60B0FF;flex-shrink:0;">4</div>
+      <h4 style="font-size:14.5px;font-weight:700;color:#60B0FF;">Hyperscale の使いどき</h4>
+    </div>
+    <p style="font-size:13px;color:#C0D8EC;margin-bottom:14px;">電子商取引の注文履歴データベースが急成長しており、現在50TBになっています。今後数年で100TBを超える見込みです。また、レポート生成のために読み取りクエリを大量に実行する必要があります。最適なサービスティアはどれですか？</p>
+    <ul style="list-style:none;padding:0;">
+      <li onclick="qa(this,'q4',false)" style="padding:9px 14px;border-radius:8px;margin-bottom:6px;font-size:13px;color:#C0D8EC;background:var(--s1);border:1px solid var(--bd);cursor:pointer;">A. Business Critical (32 vCore)</li>
+      <li onclick="qa(this,'q4',false)" style="padding:9px 14px;border-radius:8px;margin-bottom:6px;font-size:13px;color:#C0D8EC;background:var(--s1);border:1px solid var(--bd);cursor:pointer;">B. General Purpose (32 vCore)</li>
+      <li onclick="qa(this,'q4',true)" style="padding:9px 14px;border-radius:8px;margin-bottom:6px;font-size:13px;color:#C0D8EC;background:var(--s1);border:1px solid var(--bd);cursor:pointer;">C. Hyperscale (32 vCore)</li>
+      <li onclick="qa(this,'q4',false)" style="padding:9px 14px;border-radius:8px;margin-bottom:6px;font-size:13px;color:#C0D8EC;background:var(--s1);border:1px solid var(--bd);cursor:pointer;">D. SQL Managed Instance (General Purpose)</li>
+    </ul>
+    <div id="ex-q4" style="display:none;background:var(--s2);border-left:3px solid var(--az);border-radius:0 9px 9px 0;padding:14px 18px;font-size:13px;color:#C0D8EC;margin-top:12px;line-height:1.8;">
+      <strong style="color:#00C878">✅ 正解: C — Hyperscale</strong><br><br>
+      「50TB → 100TB超の超大規模DB」「読み取りを大量にスケールアウト」という要件は Hyperscale の典型的なユースケースです。<br>
+      Hyperscale は<strong>最大100TBの自動拡張ストレージ</strong>と<strong>Named Replicaで最大30個の読み取りレプリカ</strong>を提供します。<br><br>
+      <strong>なぜAは不正解か:</strong> Business Critical は最大4TBのストレージ制限があり、50TBのDBを収容できません。<br>
+      <strong>なぜBは不正解か:</strong> General Purpose も最大4TBのストレージ制限があります。<br>
+      <strong>なぜDは不正解か:</strong> SQL MI GP も最大16TBです（Hyperscaleなし）。50TBは収容できません。
+    </div>
+  </div>
+
+  <!-- Q5 -->
+  <div style="background:var(--bg3);border:1px solid var(--bd);border-radius:16px;padding:24px;margin-bottom:20px;" id="q5">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+      <div style="width:28px;height:28px;border-radius:50%;background:rgba(0,120,212,.2);border:2px solid rgba(0,120,212,.4);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#60B0FF;flex-shrink:0;">5</div>
+      <h4 style="font-size:14.5px;font-weight:700;color:#60B0FF;">コスト最適化 — Azure Hybrid Benefit</h4>
+    </div>
+    <p style="font-size:13px;color:#C0D8EC;margin-bottom:14px;">あなたの会社は SQL Server Enterprise のライセンスをソフトウェアアシュアランス付きで保有しています。Azure SQL Database に移行してコストを最小化したいと考えています。Azure Hybrid Benefit を適用できるサービスティアはどれですか？</p>
+    <ul style="list-style:none;padding:0;">
+      <li onclick="qa(this,'q5',false)" style="padding:9px 14px;border-radius:8px;margin-bottom:6px;font-size:13px;color:#C0D8EC;background:var(--s1);border:1px solid var(--bd);cursor:pointer;">A. Standard (S4)</li>
+      <li onclick="qa(this,'q5',false)" style="padding:9px 14px;border-radius:8px;margin-bottom:6px;font-size:13px;color:#C0D8EC;background:var(--s1);border:1px solid var(--bd);cursor:pointer;">B. Premium (P1)</li>
+      <li onclick="qa(this,'q5',true)" style="padding:9px 14px;border-radius:8px;margin-bottom:6px;font-size:13px;color:#C0D8EC;background:var(--s1);border:1px solid var(--bd);cursor:pointer;">C. General Purpose (4 vCore)</li>
+      <li onclick="qa(this,'q5',false)" style="padding:9px 14px;border-radius:8px;margin-bottom:6px;font-size:13px;color:#C0D8EC;background:var(--s1);border:1px solid var(--bd);cursor:pointer;">D. Free Tier (1 vCore)</li>
+    </ul>
+    <div id="ex-q5" style="display:none;background:var(--s2);border-left:3px solid var(--az);border-radius:0 9px 9px 0;padding:14px 18px;font-size:13px;color:#C0D8EC;margin-top:12px;line-height:1.8;">
+      <strong style="color:#00C878">✅ 正解: C — General Purpose (vCoreモデル)</strong><br><br>
+      Azure Hybrid Benefit（AHB）は <strong>vCoreモデル（GP / Hyperscale / BC）にのみ適用</strong>可能です。DTUモデル（Basic / Standard / Premium）には適用できません。また Free Tier にも適用不可です。<br><br>
+      AHB を適用すると SQL Server のライセンス費用をカバーでき、vCore モデルのコストを <strong>最大55%削減</strong>できます。<br><br>
+      <strong>なぜABは不正解か:</strong> Standard / Premium は DTU モデルで、AHB の適用対象外です。
+    </div>
+  </div>
+
+  <!-- Summary table -->
+  <div style="background:var(--bg2);border:1px solid var(--bd);border-radius:18px;padding:26px 22px 20px;margin-top:36px;">
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--t3);margin-bottom:18px;display:flex;align-items:center;gap:9px;">
+      演習まとめ — 判断の軸
+      <span style="flex:1;height:1px;background:var(--bd);display:block;"></span>
+    </div>
+    <div class="tw" style="margin-bottom:0;">
+      <table>
+        <thead>
+          <tr>
+            <th class="thg">問題</th>
+            <th class="thb">正解</th>
+            <th class="thg">決め手のキーワード</th>
+            <th class="thg">典型の間違い</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Q1: SQL Agent 維持</td><td><span class="tier-badge t-gp">GP</span> MI</td><td>SQL Agent = SQL DB非対応 → MI一択</td><td>SQL DB GP（Agent非対応）</td></tr>
+          <tr><td>Q2: In-Memory OLTP</td><td><span class="tier-badge t-bc">BC</span></td><td>In-Memory = vCoreなら BC のみ / DTUなら Premium</td><td>GP（In-Memory非対応）</td></tr>
+          <tr><td>Q3: SaaS 1,000テナント</td><td>Standard Elastic Pool</td><td>ピーク分散・多数DB・コスト最適 = Elastic Pool</td><td>Single DB×1,000（高コスト）</td></tr>
+          <tr><td>Q4: 50TB超・読み取りスケール</td><td><span class="tier-badge t-hs">Hyperscale</span></td><td>100TB超・Named Replica = Hyperscale</td><td>BC / GP（最大4TB制限）</td></tr>
+          <tr><td>Q5: Hybrid Benefit 適用</td><td><span class="tier-badge t-gp">GP</span> vCore</td><td>AHB = vCoreモデルのみ</td><td>Standard / Premium（DTUは適用不可）</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div><!-- /p7 -->
+
+</main>
+
+<script>
+function go(id, btn) {
+  document.querySelectorAll('.pg').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(b => b.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  if (btn) btn.classList.add('on');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function qa(el, qid, correct) {
+  const container = document.getElementById(qid);
+  container.querySelectorAll('li').forEach(li => {
+    li.onclick = null;
+    li.style.cursor = 'default';
+  });
+  if (correct) {
+    el.style.background = 'rgba(0,200,120,.1)';
+    el.style.borderColor = 'rgba(0,200,120,.4)';
+    el.style.color = '#50D898';
+    el.textContent = '✅ ' + el.textContent;
+  } else {
+    el.style.background = 'rgba(240,48,64,.08)';
+    el.style.borderColor = 'rgba(240,48,64,.3)';
+    el.style.color = '#F08090';
+    el.textContent = '❌ ' + el.textContent;
+    // Highlight correct answer
+    container.querySelectorAll('li').forEach(li => {
+      if (li.getAttribute('onclick') && li.getAttribute('onclick').includes('true')) {
+        // already removed, find by content - just show explanation
+      }
+    });
+  }
+  const ex = document.getElementById('ex-' + qid);
+  if (ex) ex.style.display = 'block';
+}
+</script>
+</body>
+</html>

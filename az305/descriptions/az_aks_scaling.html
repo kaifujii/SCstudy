@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AKS スケーリング完全ガイド — AZ-305</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&family=Syne:wght@700;800&display=swap');
+:root{
+  --bg:#030810;--bg2:#06101C;--bg3:#091420;
+  --s1:#0D1828;--s2:#122030;--bd:rgba(255,255,255,.07);
+  --t1:#F0F6FF;--t2:#C8DDEF;--t3:#90B4CC;
+  --az:#0078D4;--azl:#50E6FF;
+  --ok:#00C878;--wn:#F0A800;--er:#F03040;
+  --ca:#107C10;--cal:#70D870;
+  --vn:#8A3FC0;--vnl:#C890F0;
+  --hpa:#0078D4;--hpal:#50E6FF;
+  --vk:#C84000;--vkl:#FF9060;
+  --keda:#00878A;--kedal:#40E0D8;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans JP',sans-serif;background:#030810 !important;color:#F0F6FF !important;line-height:1.8;min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;
+  background:radial-gradient(ellipse 800px 500px at 10% 10%,rgba(0,120,212,.06) 0%,transparent 65%),
+    radial-gradient(ellipse 600px 700px at 90% 90%,rgba(0,135,138,.05) 0%,transparent 65%);
+  pointer-events:none;z-index:0;}
+.hdr{background:rgba(3,8,16,.96);border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:100;backdrop-filter:blur(16px);}
+.hdr-in{max-width:1360px;margin:0 auto;padding:12px 32px;display:flex;align-items:center;justify-content:space-between;}
+.brand{display:flex;align-items:center;gap:10px;}
+.brand-ic{width:30px;height:30px;border-radius:7px;background:linear-gradient(135deg,#0078D4,#00C878);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.brand-name{font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:#fff;}
+.brand-sub{font-size:10px;color:var(--t3);}
+.nav-wrap{display:flex;overflow-x:auto;max-width:1360px;margin:0 auto;padding:0 32px;background:var(--bg2);border-bottom:1px solid var(--bd);scrollbar-width:none;}
+.nav-wrap::-webkit-scrollbar{display:none;}
+.nb{display:flex;align-items:center;gap:5px;padding:9px 13px;font-size:12px;font-weight:500;color:var(--t3);cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s;font-family:'Noto Sans JP',sans-serif;}
+.nb:hover{color:var(--t1);}
+.nb.on{color:var(--azl);border-bottom-color:var(--az);background:rgba(0,120,212,.06);}
+.nb-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.pg{display:none;max-width:1360px;margin:0 auto;padding:36px 32px 100px;position:relative;z-index:1;}
+.pg.on{display:block;}
+.hero{border-radius:18px;padding:36px 42px;margin-bottom:36px;position:relative;overflow:hidden;}
+.hero::after{content:'';position:absolute;top:-60px;right:-60px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.04) 0%,transparent 70%);}
+.hero-ct{position:relative;z-index:1;}
+.eyebrow{display:inline-flex;align-items:center;gap:6px;border-radius:20px;padding:4px 13px;font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;margin-bottom:14px;}
+.hero h1{font-family:'Syne',sans-serif;font-size:clamp(20px,2.8vw,34px);font-weight:800;line-height:1.2;margin-bottom:12px;}
+.hero-sub{font-size:13.5px;color:#C0D8EE;max-width:680px;line-height:1.85;margin-bottom:20px;}
+.chips{display:flex;flex-wrap:wrap;gap:7px;}
+.chip{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;}
+.sh{margin-bottom:5px;}
+.sh h2{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;display:flex;align-items:center;gap:8px;color:var(--t1);}
+.sh h2 .n{color:var(--azl);font-size:13px;}
+.sh-line{height:1.5px;background:linear-gradient(90deg,rgba(0,120,212,.5),transparent);margin:7px 0 5px;}
+.sh-sub{font-size:13px;color:var(--t2);margin-bottom:22px;line-height:1.7;}
+.tw{overflow-x:auto;border-radius:13px;border:1px solid var(--bd);margin-bottom:26px;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+thead tr{background:var(--s2);}
+th{padding:12px 15px;text-align:left;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:1px;white-space:nowrap;}
+.thg{color:var(--t3);}.thb{color:var(--azl);}
+.thca{color:var(--cal);}.thvn{color:var(--vnl);}.thhpa{color:var(--hpal);}.thvk{color:var(--vkl);}.thkeda{color:var(--kedal);}
+td{padding:11px 15px;border-top:1px solid rgba(255,255,255,.05);vertical-align:top;line-height:1.7;color:#D8EDF8;}
+td:first-child{color:#C8E0F0;font-weight:600;}
+tr:hover td{background:rgba(255,255,255,.012);}
+.ok{color:var(--ok);}.wn{color:var(--wn);}.er{color:var(--er);}
+.cca{color:var(--cal);}.cvn{color:var(--vnl);}.chpa{color:var(--hpal);}.cvk{color:var(--vkl);}.ckeda{color:var(--kedal);}
+.ib{display:flex;gap:12px;border-radius:11px;padding:14px 18px;margin-bottom:18px;font-size:13px;line-height:1.8;color:#D4EAF8;}
+.ib strong{display:block;font-size:13.5px;font-weight:700;margin-bottom:5px;}
+.ib.tip{background:rgba(0,120,212,.08);border:1px solid rgba(0,120,212,.3);}
+.ib.warn{background:rgba(240,168,0,.08);border:1px solid rgba(240,168,0,.35);}
+.ib.danger{background:rgba(240,48,64,.08);border:1px solid rgba(240,48,64,.35);}
+.ib-ico{font-size:18px;flex-shrink:0;margin-top:2px;}
+.dw{background:var(--bg2);border:1px solid var(--bd);border-radius:16px;padding:22px 20px 18px;margin-bottom:24px;overflow:hidden;}
+.dw-hd{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--t3);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.dw-hd::after{content:'';flex:1;height:1px;background:var(--bd);}
+svg.d{width:100%;height:auto;display:block;}
+.layer-badge{display:inline-block;padding:2px 9px;border-radius:6px;font-size:11px;font-weight:700;}
+.l-pod{background:rgba(0,120,212,.18);border:1px solid rgba(0,120,212,.45);color:var(--hpal);}
+.l-node{background:rgba(16,124,16,.18);border:1px solid rgba(16,124,16,.45);color:var(--cal);}
+.l-vnode{background:rgba(138,63,192,.18);border:1px solid rgba(138,63,192,.45);color:var(--vnl);}
+.l-event{background:rgba(0,135,138,.18);border:1px solid rgba(0,135,138,.45);color:var(--kedal);}
+.ec{background:linear-gradient(135deg,rgba(240,168,0,.07),rgba(240,168,0,.02));border:1px solid rgba(240,168,0,.35);border-radius:14px;padding:20px 24px;margin-bottom:18px;}
+.ec-lbl{display:inline-flex;align-items:center;gap:4px;background:rgba(240,168,0,.15);border:1px solid rgba(240,168,0,.4);border-radius:20px;padding:3px 10px;font-size:9.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--wn);margin-bottom:10px;}
+.ec h4{font-size:14px;font-weight:700;margin-bottom:8px;color:var(--t1);}
+.ec p{font-size:13px;color:var(--t2);line-height:1.8;}
+.ans{background:rgba(0,200,120,.09);border:1px solid rgba(0,200,120,.3);border-radius:8px;padding:11px 15px;margin-top:11px;font-size:13px;color:#50D898;font-weight:600;line-height:1.7;}
+.no{background:rgba(240,48,64,.09);border:1px solid rgba(240,48,64,.3);border-radius:8px;padding:11px 15px;margin-top:8px;font-size:13px;color:#F08090;line-height:1.7;}
+.qz{background:var(--bg3);border:1px solid var(--bd);border-radius:14px;padding:22px;margin-bottom:18px;}
+.qz-hd{display:flex;align-items:center;gap:9px;margin-bottom:11px;}
+.qz-n{width:26px;height:26px;border-radius:50%;background:rgba(0,120,212,.2);border:2px solid rgba(0,120,212,.4);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--azl);flex-shrink:0;}
+.qz h4{font-size:14px;font-weight:700;color:var(--azl);}
+.qz .q{font-size:13px;color:var(--t1);margin-bottom:12px;line-height:1.8;}
+.choices{list-style:none;padding:0;}
+.choices li{padding:8px 13px;border-radius:7px;margin-bottom:5px;font-size:13px;color:#D4ECF8;background:var(--s1);border:1px solid var(--bd);cursor:pointer;transition:all .2s;}
+.choices li:hover{background:var(--s2);color:var(--t1);}
+.choices li.correct{background:rgba(0,200,120,.1);border-color:rgba(0,200,120,.4);color:#50D898;}
+.choices li.wrong{background:rgba(240,48,64,.08);border-color:rgba(240,48,64,.3);color:#F08090;}
+.exp{background:var(--s2);border-left:3px solid var(--az);border-radius:0 8px 8px 0;padding:13px 17px;font-size:13px;color:#D4ECF8;margin-top:11px;display:none;line-height:1.8;}
+.exp.show{display:block;}
+.code{background:rgba(0,0,0,.5);border:1px solid var(--bd);border-radius:10px;padding:14px 18px;font-family:'JetBrains Mono',monospace;font-size:11.5px;color:#9CDCFE;overflow-x:auto;margin-bottom:18px;line-height:1.75;}
+.cm{color:#6A9955;}.kw{color:#569CD6;}.str{color:#CE9178;}.flag{color:#FFD700;}
+@media(max-width:900px){.pg{padding:24px 18px 80px;}.nav-wrap,.hdr-in{padding-left:18px;padding-right:18px;}.hero{padding:26px 20px;}}
+</style>
+</head>
+<body>
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <symbol id="ico-ca" viewBox="0 0 18 18">
+      <rect x="1" y="6" width="4" height="10" rx="1" fill="#107C10"/>
+      <rect x="7" y="3" width="4" height="13" rx="1" fill="#107C10"/>
+      <rect x="13" y="8" width="4" height="8" rx="1" fill="#107C10"/>
+      <path d="M9 1 L11 3.5 L7 3.5Z" fill="#70D870"/>
+    </symbol>
+    <symbol id="ico-vn" viewBox="0 0 18 18">
+      <path d="M4 9 Q4 6 7 6 Q7.5 3.5 10 3.5 Q13 3.5 13.5 6 Q16 6.2 16 8.5 Q16 11 13 11 L5 11 Q4 11 4 9Z" fill="#8A3FC0"/>
+      <rect x="5.5" y="11" width="7" height="5" rx="1" fill="#6B2FA0"/>
+      <path d="M7 13.5 L11 13.5 M9 12 L9 15" stroke="#C890F0" stroke-width="1" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="ico-hpa" viewBox="0 0 18 18">
+      <rect x="1" y="8" width="4" height="8" rx="1" fill="#0078D4"/>
+      <rect x="7" y="5" width="4" height="11" rx="1" fill="#0078D4"/>
+      <rect x="13" y="2" width="4" height="14" rx="1" fill="#50E6FF"/>
+      <path d="M15 1 L15 0 M13.5 1.5 L15 0 L16.5 1.5" stroke="#50E6FF" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="ico-vk" viewBox="0 0 18 18">
+      <rect x="1" y="3" width="6" height="5" rx="1" fill="#C84000"/>
+      <rect x="1" y="3" width="6" height="2" rx="1" fill="#FF9060"/>
+      <rect x="11" y="3" width="6" height="5" rx="1" fill="#C84000"/>
+      <rect x="11" y="3" width="6" height="2" rx="1" fill="#FF9060"/>
+      <path d="M7 5.5 L11 5.5" stroke="#FF9060" stroke-width="1.5" stroke-dasharray="2,1"/>
+      <path d="M4 8.5 L14 8.5" stroke="rgba(255,144,96,.4)" stroke-width="1" stroke-dasharray="2,1"/>
+      <text x="9" y="15.5" text-anchor="middle" fill="#FF9060" font-size="3.5" font-family="sans-serif" font-weight="700">V-Kubelet</text>
+    </symbol>
+    <symbol id="ico-keda" viewBox="0 0 18 18">
+      <rect x="2" y="7" width="14" height="9" rx="1.5" fill="#00878A"/>
+      <rect x="2" y="7" width="14" height="3" rx="1.5" fill="#40E0D8"/>
+      <path d="M5 12 L13 12 M5 14 L9 14" stroke="rgba(255,255,255,.5)" stroke-width="1" stroke-linecap="round"/>
+      <path d="M9 1 L9 6 M7 3.5 L9 1 L11 3.5" stroke="#40E0D8" stroke-width="1.3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <marker id="arrg" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto"><polygon points="0 0,7 2.5,0 5" fill="#00C878"/></marker>
+    <marker id="arrb" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto"><polygon points="0 0,7 2.5,0 5" fill="#50E6FF"/></marker>
+    <marker id="arrp" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto"><polygon points="0 0,7 2.5,0 5" fill="#C890F0"/></marker>
+    <marker id="arrt" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto"><polygon points="0 0,7 2.5,0 5" fill="#40E0D8"/></marker>
+    <marker id="arro" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto"><polygon points="0 0,7 2.5,0 5" fill="#FF9060"/></marker>
+    <marker id="arrw" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto"><polygon points="0 0,7 2.5,0 5" fill="#F0A800"/></marker>
+  </defs>
+</svg>
+
+<header class="hdr">
+  <div class="hdr-in">
+    <div class="brand">
+      <div class="brand-ic"><svg width="18" height="18" viewBox="0 0 18 18"><use href="#ico-ca"/></svg></div>
+      <div>
+        <div class="brand-name">AKS スケーリング 5技術 完全解説</div>
+        <div class="brand-sub">AZ-305 — Cluster Autoscaler / Virtual Node / HPA / Virtual Kubelet / KEDA</div>
+      </div>
+    </div>
+  </div>
+  <div class="nav-wrap">
+    <button class="nb on" onclick="go('p0',this)"><span class="nb-dot" style="background:#50E6FF"></span>全体マップ</button>
+    <button class="nb" onclick="go('p1',this)"><span class="nb-dot" style="background:var(--cal)"></span>Cluster Autoscaler</button>
+    <button class="nb" onclick="go('p2',this)"><span class="nb-dot" style="background:var(--vnl)"></span>Virtual Node / VK</button>
+    <button class="nb" onclick="go('p3',this)"><span class="nb-dot" style="background:var(--hpal)"></span>HPA</button>
+    <button class="nb" onclick="go('p4',this)"><span class="nb-dot" style="background:var(--kedal)"></span>KEDA</button>
+    <button class="nb" onclick="go('p5',this)"><span class="nb-dot" style="background:#F0A800"></span>比較・選択基準</button>
+    <button class="nb" onclick="go('p6',this)"><span class="nb-dot" style="background:#00C878"></span>試験演習</button>
+  </div>
+</header>
+<main>
+
+<!-- ═══ PAGE 0: 全体マップ ═══ -->
+<div class="pg on" id="p0">
+<div class="hero" style="background:linear-gradient(135deg,rgba(0,120,212,.1),rgba(0,135,138,.07),rgba(16,124,16,.05));border:1px solid rgba(0,120,212,.3);">
+  <div class="hero-ct">
+    <div class="eyebrow" style="background:rgba(0,120,212,.18);border:1px solid rgba(0,120,212,.45);color:var(--azl);">AKS Scaling Technologies</div>
+    <h1 style="background:linear-gradient(135deg,#fff,#90CCFF,#40E0D8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">5つのスケーリング技術<br>「何を」「どのレベルで」スケールするか</h1>
+    <p class="hero-sub">AKSのスケーリングは「Podレベル（アプリ層）」と「ノードレベル（インフラ層）」の2層で考えます。各技術がどのレイヤーを担当し、どんなトリガーで動くかを理解することが試験の核心です。</p>
+    <div class="chips">
+      <span class="chip" style="background:rgba(16,124,16,.18);border:1px solid rgba(16,124,16,.4);color:var(--cal);"><svg width="12" height="12" viewBox="0 0 18 18"><use href="#ico-ca"/></svg>Cluster Autoscaler</span>
+      <span class="chip" style="background:rgba(138,63,192,.18);border:1px solid rgba(138,63,192,.4);color:var(--vnl);"><svg width="12" height="12" viewBox="0 0 18 18"><use href="#ico-vn"/></svg>Virtual Node</span>
+      <span class="chip" style="background:rgba(0,120,212,.18);border:1px solid rgba(0,120,212,.4);color:var(--hpal);"><svg width="12" height="12" viewBox="0 0 18 18"><use href="#ico-hpa"/></svg>HPA</span>
+      <span class="chip" style="background:rgba(200,64,0,.18);border:1px solid rgba(200,64,0,.4);color:var(--vkl);"><svg width="12" height="12" viewBox="0 0 18 18"><use href="#ico-vk"/></svg>Virtual Kubelet</span>
+      <span class="chip" style="background:rgba(0,135,138,.18);border:1px solid rgba(0,135,138,.4);color:var(--kedal);"><svg width="12" height="12" viewBox="0 0 18 18"><use href="#ico-keda"/></svg>KEDA</span>
+    </div>
+  </div>
+</div>
+
+<div class="sh"><h2><span class="n">01</span> 2層アーキテクチャと5技術の位置づけ</h2><div class="sh-line"></div></div>
+<p class="sh-sub">「Podを増やす（アプリ層）」と「ノードを増やす（インフラ層）」は別の問題。それぞれに対応する技術がある。</p>
+
+<div class="dw">
+  <div class="dw-hd"><span>AKS スケーリング 2層モデル全体図</span></div>
+  <svg class="d" viewBox="0 0 960 460" xmlns="http://www.w3.org/2000/svg">
+    <!-- INFRA LAYER -->
+    <rect x="10" y="10" width="940" height="190" rx="14" fill="rgba(16,124,16,.06)" stroke="rgba(16,124,16,.35)" stroke-width="1.5"/>
+    <text x="30" y="34" fill="#70D870" font-size="12" font-family="sans-serif" font-weight="700">インフラ層 — Node Scaling（ノード / VMSS の増減）</text>
+    <!-- CA -->
+    <rect x="28" y="48" width="210" height="138" rx="10" fill="rgba(16,124,16,.18)" stroke="rgba(16,124,16,.55)" stroke-width="2"/>
+    <svg x="40" y="58" width="28" height="28" viewBox="0 0 18 18"><use href="#ico-ca"/></svg>
+    <text x="168" y="76" text-anchor="middle" fill="#70D870" font-size="11" font-family="sans-serif" font-weight="700">Cluster Autoscaler</text>
+    <text x="168" y="92" text-anchor="middle" fill="#508050" font-size="9" font-family="sans-serif">トリガー: Pending Pod 検知</text>
+    <text x="36" y="110" fill="#408040" font-size="8.5" font-family="sans-serif">・VMSSのノード台数を増減</text>
+    <text x="36" y="124" fill="#408040" font-size="8.5" font-family="sans-serif">・Pending Pod → ノード追加</text>
+    <text x="36" y="138" fill="#408040" font-size="8.5" font-family="sans-serif">・低利用ノード → ノード削除</text>
+    <text x="36" y="152" fill="#70D870" font-size="8.5" font-family="sans-serif" font-weight="700">対応OS: Linux + Windows</text>
+    <rect x="36" y="162" width="190" height="18" rx="5" fill="rgba(0,200,120,.12)" stroke="rgba(0,200,120,.3)" stroke-width="1"/>
+    <text x="131" y="174" text-anchor="middle" fill="#00C878" font-size="8.5" font-family="sans-serif" font-weight="700">スケール対象: ノード (VM)</text>
+    <!-- Virtual Node -->
+    <rect x="258" y="48" width="230" height="138" rx="10" fill="rgba(138,63,192,.15)" stroke="rgba(138,63,192,.5)" stroke-width="2"/>
+    <svg x="270" y="58" width="28" height="28" viewBox="0 0 18 18"><use href="#ico-vn"/></svg>
+    <text x="388" y="76" text-anchor="middle" fill="#C890F0" font-size="11" font-family="sans-serif" font-weight="700">Virtual Node (ACI アドオン)</text>
+    <text x="388" y="92" text-anchor="middle" fill="#8060B0" font-size="9" font-family="sans-serif">トリガー: Pod の nodeSelector</text>
+    <text x="266" y="110" fill="#7050A0" font-size="8.5" font-family="sans-serif">・ACIコンテナをK8sノードとして扱う</text>
+    <text x="266" y="124" fill="#7050A0" font-size="8.5" font-family="sans-serif">・秒単位の超高速プロビジョニング</text>
+    <text x="266" y="138" fill="#F08090" font-size="8.5" font-family="sans-serif" font-weight="700">・対応OS: Linux のみ (アドオン)</text>
+    <text x="266" y="152" fill="#7050A0" font-size="8.5" font-family="sans-serif">・DaemonSet不可 / PVC不可</text>
+    <rect x="266" y="162" width="210" height="18" rx="5" fill="rgba(138,63,192,.2)" stroke="rgba(138,63,192,.4)" stroke-width="1"/>
+    <text x="371" y="174" text-anchor="middle" fill="#C890F0" font-size="8.5" font-family="sans-serif" font-weight="700">スケール対象: 仮想ノード (ACI)</text>
+    <!-- Virtual Kubelet -->
+    <rect x="508" y="48" width="230" height="138" rx="10" fill="rgba(200,64,0,.12)" stroke="rgba(200,64,0,.45)" stroke-width="2"/>
+    <svg x="520" y="58" width="28" height="28" viewBox="0 0 18 18"><use href="#ico-vk"/></svg>
+    <text x="638" y="76" text-anchor="middle" fill="#FF9060" font-size="11" font-family="sans-serif" font-weight="700">Virtual Kubelet (OSS)</text>
+    <text x="638" y="92" text-anchor="middle" fill="#A05030" font-size="9" font-family="sans-serif">Virtual Node の基盤技術</text>
+    <text x="516" y="110" fill="#A05030" font-size="8.5" font-family="sans-serif">・kubelet APIをACI REST APIに変換</text>
+    <text x="516" y="124" fill="#A05030" font-size="8.5" font-family="sans-serif">・Virtual Nodeアドオンの実装に使用</text>
+    <text x="516" y="138" fill="#FF9060" font-size="8.5" font-family="sans-serif" font-weight="700">・Windows: 手動インストールが必要</text>
+    <text x="516" y="152" fill="#A05030" font-size="8.5" font-family="sans-serif">・別クラウドプロバイダーにも拡張可</text>
+    <rect x="516" y="162" width="210" height="18" rx="5" fill="rgba(200,64,0,.15)" stroke="rgba(200,64,0,.4)" stroke-width="1"/>
+    <text x="621" y="174" text-anchor="middle" fill="#FF9060" font-size="8.5" font-family="sans-serif" font-weight="700">役割: kubelet API ブリッジ</text>
+    <!-- Note -->
+    <rect x="758" y="48" width="186" height="138" rx="10" fill="rgba(0,0,0,.2)" stroke="rgba(255,255,255,.08)" stroke-width="1"/>
+    <text x="851" y="72" text-anchor="middle" fill="#90B4CC" font-size="10" font-family="sans-serif" font-weight="700">インフラ層のポイント</text>
+    <text x="766" y="94" fill="#6090B0" font-size="8.5" font-family="sans-serif">・CA = VM (VMSS) の増減</text>
+    <text x="766" y="110" fill="#6090B0" font-size="8.5" font-family="sans-serif">・Virtual Node = ACI の増減</text>
+    <text x="766" y="126" fill="#6090B0" font-size="8.5" font-family="sans-serif">・Windowsは CA が唯一の</text>
+    <text x="766" y="141" fill="#6090B0" font-size="8.5" font-family="sans-serif">  自動スケール手段</text>
+    <text x="766" y="157" fill="#70D870" font-size="8.5" font-family="sans-serif">CA + HPA の組み合わせが</text>
+    <text x="766" y="172" fill="#70D870" font-size="8.5" font-family="sans-serif">最も一般的な本番構成</text>
+
+    <!-- APP LAYER -->
+    <rect x="10" y="218" width="940" height="230" rx="14" fill="rgba(0,120,212,.05)" stroke="rgba(0,120,212,.3)" stroke-width="1.5"/>
+    <text x="30" y="242" fill="#60B0FF" font-size="12" font-family="sans-serif" font-weight="700">アプリ層 — Pod Scaling（Pod レプリカ数の増減）</text>
+    <!-- HPA -->
+    <rect x="28" y="256" width="290" height="172" rx="10" fill="rgba(0,120,212,.18)" stroke="rgba(0,120,212,.5)" stroke-width="2"/>
+    <svg x="40" y="268" width="28" height="28" viewBox="0 0 18 18"><use href="#ico-hpa"/></svg>
+    <text x="198" y="286" text-anchor="middle" fill="#60B0FF" font-size="11" font-family="sans-serif" font-weight="700">HPA (Horizontal Pod Autoscaler)</text>
+    <text x="198" y="302" text-anchor="middle" fill="#3070A0" font-size="9" font-family="sans-serif">トリガー: CPU / メモリ使用率</text>
+    <text x="36" y="320" fill="#3070A0" font-size="8.5" font-family="sans-serif">・Kubernetes 標準機能</text>
+    <text x="36" y="334" fill="#3070A0" font-size="8.5" font-family="sans-serif">・15秒ごとにメトリクスをチェック</text>
+    <text x="36" y="348" fill="#3070A0" font-size="8.5" font-family="sans-serif">・CPU/メモリまたはカスタムメトリクス</text>
+    <text x="36" y="362" fill="#3070A0" font-size="8.5" font-family="sans-serif">・min/maxレプリカ数を設定</text>
+    <text x="36" y="376" fill="#F08090" font-size="8.5" font-family="sans-serif" font-weight="700">最低1Pod (0にはできない)</text>
+    <rect x="36" y="390" width="270" height="30" rx="6" fill="rgba(0,120,212,.15)"/>
+    <text x="171" y="407" text-anchor="middle" fill="#60B0FF" font-size="9" font-family="sans-serif" font-weight="700">スケール対象: Pod数 (Deployment等)</text>
+    <text x="171" y="419" text-anchor="middle" fill="#3070A0" font-size="8" font-family="sans-serif">OS: Linux + Windows 両対応</text>
+    <!-- KEDA -->
+    <rect x="338" y="256" width="300" height="172" rx="10" fill="rgba(0,135,138,.15)" stroke="rgba(0,135,138,.5)" stroke-width="2"/>
+    <svg x="350" y="268" width="28" height="28" viewBox="0 0 18 18"><use href="#ico-keda"/></svg>
+    <text x="498" y="286" text-anchor="middle" fill="#40E0D8" font-size="11" font-family="sans-serif" font-weight="700">KEDA (Event-Driven Autoscaler)</text>
+    <text x="498" y="302" text-anchor="middle" fill="#208090" font-size="9" font-family="sans-serif">トリガー: 外部イベント / キュー深度</text>
+    <text x="346" y="320" fill="#208090" font-size="8.5" font-family="sans-serif">・50以上のスケーラー対応</text>
+    <text x="346" y="334" fill="#208090" font-size="8.5" font-family="sans-serif">・Service Bus / Event Hub / Kafka等</text>
+    <text x="346" y="348" fill="#208090" font-size="8.5" font-family="sans-serif">・ScaledObject / ScaledJob で定義</text>
+    <text x="346" y="362" fill="#208090" font-size="8.5" font-family="sans-serif">・HPAのカスタムメトリクス拡張として動作</text>
+    <text x="346" y="376" fill="#00C878" font-size="8.5" font-family="sans-serif" font-weight="700">Scale to ZERO 対応 (0Podまで縮小可)</text>
+    <rect x="346" y="390" width="280" height="30" rx="6" fill="rgba(0,135,138,.15)"/>
+    <text x="486" y="407" text-anchor="middle" fill="#40E0D8" font-size="9" font-family="sans-serif" font-weight="700">スケール対象: Pod数（0まで縮小可能）</text>
+    <text x="486" y="419" text-anchor="middle" fill="#208090" font-size="8" font-family="sans-serif">外部イベント駆動 — HPAでは不可能な領域</text>
+    <!-- Interaction note -->
+    <rect x="658" y="256" width="286" height="172" rx="10" fill="rgba(0,0,0,.2)" stroke="rgba(255,255,255,.08)" stroke-width="1"/>
+    <text x="801" y="278" text-anchor="middle" fill="#90B4CC" font-size="10" font-family="sans-serif" font-weight="700">組み合わせパターン</text>
+    <rect x="668" y="290" width="266" height="36" rx="7" fill="rgba(0,120,212,.1)" stroke="rgba(0,120,212,.3)" stroke-width="1"/>
+    <text x="801" y="308" text-anchor="middle" fill="#60B0FF" font-size="9" font-family="sans-serif" font-weight="700">HPA + Cluster Autoscaler</text>
+    <text x="801" y="320" text-anchor="middle" fill="#306080" font-size="8" font-family="sans-serif">最も一般的。HPAがPod増 → CA がノード追加</text>
+    <rect x="668" y="334" width="266" height="36" rx="7" fill="rgba(0,135,138,.1)" stroke="rgba(0,135,138,.3)" stroke-width="1"/>
+    <text x="801" y="352" text-anchor="middle" fill="#40E0D8" font-size="9" font-family="sans-serif" font-weight="700">KEDA + Cluster Autoscaler</text>
+    <text x="801" y="364" text-anchor="middle" fill="#206070" font-size="8" font-family="sans-serif">イベント駆動。KEDA Pod増 → CA ノード追加</text>
+    <rect x="668" y="378" width="266" height="36" rx="7" fill="rgba(138,63,192,.1)" stroke="rgba(138,63,192,.3)" stroke-width="1"/>
+    <text x="801" y="396" text-anchor="middle" fill="#C890F0" font-size="9" font-family="sans-serif" font-weight="700">KEDA + Virtual Node</text>
+    <text x="801" y="408" text-anchor="middle" fill="#7050A0" font-size="8" font-family="sans-serif">バースト時: 急増Podを秒単位でACI配置</text>
+    <!-- arrow from pod layer to node layer -->
+    <path d="M 173 255 Q 173 228 173 206" stroke="#00C878" stroke-width="2" stroke-dasharray="5,3" fill="none" marker-end="url(#arrg)"/>
+    <text x="183" y="232" fill="#00C878" font-size="8" font-family="sans-serif">Pending Pod</text>
+    <text x="183" y="243" fill="#00C878" font-size="8" font-family="sans-serif">→ CA がノード追加</text>
+  </svg>
+</div>
+
+<div class="sh"><h2><span class="n">02</span> 5技術 クイックリファレンス</h2><div class="sh-line"></div></div>
+<div class="tw">
+  <table>
+    <thead>
+      <tr>
+        <th class="thg">技術</th>
+        <th class="thg">スケール対象</th>
+        <th class="thg">トリガー</th>
+        <th class="thg">対応OS</th>
+        <th class="thg">0台スケール</th>
+        <th class="thg">試験のキーワード</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:7px;"><svg width="16" height="16" viewBox="0 0 18 18"><use href="#ico-ca"/></svg><strong style="color:var(--cal)">Cluster Autoscaler</strong></div></td>
+        <td><span class="layer-badge l-node">ノード (VMSS)</span></td>
+        <td>Pending Pod / ノード低使用率</td>
+        <td class="ok">Linux + Windows</td>
+        <td class="wn">設定次第で可</td>
+        <td>「ノードを自動増減」「Windows対応」「VMSS」「数分でノード追加」</td>
+      </tr>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:7px;"><svg width="16" height="16" viewBox="0 0 18 18"><use href="#ico-vn"/></svg><strong style="color:var(--vnl)">Virtual Node</strong></div></td>
+        <td><span class="layer-badge l-vnode">仮想ノード (ACI)</span></td>
+        <td>Pod スケジューリング</td>
+        <td class="er">Linux のみ</td>
+        <td class="ok">使った分だけ課金</td>
+        <td>「秒単位の超高速」「バースト対応」「ACI」「Azure CNI必須」</td>
+      </tr>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:7px;"><svg width="16" height="16" viewBox="0 0 18 18"><use href="#ico-hpa"/></svg><strong style="color:var(--hpal)">HPA</strong></div></td>
+        <td><span class="layer-badge l-pod">Pod 数</span></td>
+        <td>CPU使用率 / メモリ / カスタムメトリクス</td>
+        <td class="ok">Linux + Windows</td>
+        <td class="er">最低 1 Pod</td>
+        <td>「CPUに応じてPodを増減」「Metrics Server」「min/maxレプリカ」</td>
+      </tr>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:7px;"><svg width="16" height="16" viewBox="0 0 18 18"><use href="#ico-vk"/></svg><strong style="color:var(--vkl)">Virtual Kubelet</strong></div></td>
+        <td><span class="layer-badge l-vnode">仮想ノード（汎用）</span></td>
+        <td>kubelet API経由のPod配置</td>
+        <td class="wn">Linux標準 / Windows手動</td>
+        <td class="ok">ACI = 使った分だけ</td>
+        <td>「Windows + ACI を手動インストール」「Virtual Nodeの基盤OSS」</td>
+      </tr>
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:7px;"><svg width="16" height="16" viewBox="0 0 18 18"><use href="#ico-keda"/></svg><strong style="color:var(--kedal)">KEDA</strong></div></td>
+        <td><span class="layer-badge l-event">Pod 数（イベント駆動）</span></td>
+        <td>外部イベント（キュー/Kafka/HTTP等）</td>
+        <td class="ok">Linux + Windows</td>
+        <td class="ok">Scale to ZERO 対応</td>
+        <td>「キューのメッセージ数でスケール」「Event Hub/SB」「0台に縮小」</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="ib tip">
+  <div class="ib-ico">i</div>
+  <div>
+    <strong>試験で最も混同される: HPA vs KEDA</strong>
+    両方とも「Pod数をスケール」する。違いは
+    <strong style="color:var(--hpal)">HPA = CPU・メモリのメトリクスベース</strong>（最低1Pod）に対し、
+    <strong style="color:var(--kedal)">KEDA = Service Bus・Event Hub・Kafkaなどの外部イベントベース</strong>（0Podまで縮小可）。
+    「キューにメッセージがあればPodを増やす」→ KEDA。「CPU80%でPodを増やす」→ HPA。
+  </div>
+</div>
+</div><!-- /p0 -->
+
+<!-- ═══ PAGE 1: Cluster Autoscaler ═══ -->
+<div class="pg" id="p1">
+<div class="hero" style="background:linear-gradient(135deg,rgba(16,124,16,.12),rgba(16,124,16,.04));border:1px solid rgba(16,124,16,.35);">
+  <div class="hero-ct">
+    <div class="eyebrow" style="background:rgba(16,124,16,.2);border:1px solid rgba(16,124,16,.5);color:var(--cal);"><svg width="12" height="12" viewBox="0 0 18 18"><use href="#ico-ca"/></svg> Cluster Autoscaler</div>
+    <h1 style="background:linear-gradient(135deg,#fff,#90E890,#107C10);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Cluster Autoscaler<br>ノード数を自動で増減する</h1>
+    <p class="hero-sub">AKSクラスターのノード数をワークロードの需要に応じて自動調整します。Pending状態のPodを検知してVMSSのノードを追加し、使われていないノードを削除します。Linux・Windows 両方のノードプールに対応します。</p>
+  </div>
+</div>
+
+<div class="sh"><h2><span class="n">01</span> 動作の仕組み</h2><div class="sh-line"></div></div>
+<div class="dw">
+  <div class="dw-hd"><span>Cluster Autoscaler — スケールアップ / ダウンの流れ</span></div>
+  <svg class="d" viewBox="0 0 960 280" xmlns="http://www.w3.org/2000/svg">
+    <!-- Scale UP -->
+    <text x="30" y="22" fill="#70D870" font-size="11" font-family="sans-serif" font-weight="700">スケールアップ（Scale Up）: Pending Pod を検知してノードを追加</text>
+    <rect x="10" y="32" width="150" height="54" rx="9" fill="rgba(240,168,0,.12)" stroke="rgba(240,168,0,.5)" stroke-width="1.5"/>
+    <text x="85" y="55" text-anchor="middle" fill="#F0A800" font-size="10" font-family="sans-serif" font-weight="700">Pod (Pending)</text>
+    <text x="85" y="70" text-anchor="middle" fill="#A07010" font-size="8.5" font-family="sans-serif">リソース不足でスケジュール不可</text>
+    <line x1="162" y1="59" x2="208" y2="59" stroke="#F0A800" stroke-width="2" marker-end="url(#arrg)"/>
+    <rect x="210" y="32" width="150" height="54" rx="9" fill="rgba(16,124,16,.15)" stroke="rgba(16,124,16,.5)" stroke-width="1.5"/>
+    <svg x="222" y="40" width="22" height="22" viewBox="0 0 18 18"><use href="#ico-ca"/></svg>
+    <text x="285" y="56" text-anchor="middle" fill="#70D870" font-size="10" font-family="sans-serif" font-weight="700">CA が検知</text>
+    <text x="285" y="71" text-anchor="middle" fill="#408040" font-size="8.5" font-family="sans-serif">10秒ごとにチェック</text>
+    <line x1="362" y1="59" x2="408" y2="59" stroke="#70D870" stroke-width="2" marker-end="url(#arrg)"/>
+    <rect x="410" y="32" width="180" height="54" rx="9" fill="rgba(16,124,16,.15)" stroke="rgba(16,124,16,.45)" stroke-width="1.5"/>
+    <text x="500" y="52" text-anchor="middle" fill="#70D870" font-size="10" font-family="sans-serif" font-weight="700">VMSS に追加要求</text>
+    <text x="500" y="67" text-anchor="middle" fill="#408040" font-size="8.5" font-family="sans-serif">Azure Compute API 呼び出し</text>
+    <text x="500" y="79" text-anchor="middle" fill="#408040" font-size="8" font-family="sans-serif">VMプロビジョニング開始</text>
+    <line x1="592" y1="59" x2="638" y2="59" stroke="#70D870" stroke-width="2" marker-end="url(#arrg)"/>
+    <rect x="640" y="32" width="170" height="54" rx="9" fill="rgba(16,124,16,.2)" stroke="rgba(16,124,16,.6)" stroke-width="2"/>
+    <text x="725" y="55" text-anchor="middle" fill="#70D870" font-size="10" font-family="sans-serif" font-weight="700">新ノード参加</text>
+    <text x="725" y="70" text-anchor="middle" fill="#408040" font-size="8.5" font-family="sans-serif">PodがScheduled → Running</text>
+    <line x1="812" y1="59" x2="858" y2="59" stroke="#00C878" stroke-width="2" marker-end="url(#arrg)"/>
+    <rect x="860" y="35" width="92" height="48" rx="8" fill="rgba(0,200,120,.1)" stroke="rgba(0,200,120,.4)" stroke-width="1"/>
+    <text x="906" y="58" text-anchor="middle" fill="#00C878" font-size="10" font-family="sans-serif" font-weight="700">完了</text>
+    <text x="906" y="73" text-anchor="middle" fill="#008050" font-size="8" font-family="sans-serif">数分〜</text>
+
+    <!-- Timing note -->
+    <rect x="10" y="98" width="940" height="30" rx="7" fill="rgba(240,168,0,.07)" stroke="rgba(240,168,0,.25)" stroke-width="1"/>
+    <text x="480" y="112" text-anchor="middle" fill="#F0A800" font-size="9.5" font-family="sans-serif" font-weight="700">スケールアップ時間: VMのプロビジョニング + K8sへの参加で数分かかる（Virtual Node の ACI は数秒〜数十秒と比べ遅い）</text>
+    <text x="480" y="123" text-anchor="middle" fill="#A07010" font-size="8.5" font-family="sans-serif">Windows Serverノードは Linux より起動が遅い傾向あり</text>
+
+    <!-- Scale DOWN -->
+    <text x="30" y="148" fill="#70D870" font-size="11" font-family="sans-serif" font-weight="700">スケールダウン（Scale Down）: 低利用ノードを削除してコスト削減</text>
+    <rect x="10" y="158" width="170" height="54" rx="9" fill="rgba(0,120,212,.1)" stroke="rgba(0,120,212,.35)" stroke-width="1.5"/>
+    <text x="95" y="180" text-anchor="middle" fill="#60B0FF" font-size="10" font-family="sans-serif" font-weight="700">ノード使用率が低い</text>
+    <text x="95" y="195" text-anchor="middle" fill="#306080" font-size="8.5" font-family="sans-serif">未使用リソースを検知</text>
+    <line x1="182" y1="185" x2="218" y2="185" stroke="#70D870" stroke-width="2" marker-end="url(#arrg)"/>
+    <rect x="220" y="158" width="190" height="54" rx="9" fill="rgba(16,124,16,.12)" stroke="rgba(16,124,16,.4)" stroke-width="1.5"/>
+    <text x="315" y="178" text-anchor="middle" fill="#70D870" font-size="10" font-family="sans-serif" font-weight="700">Pod を他ノードへ移動</text>
+    <text x="315" y="193" text-anchor="middle" fill="#408040" font-size="8.5" font-family="sans-serif">eviction（10分待機がデフォルト）</text>
+    <line x1="412" y1="185" x2="448" y2="185" stroke="#70D870" stroke-width="2" marker-end="url(#arrg)"/>
+    <rect x="450" y="158" width="160" height="54" rx="9" fill="rgba(16,124,16,.12)" stroke="rgba(16,124,16,.4)" stroke-width="1.5"/>
+    <text x="530" y="180" text-anchor="middle" fill="#70D870" font-size="10" font-family="sans-serif" font-weight="700">ノード削除</text>
+    <text x="530" y="195" text-anchor="middle" fill="#408040" font-size="8.5" font-family="sans-serif">VMSSインスタンスを削除</text>
+    <line x1="612" y1="185" x2="648" y2="185" stroke="#00C878" stroke-width="2" marker-end="url(#arrg)"/>
+    <rect x="650" y="160" width="200" height="50" rx="8" fill="rgba(0,200,120,.08)" stroke="rgba(0,200,120,.3)" stroke-width="1"/>
+    <text x="750" y="183" text-anchor="middle" fill="#00C878" font-size="10" font-family="sans-serif" font-weight="700">コスト削減達成</text>
+    <text x="750" y="197" text-anchor="middle" fill="#008050" font-size="8.5" font-family="sans-serif">不要なVM費用を節約</text>
+    <rect x="10" y="226" width="940" height="44" rx="8" fill="rgba(240,48,64,.07)" stroke="rgba(240,48,64,.2)" stroke-width="1"/>
+    <text x="480" y="244" text-anchor="middle" fill="#F08090" font-size="9.5" font-family="sans-serif" font-weight="700">注意: DaemonSet Pod や PodDisruptionBudget (PDB) で保護されたPodがいるノードはスケールダウンされない</text>
+    <text x="480" y="260" text-anchor="middle" fill="#A04050" font-size="8.5" font-family="sans-serif">スケールダウン遅延デフォルト: --scale-down-delay-after-add=10m（追加後10分間はスケールダウンしない）</text>
+  </svg>
+</div>
+
+<div class="sh"><h2><span class="n">02</span> 有効化コマンド</h2><div class="sh-line"></div></div>
+<div class="code"><span class="cm"># Cluster Autoscaler を有効化（クラスター全体）</span>
+az aks update \
+  --resource-group myRG --name myAKS \
+  <span class="flag">--enable-cluster-autoscaler</span> \
+  <span class="flag">--min-count</span> <span class="str">1</span> --<span class="flag">max-count</span> <span class="str">10</span>
+
+<span class="cm"># ノードプール個別に設定（Windows Server ノードプールにも同様に適用可能）</span>
+az aks nodepool update \
+  --resource-group myRG --cluster-name myAKS --name winpool \
+  <span class="flag">--enable-cluster-autoscaler</span> \
+  <span class="flag">--min-count</span> <span class="str">1</span> --<span class="flag">max-count</span> <span class="str">5</span></div>
+
+<div class="ec">
+  <div class="ec-lbl">試験ポイント — 頻出問題</div>
+  <h4>「Windows Server 2019 ノードを使用。スケールアウト時のプロビジョニング時間を最小化し、Windows Server コンテナの自動スケーリングをサポートしたい」</h4>
+  <p>Virtual Node アドオンは Linux のみ対応。Windows Server コンテナに対応した自動ノードスケーリングができるのは Cluster Autoscaler のみ。</p>
+  <div class="ans">✅ Cluster Autoscaler — Windows Server ノードプール対応 + VMSS自動増減。これが唯一の正解</div>
+  <div class="no">❌ Virtual Node with Virtual Kubelet ACI — アドオンは Linux のみ（Windows は手動インストール必要 = 「自動」にならない）<br>❌ HPA — Pod 数をスケールするだけ。ノード（コンピューティングリソース）を追加しない</div>
+</div>
+</div><!-- /p1 -->
+
+<!-- ═══ PAGE 2: Virtual Node / Virtual Kubelet ═══ -->
+<div class="pg" id="p2">
+<div class="hero" style="background:linear-gradient(135deg,rgba(138,63,192,.12),rgba(138,63,192,.04));border:1px solid rgba(138,63,192,.35);">
+  <div class="hero-ct">
+    <div class="eyebrow" style="background:rgba(138,63,192,.2);border:1px solid rgba(138,63,192,.5);color:var(--vnl);"><svg width="12" height="12" viewBox="0 0 18 18"><use href="#ico-vn"/></svg> Virtual Node &amp; Virtual Kubelet</div>
+    <h1 style="background:linear-gradient(135deg,#fff,#D0A0FF,#8A3FC0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Virtual Node / Virtual Kubelet<br>ACIを「ノード」として扱い秒単位でスケール</h1>
+    <p class="hero-sub"><strong style="color:var(--vnl)">Virtual Node</strong>はAKSアドオンとして、<strong style="color:var(--vkl)">Virtual Kubelet</strong>はその基盤のOSS技術として、Azure Container Instances(ACI)をKubernetesノードのように扱い、Podを秒単位でスケールします。Cluster Autoscaler（数分）との最大の違いはこの速度です。</p>
+  </div>
+</div>
+
+<div class="sh"><h2><span class="n">01</span> 仕組みの比較 — Cluster Autoscaler vs Virtual Node</h2><div class="sh-line"></div></div>
+<div class="dw">
+  <div class="dw-hd"><span>スケール速度の違い — VMSS（CA）vs ACI（Virtual Node）</span></div>
+  <svg class="d" viewBox="0 0 960 320" xmlns="http://www.w3.org/2000/svg">
+    <!-- CA path -->
+    <rect x="10" y="20" width="440" height="280" rx="14" fill="rgba(16,124,16,.06)" stroke="rgba(16,124,16,.3)" stroke-width="1.5"/>
+    <text x="230" y="44" text-anchor="middle" fill="#70D870" font-size="12" font-family="sans-serif" font-weight="700">Cluster Autoscaler (VMSS ベース)</text>
+    <rect x="28" y="58" width="180" height="50" rx="8" fill="rgba(240,168,0,.12)" stroke="rgba(240,168,0,.4)" stroke-width="1"/>
+    <text x="118" y="79" text-anchor="middle" fill="#F0A800" font-size="10" font-family="sans-serif" font-weight="700">Pending Pod 検知</text>
+    <text x="118" y="95" text-anchor="middle" fill="#A07010" font-size="8.5" font-family="sans-serif">CA がポーリング（10秒ごと）</text>
+    <line x1="118" y1="110" x2="118" y2="128" stroke="#70D870" stroke-width="2" marker-end="url(#arrg)"/>
+    <rect x="28" y="130" width="180" height="50" rx="8" fill="rgba(16,124,16,.12)" stroke="rgba(16,124,16,.4)" stroke-width="1"/>
+    <text x="118" y="151" text-anchor="middle" fill="#70D870" font-size="10" font-family="sans-serif" font-weight="700">Azure VM 起動</text>
+    <text x="118" y="166" text-anchor="middle" fill="#408040" font-size="8.5" font-family="sans-serif">VMSSのVM作成・OS起動</text>
+    <line x1="118" y1="182" x2="118" y2="200" stroke="#70D870" stroke-width="2" marker-end="url(#arrg)"/>
+    <rect x="28" y="202" width="180" height="50" rx="8" fill="rgba(16,124,16,.12)" stroke="rgba(16,124,16,.4)" stroke-width="1"/>
+    <text x="118" y="223" text-anchor="middle" fill="#70D870" font-size="10" font-family="sans-serif" font-weight="700">K8s ノード参加</text>
+    <text x="118" y="238" text-anchor="middle" fill="#408040" font-size="8.5" font-family="sans-serif">kubelet 起動 + 登録</text>
+    <line x1="118" y1="254" x2="118" y2="272" stroke="#70D870" stroke-width="2" marker-end="url(#arrg)"/>
+    <rect x="28" y="274" width="180" height="20" rx="6" fill="rgba(240,168,0,.12)" stroke="rgba(240,168,0,.4)" stroke-width="1"/>
+    <text x="118" y="288" text-anchor="middle" fill="#F0A800" font-size="9" font-family="sans-serif" font-weight="700">合計: 2〜5分</text>
+    <!-- Timeline bar CA -->
+    <rect x="230" y="58" width="200" height="236" rx="8" fill="rgba(0,0,0,.2)"/>
+    <text x="330" y="78" text-anchor="middle" fill="#90B4CC" font-size="9" font-family="sans-serif">時系列</text>
+    <rect x="244" y="88" width="172" height="20" rx="4" fill="rgba(16,124,16,.3)"/>
+    <text x="330" y="102" text-anchor="middle" fill="#70D870" font-size="8" font-family="sans-serif">VM作成 API呼び出し ~30s</text>
+    <rect x="244" y="112" width="172" height="20" rx="4" fill="rgba(16,124,16,.2)"/>
+    <text x="330" y="126" text-anchor="middle" fill="#70D870" font-size="8" font-family="sans-serif">OS起動・初期化 ~60s</text>
+    <rect x="244" y="136" width="172" height="20" rx="4" fill="rgba(16,124,16,.2)"/>
+    <text x="330" y="150" text-anchor="middle" fill="#70D870" font-size="8" font-family="sans-serif">コンテナイメージPull ~30s</text>
+    <rect x="244" y="160" width="172" height="20" rx="4" fill="rgba(16,124,16,.15)"/>
+    <text x="330" y="174" text-anchor="middle" fill="#70D870" font-size="8" font-family="sans-serif">kubelet起動・K8s登録 ~30s</text>
+    <text x="330" y="210" text-anchor="middle" fill="#F0A800" font-size="16" font-family="sans-serif" font-weight="800">⏱ 2〜5分</text>
+    <text x="330" y="235" text-anchor="middle" fill="#A07010" font-size="9" font-family="sans-serif">Windowsはさらに遅い</text>
+    <text x="330" y="255" text-anchor="middle" fill="#A07010" font-size="9" font-family="sans-serif">大きなワークロードには</text>
+    <text x="330" y="268" text-anchor="middle" fill="#A07010" font-size="9" font-family="sans-serif">適している</text>
+
+    <!-- Virtual Node path -->
+    <rect x="510" y="20" width="440" height="280" rx="14" fill="rgba(138,63,192,.06)" stroke="rgba(138,63,192,.3)" stroke-width="1.5"/>
+    <text x="730" y="44" text-anchor="middle" fill="#C890F0" font-size="12" font-family="sans-serif" font-weight="700">Virtual Node (ACI ベース)</text>
+    <rect x="528" y="58" width="180" height="50" rx="8" fill="rgba(138,63,192,.18)" stroke="rgba(138,63,192,.5)" stroke-width="1"/>
+    <text x="618" y="79" text-anchor="middle" fill="#C890F0" font-size="10" font-family="sans-serif" font-weight="700">Pod を Virtual Node へ配置</text>
+    <text x="618" y="95" text-anchor="middle" fill="#8060B0" font-size="8.5" font-family="sans-serif">nodeSelector で指定</text>
+    <line x1="618" y1="110" x2="618" y2="128" stroke="#C890F0" stroke-width="2" marker-end="url(#arrp)"/>
+    <rect x="528" y="130" width="180" height="50" rx="8" fill="rgba(138,63,192,.15)" stroke="rgba(138,63,192,.4)" stroke-width="1"/>
+    <text x="618" y="151" text-anchor="middle" fill="#C890F0" font-size="10" font-family="sans-serif" font-weight="700">Virtual Kubelet が変換</text>
+    <text x="618" y="166" text-anchor="middle" fill="#8060B0" font-size="8.5" font-family="sans-serif">kubelet API → ACI REST API</text>
+    <line x1="618" y1="182" x2="618" y2="200" stroke="#C890F0" stroke-width="2" marker-end="url(#arrp)"/>
+    <rect x="528" y="202" width="180" height="50" rx="8" fill="rgba(138,63,192,.2)" stroke="rgba(138,63,192,.55)" stroke-width="2"/>
+    <text x="618" y="223" text-anchor="middle" fill="#C890F0" font-size="10" font-family="sans-serif" font-weight="700">ACI コンテナ起動</text>
+    <text x="618" y="238" text-anchor="middle" fill="#8060B0" font-size="8.5" font-family="sans-serif">Azureサーバーレス基盤で瞬時に</text>
+    <line x1="618" y1="254" x2="618" y2="272" stroke="#00C878" stroke-width="2" marker-end="url(#arrg)"/>
+    <rect x="528" y="274" width="180" height="20" rx="6" fill="rgba(0,200,120,.12)" stroke="rgba(0,200,120,.4)" stroke-width="1"/>
+    <text x="618" y="288" text-anchor="middle" fill="#00C878" font-size="9" font-family="sans-serif" font-weight="700">合計: 数秒〜30秒</text>
+    <!-- Timeline bar VN -->
+    <rect x="730" y="58" width="200" height="236" rx="8" fill="rgba(0,0,0,.2)"/>
+    <text x="830" y="78" text-anchor="middle" fill="#90B4CC" font-size="9" font-family="sans-serif">時系列</text>
+    <rect x="744" y="88" width="172" height="20" rx="4" fill="rgba(138,63,192,.3)"/>
+    <text x="830" y="102" text-anchor="middle" fill="#C890F0" font-size="8" font-family="sans-serif">ACI API 呼び出し ~2s</text>
+    <rect x="744" y="112" width="172" height="20" rx="4" fill="rgba(138,63,192,.2)"/>
+    <text x="830" y="126" text-anchor="middle" fill="#C890F0" font-size="8" font-family="sans-serif">ACI コンテナ起動 ~10s</text>
+    <text x="830" y="180" text-anchor="middle" fill="#00C878" font-size="22" font-family="sans-serif" font-weight="800">⚡ 数秒</text>
+    <text x="830" y="215" text-anchor="middle" fill="#008050" font-size="9" font-family="sans-serif">バーストトラフィックに最適</text>
+    <text x="830" y="235" text-anchor="middle" fill="#008050" font-size="9" font-family="sans-serif">使った分だけ秒単位で課金</text>
+    <text x="830" y="255" text-anchor="middle" fill="#F08090" font-size="9" font-family="sans-serif">Linux のみ（アドオン）</text>
+    <text x="830" y="268" text-anchor="middle" fill="#F08090" font-size="9" font-family="sans-serif">DaemonSet / PVC 不可</text>
+  </svg>
+</div>
+
+<div class="sh"><h2><span class="n">02</span> 主な制限事項（試験頻出）</h2><div class="sh-line"></div></div>
+<div class="tw">
+  <table>
+    <thead><tr><th class="thg">制限事項</th><th class="thvn">内容</th></tr></thead>
+    <tbody>
+      <tr><td>対応OS（アドオン）</td><td class="er">Linux のみ。ノード名は「virtual-node-aci-linux」。Windows は手動で Virtual Kubelet をインストールする必要がある</td></tr>
+      <tr><td>DaemonSet</td><td class="er">DaemonSet の Pod は仮想ノードにスケジュールされない（ACI は実際のノードではないため）</td></tr>
+      <tr><td>Persistent Volume (PVC)</td><td class="er">PVC（Persistent Volume Claim）非対応。ステートレスなワークロードのみ</td></tr>
+      <tr><td>ネットワーク要件</td><td class="wn">Azure CNI（高度なネットワーク）必須。kubenet では使用不可</td></tr>
+      <tr><td>K8s ネットワークポリシー</td><td class="er">仮想ノードに対して Kubernetes ネットワークポリシーは適用されない</td></tr>
+      <tr><td>init コンテナ</td><td class="er">非対応</td></tr>
+      <tr><td>ACR 認証</td><td class="wn">Kubernetes Secret 経由のみ。Microsoft Entra 統合認証は不可</td></tr>
+      <tr><td>課金モデル</td><td class="ok">ACI の vCPU/メモリ秒単位課金。VMSSnodeより細かいコスト管理が可能</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="sh"><h2><span class="n">03</span> Virtual Node vs Virtual Kubelet の違い</h2><div class="sh-line"></div></div>
+<div class="tw">
+  <table>
+    <thead><tr><th class="thg">比較</th><th class="thvn">Virtual Node（アドオン）</th><th class="thvk">Virtual Kubelet（OSS）</th></tr></thead>
+    <tbody>
+      <tr><td>種別</td><td>AKS の組み込みアドオン（az aks enable-addons virtual-node）</td><td>オープンソースソフトウェア（virtual-kubelet/azure-aci）</td></tr>
+      <tr><td>Windows 対応</td><td class="er">非対応（Linux コンテナのみ）</td><td class="ok">手動インストールで Windows も対応可能</td></tr>
+      <tr><td>管理</td><td class="ok">Azure マネージド（ポータル / CLI で有効化）</td><td class="wn">手動インストール・設定が必要</td></tr>
+      <tr><td>使い分け</td><td>通常の Linux バーストスケーリング</td><td>Windows コンテナを ACI で動かしたい場合</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="ec">
+  <div class="ec-lbl">試験ポイント</div>
+  <h4>「突発的なトラフィックバーストに対して Linux コンテナを秒単位でスケールしたい。コストは使った分だけ払いたい」</h4>
+  <div class="ans">✅ Virtual Node (仮想ノードアドオン) + ACI — 秒単位起動・秒単位課金・Azure CNI 必須</div>
+  <div class="no">❌ Cluster Autoscaler — VM の起動に数分かかる。「秒単位」の要件を満たさない<br>❌ HPA — Pod 数を増やすだけ。実際のコンピューティングリソース（ノード）を追加しない</div>
+</div>
+</div><!-- /p2 -->
+
+<!-- ═══ PAGE 3: HPA ═══ -->
+<div class="pg" id="p3">
+<div class="hero" style="background:linear-gradient(135deg,rgba(0,120,212,.12),rgba(0,120,212,.04));border:1px solid rgba(0,120,212,.35);">
+  <div class="hero-ct">
+    <div class="eyebrow" style="background:rgba(0,120,212,.2);border:1px solid rgba(0,120,212,.5);color:var(--hpal);"><svg width="12" height="12" viewBox="0 0 18 18"><use href="#ico-hpa"/></svg> HPA — Horizontal Pod Autoscaler</div>
+    <h1 style="background:linear-gradient(135deg,#fff,#90C8FF,#0078D4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">HPA<br>Pod のレプリカ数を CPU / メモリで自動調整</h1>
+    <p class="hero-sub">HPA は Kubernetes 標準の Pod スケーリング機能です。CPU やメモリの使用率を監視し、設定した閾値を超えると Pod 数を自動で増減します。Metrics Server が必要です（AKS 1.8+ では標準搭載）。</p>
+  </div>
+</div>
+
+<div class="sh"><h2><span class="n">01</span> HPA の動作サイクルと計算式</h2><div class="sh-line"></div></div>
+<div class="dw">
+  <div class="dw-hd"><span>HPA の制御ループ</span></div>
+  <svg class="d" viewBox="0 0 960 240" xmlns="http://www.w3.org/2000/svg">
+    <rect x="10" y="20" width="150" height="60" rx="9" fill="rgba(0,120,212,.15)" stroke="rgba(0,120,212,.45)" stroke-width="1.5"/>
+    <text x="85" y="46" text-anchor="middle" fill="#60B0FF" font-size="10" font-family="sans-serif" font-weight="700">HPA Controller</text>
+    <text x="85" y="63" text-anchor="middle" fill="#3070A0" font-size="8.5" font-family="sans-serif">15秒ごとにポーリング</text>
+    <line x1="162" y1="50" x2="218" y2="50" stroke="#50E6FF" stroke-width="2" marker-end="url(#arrb)"/>
+    <rect x="220" y="20" width="160" height="60" rx="9" fill="rgba(0,120,212,.12)" stroke="rgba(0,120,212,.4)" stroke-width="1.5"/>
+    <text x="300" y="46" text-anchor="middle" fill="#60B0FF" font-size="10" font-family="sans-serif" font-weight="700">Metrics API</text>
+    <text x="300" y="63" text-anchor="middle" fill="#3070A0" font-size="8.5" font-family="sans-serif">Kubelet から60秒ごとに収集</text>
+    <line x1="382" y1="50" x2="438" y2="50" stroke="#50E6FF" stroke-width="2" marker-end="url(#arrb)"/>
+    <rect x="440" y="10" width="240" height="80" rx="9" fill="rgba(0,120,212,.18)" stroke="rgba(0,120,212,.55)" stroke-width="2"/>
+    <text x="560" y="36" text-anchor="middle" fill="#60B0FF" font-size="10" font-family="sans-serif" font-weight="700">スケール計算</text>
+    <text x="560" y="54" text-anchor="middle" fill="#3070A0" font-size="8.5" font-family="sans-serif">desired = ceil(current × usage / target)</text>
+    <text x="560" y="70" text-anchor="middle" fill="#3070A0" font-size="8.5" font-family="sans-serif">例: 3Pod × 80% / 70% = ceil(3.43) = 4Pod</text>
+    <text x="560" y="84" text-anchor="middle" fill="#3070A0" font-size="8" font-family="sans-serif">min ≦ desired ≦ max の範囲に収める</text>
+    <line x1="682" y1="50" x2="738" y2="50" stroke="#00C878" stroke-width="2" marker-end="url(#arrg)"/>
+    <rect x="740" y="20" width="200" height="60" rx="9" fill="rgba(0,120,212,.2)" stroke="rgba(0,120,212,.55)" stroke-width="2"/>
+    <text x="840" y="46" text-anchor="middle" fill="#60B0FF" font-size="10" font-family="sans-serif" font-weight="700">Deployment を更新</text>
+    <text x="840" y="63" text-anchor="middle" fill="#3070A0" font-size="8.5" font-family="sans-serif">replicas 数を変更</text>
+    <!-- Timing table -->
+    <rect x="10" y="100" width="940" height="130" rx="10" fill="rgba(0,0,0,.2)" stroke="rgba(255,255,255,.06)" stroke-width="1"/>
+    <text x="480" y="120" text-anchor="middle" fill="#C0D8F0" font-size="10" font-family="sans-serif" font-weight="700">タイミング詳細</text>
+    <rect x="28" y="130" width="200" height="88" rx="8" fill="rgba(0,120,212,.1)" stroke="rgba(0,120,212,.3)" stroke-width="1"/>
+    <text x="128" y="150" text-anchor="middle" fill="#60B0FF" font-size="9.5" font-family="sans-serif" font-weight="700">チェック間隔</text>
+    <text x="128" y="167" text-anchor="middle" fill="#3070A0" font-size="8.5" font-family="sans-serif">HPA: 15秒ごとにポーリング</text>
+    <text x="128" y="181" text-anchor="middle" fill="#3070A0" font-size="8.5" font-family="sans-serif">Metrics: 60秒ごとに更新</text>
+    <text x="128" y="195" text-anchor="middle" fill="#3070A0" font-size="8.5" font-family="sans-serif">実質的な更新間隔 ≒ 60秒</text>
+    <rect x="248" y="130" width="200" height="88" rx="8" fill="rgba(0,200,120,.07)" stroke="rgba(0,200,120,.28)" stroke-width="1"/>
+    <text x="348" y="150" text-anchor="middle" fill="#00C878" font-size="9.5" font-family="sans-serif" font-weight="700">スケールアップ</text>
+    <text x="348" y="167" text-anchor="middle" fill="#008050" font-size="8.5" font-family="sans-serif">遅延なし</text>
+    <text x="348" y="181" text-anchor="middle" fill="#008050" font-size="8.5" font-family="sans-serif">（K8s 1.12 以降）</text>
+    <rect x="468" y="130" width="200" height="88" rx="8" fill="rgba(240,168,0,.07)" stroke="rgba(240,168,0,.28)" stroke-width="1"/>
+    <text x="568" y="150" text-anchor="middle" fill="#F0A800" font-size="9.5" font-family="sans-serif" font-weight="700">スケールダウン</text>
+    <text x="568" y="167" text-anchor="middle" fill="#A07010" font-size="8.5" font-family="sans-serif">デフォルト 5分の待機</text>
+    <text x="568" y="181" text-anchor="middle" fill="#A07010" font-size="8.5" font-family="sans-serif">チラつき（thrashing）防止</text>
+    <rect x="688" y="130" width="240" height="88" rx="8" fill="rgba(240,48,64,.07)" stroke="rgba(240,48,64,.25)" stroke-width="1"/>
+    <text x="808" y="150" text-anchor="middle" fill="#F08090" font-size="9.5" font-family="sans-serif" font-weight="700">最小レプリカ</text>
+    <text x="808" y="167" text-anchor="middle" fill="#A04050" font-size="8.5" font-family="sans-serif">0 には設定できない（最低1）</text>
+    <text x="808" y="181" text-anchor="middle" fill="#A04050" font-size="8.5" font-family="sans-serif">0まで縮小したい → KEDA</text>
+  </svg>
+</div>
+
+<div class="sh"><h2><span class="n">02</span> マニフェスト例</h2><div class="sh-line"></div></div>
+<div class="code"><span class="cm"># HPA — CPU使用率70%をトリガーにPodを2〜10台でスケール</span>
+<span class="kw">apiVersion</span>: autoscaling/v2
+<span class="kw">kind</span>: HorizontalPodAutoscaler
+<span class="kw">metadata</span>:
+  <span class="kw">name</span>: <span class="str">myapp-hpa</span>
+<span class="kw">spec</span>:
+  <span class="kw">scaleTargetRef</span>:
+    <span class="kw">apiVersion</span>: apps/v1
+    <span class="kw">kind</span>: Deployment
+    <span class="kw">name</span>: <span class="str">myapp</span>
+  <span class="kw">minReplicas</span>: <span class="str">2</span>   <span class="cm"># 最小Pod数（0にはできない）</span>
+  <span class="kw">maxReplicas</span>: <span class="str">10</span>  <span class="cm"># 最大Pod数</span>
+  <span class="kw">metrics</span>:
+  - <span class="kw">type</span>: Resource
+    <span class="kw">resource</span>:
+      <span class="kw">name</span>: cpu
+      <span class="kw">target</span>:
+        <span class="kw">type</span>: Utilization
+        <span class="kw">averageUtilization</span>: <span class="str">70</span>  <span class="cm"># CPU 70% を超えたらスケールアップ</span></div>
+
+<div class="ec">
+  <div class="ec-lbl">試験ポイント</div>
+  <h4>「Web アプリの Deployment を、CPU 使用率 80% を超えたら自動で Pod を増やしたい。最大 10 Pod、最低 2 Pod を維持したい」</h4>
+  <div class="ans">✅ HPA — CPU使用率ベースのPodスケーリング。min/max設定対応。Kubernetes標準機能</div>
+  <div class="no">❌ Cluster Autoscaler — Pod ではなくノード（VM）をスケールする<br>❌ KEDA — CPU ではなく外部イベント（キュー等）をトリガーにするもの。CPU ベースのスケールには HPA を使う</div>
+</div>
+</div><!-- /p3 -->
+
+<!-- ═══ PAGE 4: KEDA ═══ -->
+<div class="pg" id="p4">
+<div class="hero" style="background:linear-gradient(135deg,rgba(0,135,138,.12),rgba(0,135,138,.04));border:1px solid rgba(0,135,138,.35);">
+  <div class="hero-ct">
+    <div class="eyebrow" style="background:rgba(0,135,138,.2);border:1px solid rgba(0,135,138,.5);color:var(--kedal);"><svg width="12" height="12" viewBox="0 0 18 18"><use href="#ico-keda"/></svg> KEDA — Kubernetes Event-Driven Autoscaling</div>
+    <h1 style="background:linear-gradient(135deg,#fff,#80E8E0,#00878A);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">KEDA<br>外部イベントでPodを自動スケール（0台まで縮小可能）</h1>
+    <p class="hero-sub">KEDA は CNCF のプロジェクトで、Azure Service Bus・Event Hub・Storage Queue・Kafka などの外部イベントソースに基づいて Pod をスケールします。<strong style="color:var(--kedal)">Scale to ZERO（完全に 0 Pod まで縮小）</strong>が最大の特徴で、HPA では不可能です。</p>
+  </div>
+</div>
+
+<div class="sh"><h2><span class="n">01</span> KEDA アーキテクチャ</h2><div class="sh-line"></div></div>
+<div class="dw">
+  <div class="dw-hd"><span>KEDA — ScaledObject による外部イベント連携フロー</span></div>
+  <svg class="d" viewBox="0 0 960 280" xmlns="http://www.w3.org/2000/svg">
+    <!-- Event sources -->
+    <rect x="10" y="20" width="175" height="248" rx="12" fill="rgba(0,135,138,.07)" stroke="rgba(0,135,138,.3)" stroke-width="1.5"/>
+    <text x="97" y="42" text-anchor="middle" fill="#40E0D8" font-size="11" font-family="sans-serif" font-weight="700">外部イベントソース</text>
+    <rect x="24" y="52" width="148" height="24" rx="5" fill="rgba(0,135,138,.18)"/><text x="98" y="68" text-anchor="middle" fill="#40E0D8" font-size="9" font-family="sans-serif">Azure Service Bus</text>
+    <rect x="24" y="82" width="148" height="24" rx="5" fill="rgba(0,135,138,.14)"/><text x="98" y="98" text-anchor="middle" fill="#40E0D8" font-size="9" font-family="sans-serif">Azure Event Hub</text>
+    <rect x="24" y="112" width="148" height="24" rx="5" fill="rgba(0,135,138,.12)"/><text x="98" y="128" text-anchor="middle" fill="#40E0D8" font-size="9" font-family="sans-serif">Azure Storage Queue</text>
+    <rect x="24" y="142" width="148" height="24" rx="5" fill="rgba(0,135,138,.1)"/><text x="98" y="158" text-anchor="middle" fill="#40E0D8" font-size="9" font-family="sans-serif">Kafka / Redis</text>
+    <rect x="24" y="172" width="148" height="24" rx="5" fill="rgba(0,135,138,.1)"/><text x="98" y="188" text-anchor="middle" fill="#40E0D8" font-size="9" font-family="sans-serif">Prometheus</text>
+    <rect x="24" y="202" width="148" height="24" rx="5" fill="rgba(0,135,138,.08)"/><text x="98" y="218" text-anchor="middle" fill="#40E0D8" font-size="9" font-family="sans-serif">HTTP / Cron</text>
+    <rect x="24" y="232" width="148" height="24" rx="5" fill="rgba(0,135,138,.08)"/><text x="98" y="248" text-anchor="middle" fill="#40E0D8" font-size="9" font-family="sans-serif">その他 50+ スケーラー</text>
+    <!-- KEDA box -->
+    <line x1="187" y1="144" x2="223" y2="144" stroke="#40E0D8" stroke-width="2" marker-end="url(#arrt)"/>
+    <rect x="225" y="70" width="220" height="170" rx="12" fill="rgba(0,135,138,.15)" stroke="rgba(0,135,138,.55)" stroke-width="2"/>
+    <svg x="239" y="82" width="26" height="26" viewBox="0 0 18 18"><use href="#ico-keda"/></svg>
+    <text x="335" y="98" text-anchor="middle" fill="#40E0D8" font-size="12" font-family="sans-serif" font-weight="700">KEDA</text>
+    <text x="335" y="118" text-anchor="middle" fill="#208090" font-size="9" font-family="sans-serif">ScaledObject を監視</text>
+    <text x="335" y="133" text-anchor="middle" fill="#208090" font-size="9" font-family="sans-serif">外部メトリクスをポーリング</text>
+    <text x="335" y="148" text-anchor="middle" fill="#208090" font-size="9" font-family="sans-serif">HPA にカスタムメトリクスを提供</text>
+    <rect x="237" y="165" width="196" height="64" rx="7" fill="rgba(0,200,120,.1)" stroke="rgba(0,200,120,.35)" stroke-width="1.5"/>
+    <text x="335" y="185" text-anchor="middle" fill="#00C878" font-size="10" font-family="sans-serif" font-weight="700">Scale to ZERO</text>
+    <text x="335" y="201" text-anchor="middle" fill="#008050" font-size="8.5" font-family="sans-serif">イベントなし → 0Podまで縮小</text>
+    <text x="335" y="216" text-anchor="middle" fill="#008050" font-size="8.5" font-family="sans-serif">HPAは最低1Pod、KEDAは0Pod可能</text>
+    <text x="335" y="228" text-anchor="middle" fill="#40E0D8" font-size="8" font-family="sans-serif">コスト最適化に非常に有効</text>
+    <!-- HPA -->
+    <line x1="447" y1="144" x2="493" y2="144" stroke="#50E6FF" stroke-width="2" marker-end="url(#arrb)"/>
+    <text x="470" y="136" fill="#50E6FF" font-size="8" font-family="sans-serif">カスタム</text>
+    <text x="470" y="148" fill="#50E6FF" font-size="8" font-family="sans-serif">メトリクス</text>
+    <rect x="495" y="100" width="170" height="90" rx="10" fill="rgba(0,120,212,.15)" stroke="rgba(0,120,212,.45)" stroke-width="1.5"/>
+    <svg x="507" y="110" width="22" height="22" viewBox="0 0 18 18"><use href="#ico-hpa"/></svg>
+    <text x="580" y="126" text-anchor="middle" fill="#60B0FF" font-size="11" font-family="sans-serif" font-weight="700">HPA</text>
+    <text x="580" y="144" text-anchor="middle" fill="#3070A0" font-size="8.5" font-family="sans-serif">KEDA がカスタムメトリクスを注入</text>
+    <text x="580" y="158" text-anchor="middle" fill="#3070A0" font-size="8.5" font-family="sans-serif">Pod 数の増減を実行</text>
+    <text x="580" y="172" text-anchor="middle" fill="#3070A0" font-size="8.5" font-family="sans-serif">KEDA の拡張として動作</text>
+    <!-- Target -->
+    <line x1="667" y1="144" x2="713" y2="144" stroke="#00C878" stroke-width="2" marker-end="url(#arrg)"/>
+    <rect x="715" y="80" width="230" height="180" rx="10" fill="rgba(0,60,120,.3)" stroke="#0078D4" stroke-width="1.5"/>
+    <text x="830" y="104" text-anchor="middle" fill="white" font-size="11" font-family="sans-serif" font-weight="700">Deployment</text>
+    <text x="830" y="124" text-anchor="middle" fill="#A0C8FF" font-size="9" font-family="sans-serif">ScaledObject に紐付けられた</text>
+    <text x="830" y="139" text-anchor="middle" fill="#A0C8FF" font-size="9" font-family="sans-serif">Kubernetes ワークロード</text>
+    <rect x="727" y="155" width="86" height="30" rx="5" fill="rgba(240,48,64,.15)" stroke="rgba(240,48,64,.4)" stroke-width="1"/>
+    <text x="770" y="170" text-anchor="middle" fill="#F08090" font-size="9" font-family="sans-serif">0 Pod</text>
+    <text x="770" y="183" text-anchor="middle" fill="#A04050" font-size="7.5" font-family="sans-serif">イベントなし</text>
+    <path d="M 813 155 L 813 150 L 850 150 L 850 155" fill="none" stroke="#50E6FF" stroke-width="1"/>
+    <rect x="857" y="145" width="78" height="40" rx="5" fill="rgba(0,200,120,.15)" stroke="rgba(0,200,120,.4)" stroke-width="1"/>
+    <text x="896" y="163" text-anchor="middle" fill="#00C878" font-size="9" font-family="sans-serif">N Pod</text>
+    <text x="896" y="176" text-anchor="middle" fill="#008050" font-size="7.5" font-family="sans-serif">イベント発生</text>
+    <!-- Scale down to zero label -->
+    <text x="830" y="220" text-anchor="middle" fill="#40E0D8" font-size="9" font-family="sans-serif">イベントがゼロになれば</text>
+    <text x="830" y="234" text-anchor="middle" fill="#40E0D8" font-size="9" font-family="sans-serif">Pod もゼロまで縮小</text>
+    <text x="830" y="248" text-anchor="middle" fill="#00C878" font-size="8.5" font-family="sans-serif" font-weight="700">夜間コストをゼロにできる</text>
+  </svg>
+</div>
+
+<div class="sh"><h2><span class="n">02</span> ScaledObject マニフェスト例（Azure Service Bus）</h2><div class="sh-line"></div></div>
+<div class="code"><span class="cm"># KEDA ScaledObject — Azure Service Bus キュー連携</span>
+<span class="kw">apiVersion</span>: keda.sh/v1alpha1
+<span class="kw">kind</span>: ScaledObject
+<span class="kw">metadata</span>:
+  <span class="kw">name</span>: <span class="str">order-processor-scaler</span>
+<span class="kw">spec</span>:
+  <span class="kw">scaleTargetRef</span>:
+    <span class="kw">name</span>: <span class="str">order-processor</span>    <span class="cm"># スケール対象の Deployment</span>
+  <span class="kw">minReplicaCount</span>: <span class="str">0</span>           <span class="cm"># 0 まで縮小可能（HPA との最大の違い）</span>
+  <span class="kw">maxReplicaCount</span>: <span class="str">30</span>
+  <span class="kw">pollingInterval</span>: <span class="str">10</span>           <span class="cm"># 10秒ごとにキューをチェック</span>
+  <span class="kw">cooldownPeriod</span>: <span class="str">60</span>            <span class="cm"># スケールダウン前の待機秒数</span>
+  <span class="kw">triggers</span>:
+  - <span class="kw">type</span>: azure-servicebus        <span class="cm"># Azure Service Bus スケーラー</span>
+    <span class="kw">metadata</span>:
+      <span class="kw">queueName</span>: <span class="str">orders</span>
+      <span class="kw">messageCount</span>: <span class="str">"5"</span>          <span class="cm"># キュー5メッセージにつき1Pod</span>
+    <span class="kw">authenticationRef</span>:
+      <span class="kw">name</span>: <span class="str">servicebus-auth</span></div>
+
+<div class="sh"><h2><span class="n">03</span> HPA vs KEDA 詳細比較</h2><div class="sh-line"></div></div>
+<div class="tw">
+  <table>
+    <thead><tr><th class="thg">比較項目</th><th class="thhpa">HPA</th><th class="thkeda">KEDA</th></tr></thead>
+    <tbody>
+      <tr><td>スケールトリガー</td><td>CPU・メモリ使用率（内部メトリクス）</td><td class="ckeda">外部イベント（Service Bus / Event Hub / Kafka / HTTP / Cron 等）</td></tr>
+      <tr><td>Scale to ZERO</td><td class="er">不可（最低 1 Pod）</td><td class="ok">可能。イベントがなければ 0 Pod まで縮小</td></tr>
+      <tr><td>スケーラー数</td><td class="wn">CPU / メモリ / カスタムメトリクス</td><td class="ok">50以上の組み込みスケーラー</td></tr>
+      <tr><td>Kubernetes 標準機能</td><td class="ok">標準（追加インストール不要）</td><td class="wn">アドオン（helm install またはAKSアドオン）</td></tr>
+      <tr><td>AKS アドオン</td><td class="ok">標準搭載</td><td class="ok">KEDA アドオンとして有効化可能</td></tr>
+      <tr><td>併用</td><td colspan="2">KEDA は内部で HPA を拡張する形で動作。同一ワークロードに両方設定しない（干渉する）</td></tr>
+      <tr><td>最適ユースケース</td><td>Web アプリの CPU/メモリ負荷ベーススケール</td><td class="ckeda">キュー処理・イベント駆動ワークロード・夜間0台でコスト削減</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="ec">
+  <div class="ec-lbl">試験ポイント</div>
+  <h4>「Azure Service Bus キューのメッセージ数に応じて処理 Pod をスケールしたい。メッセージがない夜間はコストをゼロにしたい」</h4>
+  <div class="ans">✅ KEDA — Service Bus スケーラー + minReplicaCount: 0 で Scale to ZERO を実現。HPA には不可能</div>
+  <div class="no">❌ HPA — CPU/メモリベースのスケール。キューメッセージ数には直接対応しない。また最低1Podのため完全なゼロコストにならない<br>❌ Cluster Autoscaler — Podではなくノードをスケールする</div>
+</div>
+</div><!-- /p4 -->
+
+<!-- ═══ PAGE 5: 比較・選択基準 ═══ -->
+<div class="pg" id="p5">
+<div class="hero" style="background:linear-gradient(135deg,rgba(240,168,0,.1),rgba(240,168,0,.03));border:1px solid rgba(240,168,0,.3);">
+  <div class="hero-ct">
+    <div class="eyebrow" style="background:rgba(240,168,0,.18);border:1px solid rgba(240,168,0,.45);color:var(--wn);">選択ガイド</div>
+    <h1 style="background:linear-gradient(135deg,#fff,#FFE090,#F0A800);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">シナリオから最適な技術を選ぶ<br>AZ-305 即決チート</h1>
+    <p class="hero-sub">試験のシナリオ問題で「どの技術を選ぶか」を瞬時に判断できるよう、キーワードと答えを整理します。</p>
+  </div>
+</div>
+
+<div class="sh"><h2><span class="n">01</span> 全技術 詳細比較マトリクス</h2><div class="sh-line"></div></div>
+<div class="tw">
+  <table>
+    <thead>
+      <tr>
+        <th class="thg">比較項目</th>
+        <th class="thca">Cluster Autoscaler</th>
+        <th class="thvn">Virtual Node</th>
+        <th class="thvk">Virtual Kubelet</th>
+        <th class="thhpa">HPA</th>
+        <th class="thkeda">KEDA</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>スケール対象</td><td class="cca">ノード (VMSS)</td><td class="cvn">仮想ノード (ACI)</td><td class="cvk">仮想ノード (汎用)</td><td class="chpa">Pod 数</td><td class="ckeda">Pod 数</td></tr>
+      <tr><td>スケールトリガー</td><td>Pending Pod / 低利用</td><td>nodeSelector による配置</td><td>kubelet API</td><td>CPU / メモリ</td><td class="ckeda">外部イベント (50種以上)</td></tr>
+      <tr><td>対応 OS</td><td class="ok">Linux + Windows</td><td class="er">Linux のみ</td><td class="wn">Linux / Windows (手動)</td><td class="ok">Linux + Windows</td><td class="ok">Linux + Windows</td></tr>
+      <tr><td>Scale to ZERO</td><td class="wn">設定次第</td><td class="ok">ACI = 使った分のみ</td><td class="ok">ACI = 使った分のみ</td><td class="er">最低 1 Pod</td><td class="ok">0 Pod まで縮小可能</td></tr>
+      <tr><td>スケール速度</td><td class="wn">数分 (VM起動)</td><td class="ok">数秒〜30秒</td><td class="ok">数秒〜30秒</td><td class="ok">秒単位 (Pod起動)</td><td class="ok">秒単位 (Pod起動)</td></tr>
+      <tr><td>DaemonSet 対応</td><td class="ok">対応</td><td class="er">非対応</td><td class="er">非対応</td><td>N/A</td><td>N/A</td></tr>
+      <tr><td>PVC 対応</td><td class="ok">対応</td><td class="er">非対応</td><td class="er">非対応</td><td>N/A</td><td>N/A</td></tr>
+      <tr><td>Azure CNI 必須</td><td class="er">不要</td><td class="er">必須</td><td class="er">必須</td><td class="er">不要</td><td class="er">不要</td></tr>
+      <tr><td>Kubernetes 標準</td><td class="ok">標準機能</td><td class="wn">アドオン</td><td class="wn">OSS (手動)</td><td class="ok">標準機能</td><td class="wn">アドオン (CNCF)</td></tr>
+      <tr><td>Windows コンテナ</td><td class="ok">対応 (VMSS)</td><td class="er">非対応</td><td class="ok">手動で対応可</td><td class="ok">対応</td><td class="ok">対応</td></tr>
+      <tr><td>組み合わせ</td><td>HPA / KEDA と組み合わせてノード追加</td><td>KEDA + VN でバーストに最適</td><td>CA 不要でACI使用</td><td>CA と組み合わせてノード追加</td><td>CA または VN と組み合わせ</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="sh"><h2><span class="n">02</span> キーワード別 即決チート</h2><div class="sh-line"></div></div>
+<div class="tw">
+  <table>
+    <thead><tr><th class="thg">シナリオのキーワード</th><th class="thb">正解</th><th class="thg">理由</th></tr></thead>
+    <tbody>
+      <tr><td>「Windows Server コンテナ + 自動スケーリング」</td><td><span class="layer-badge l-node">Cluster Autoscaler</span></td><td>Virtual Node アドオンは Linux のみ。CA は Windows ノードプール対応</td></tr>
+      <tr><td>「秒単位の超高速プロビジョニング + Linux」</td><td><span class="layer-badge l-vnode">Virtual Node (ACI)</span></td><td>ACI は秒単位起動。CA の VM 起動は数分かかる</td></tr>
+      <tr><td>「CPU 使用率 / メモリ使用率に応じて Pod を増減」</td><td><span class="layer-badge l-pod">HPA</span></td><td>CPU/メモリメトリクスベースのスケール = HPA。Kubernetes 標準機能</td></tr>
+      <tr><td>「Service Bus / Event Hub のメッセージ数でスケール」</td><td><span class="layer-badge l-event">KEDA</span></td><td>外部イベントドリブンスケール = KEDA。HPA には外部イベント機能がない</td></tr>
+      <tr><td>「Kafka / キュー深度 / HTTP リクエスト数でスケール」</td><td><span class="layer-badge l-event">KEDA</span></td><td>同上。50種以上のスケーラーを持つのは KEDA のみ</td></tr>
+      <tr><td>「夜間は Pod を 0 まで縮小してコストをゼロにしたい」</td><td><span class="layer-badge l-event">KEDA</span></td><td>Scale to ZERO は KEDA のみ。HPA は最低 1 Pod</td></tr>
+      <tr><td>「Windows コンテナを ACI 上で動かしたい（手動構成）」</td><td><span class="layer-badge l-vnode" style="background:rgba(200,64,0,.18);border-color:rgba(200,64,0,.45);color:var(--vkl);">Virtual Kubelet</span></td><td>Windows 対応には Virtual Kubelet を手動インストール。アドオンは Linux のみ</td></tr>
+      <tr><td>「Pending Pod が増えたときに自動でノードを追加」</td><td><span class="layer-badge l-node">Cluster Autoscaler</span></td><td>Pending Pod トリガーでノード追加 = CA の核心機能</td></tr>
+      <tr><td>「バーストトラフィックで急増する Pod を ACI にオフロード」</td><td><span class="layer-badge l-vnode">Virtual Node</span> + <span class="layer-badge l-event">KEDA</span></td><td>KEDA がイベントで Pod 増 → Virtual Node が ACI に秒単位でスケジュール</td></tr>
+      <tr><td>「Pod が増えてもノードが足りない場合にノードを自動追加」</td><td><span class="layer-badge l-node">CA</span> + <span class="layer-badge l-pod">HPA</span></td><td>HPA が Pod 増 → CA が Pending Pod を検知してノード追加。最もよくある組み合わせ</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="sh"><h2><span class="n">03</span> よくある間違いと正しい理解</h2><div class="sh-line"></div></div>
+<div class="ec">
+  <div class="ec-lbl">落とし穴 #1</div>
+  <h4>「Virtual Node アドオンは Windows Server コンテナをサポートする」→ しない</h4>
+  <p>Virtual Node <strong>アドオン</strong>（az aks enable-addons virtual-node）が自動作成するのは「virtual-node-aci-<strong>linux</strong>」のみ。Windows コンテナを ACI で動かすには Virtual Kubelet を<strong>手動でインストール</strong>する必要がある。つまり「自動」ではない。</p>
+  <div class="ans">✅ Windowsコンテナ + 自動スケーリング → Cluster Autoscaler（VMSS ベース）</div>
+  <div class="no">❌ Virtual Node アドオンは Linux のみ。Windows は「手動インストール」が必要なため試験で「自動スケーリング」の選択肢にならない</div>
+</div>
+<div class="ec">
+  <div class="ec-lbl">落とし穴 #2</div>
+  <h4>「KEDA は HPA の代替として同じワークロードに共存できる」→ できない</h4>
+  <p>KEDA は内部で HPA を拡張する形で動作します。同一ワークロードに KEDA の ScaledObject と独立した HPA の両方を設定すると、互いに干渉してスケールが不安定になります。KEDA を使う場合は HPA を直接設定せず、KEDA に任せます。</p>
+  <div class="ans">✅ イベントドリブン → KEDA のみ設定。CPU/メモリ → HPA のみ設定。同一 Deployment には一方だけ</div>
+</div>
+<div class="ec">
+  <div class="ec-lbl">落とし穴 #3</div>
+  <h4>「HPA だけで Pod もノードも自動スケールできる」→ ノードはスケールしない</h4>
+  <p>HPA は Pod のレプリカ数を増やすだけです。Pod が増えてもノードのリソースが足りなければ Pod は Pending 状態になります。ノードを追加するには<strong>別途 Cluster Autoscaler</strong>が必要です。</p>
+  <div class="ans">✅ 完全な自動スケール = HPA（Podスケール）+ Cluster Autoscaler（ノードスケール）の組み合わせ</div>
+</div>
+</div><!-- /p5 -->
+
+<!-- ═══ PAGE 6: 試験演習 ═══ -->
+<div class="pg" id="p6">
+<div class="hero" style="background:linear-gradient(135deg,rgba(0,200,120,.08),rgba(0,200,120,.03));border:1px solid rgba(0,200,120,.3);">
+  <div class="hero-ct">
+    <div class="eyebrow" style="background:rgba(0,200,120,.18);border:1px solid rgba(0,200,120,.45);color:#00C878;">試験演習</div>
+    <h1 style="background:linear-gradient(135deg,#fff,#80E8C0,#00C878);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">AZ-305 形式<br>シナリオ問題演習</h1>
+    <p class="hero-sub" style="color:#A8D8C0;">選択肢をクリックして正誤を確認。解説で「なぜ他は間違いか」まで理解してください。</p>
+  </div>
+</div>
+
+<!-- Q1 -->
+<div class="qz" id="q1">
+  <div class="qz-hd"><div class="qz-n">1</div><h4>Windows Server + 自動スケーリング</h4></div>
+  <p class="q">AKS クラスターで Windows Server 2019 ノードを使用します。次の要件を満たすスケーリング方法はどれですか？<br>・スケールアウト時のコンピューティングリソースのプロビジョニング時間を最小化する<br>・Windows Server コンテナの自動スケーリングをサポートする</p>
+  <ul class="choices">
+    <li onclick="qa(this,'q1',false)">A. Virtual nodes with Virtual Kubelet ACI</li>
+    <li onclick="qa(this,'q1',true)">B. Cluster autoscaler</li>
+    <li onclick="qa(this,'q1',false)">C. Horizontal pod autoscaler</li>
+    <li onclick="qa(this,'q1',false)">D. Kubernetes バージョン 1.20.2 以降を使用する</li>
+  </ul>
+  <div id="ex-q1" class="exp">
+    <strong style="color:#00C878">✅ 正解: B — Cluster autoscaler</strong><br><br>
+    Virtual Node アドオンは <strong>Linux のみ</strong>対応（virtual-node-aci-linux）。Windows Server コンテナには対応していません。Windows Server コンテナの自動スケーリングには Cluster Autoscaler が唯一の選択肢です。CA は Windows Server ノードプールに対応しており、Pending Pod を検知して VMSS を自動スケールします。<br><br>
+    <strong>なぜAは不正解か:</strong> Virtual Node アドオンは Linux のみ。Windows を ACI で動かすには Virtual Kubelet を手動インストールする必要があり、「自動スケーリング」とは言えない。<br>
+    <strong>なぜCは不正解か:</strong> HPA は Pod 数をスケールするが、ノード（コンピューティングリソース）は追加しない。「コンピューティングリソースのプロビジョニング」という要件を満たさない。<br>
+    <strong>なぜDは不正解か:</strong> K8s バージョンはスケーリング方法ではない。
+  </div>
+</div>
+
+<!-- Q2 -->
+<div class="qz" id="q2">
+  <div class="qz-hd"><div class="qz-n">2</div><h4>外部イベントベースのスケーリング</h4></div>
+  <p class="q">Azure Service Bus キューでメッセージを受信して処理する AKS アプリケーションがあります。要件は次のとおりです：<br>・キューのメッセージ数に応じて処理 Pod を自動スケールしたい<br>・メッセージがない夜間は Pod を 0 まで縮小してコストを最小化したい<br>最適なスケーリング方法はどれですか？</p>
+  <ul class="choices">
+    <li onclick="qa(this,'q2',false)">A. HPA（CPU ターゲット使用率 70%）</li>
+    <li onclick="qa(this,'q2',false)">B. Cluster autoscaler（min-count: 0, max-count: 10）</li>
+    <li onclick="qa(this,'q2',true)">C. KEDA（azure-servicebus スケーラー、minReplicaCount: 0）</li>
+    <li onclick="qa(this,'q2',false)">D. Virtual Node（ACI を使用したバーストスケール）</li>
+  </ul>
+  <div id="ex-q2" class="exp">
+    <strong style="color:#00C878">✅ 正解: C — KEDA</strong><br><br>
+    「Service Bus メッセージ数でスケール」「0 Pod まで縮小」の 2 条件を同時に満たせるのは KEDA のみです。<br><br>
+    <strong>なぜAは不正解か:</strong> HPA は CPU/メモリをトリガーにします。Service Bus のメッセージ数を直接トリガーにできない。また HPA は最低 1 Pod なので 0 Pod にできない。<br>
+    <strong>なぜBは不正解か:</strong> Cluster Autoscaler はノード（VM）をスケールします。Pod 数をコントロールしない。また CA はメッセージ数をトリガーにしない。<br>
+    <strong>なぜDは不正解か:</strong> Virtual Node は Pod を ACI 上で動かす手段であり、スケールのトリガーを定義するものではない。KEDA + Virtual Node の組み合わせなら可能だが、Dの選択肢はそうなっていない。
+  </div>
+</div>
+
+<!-- Q3 -->
+<div class="qz" id="q3">
+  <div class="qz-hd"><div class="qz-n">3</div><h4>超高速バーストスケーリング</h4></div>
+  <p class="q">EC サイトの AKS アプリケーションで、セール時に突発的なトラフィックバーストが発生します。次の要件を満たすソリューションはどれですか？<br>・Linux コンテナのプロビジョニングを秒単位で完了させたい<br>・通常時はコストを最小化し、バースト時のみ追加リソースを確保したい<br>・Azure CNI ネットワークは既に設定済み</p>
+  <ul class="choices">
+    <li onclick="qa(this,'q3',true)">A. Virtual nodes アドオンを有効化し、KEDA でバースト時に Virtual Node 上の Pod を増やす</li>
+    <li onclick="qa(this,'q3',false)">B. Cluster autoscaler（min: 1, max: 20）で VMSS を自動スケール</li>
+    <li onclick="qa(this,'q3',false)">C. HPA（CPU 80%）で Pod を 1〜50 の範囲でスケール</li>
+    <li onclick="qa(this,'q3',false)">D. Windows Server ノードプールを追加して Virtual Kubelet でスケール</li>
+  </ul>
+  <div id="ex-q3" class="exp">
+    <strong style="color:#00C878">✅ 正解: A — Virtual Node + KEDA</strong><br><br>
+    「秒単位」「Linux」「コスト最小」の 3 条件に最も合う構成です。KEDA がイベント（HTTP リクエスト数等）で Pod をスケールし、Virtual Node（ACI）が秒単位でそのPodを起動します。ACI は使った分だけの課金のため通常時のコストも最小化できます。Azure CNI 設定済みという前提条件も Virtual Node の要件を満たしています。<br><br>
+    <strong>なぜBは不正解か:</strong> CA は VMSS ベースで VM 起動に数分かかる。「秒単位」の要件を満たさない。<br>
+    <strong>なぜCは不正解か:</strong> HPA だけではノードも Pod のスケジュール先もないため、ノード追加がなければ Pending になるだけ。「秒単位」でもない。<br>
+    <strong>なぜDは不正解か:</strong> 要件は「Linux コンテナ」。Windows ノードプールは不要。
+  </div>
+</div>
+
+<!-- Q4 -->
+<div class="qz" id="q4">
+  <div class="qz-hd"><div class="qz-n">4</div><h4>技術の役割理解</h4></div>
+  <p class="q">次の AKS スケーリング技術のうち、「Pod のレプリカ数」ではなく「クラスターのノード数」をスケールするものはどれですか？（2つ選択）</p>
+  <ul class="choices">
+    <li onclick="qa(this,'q4',false)">A. HPA（Horizontal Pod Autoscaler）</li>
+    <li onclick="qa(this,'q4',true)">B. Cluster Autoscaler</li>
+    <li onclick="qa(this,'q4',true)">C. Virtual Node（仮想ノードアドオン）</li>
+    <li onclick="qa(this,'q4',false)">D. KEDA（Kubernetes Event-Driven Autoscaling）</li>
+  </ul>
+  <div id="ex-q4" class="exp">
+    <strong style="color:#00C878">✅ 正解: B と C</strong><br><br>
+    <strong>B. Cluster Autoscaler</strong> — VMSS の実ノード（VM）の台数を増減します。<br>
+    <strong>C. Virtual Node</strong> — ACI コンテナを「仮想ノード」として追加します。実 VM ではありませんが、K8s からはノードとして見えます。<br><br>
+    <strong>なぜAは不正解か:</strong> HPA は Deployment/ReplicaSet の Pod レプリカ数を変更します。ノードには触れません。<br>
+    <strong>なぜDは不正解か:</strong> KEDA も Pod レプリカ数を変更します（内部的に HPA を通じて）。ノードには触れません。
+  </div>
+</div>
+
+<!-- Q5 -->
+<div class="qz" id="q5">
+  <div class="qz-hd"><div class="qz-n">5</div><h4>KEDA と HPA の違い</h4></div>
+  <p class="q">次のうち、KEDA を使用する必要があり、HPA では対応できないシナリオはどれですか？</p>
+  <ul class="choices">
+    <li onclick="qa(this,'q5',false)">A. Web アプリの CPU 使用率が 70% を超えたら Pod を増やしたい</li>
+    <li onclick="qa(this,'q5',false)">B. メモリ使用率に基づいて StatefulSet をスケールしたい</li>
+    <li onclick="qa(this,'q5',true)">C. Azure Event Hub のイベント数が増えたら Pod を増やし、イベントがなくなったら Pod を 0 にしたい</li>
+    <li onclick="qa(this,'q5',false)">D. Deployment の Pod を最低 2 台、最大 10 台の範囲で自動スケールしたい</li>
+  </ul>
+  <div id="ex-q5" class="exp">
+    <strong style="color:#00C878">✅ 正解: C</strong><br><br>
+    C には 2 つの KEDA 専用要件が含まれています：<br>
+    ①「Azure Event Hub のイベント数」 → 外部イベントトリガー。HPA は CPU/メモリのみ対応<br>
+    ②「Pod を 0 にしたい」 → Scale to ZERO。HPA は最低 1 Pod の制約があり 0 にはできない<br><br>
+    <strong>なぜAは不正解か:</strong> CPU 使用率ベースのスケール = HPA で対応可能<br>
+    <strong>なぜBは不正解か:</strong> メモリ使用率ベースのスケール = HPA で対応可能<br>
+    <strong>なぜDは不正解か:</strong> min/max を設定した Pod スケール = HPA の基本機能
+  </div>
+</div>
+
+<!-- Summary -->
+<div class="dw" style="margin-top:32px;">
+  <div class="dw-hd"><span>演習まとめ — 全判断の軸</span></div>
+  <div class="tw" style="margin-bottom:0;">
+    <table>
+      <thead><tr><th class="thg">キーワード</th><th class="thb">正解技術</th><th class="thg">決め手</th><th class="thg">よくある間違い</th></tr></thead>
+      <tbody>
+        <tr><td>Windows Server コンテナ + 自動スケール</td><td><div style="display:flex;align-items:center;gap:5px;"><svg width="14" height="14" viewBox="0 0 18 18"><use href="#ico-ca"/></svg><span class="cca">Cluster Autoscaler</span></div></td><td>VN アドオンは Linux のみ。CA は Windows ノードプール対応</td><td>Virtual Node（Linux のみなので不正解）</td></tr>
+        <tr><td>秒単位の超高速プロビジョニング + Linux</td><td><div style="display:flex;align-items:center;gap:5px;"><svg width="14" height="14" viewBox="0 0 18 18"><use href="#ico-vn"/></svg><span class="cvn">Virtual Node</span></div></td><td>ACI は秒単位起動。VMSS は数分</td><td>Cluster Autoscaler（VMSS なので数分かかる）</td></tr>
+        <tr><td>CPU / メモリ使用率でPodをスケール</td><td><div style="display:flex;align-items:center;gap:5px;"><svg width="14" height="14" viewBox="0 0 18 18"><use href="#ico-hpa"/></svg><span class="chpa">HPA</span></div></td><td>メトリクスベース = HPA。Kubernetes 標準機能</td><td>KEDA（CPU/メモリは HPA の役割）</td></tr>
+        <tr><td>Service Bus / Event Hub / Kafka でスケール</td><td><div style="display:flex;align-items:center;gap:5px;"><svg width="14" height="14" viewBox="0 0 18 18"><use href="#ico-keda"/></svg><span class="ckeda">KEDA</span></div></td><td>外部イベントドリブン = KEDA。HPA には不可能</td><td>HPA（外部イベントには対応していない）</td></tr>
+        <tr><td>Pod を 0 まで縮小してコストゼロ</td><td><div style="display:flex;align-items:center;gap:5px;"><svg width="14" height="14" viewBox="0 0 18 18"><use href="#ico-keda"/></svg><span class="ckeda">KEDA</span></div></td><td>Scale to ZERO = KEDA のみ。HPA は最低 1 Pod</td><td>HPA（minReplicas を 0 にはできない）</td></tr>
+        <tr><td>Pending Pod が増えたらノードを追加</td><td><div style="display:flex;align-items:center;gap:5px;"><svg width="14" height="14" viewBox="0 0 18 18"><use href="#ico-ca"/></svg><span class="cca">Cluster Autoscaler</span></div></td><td>Pending Pod トリガーでノード追加 = CA の核心</td><td>HPA（Pod をスケールするがノードは追加しない）</td></tr>
+        <tr><td>Windows + ACI（手動構成）</td><td><div style="display:flex;align-items:center;gap:5px;"><svg width="14" height="14" viewBox="0 0 18 18"><use href="#ico-vk"/></svg><span class="cvk">Virtual Kubelet</span></div></td><td>Windows コンテナを ACI で動かすには手動 VK インストール</td><td>Virtual Node アドオン（Linux のみ）</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</div><!-- /p6 -->
+
+</main>
+<script>
+function go(id, btn) {
+  document.querySelectorAll('.pg').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(b => b.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  if (btn) btn.classList.add('on');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function qa(el, qid, correct) {
+  const c = document.getElementById(qid);
+  c.querySelectorAll('.choices li').forEach(li => { li.onclick = null; li.style.cursor = 'default'; });
+  el.classList.add(correct ? 'correct' : 'wrong');
+  el.textContent = (correct ? '✅ ' : '❌ ') + el.textContent;
+  const ex = document.getElementById('ex-' + qid);
+  if (ex) ex.classList.add('show');
+}
+</script>
+</body>
+</html>

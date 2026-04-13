@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Always On FCI vs AG — 完全解説</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&family=Syne:wght@700;800&display=swap');
+:root{
+  --bg:#030810;--bg2:#060D1A;--bg3:#091220;
+  --s1:#0D1828;--s2:#121E34;
+  --bd:rgba(255,255,255,.07);
+  --t1:#F5F9FF;--t2:#C8DDF0;--t3:#90B4CC;
+  --az:#0078D4;--azl:#50E6FF;
+  --fci:#E65100;--fcil:#FFB060;  /* FCI = orange */
+  --ag:#1565C0;--agl:#60B4FF;   /* AG  = blue   */
+  --ok:#00C878;--wn:#F0A800;--er:#F03040;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans JP',sans-serif;background:#030810 !important;color:#F5F9FF !important;line-height:1.8;min-height:100vh;}
+body::before{
+  content:'';position:fixed;inset:0;
+  background:
+    radial-gradient(ellipse 900px 500px at 5% 10%,rgba(230,81,0,.06) 0%,transparent 65%),
+    radial-gradient(ellipse 700px 600px at 95% 85%,rgba(21,101,192,.07) 0%,transparent 65%);
+  pointer-events:none;z-index:0;
+}
+
+/* ── HEADER ── */
+.hdr{background:rgba(3,8,16,.96);border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:100;backdrop-filter:blur(16px);}
+.hdr-in{max-width:1360px;margin:0 auto;padding:13px 32px;display:flex;align-items:center;justify-content:space-between;}
+.brand{display:flex;align-items:center;gap:11px;}
+.brand-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  background:linear-gradient(135deg,var(--fci),var(--ag));}
+.brand-name{font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:#fff;}
+.brand-sub{font-size:10px;color:var(--t3);}
+.nav{display:flex;overflow-x:auto;max-width:1360px;margin:0 auto;padding:0 32px;
+  background:var(--bg2);border-bottom:1px solid var(--bd);scrollbar-width:none;}
+.nav::-webkit-scrollbar{display:none;}
+.nb{display:flex;align-items:center;gap:5px;padding:9px 14px;font-size:12px;font-weight:500;
+  color:var(--t3);cursor:pointer;border:none;background:none;
+  border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s;
+  font-family:'Noto Sans JP',sans-serif;}
+.nb:hover{color:var(--t1);}
+.nb.on{color:var(--azl);border-bottom-color:var(--az);background:rgba(0,120,212,.06);}
+.nb-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+
+/* ── PAGES ── */
+.pg{display:none;max-width:1360px;margin:0 auto;padding:40px 32px 100px;position:relative;z-index:1;}
+.pg.on{display:block;}
+
+/* ── HERO ── */
+.hero{border-radius:20px;padding:38px 42px;margin-bottom:38px;position:relative;overflow:hidden;
+  background:linear-gradient(135deg,rgba(230,81,0,.1) 0%,rgba(10,20,40,.6) 50%,rgba(21,101,192,.1) 100%);
+  border:1px solid rgba(255,255,255,.1);}
+.hero::after{content:'';position:absolute;top:-60px;right:-60px;width:320px;height:320px;border-radius:50%;
+  background:radial-gradient(circle,rgba(80,130,220,.08) 0%,transparent 70%);}
+.hero-content{position:relative;z-index:1;}
+.eyebrow{display:inline-flex;align-items:center;gap:6px;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);
+  border-radius:20px;padding:4px 13px;font-size:10px;font-weight:700;
+  letter-spacing:1.8px;text-transform:uppercase;color:var(--t2);margin-bottom:14px;}
+.hero h1{font-family:'Syne',sans-serif;font-size:clamp(22px,2.8vw,36px);font-weight:800;
+  line-height:1.2;margin-bottom:12px;color:#fff;}
+.hero h1 .fci{color:var(--fcil);}
+.hero h1 .ag{color:var(--agl);}
+.hero-sub{font-size:13.5px;color:#CCE4F8;max-width:680px;line-height:1.85;margin-bottom:20px;}
+.chips{display:flex;flex-wrap:wrap;gap:8px;}
+.chip{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;font-size:11.5px;font-weight:600;}
+.chip-fci{background:rgba(230,81,0,.18);border:1px solid rgba(230,81,0,.45);color:var(--fcil);}
+.chip-ag{background:rgba(21,101,192,.18);border:1px solid rgba(21,101,192,.45);color:var(--agl);}
+.chip-both{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);color:var(--t2);}
+
+/* ── SECTION HEADERS ── */
+.sh{margin-bottom:5px;}
+.sh h2{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;
+  display:flex;align-items:center;gap:8px;color:var(--t1);}
+.sh h2 .n{color:var(--azl);font-size:13px;}
+.sh-line{height:1.5px;background:linear-gradient(90deg,rgba(0,120,212,.5),transparent);margin:6px 0 4px;}
+.sh-sub{font-size:13px;color:#C8DDF0;margin-bottom:22px;line-height:1.7;}
+
+/* ── TABLES ── */
+.tw{overflow-x:auto;border-radius:14px;border:1px solid var(--bd);margin-bottom:26px;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+thead tr{background:var(--s2);}
+th{padding:12px 15px;text-align:left;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:1px;white-space:nowrap;}
+.thg{color:#90B8D4;}.thfci{color:var(--fcil);}.thag{color:var(--agl);}.thb{color:var(--azl);}
+td{padding:11px 15px;border-top:1px solid rgba(255,255,255,.07);vertical-align:top;line-height:1.7;color:#DCEEFF;}
+td:first-child{color:#D0E8F8;font-weight:600;}
+tr:hover td{background:rgba(255,255,255,.012);}
+.ok{color:var(--ok);}.wn{color:var(--wn);}.er{color:var(--er);}
+.cfci{color:var(--fcil);}.cag{color:var(--agl);}.cb{color:var(--azl);}
+
+/* ── INFO BOXES ── */
+.ib{display:flex;gap:12px;border-radius:12px;padding:15px 18px;margin-bottom:18px;font-size:13px;line-height:1.8;color:#DCF0FF;}
+.ib strong{display:block;font-size:13.5px;font-weight:700;margin-bottom:5px;}
+.ib.tip{background:rgba(0,120,212,.08);border:1px solid rgba(0,120,212,.3);}
+.ib.warn{background:rgba(240,168,0,.08);border:1px solid rgba(240,168,0,.35);}
+.ib.danger{background:rgba(240,48,64,.08);border:1px solid rgba(240,48,64,.35);}
+.ib.fci{background:rgba(230,81,0,.08);border:1px solid rgba(230,81,0,.35);}
+.ib.ag{background:rgba(21,101,192,.09);border:1px solid rgba(21,101,192,.4);}
+.ib-ico{font-size:18px;flex-shrink:0;margin-top:2px;}
+
+/* ── DIAGRAM WRAPPER ── */
+.dw{background:var(--bg2);border:1px solid var(--bd);border-radius:18px;padding:24px 20px 18px;margin-bottom:26px;overflow:hidden;}
+.dw-hd{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:#8AB4CC;
+  margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.dw-hd::after{content:'';flex:1;height:1px;background:var(--bd);}
+svg.d{width:100%;height:auto;display:block;}
+
+/* ── VS LAYOUT ── */
+.vs{display:grid;grid-template-columns:1fr 48px 1fr;gap:0;margin-bottom:26px;}
+.vs-l{padding:24px;background:rgba(230,81,0,.07);border:1px solid rgba(230,81,0,.3);border-radius:14px 0 0 14px;}
+.vs-r{padding:24px;background:rgba(21,101,192,.08);border:1px solid rgba(21,101,192,.35);border-radius:0 14px 14px 0;}
+.vs-m{display:flex;align-items:center;justify-content:center;
+  background:var(--s1);border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);
+  font-family:'Syne',sans-serif;font-size:17px;font-weight:800;color:var(--t3);}
+.vs-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;margin-bottom:12px;}
+.vs-l .vs-title{color:var(--fcil);}
+.vs-r .vs-title{color:var(--agl);}
+.vs-list{list-style:none;padding:0;}
+.vs-list li{font-size:12.5px;color:#CCE0F2;padding:5px 0;
+  border-bottom:1px dashed rgba(255,255,255,.08);display:flex;align-items:flex-start;gap:7px;}
+.vs-list li:last-child{border-bottom:none;}
+.li-icon{flex-shrink:0;margin-top:2px;font-size:13px;}
+
+/* ── EXAM CARDS ── */
+.ec{background:linear-gradient(135deg,rgba(240,168,0,.07),rgba(240,168,0,.02));
+  border:1px solid rgba(240,168,0,.35);border-radius:14px;padding:20px 24px;margin-bottom:18px;}
+.ec-lbl{display:inline-flex;align-items:center;gap:5px;
+  background:rgba(240,168,0,.15);border:1px solid rgba(240,168,0,.4);
+  border-radius:20px;padding:3px 10px;font-size:9.5px;font-weight:700;
+  letter-spacing:1.5px;text-transform:uppercase;color:var(--wn);margin-bottom:11px;}
+.ec h4{font-size:14.5px;font-weight:700;margin-bottom:8px;color:var(--t1);}
+.ec p{font-size:13px;color:#CCE4F8;line-height:1.8;}
+.ans{background:rgba(0,200,120,.09);border:1px solid rgba(0,200,120,.3);
+  border-radius:8px;padding:11px 15px;margin-top:11px;font-size:13px;color:#50D898;font-weight:600;line-height:1.7;}
+.no{background:rgba(240,48,64,.09);border:1px solid rgba(240,48,64,.3);
+  border-radius:8px;padding:11px 15px;margin-top:8px;font-size:13px;color:#F08090;line-height:1.7;}
+
+/* ── TIMELINE/FLOW ── */
+.flow{display:flex;flex-direction:column;gap:0;margin-bottom:24px;}
+.fstep{display:flex;gap:15px;padding:13px 0;border-bottom:1px dashed rgba(255,255,255,.07);}
+.fstep:last-child{border-bottom:none;}
+.fnum{width:28px;height:28px;border-radius:50%;flex-shrink:0;margin-top:3px;
+  display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;}
+.fnum.fci{background:rgba(230,81,0,.15);border:2px solid rgba(230,81,0,.45);color:var(--fcil);}
+.fnum.ag{background:rgba(21,101,192,.15);border:2px solid rgba(21,101,192,.45);color:var(--agl);}
+.fc h5{font-size:13.5px;font-weight:700;margin-bottom:3px;color:var(--t1);}
+.fc p{font-size:12.5px;color:#C8E0F4;line-height:1.8;}
+
+/* ── QUIZ ── */
+.qz{background:var(--bg3);border:1px solid var(--bd);border-radius:14px;padding:22px;margin-bottom:18px;}
+.qz-hd{display:flex;align-items:center;gap:9px;margin-bottom:11px;}
+.qz-n{width:26px;height:26px;border-radius:50%;background:rgba(0,120,212,.2);
+  border:2px solid rgba(0,120,212,.4);display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:800;color:var(--azl);flex-shrink:0;}
+.qz h4{font-size:14px;font-weight:700;color:var(--azl);}
+.qz .q{font-size:12.5px;color:#D4ECF8;margin-bottom:12px;line-height:1.8;}
+.choices{list-style:none;padding:0;}
+.choices li{padding:8px 12px;border-radius:7px;margin-bottom:5px;font-size:12.5px;
+  color:#D4ECF8;background:var(--s1);border:1px solid var(--bd);cursor:pointer;transition:all .2s;}
+.choices li:hover{background:var(--s2);color:var(--t1);}
+.choices li.correct{background:rgba(0,200,120,.1);border-color:rgba(0,200,120,.4);color:#50D898;}
+.choices li.wrong{background:rgba(240,48,64,.08);border-color:rgba(240,48,64,.3);color:#F08090;}
+.exp{background:var(--s2);border-left:3px solid var(--az);border-radius:0 8px 8px 0;
+  padding:13px 16px;font-size:12.5px;color:#D4ECF8;margin-top:11px;display:none;line-height:1.8;}
+.exp.show{display:block;}
+
+/* ── BADGE ── */
+.badge{display:inline-block;padding:2px 9px;border-radius:6px;font-size:11px;font-weight:700;}
+.b-fci{background:rgba(230,81,0,.18);border:1px solid rgba(230,81,0,.45);color:var(--fcil);}
+.b-ag{background:rgba(21,101,192,.18);border:1px solid rgba(21,101,192,.45);color:var(--agl);}
+.b-both{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);color:var(--t2);}
+
+@media(max-width:900px){
+  .vs{grid-template-columns:1fr;}
+  .vs-m{display:none;}
+  .vs-l,.vs-r{border-radius:14px;}
+  .pg{padding:24px 18px 80px;}
+  .nav,.hdr-in{padding-left:18px;padding-right:18px;}
+  .hero{padding:26px 20px;}
+}
+</style>
+</head>
+<body>
+
+<!-- HIDDEN SVG DEFS -->
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- FCI icon: shared disk cylinder with cluster nodes -->
+    <symbol id="ico-fci" viewBox="0 0 18 18">
+      <!-- shared storage disk -->
+      <ellipse cx="9" cy="14" rx="6" ry="2" fill="#E65100"/>
+      <rect x="3" y="10" width="12" height="4" fill="#E65100"/>
+      <ellipse cx="9" cy="10" rx="6" ry="2" fill="#FFB060"/>
+      <!-- node 1 (active) -->
+      <rect x="1" y="3" width="6" height="5" rx="1" fill="#E65100"/>
+      <rect x="1" y="3" width="6" height="2" rx="1" fill="#FFB060"/>
+      <!-- node 2 (passive - faded) -->
+      <rect x="11" y="3" width="6" height="5" rx="1" fill="#E65100" opacity=".4"/>
+      <rect x="11" y="3" width="6" height="2" rx="1" fill="#FFB060" opacity=".4"/>
+      <!-- connect lines to storage -->
+      <line x1="4" y1="8" x2="6" y2="10" stroke="#FFB060" stroke-width="1" stroke-linecap="round"/>
+      <line x1="14" y1="8" x2="12" y2="10" stroke="#FFB060" stroke-width=".6" stroke-linecap="round" opacity=".5"/>
+    </symbol>
+    <!-- AG icon: multiple independent nodes with sync arrows -->
+    <symbol id="ico-ag" viewBox="0 0 18 18">
+      <!-- primary node -->
+      <rect x="1" y="2" width="5" height="5" rx="1" fill="#1565C0"/>
+      <rect x="1" y="2" width="5" height="2" rx="1" fill="#60B4FF"/>
+      <!-- secondary 1 -->
+      <rect x="7" y="2" width="5" height="5" rx="1" fill="#1565C0"/>
+      <rect x="7" y="2" width="5" height="2" rx="1" fill="#60B4FF"/>
+      <!-- secondary 2 -->
+      <rect x="13" y="2" width="5" height="5" rx="1" fill="#1565C0"/>
+      <rect x="13" y="2" width="5" height="2" rx="1" fill="#60B4FF"/>
+      <!-- individual storage under each -->
+      <rect x="1" y="9" width="5" height="3" rx=".5" fill="#0D47A1" opacity=".7"/>
+      <rect x="7" y="9" width="5" height="3" rx=".5" fill="#0D47A1" opacity=".5"/>
+      <rect x="13" y="9" width="5" height="3" rx=".5" fill="#0D47A1" opacity=".5"/>
+      <!-- sync arrows -->
+      <path d="M6.5 4.5 L7 4.5" stroke="#60B4FF" stroke-width="1.3" stroke-linecap="round" marker-end="url(#arrag)"/>
+      <path d="M12.5 4.5 L13 4.5" stroke="#60B4FF" stroke-width="1.3" stroke-linecap="round" marker-end="url(#arrag)"/>
+      <!-- WSFC line -->
+      <path d="M1 14 L17 14" stroke="rgba(255,255,255,.25)" stroke-width="1" stroke-dasharray="2,1"/>
+      <text x="9" y="17" text-anchor="middle" fill="rgba(255,255,255,.35)" font-size="2.8" font-family="sans-serif">WSFC</text>
+    </symbol>
+    <!-- WSFC icon -->
+    <symbol id="ico-wsfc" viewBox="0 0 18 18">
+      <rect x="1" y="1" width="16" height="16" rx="3" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1.2" stroke-dasharray="3,2"/>
+      <circle cx="5" cy="6" r="2" fill="#50E6FF"/>
+      <circle cx="13" cy="6" r="2" fill="#50E6FF"/>
+      <circle cx="9" cy="13" r="2" fill="#50E6FF"/>
+      <line x1="5" y1="6" x2="13" y2="6" stroke="#50E6FF" stroke-width=".8" opacity=".6"/>
+      <line x1="5" y1="6" x2="9" y2="13" stroke="#50E6FF" stroke-width=".8" opacity=".6"/>
+      <line x1="13" y1="6" x2="9" y2="13" stroke="#50E6FF" stroke-width=".8" opacity=".6"/>
+    </symbol>
+    <marker id="arrag" markerWidth="5" markerHeight="4" refX="4" refY="2" orient="auto">
+      <polygon points="0 0,5 2,0 4" fill="#60B4FF"/>
+    </marker>
+    <marker id="arrblu" markerWidth="6" markerHeight="5" refX="5" refY="2.5" orient="auto">
+      <polygon points="0 0,6 2.5,0 5" fill="#0078D4"/>
+    </marker>
+    <marker id="arrfci" markerWidth="6" markerHeight="5" refX="5" refY="2.5" orient="auto">
+      <polygon points="0 0,6 2.5,0 5" fill="#FFB060"/>
+    </marker>
+    <marker id="arrag2" markerWidth="6" markerHeight="5" refX="5" refY="2.5" orient="auto">
+      <polygon points="0 0,6 2.5,0 5" fill="#60B4FF"/>
+    </marker>
+    <marker id="arrok" markerWidth="6" markerHeight="5" refX="5" refY="2.5" orient="auto">
+      <polygon points="0 0,6 2.5,0 5" fill="#00C878"/>
+    </marker>
+  </defs>
+</svg>
+
+<header class="hdr">
+  <div class="hdr-in">
+    <div class="brand">
+      <div class="brand-icon">
+        <svg width="18" height="18" viewBox="0 0 18 18"><use href="#ico-wsfc"/></svg>
+      </div>
+      <div>
+        <div class="brand-name">Always On FCI vs AG — 完全解説</div>
+        <div class="brand-sub">AZ-305 / SQL Server HA・DR</div>
+      </div>
+    </div>
+  </div>
+  <nav>
+    <div class="nav">
+      <button class="nb on" onclick="go('p0',this)"><span class="nb-dot" style="background:linear-gradient(135deg,#FFB060,#60B4FF)"></span>概要・核心の違い</button>
+      <button class="nb" onclick="go('p1',this)"><span class="nb-dot" style="background:var(--fcil)"></span>FCI 詳細</button>
+      <button class="nb" onclick="go('p2',this)"><span class="nb-dot" style="background:var(--agl)"></span>AG 詳細</button>
+      <button class="nb" onclick="go('p3',this)"><span class="nb-dot" style="background:#50E6FF"></span>徹底比較表</button>
+      <button class="nb" onclick="go('p4',this)"><span class="nb-dot" style="background:#00C878"></span>組み合わせ構成</button>
+      <button class="nb" onclick="go('p5',this)"><span class="nb-dot" style="background:#F0A800"></span>試験演習</button>
+    </div>
+  </nav>
+</header>
+
+<main>
+<!-- ══════════════════ PAGE 0: 概要・核心の違い ══════════════════ -->
+<div class="pg on" id="p0">
+  <div class="hero">
+    <div class="hero-content">
+      <div class="eyebrow"><svg width="12" height="12" viewBox="0 0 18 18"><use href="#ico-wsfc"/></svg> SQL Server High Availability</div>
+      <h1><span class="fci">フェールオーバークラスター (FCI)</span><br>vs <span class="ag">可用性グループ (AG)</span></h1>
+      <p class="hero-sub">
+        どちらも「SQL Serverを止めない」ための技術ですが、<strong style="color:#FFB060">保護の単位</strong>と<strong style="color:#60B4FF">ストレージの考え方</strong>がまったく異なります。
+        この違いを根本から理解することが、試験でも実務でも差がつくポイントです。
+      </p>
+      <div class="chips">
+        <span class="chip chip-fci"><svg width="12" height="12" viewBox="0 0 18 18"><use href="#ico-fci"/></svg> FCI = インスタンス単位</span>
+        <span class="chip chip-ag"><svg width="12" height="12" viewBox="0 0 18 18"><use href="#ico-ag"/></svg> AG = データベース単位</span>
+        <span class="chip chip-both"><svg width="12" height="12" viewBox="0 0 18 18"><use href="#ico-wsfc"/></svg> 両者: WSFC 必須</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CORE DIFFERENCE DIAGRAM -->
+  <div class="sh"><h2><span class="n">01</span> 一番重要な違い — 保護の粒度とストレージ</h2><div class="sh-line"></div></div>
+  <p class="sh-sub">FCI は「SQL Serverインスタンス全体」を共有ストレージで守る。AG は「選択したデータベース群」を独立ストレージで複製して守る。</p>
+
+  <div class="dw">
+    <div class="dw-hd"><span>FCI vs AG — アーキテクチャ根本比較</span></div>
+    <svg class="d" viewBox="0 0 960 500" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="fcibg" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="rgba(230,81,0,.12)"/>
+          <stop offset="1" stop-color="rgba(230,81,0,.04)"/>
+        </linearGradient>
+        <linearGradient id="agbg" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="rgba(21,101,192,.12)"/>
+          <stop offset="1" stop-color="rgba(21,101,192,.04)"/>
+        </linearGradient>
+      </defs>
+
+      <!-- ─── FCI SIDE ─── -->
+      <rect x="10" y="10" width="440" height="475" rx="16" fill="url(#fcibg)" stroke="rgba(230,81,0,.35)" stroke-width="1.5"/>
+      <text x="230" y="35" text-anchor="middle" fill="#FFB060" font-size="13" font-family="sans-serif" font-weight="700">FCI — Failover Cluster Instance</text>
+
+      <!-- WSFC boundary FCI -->
+      <rect x="26" y="50" width="408" height="200" rx="12" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.15)" stroke-width="1" stroke-dasharray="5,3"/>
+      <text x="230" y="68" text-anchor="middle" fill="rgba(255,255,255,.45)" font-size="10" font-family="sans-serif">Windows Server Failover Cluster (WSFC)</text>
+
+      <!-- Node 1 (Active) -->
+      <rect x="42" y="78" width="172" height="152" rx="10" fill="rgba(230,81,0,.15)" stroke="rgba(230,81,0,.5)" stroke-width="2"/>
+      <text x="128" y="100" text-anchor="middle" fill="#FFB060" font-size="11" font-family="sans-serif" font-weight="700">Node 1 (Active)</text>
+      <svg x="58" y="108" width="28" height="28" viewBox="0 0 18 18"><use href="#ico-fci"/></svg>
+      <text x="100" y="125" fill="#FFB060" font-size="10" font-family="sans-serif" font-weight="700">SQL Server</text>
+      <text x="100" y="140" fill="#E09060" font-size="9" font-family="sans-serif">稼働中 (ONLINE)</text>
+      <!-- Logins + Agent Jobs in instance -->
+      <rect x="58" y="152" width="140" height="64" rx="6" fill="rgba(230,81,0,.1)"/>
+      <text x="128" y="170" text-anchor="middle" fill="#E6A070" font-size="9" font-family="sans-serif">インスタンス全体を保護:</text>
+      <text x="128" y="184" text-anchor="middle" fill="#C87050" font-size="8.5" font-family="sans-serif">全DB / ログイン / リンクサーバー</text>
+      <text x="128" y="197" text-anchor="middle" fill="#C87050" font-size="8.5" font-family="sans-serif">Agent Job / 証明書 / 設定</text>
+      <text x="128" y="210" text-anchor="middle" fill="#C87050" font-size="8.5" font-family="sans-serif">→ まとめてフェールオーバー</text>
+
+      <!-- Node 2 (Passive) -->
+      <rect x="222" y="78" width="172" height="152" rx="10" fill="rgba(230,81,0,.06)" stroke="rgba(230,81,0,.25)" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="308" y="100" text-anchor="middle" fill="#C07040" font-size="11" font-family="sans-serif" font-weight="700">Node 2 (Passive)</text>
+      <text x="308" y="120" text-anchor="middle" fill="#C07840" font-size="9" font-family="sans-serif">SQL Server は停止中</text>
+      <text x="308" y="138" text-anchor="middle" fill="#C07840" font-size="9" font-family="sans-serif">フェールオーバー時だけ起動</text>
+      <text x="308" y="158" text-anchor="middle" fill="#604028" font-size="9" font-family="sans-serif">読み取り: 不可</text>
+      <text x="308" y="174" text-anchor="middle" fill="#604028" font-size="9" font-family="sans-serif">バックアップ: 不可</text>
+      <text x="308" y="190" text-anchor="middle" fill="#FF5020" font-size="9" font-family="sans-serif" font-weight="700">待機専用（リソース非活用）</text>
+
+      <!-- Shared Storage -->
+      <rect x="80" y="268" width="272" height="80" rx="12" fill="rgba(230,81,0,.18)" stroke="rgba(230,81,0,.6)" stroke-width="2.5"/>
+      <text x="216" y="292" text-anchor="middle" fill="#FFB060" font-size="12" font-family="sans-serif" font-weight="700">共有ストレージ（SAN / S2D / SMB）</text>
+      <text x="216" y="310" text-anchor="middle" fill="#E09060" font-size="9.5" font-family="sans-serif">全DBのデータファイルがここに存在</text>
+      <text x="216" y="324" text-anchor="middle" fill="#FF7020" font-size="9" font-family="sans-serif" font-weight="700">⚠ 単一障害点になりうる</text>
+      <line x1="128" y1="230" x2="156" y2="266" stroke="#FFB060" stroke-width="2" marker-end="url(#arrfci)"/>
+      <line x1="308" y1="230" x2="276" y2="266" stroke="#FFB060" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#arrfci)"/>
+
+      <!-- Failover time -->
+      <rect x="26" y="366" width="408" height="54" rx="10" fill="rgba(240,168,0,.08)" stroke="rgba(240,168,0,.3)" stroke-width="1"/>
+      <text x="230" y="390" text-anchor="middle" fill="#F0A800" font-size="11" font-family="sans-serif" font-weight="700">フェールオーバー時間: 30〜60秒</text>
+      <text x="230" y="408" text-anchor="middle" fill="#D0B020" font-size="9" font-family="sans-serif">Node2でSQL Server起動 + 全DBクラッシュリカバリ実行のため時間がかかる</text>
+
+      <!-- FCI pros/cons -->
+      <rect x="26" y="434" width="195" height="44" rx="8" fill="rgba(0,200,120,.07)" stroke="rgba(0,200,120,.25)" stroke-width="1"/>
+      <text x="123" y="453" text-anchor="middle" fill="#00C878" font-size="9.5" font-family="sans-serif" font-weight="700">長所: インスタンス全体を一括保護</text>
+      <text x="123" y="468" text-anchor="middle" fill="#00B870" font-size="9" font-family="sans-serif">ログイン/Agentの同期不要</text>
+      <rect x="232" y="434" width="200" height="44" rx="8" fill="rgba(240,48,64,.07)" stroke="rgba(240,48,64,.25)" stroke-width="1"/>
+      <text x="332" y="453" text-anchor="middle" fill="#F08090" font-size="9.5" font-family="sans-serif" font-weight="700">短所: 共有ストレージが必要・高価</text>
+      <text x="332" y="468" text-anchor="middle" fill="#A04050" font-size="9" font-family="sans-serif">セカンダリは読み取り不可</text>
+
+      <!-- ─── AG SIDE ─── -->
+      <rect x="510" y="10" width="440" height="475" rx="16" fill="url(#agbg)" stroke="rgba(21,101,192,.35)" stroke-width="1.5"/>
+      <text x="730" y="35" text-anchor="middle" fill="#60B4FF" font-size="13" font-family="sans-serif" font-weight="700">AG — Availability Group</text>
+
+      <!-- WSFC boundary AG -->
+      <rect x="526" y="50" width="408" height="200" rx="12" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.15)" stroke-width="1" stroke-dasharray="5,3"/>
+      <text x="730" y="68" text-anchor="middle" fill="rgba(255,255,255,.45)" font-size="10" font-family="sans-serif">Windows Server Failover Cluster (WSFC)</text>
+
+      <!-- Primary Replica -->
+      <rect x="536" y="78" width="158" height="152" rx="10" fill="rgba(21,101,192,.2)" stroke="rgba(21,101,192,.55)" stroke-width="2"/>
+      <text x="615" y="100" text-anchor="middle" fill="#60B4FF" font-size="11" font-family="sans-serif" font-weight="700">Primary Replica</text>
+      <svg x="548" y="106" width="26" height="26" viewBox="0 0 18 18"><use href="#ico-ag"/></svg>
+      <text x="615" y="124" fill="#60B4FF" font-size="10" font-family="sans-serif" font-weight="700">SQL Server (稼働)</text>
+      <rect x="548" y="134" width="130" height="60" rx="5" fill="rgba(0,120,212,.2)"/>
+      <text x="613" y="150" text-anchor="middle" fill="#50D4FF" font-size="9" font-family="sans-serif">AG 対象 DB 群:</text>
+      <text x="613" y="163" text-anchor="middle" fill="#70B8E0" font-size="8.5" font-family="sans-serif">DB-A / DB-B / DB-C</text>
+      <text x="613" y="176" text-anchor="middle" fill="#70B8E0" font-size="8.5" font-family="sans-serif">(選択したDBのみ)</text>
+      <!-- Own storage -->
+      <rect x="548" y="200" width="130" height="20" rx="4" fill="rgba(21,101,192,.3)"/>
+      <text x="613" y="214" text-anchor="middle" fill="#60B4FF" font-size="8.5" font-family="sans-serif">独自ストレージ</text>
+
+      <!-- Secondary Replica 1 -->
+      <rect x="704" y="78" width="108" height="132" rx="10" fill="rgba(21,101,192,.12)" stroke="rgba(21,101,192,.4)" stroke-width="1.5"/>
+      <text x="758" y="99" text-anchor="middle" fill="#4898E8" font-size="10" font-family="sans-serif" font-weight="700">Secondary 1</text>
+      <text x="758" y="115" text-anchor="middle" fill="#70A8D0" font-size="8.5" font-family="sans-serif">SQL Server 稼働</text>
+      <text x="758" y="130" text-anchor="middle" fill="#70A8D0" font-size="8.5" font-family="sans-serif">DB-A/B/C 同期受信</text>
+      <rect x="716" y="140" width="84" height="18" rx="4" fill="rgba(0,200,120,.15)"/>
+      <text x="758" y="153" text-anchor="middle" fill="#00C878" font-size="8" font-family="sans-serif">読み取り可 (RO)</text>
+      <rect x="716" y="162" width="84" height="18" rx="4" fill="rgba(0,200,120,.1)"/>
+      <text x="758" y="175" text-anchor="middle" fill="#00C878" font-size="8" font-family="sans-serif">バックアップ可</text>
+      <rect x="716" y="184" width="84" height="18" rx="4" fill="rgba(21,101,192,.3)"/>
+      <text x="758" y="197" text-anchor="middle" fill="#60B4FF" font-size="8" font-family="sans-serif">独自ストレージ</text>
+
+      <!-- Secondary 2 (smaller) -->
+      <rect x="824" y="78" width="100" height="132" rx="10" fill="rgba(21,101,192,.08)" stroke="rgba(21,101,192,.25)" stroke-width="1"/>
+      <text x="874" y="99" text-anchor="middle" fill="#306888" font-size="10" font-family="sans-serif" font-weight="700">Secondary 2</text>
+      <text x="874" y="115" text-anchor="middle" fill="#5090C0" font-size="8" font-family="sans-serif">同期 or 非同期</text>
+      <text x="874" y="130" text-anchor="middle" fill="#5090C0" font-size="8" font-family="sans-serif">別リージョン可</text>
+      <text x="874" y="148" text-anchor="middle" fill="#5090C0" font-size="8" font-family="sans-serif">DR用途</text>
+
+      <!-- Sync arrows -->
+      <line x1="694" y1="140" x2="706" y2="140" stroke="#60B4FF" stroke-width="2" marker-end="url(#arrag2)"/>
+      <text x="700" y="130" text-anchor="middle" fill="#60B4FF" font-size="8" font-family="sans-serif">同期</text>
+      <line x1="812" y1="140" x2="826" y2="140" stroke="#60B4FF" stroke-width="1.5" stroke-dasharray="3,2" marker-end="url(#arrag2)"/>
+      <text x="818" y="130" text-anchor="middle" fill="#50A8E0" font-size="8" font-family="sans-serif">非同期</text>
+
+      <!-- AG Listener -->
+      <rect x="560" y="268" width="348" height="44" rx="10" fill="rgba(0,120,212,.15)" stroke="rgba(0,120,212,.4)" stroke-width="1.5"/>
+      <text x="734" y="288" text-anchor="middle" fill="#50E6FF" font-size="11" font-family="sans-serif" font-weight="700">AG Listener（仮想IPアドレス）</text>
+      <text x="734" y="304" text-anchor="middle" fill="#60A8D0" font-size="9" font-family="sans-serif">アプリは常にListenerに接続 → 自動的にプライマリへルーティング</text>
+      <line x1="615" y1="232" x2="680" y2="266" stroke="#60B4FF" stroke-width="1.5" marker-end="url(#arrag2)"/>
+      <line x1="758" y1="210" x2="750" y2="266" stroke="#60B4FF" stroke-width="1.5" marker-end="url(#arrag2)"/>
+
+      <!-- Failover time -->
+      <rect x="526" y="328" width="408" height="54" rx="10" fill="rgba(0,200,120,.07)" stroke="rgba(0,200,120,.28)" stroke-width="1"/>
+      <text x="730" y="352" text-anchor="middle" fill="#00C878" font-size="11" font-family="sans-serif" font-weight="700">フェールオーバー時間: 通常 30秒以内 / 自動フェールオーバー可</text>
+      <text x="730" y="368" text-anchor="middle" fill="#00B870" font-size="9" font-family="sans-serif">Secondary はすでに SQL Server 稼働中のため、DB の昇格だけで完了（高速）</text>
+
+      <!-- AG pros/cons -->
+      <rect x="526" y="398" width="195" height="64" rx="8" fill="rgba(0,200,120,.07)" stroke="rgba(0,200,120,.25)" stroke-width="1"/>
+      <text x="623" y="418" text-anchor="middle" fill="#00C878" font-size="9.5" font-family="sans-serif" font-weight="700">長所</text>
+      <text x="623" y="434" text-anchor="middle" fill="#00B870" font-size="9" font-family="sans-serif">共有ストレージ不要</text>
+      <text x="623" y="449" text-anchor="middle" fill="#00B870" font-size="9" font-family="sans-serif">読み取りレプリカ活用可</text>
+      <text x="623" y="463" text-anchor="middle" fill="#00B870" font-size="9" font-family="sans-serif">DR（地理冗長）対応</text>
+      <rect x="730" y="398" width="200" height="64" rx="8" fill="rgba(240,48,64,.07)" stroke="rgba(240,48,64,.25)" stroke-width="1"/>
+      <text x="830" y="418" text-anchor="middle" fill="#F08090" font-size="9.5" font-family="sans-serif" font-weight="700">短所</text>
+      <text x="830" y="434" text-anchor="middle" fill="#A04050" font-size="9" font-family="sans-serif">ログイン/Agent Job の同期が必要</text>
+      <text x="830" y="449" text-anchor="middle" fill="#A04050" font-size="9" font-family="sans-serif">Enterprise Edition 推奨</text>
+      <text x="830" y="463" text-anchor="middle" fill="#A04050" font-size="9" font-family="sans-serif">設定・管理が複雑</text>
+    </svg>
+  </div>
+
+  <div class="ib tip">
+    <div class="ib-ico" style="font-size:18px;">i</div>
+    <div>
+      <strong>一言で覚える核心的な違い</strong>
+      <span style="color:var(--fcil)"><strong>FCI</strong></span>は「<strong>ひとつのSQL Serverインスタンスを複数のノードで共有する</strong>」— ストレージは共有、アクティブなのは1ノードのみ。<br>
+      <span style="color:var(--agl)"><strong>AG</strong></span>は「<strong>同じデータベースをそれぞれのSQL Serverで持ち合い、同期する</strong>」— ストレージは各自が持つ、セカンダリも稼働中。
+    </div>
+  </div>
+
+  <!-- 6-point comparison -->
+  <div class="sh"><h2><span class="n">02</span> 6つの観点で比較する</h2><div class="sh-line"></div></div>
+  <div class="vs">
+    <div class="vs-l">
+      <div class="vs-title"><svg width="16" height="16" viewBox="0 0 18 18" style="vertical-align:middle;margin-right:6px;"><use href="#ico-fci"/></svg>FCI の特徴</div>
+      <ul class="vs-list">
+        <li><span class="li-icon" style="color:var(--fcil)">▶</span><strong style="color:var(--t1)">保護単位:</strong> SQL Serverインスタンス全体（DB・ログイン・Agent Job・設定すべて）</li>
+        <li><span class="li-icon" style="color:var(--fcil)">▶</span><strong style="color:var(--t1)">ストレージ:</strong> 共有ストレージ必須（SAN / iSCSI / Storage Spaces Direct / SMB）</li>
+        <li><span class="li-icon" style="color:var(--fcil)">▶</span><strong style="color:var(--t1)">セカンダリの活用:</strong> 完全に待機専用。読み取り不可・バックアップ不可</li>
+        <li><span class="li-icon" style="color:var(--fcil)">▶</span><strong style="color:var(--t1)">フェールオーバー時間:</strong> 30〜60秒（全DB のクラッシュリカバリが必要）</li>
+        <li><span class="li-icon" style="color:var(--fcil)">▶</span><strong style="color:var(--t1)">エディション:</strong> Standard でも使用可能（コスト優位）</li>
+        <li><span class="li-icon" style="color:var(--fcil)">▶</span><strong style="color:var(--t1)">管理の手間:</strong> シンプル（インスタンスが1つ。ログイン同期不要）</li>
+        <li><span class="li-icon" style="color:var(--fcil)">▶</span><strong style="color:var(--t1)">地理冗長（DR）:</strong> ストレージが共有のため別データセンターへの対応が困難</li>
+        <li><span class="li-icon" style="color:var(--fcil)">▶</span><strong style="color:var(--t1)">Azure対応:</strong> 可能だが共有ストレージ構成が複雑（Azure Shared Disks等）</li>
+      </ul>
+    </div>
+    <div class="vs-m">vs</div>
+    <div class="vs-r">
+      <div class="vs-title"><svg width="16" height="16" viewBox="0 0 18 18" style="vertical-align:middle;margin-right:6px;"><use href="#ico-ag"/></svg>AG の特徴</div>
+      <ul class="vs-list">
+        <li><span class="li-icon" style="color:var(--agl)">▶</span><strong style="color:var(--t1)">保護単位:</strong> 選択したデータベースのグループ（DB単位で制御可能）</li>
+        <li><span class="li-icon" style="color:var(--agl)">▶</span><strong style="color:var(--t1)">ストレージ:</strong> 各レプリカが独自のストレージを持つ（共有不要）</li>
+        <li><span class="li-icon" style="color:var(--agl)">▶</span><strong style="color:var(--t1)">セカンダリの活用:</strong> 読み取り専用クエリのオフロード・バックアップのオフロードが可能</li>
+        <li><span class="li-icon" style="color:var(--agl)">▶</span><strong style="color:var(--t1)">フェールオーバー時間:</strong> 通常30秒以内。自動フェールオーバー対応（同期レプリカ）</li>
+        <li><span class="li-icon" style="color:var(--agl)">▶</span><strong style="color:var(--t1)">エディション:</strong> 原則 Enterprise 推奨（Standard は制限あり: 1DB/グループ、2レプリカまで）</li>
+        <li><span class="li-icon" style="color:var(--agl)">▶</span><strong style="color:var(--t1)">管理の手間:</strong> 複雑（ログイン・Agent Job を全レプリカに同期する必要あり）</li>
+        <li><span class="li-icon" style="color:var(--agl)">▶</span><strong style="color:var(--t1)">地理冗長（DR）:</strong> 非同期レプリカを別リージョンに配置して DR を実現できる</li>
+        <li><span class="li-icon" style="color:var(--agl)">▶</span><strong style="color:var(--t1)">Azure対応:</strong> Azure VM で最も一般的なHA構成（共有ストレージ不要のため）</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="ib warn">
+    <div class="ib-ico">!</div>
+    <div>
+      <strong>FCI はインスタンスレベル、AG はデータベースレベル — 組み合わせも可能</strong>
+      FCI と AG は排他的な選択肢ではありません。FCI ノード上に AG レプリカを配置することができます（例: FCI が Primary レプリカを担当し、AG で別サイトに DR レプリカを持つ）。ただし FCI 上の AG レプリカは <strong>自動フェールオーバーが使えない</strong>（手動フェールオーバーのみ）という制限があります。
+    </div>
+  </div>
+</div><!-- /p0 -->
+
+<!-- ══════════════════ PAGE 1: FCI 詳細 ══════════════════ -->
+<div class="pg" id="p1">
+  <div class="hero" style="background:linear-gradient(135deg,rgba(230,81,0,.12),rgba(230,81,0,.04));border-color:rgba(230,81,0,.35);">
+    <div class="hero-content">
+      <div class="eyebrow" style="background:rgba(230,81,0,.18);border-color:rgba(230,81,0,.45);color:var(--fcil);">
+        <svg width="12" height="12" viewBox="0 0 18 18"><use href="#ico-fci"/></svg> FCI — Failover Cluster Instance
+      </div>
+      <h1 style="background:linear-gradient(135deg,#fff,#FFB060,#E65100);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">フェールオーバークラスター<br>インスタンス 詳細解説</h1>
+      <p class="hero-sub">SQL Serverインスタンス全体を単一の論理サーバーとして複数ノードにまたがらせる技術。アクティブノードが障害を起こすと、パッシブノードがインスタンス全体を引き継ぎます。</p>
+    </div>
+  </div>
+
+  <div class="sh"><h2><span class="n">01</span> FCI のフェールオーバーフロー</h2><div class="sh-line"></div></div>
+  <div class="flow">
+    <div class="fstep">
+      <div class="fnum fci">1</div>
+      <div class="fc">
+        <h5>通常稼働: Node 1 がアクティブ</h5>
+        <p>Node 1 が SQL Serverインスタンスを実行中。共有ストレージの所有権を持ち、全DBへの読み書きを担当。Node 2 は SQL Server が停止しており、待機のみ。</p>
+      </div>
+    </div>
+    <div class="fstep">
+      <div class="fnum fci">2</div>
+      <div class="fc">
+        <h5>障害検知: WSFC がノード障害を検知</h5>
+        <p>WSFC のヘルスチェックが Node 1 の障害を検知（ハートビート途絶など）。フェールオーバーポリシーに従って Node 2 へのフェールオーバーを開始。</p>
+      </div>
+    </div>
+    <div class="fstep">
+      <div class="fnum fci">3</div>
+      <div class="fc">
+        <h5>ストレージの所有権移転</h5>
+        <p>共有ストレージ（SAN / SMB / S2D）の所有権が Node 2 に移転。Node 2 から同じデータファイルが見える状態になる。これがFCIの核心。</p>
+      </div>
+    </div>
+    <div class="fstep">
+      <div class="fnum fci">4</div>
+      <div class="fc">
+        <h5>Node 2 で SQL Server 起動 + クラッシュリカバリ</h5>
+        <p>Node 2 で SQL Server インスタンスが起動。全 DB のクラッシュリカバリ（コミット済みトランザクションのロールフォワード・ロールバック）を実行。<strong style="color:var(--wn)">これが30〜60秒かかる原因。</strong></p>
+      </div>
+    </div>
+    <div class="fstep">
+      <div class="fnum fci">5</div>
+      <div class="fc">
+        <h5>フェールオーバー完了: アプリは同じ仮想IPに接続</h5>
+        <p>WSFC の仮想ネットワーク名・仮想IPアドレスが Node 2 に移動。アプリケーションは接続文字列を変更せず同じ名前で接続可能。RPO = ゼロ（コミット済みデータは共有ストレージに存在）。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="sh"><h2><span class="n">02</span> 必要なコンポーネント</h2><div class="sh-line"></div></div>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th class="thg">コンポーネント</th><th class="thfci">要件</th><th class="thg">説明</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Windows Server Failover Cluster (WSFC)</td><td class="ok">必須</td><td>FCI の基盤。ノード間のヘルスチェック・フェールオーバー制御を担当</td></tr>
+        <tr><td>共有ストレージ</td><td class="ok">必須</td><td>全ノードからアクセス可能なストレージ（SAN / iSCSI / S2D / SMB 3.0 / Azure Shared Disks）</td></tr>
+        <tr><td>仮想ネットワーク名 / 仮想IP</td><td class="ok">必須</td><td>アプリが接続するための論理名（フェールオーバー後も変わらない）</td></tr>
+        <tr><td>SQL Server エディション</td><td class="ok">Standard でも可</td><td>Enterprise 不要。Standard でも FCI を構成できる</td></tr>
+        <tr><td>各ノードに SQL Server のインストール</td><td class="ok">必須</td><td>ただし稼働するのは1ノードのみ（インスタンスは共有）</td></tr>
+        <tr><td>Active Directory</td><td class="ok">推奨</td><td>WSFC と SQL Server の認証基盤として推奨</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sh"><h2><span class="n">03</span> FCI の制限事項</h2><div class="sh-line"></div></div>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th class="thg">制限</th><th class="thfci">内容</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>読み取りセカンダリ</td><td class="er">不可。パッシブノードの SQL Server は停止中のためクエリを受け付けない</td></tr>
+        <tr><td>バックアップのオフロード</td><td class="er">不可。アクティブノードのみ</td></tr>
+        <tr><td>地理的DR</td><td class="wn">困難。共有ストレージを別データセンターに延伸する必要がある（高コスト・複雑）</td></tr>
+        <tr><td>単一障害点</td><td class="er">共有ストレージが障害を起こすと全DBが停止。S2D 等で冗長化が必要</td></tr>
+        <tr><td>Azure 環境</td><td class="wn">Azure Shared Disks または Storage Spaces Direct が必要で構成が複雑</td></tr>
+        <tr><td>データ損失リスク</td><td class="ok">RPO=0（共有ストレージにコミット済みデータが存在）</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div><!-- /p1 -->
+
+<!-- ══════════════════ PAGE 2: AG 詳細 ══════════════════ -->
+<div class="pg" id="p2">
+  <div class="hero" style="background:linear-gradient(135deg,rgba(21,101,192,.12),rgba(21,101,192,.04));border-color:rgba(21,101,192,.35);">
+    <div class="hero-content">
+      <div class="eyebrow" style="background:rgba(21,101,192,.2);border-color:rgba(21,101,192,.5);color:var(--agl);">
+        <svg width="12" height="12" viewBox="0 0 18 18"><use href="#ico-ag"/></svg> AG — Always On Availability Group
+      </div>
+      <h1 style="background:linear-gradient(135deg,#fff,#90C8FF,#1565C0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">可用性グループ<br>詳細解説</h1>
+      <p class="hero-sub">選択したデータベースを複数のレプリカで同期する技術。SQL Server 2012 で導入。プライマリが障害を起こすと、セカンダリが自動でプライマリに昇格します。</p>
+    </div>
+  </div>
+
+  <div class="sh"><h2><span class="n">01</span> AG のフェールオーバーフロー</h2><div class="sh-line"></div></div>
+  <div class="flow">
+    <div class="fstep">
+      <div class="fnum ag">1</div>
+      <div class="fc">
+        <h5>通常稼働: Primary レプリカが読み書きを担当</h5>
+        <p>Primary レプリカがすべての読み書きを担当。トランザクションログがセカンダリに送信される。同期レプリカは commit 前にセカンダリへの書き込みを待つ（RPO=0）。非同期レプリカは待たない（高性能だが RPO &gt; 0）。</p>
+      </div>
+    </div>
+    <div class="fstep">
+      <div class="fnum ag">2</div>
+      <div class="fc">
+        <h5>障害検知: WSFC がプライマリの障害を検知</h5>
+        <p>WSFC のヘルスチェックがプライマリの障害を検知。自動フェールオーバーが設定されている場合、候補のセカンダリに自動で切り替え開始（同期レプリカのみ自動フェールオーバー可）。</p>
+      </div>
+    </div>
+    <div class="fstep">
+      <div class="fnum ag">3</div>
+      <div class="fc">
+        <h5>セカンダリが Primary へ昇格</h5>
+        <p>対象のセカンダリは SQL Server が<strong style="color:var(--agl)">すでに稼働中</strong>なので、DBを読み書き可能状態（ONLINE）にするだけで昇格完了。クラッシュリカバリは不要（ログが常に同期済み）。FCI より<strong style="color:var(--ok)">大幅に速い</strong>のはこのため。</p>
+      </div>
+    </div>
+    <div class="fstep">
+      <div class="fnum ag">4</div>
+      <div class="fc">
+        <h5>AG Listener の仮想IPが新プライマリに向く</h5>
+        <p>AG Listener の仮想IPアドレスが新プライマリのノードに向く。アプリは Listener の名前（<code style="font-family:JetBrains Mono;font-size:11px;color:#9CDCFE;">Data Source=listener-name;</code>）で接続していれば透過的に新プライマリへ接続。<code>ApplicationIntent=ReadOnly</code> の接続は読み取り可能セカンダリへルーティング。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="sh"><h2><span class="n">02</span> 同期コミット vs 非同期コミット</h2><div class="sh-line"></div></div>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th class="thg">モード</th><th class="thag">動作</th><th class="thg">RPO</th><th class="thg">RTO</th><th class="thg">パフォーマンス影響</th><th class="thg">典型ユースケース</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong style="color:var(--agl)">同期コミット</strong></td>
+          <td>セカンダリの書き込み確認後にプライマリが commit を返す</td>
+          <td class="ok">0（データ損失なし）</td>
+          <td class="ok">自動フェールオーバー可能</td>
+          <td class="wn">レイテンシ増加（同じデータセンター推奨）</td>
+          <td>HA（高可用性）/ 同一データセンター内</td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--fcil)">非同期コミット</strong></td>
+          <td>セカンダリを待たずにプライマリが commit を返す</td>
+          <td class="er">0ではない（直近の未送信ログ分）</td>
+          <td class="wn">手動フェールオーバーのみ</td>
+          <td class="ok">プライマリのパフォーマンス影響なし</td>
+          <td>DR（広域災害対策）/ 別リージョン・別データセンター</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sh"><h2><span class="n">03</span> セカンダリレプリカの活用（FCIにない機能）</h2><div class="sh-line"></div></div>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th class="thg">機能</th><th class="thag">AG</th><th class="thfci">FCI</th><th class="thg">設定</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>読み取り専用クエリのオフロード</td><td class="ok">可能（Readable Secondary）</td><td class="er">不可</td><td>接続文字列に <code style="font-size:11px;color:#9CDCFE;">ApplicationIntent=ReadOnly</code></td></tr>
+        <tr><td>バックアップのオフロード</td><td class="ok">可能（優先順位設定可）</td><td class="er">不可</td><td>AG プロパティでバックアップ先を設定</td></tr>
+        <tr><td>レポート・分析クエリ</td><td class="ok">セカンダリに向けることで本番への影響ゼロ</td><td class="er">不可</td><td>読み取り可能セカンダリにアクセス</td></tr>
+        <tr><td>自動ページ修復（腐敗ページ）</td><td class="ok">他のレプリカからページを取得して自動修復</td><td class="er">なし</td><td>自動（設定不要）</td></tr>
+        <tr><td>ローリングアップグレード（ダウンタイムなし）</td><td class="ok">セカンダリ→プライマリの順でアップグレード</td><td class="er">困難</td><td>計画的フェールオーバーを活用</td></tr>
+        <tr><td>DR（別リージョン）</td><td class="ok">非同期レプリカを別リージョンに配置</td><td class="wn">困難（共有ストレージの延伸が必要）</td><td>非同期コミットモード</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sh"><h2><span class="n">04</span> Contained Availability Groups（SQL Server 2022）</h2><div class="sh-line"></div></div>
+  <div class="ib ag">
+    <div class="ib-ico">i</div>
+    <div>
+      <strong style="color:var(--agl);">SQL Server 2022 の新機能: Contained AG</strong>
+      通常の AG では、ログイン・SQL Server Agent ジョブ・msdb オブジェクトなどの「インスタンスレベルオブジェクト」は AG で複製されず、各レプリカに手動で同期する必要がありました。
+      SQL Server 2022 の <strong>Contained AG</strong> では、<strong>master / msdb データベースが AG のスコープに含まれる</strong>ため、ログイン・Agent ジョブ・リンクサーバーなども AG のフェールオーバーと一緒に移動します。FCI の「インスタンス全体を守る」という強みと、AG の「柔軟性」を組み合わせた形です。
+    </div>
+  </div>
+
+  <div class="ec">
+    <div class="ec-lbl">試験ポイント</div>
+    <h4>「セカンダリを読み取り専用レポートに使いたい。また別リージョンにDR拠点を持ちたい」</h4>
+    <div class="ans">✅ Always On AG — 読み取り可能セカンダリ（ApplicationIntent=ReadOnly）＋ 非同期コミットで別リージョンDRが可能</div>
+    <div class="no">❌ FCI — セカンダリは待機専用で読み取り不可。DR対応も困難</div>
+  </div>
+</div><!-- /p2 -->
+
+<!-- ══════════════════ PAGE 3: 徹底比較表 ══════════════════ -->
+<div class="pg" id="p3">
+  <div class="hero">
+    <div class="hero-content">
+      <div class="eyebrow">徹底比較</div>
+      <h1>FCI vs AG<br>全項目比較マトリクス</h1>
+      <p class="hero-sub">試験で「FCI か AG か」を瞬時に判断できるよう、全ての観点を並べて比較します。</p>
+    </div>
+  </div>
+
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th class="thg">比較項目</th><th class="thfci">FCI</th><th class="thag">AG</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>保護の単位</td><td class="cfci">インスタンス全体（全DB・ログイン・Agent Job・設定）</td><td class="cag">選択したデータベースのグループ</td></tr>
+        <tr><td>ストレージ</td><td class="cfci">共有ストレージ必須（SAN / iSCSI / S2D / SMB）</td><td class="cag">各レプリカが独自ストレージを持つ（共有不要）</td></tr>
+        <tr><td>セカンダリの状態</td><td class="cfci">SQL Server 停止（待機専用）</td><td class="cag">SQL Server 稼働中</td></tr>
+        <tr><td>セカンダリ読み取り</td><td class="er">不可</td><td class="ok">可能（設定次第）</td></tr>
+        <tr><td>バックアップのオフロード</td><td class="er">不可</td><td class="ok">可能</td></tr>
+        <tr><td>フェールオーバー時間</td><td class="cfci">30〜60秒（クラッシュリカバリ必要）</td><td class="cag">通常30秒以内（秒単位も可能）</td></tr>
+        <tr><td>自動フェールオーバー</td><td class="ok">対応</td><td class="ok">対応（同期コミットのみ）</td></tr>
+        <tr><td>RPO（データ損失）</td><td class="ok">0（共有ストレージ）</td><td class="cag">同期=0 / 非同期=0より大きい</td></tr>
+        <tr><td>SQL Server エディション</td><td class="ok">Standard でも可</td><td class="wn">Enterprise 推奨（Standardは1DB/グループ・2レプリカ制限）</td></tr>
+        <tr><td>ログイン・Agent Job 管理</td><td class="ok">インスタンス単位なので自動（同期不要）</td><td class="er">全レプリカに手動同期が必要（Contained AGで解消）</td></tr>
+        <tr><td>データベース数</td><td class="ok">制限なし（インスタンスの全DB）</td><td class="cag">Enterprise: 複数DB / Standard: 1DB/グループ</td></tr>
+        <tr><td>DR（別サイト・別リージョン）</td><td class="er">困難（共有ストレージを延伸する必要）</td><td class="ok">容易（非同期レプリカを別リージョンに配置）</td></tr>
+        <tr><td>Azure VM での利用</td><td class="wn">可能だが複雑（Azure Shared Disks等が必要）</td><td class="ok">推奨（共有ストレージ不要で構成が簡単）</td></tr>
+        <tr><td>Azure SQL MI での利用</td><td class="er">非対応（MI は内部で AG 相当の技術を使用）</td><td class="ok">MI Link の基盤技術（分散AG）</td></tr>
+        <tr><td>Linux 対応</td><td class="ok">Pacemaker ベースで対応（WSFC 不要）</td><td class="ok">Pacemaker ベースで対応（WSFC 不要）</td></tr>
+        <tr><td>ライセンスコスト</td><td class="ok">Standard エディションで構成可能（低コスト）</td><td class="er">Enterprise 推奨（高コスト）</td></tr>
+        <tr><td>管理の複雑さ</td><td class="ok">比較的シンプル（インスタンスが1つ）</td><td class="er">複雑（レプリカ間の同期管理・Listener設定等）</td></tr>
+        <tr><td>腐敗ページ自動修復</td><td class="er">なし</td><td class="ok">あり（他レプリカからページ取得）</td></tr>
+        <tr><td>ローリングアップグレード</td><td class="er">困難</td><td class="ok">ダウンタイムなしで実施可能</td></tr>
+        <tr><td>Contained AG（SQL2022）</td><td class="er">N/A</td><td class="ok">ログイン・Agent Job も AG に含めて複製可能</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sh"><h2><span class="n">02</span> シナリオ別 選択チート</h2><div class="sh-line"></div></div>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th class="thg">シナリオのキーワード</th><th class="thb">正解</th><th class="thg">理由</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>「SQL Server Standard エディションでコスト抑えてHA」</td><td><span class="badge b-fci">FCI</span></td><td>FCI は Standard でも使用可能。AG の Enterprise 不要</td></tr>
+        <tr><td>「セカンダリで読み取りレポートをオフロードしたい」</td><td><span class="badge b-ag">AG</span></td><td>AG の読み取り可能セカンダリ。FCI は読み取り不可</td></tr>
+        <tr><td>「別リージョンにDR拠点を持ちたい」</td><td><span class="badge b-ag">AG</span></td><td>非同期コミットで別リージョンに AG レプリカを配置</td></tr>
+        <tr><td>「インスタンス全体（DB・ログイン・Agent Job）を一括で守りたい」</td><td><span class="badge b-fci">FCI</span></td><td>FCI はインスタンス全体を保護。AG はDB単位のみ</td></tr>
+        <tr><td>「Azure VM でHA構成をシンプルに組みたい」</td><td><span class="badge b-ag">AG</span></td><td>Azure で共有ストレージを用意するのは複雑。AG は各自のディスクで構成可能</td></tr>
+        <tr><td>「ダウンタイムなしで SQL Server をアップグレードしたい」</td><td><span class="badge b-ag">AG</span></td><td>AG のローリングアップグレード（計画フェールオーバーを使用）</td></tr>
+        <tr><td>「FCI ノードの上に DR 用のリモートレプリカも持ちたい」</td><td><span class="badge b-both">FCI + AG 組合せ</span></td><td>FCI が Primary レプリカを担当し、AG で別サイトにセカンダリを追加</td></tr>
+        <tr><td>「腐敗ページが発生した場合に自動修復したい」</td><td><span class="badge b-ag">AG</span></td><td>AG は他のレプリカから正常なページを自動取得して修復</td></tr>
+        <tr><td>「RPO = 0（データ損失ゼロ）が必要」</td><td><span class="badge b-both">どちらも可</span></td><td>FCI は共有ストレージで常に RPO=0 / AG は同期コミットで RPO=0</td></tr>
+        <tr><td>「SQL Server 2022 で AG のログイン同期の手間をなくしたい」</td><td><span class="badge b-ag">AG (Contained)</span></td><td>Contained AG でログイン・Agent Job も AG スコープに含まれる</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div><!-- /p3 -->
+
+<!-- ══════════════════ PAGE 4: 組み合わせ構成 ══════════════════ -->
+<div class="pg" id="p4">
+  <div class="hero">
+    <div class="hero-content">
+      <div class="eyebrow">FCI + AG 組み合わせ</div>
+      <h1>FCI の上に AG を構成する<br>ハイブリッドアーキテクチャ</h1>
+      <p class="hero-sub">FCI はインスタンスレベルのHA、AG はデータベースレベルの DR という役割分担で組み合わせることができます。</p>
+    </div>
+  </div>
+
+  <div class="sh"><h2><span class="n">01</span> FCI + AG 組み合わせアーキテクチャ</h2><div class="sh-line"></div></div>
+
+  <div class="dw">
+    <div class="dw-hd"><span>FCI + AG 組み合わせ — 典型的な本番構成</span></div>
+    <svg class="d" viewBox="0 0 960 380" xmlns="http://www.w3.org/2000/svg">
+      <!-- Site A: FCI as Primary AG Replica -->
+      <rect x="10" y="10" width="400" height="350" rx="14" fill="rgba(230,81,0,.06)" stroke="rgba(230,81,0,.3)" stroke-width="1.5"/>
+      <text x="210" y="32" text-anchor="middle" fill="#FFB060" font-size="12" font-family="sans-serif" font-weight="700">Site A — Primary (FCI)</text>
+      <text x="210" y="50" text-anchor="middle" fill="#C07840" font-size="9.5" font-family="sans-serif">AG の Primary レプリカを FCI が担当</text>
+
+      <!-- FCI Node 1 Active -->
+      <rect x="30" y="68" width="160" height="130" rx="10" fill="rgba(230,81,0,.15)" stroke="rgba(230,81,0,.5)" stroke-width="2"/>
+      <text x="110" y="88" text-anchor="middle" fill="#FFB060" font-size="10" font-family="sans-serif" font-weight="700">FCI Node 1 (Active)</text>
+      <text x="110" y="104" text-anchor="middle" fill="#E09060" font-size="9" font-family="sans-serif">SQL Server 稼働</text>
+      <text x="110" y="122" text-anchor="middle" fill="#E09060" font-size="9" font-family="sans-serif">AG Primary Replica</text>
+      <text x="110" y="140" text-anchor="middle" fill="#E8A060" font-size="8.5" font-family="sans-serif">DB-A / DB-B / DB-C</text>
+      <text x="110" y="157" text-anchor="middle" fill="#E8A060" font-size="8.5" font-family="sans-serif">読み書き可能</text>
+      <text x="110" y="173" text-anchor="middle" fill="#C07840" font-size="8.5" font-family="sans-serif">ログイン・Agent Job</text>
+      <text x="110" y="188" text-anchor="middle" fill="#C07840" font-size="8.5" font-family="sans-serif">（共有ストレージ）</text>
+
+      <!-- FCI Node 2 Passive -->
+      <rect x="210" y="68" width="160" height="130" rx="10" fill="rgba(230,81,0,.06)" stroke="rgba(230,81,0,.22)" stroke-width="1" stroke-dasharray="4,3"/>
+      <text x="290" y="88" text-anchor="middle" fill="#C07040" font-size="10" font-family="sans-serif" font-weight="700">FCI Node 2 (Passive)</text>
+      <text x="290" y="106" text-anchor="middle" fill="#B07040" font-size="9" font-family="sans-serif">SQL Server 停止中</text>
+      <text x="290" y="124" text-anchor="middle" fill="#B07040" font-size="9" font-family="sans-serif">FCI フェールオーバー先</text>
+      <text x="290" y="144" text-anchor="middle" fill="#504010" font-size="8.5" font-family="sans-serif">FCI 障害時のみ引き継ぎ</text>
+
+      <!-- Shared Storage -->
+      <rect x="80" y="218" width="230" height="50" rx="10" fill="rgba(230,81,0,.15)" stroke="rgba(230,81,0,.5)" stroke-width="2"/>
+      <text x="195" y="240" text-anchor="middle" fill="#FFB060" font-size="10" font-family="sans-serif" font-weight="700">共有ストレージ (SAN)</text>
+      <text x="195" y="256" text-anchor="middle" fill="#E09060" font-size="8.5" font-family="sans-serif">FCI 両ノードからアクセス可能</text>
+      <line x1="110" y1="198" x2="145" y2="216" stroke="#FFB060" stroke-width="1.5" marker-end="url(#arrfci)"/>
+      <line x1="290" y1="198" x2="245" y2="216" stroke="#FFB060" stroke-width="1.5" stroke-dasharray="3,2" marker-end="url(#arrfci)"/>
+
+      <!-- Important note: manual failover only for AG when on FCI -->
+      <rect x="30" y="284" width="360" height="60" rx="8" fill="rgba(240,168,0,.08)" stroke="rgba(240,168,0,.3)" stroke-width="1"/>
+      <text x="210" y="306" text-anchor="middle" fill="#F0A800" font-size="10" font-family="sans-serif" font-weight="700">重要: FCI上のAGレプリカは自動フェールオーバー不可</text>
+      <text x="210" y="324" text-anchor="middle" fill="#D0B020" font-size="9" font-family="sans-serif">FCI ノード上のAGレプリカは「手動フェールオーバーのみ」に設定する必要がある</text>
+      <text x="210" y="339" text-anchor="middle" fill="#D0B020" font-size="9" font-family="sans-serif">（WSFCの制限）</text>
+
+      <!-- Site B: Standalone Secondary Replica -->
+      <rect x="440" y="10" width="500" height="350" rx="14" fill="rgba(21,101,192,.06)" stroke="rgba(21,101,192,.3)" stroke-width="1.5"/>
+      <text x="690" y="32" text-anchor="middle" fill="#60B4FF" font-size="12" font-family="sans-serif" font-weight="700">Site B — Secondary AG Replica（別サイト DR）</text>
+      <text x="690" y="50" text-anchor="middle" fill="#6090C0" font-size="9.5" font-family="sans-serif">スタンドアロン SQL Server インスタンス（共有ストレージ不要）</text>
+
+      <!-- Standalone Secondary -->
+      <rect x="470" y="68" width="440" height="150" rx="10" fill="rgba(21,101,192,.12)" stroke="rgba(21,101,192,.4)" stroke-width="1.5"/>
+      <text x="690" y="90" text-anchor="middle" fill="#60B4FF" font-size="11" font-family="sans-serif" font-weight="700">AG Secondary Replica</text>
+      <text x="690" y="108" text-anchor="middle" fill="#4090C0" font-size="9.5" font-family="sans-serif">SQL Server 稼働中（Site A から非同期でログを受信）</text>
+      <!-- Two DBs -->
+      <rect x="488" y="118" width="180" height="72" rx="8" fill="rgba(21,101,192,.2)"/>
+      <text x="578" y="138" text-anchor="middle" fill="#60B4FF" font-size="9" font-family="sans-serif">DB-A / DB-B / DB-C</text>
+      <text x="578" y="154" text-anchor="middle" fill="#60A0C8" font-size="8.5" font-family="sans-serif">独自ストレージ上</text>
+      <text x="578" y="170" text-anchor="middle" fill="#00C878" font-size="8.5" font-family="sans-serif">読み取り可能 (RO)</text>
+      <text x="578" y="185" text-anchor="middle" fill="#00C878" font-size="8.5" font-family="sans-serif">バックアップ取得可</text>
+      <rect x="680" y="118" width="218" height="72" rx="8" fill="rgba(21,101,192,.15)"/>
+      <text x="789" y="138" text-anchor="middle" fill="#4090C0" font-size="9" font-family="sans-serif">非同期コミットモード</text>
+      <text x="789" y="154" text-anchor="middle" fill="#5090C0" font-size="8.5" font-family="sans-serif">RPO &gt; 0（直近の未同期分）</text>
+      <text x="789" y="170" text-anchor="middle" fill="#5090C0" font-size="8.5" font-family="sans-serif">Site A 全断時に手動フェールオーバー</text>
+      <text x="789" y="185" text-anchor="middle" fill="#5090C0" font-size="8.5" font-family="sans-serif">→ Primaryに昇格可能</text>
+
+      <!-- Listener -->
+      <rect x="470" y="232" width="440" height="44" rx="10" fill="rgba(0,120,212,.12)" stroke="rgba(0,120,212,.35)" stroke-width="1.5"/>
+      <text x="690" y="252" text-anchor="middle" fill="#50E6FF" font-size="10" font-family="sans-serif" font-weight="700">AG Listener（仮想IP: Site A のFCIインスタンスに向く）</text>
+      <text x="690" y="268" text-anchor="middle" fill="#60A8D0" font-size="8.5" font-family="sans-serif">DR フェールオーバー後は Listener を手動で Site B に切り替え、またはDNS更新</text>
+
+      <!-- Benefit note -->
+      <rect x="470" y="290" width="440" height="60" rx="8" fill="rgba(0,200,120,.06)" stroke="rgba(0,200,120,.25)" stroke-width="1"/>
+      <text x="690" y="312" text-anchor="middle" fill="#00C878" font-size="10" font-family="sans-serif" font-weight="700">この構成で得られるもの</text>
+      <text x="690" y="330" text-anchor="middle" fill="#00B870" font-size="9" font-family="sans-serif">FCI: Site A でインスタンスレベルのHA（ログイン・Agent Job一括保護）</text>
+      <text x="690" y="345" text-anchor="middle" fill="#00B870" font-size="9" font-family="sans-serif">AG: 別サイトでDB-A/B/CをDR保護 ＋ 読み取りオフロード</text>
+
+      <!-- Async replication arrow -->
+      <path d="M 412 155 Q 430 155 460 155" stroke="#60B4FF" stroke-width="2.5" stroke-dasharray="5,3" fill="none" marker-end="url(#arrag2)"/>
+      <text x="436" y="142" fill="#4090C0" font-size="9" font-family="sans-serif">非同期レプリケーション</text>
+      <text x="436" y="156" fill="#306088" font-size="8.5" font-family="sans-serif">（ログ転送）</text>
+    </svg>
+  </div>
+
+  <div class="ib warn">
+    <div class="ib-ico">!</div>
+    <div>
+      <strong>FCI 上の AG レプリカは自動フェールオーバーが使えない</strong>
+      Microsoft の仕様として、FCI ノードが AG レプリカをホストしている場合、その AG レプリカの可用性モードは <strong>手動フェールオーバー</strong> にしか設定できません。
+      自動フェールオーバーは、スタンドアロンの SQL Server インスタンスがレプリカをホストしている場合のみ機能します。試験でこの制限が問われることがあります。
+    </div>
+  </div>
+</div><!-- /p4 -->
+
+<!-- ══════════════════ PAGE 5: 試験演習 ══════════════════ -->
+<div class="pg" id="p5">
+  <div class="hero" style="background:linear-gradient(135deg,rgba(0,200,120,.08),rgba(0,200,120,.03));border-color:rgba(0,200,120,.3);">
+    <div class="hero-content">
+      <div class="eyebrow" style="background:rgba(0,200,120,.18);border-color:rgba(0,200,120,.45);color:#00C878;">試験演習</div>
+      <h1 style="background:linear-gradient(135deg,#fff,#80E8C0,#00C878);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">シナリオ問題演習</h1>
+      <p class="hero-sub" style="color:#A8D8C0;">選択肢をクリックして正誤を確認。解説で「なぜ他は間違いか」まで理解してください。</p>
+    </div>
+  </div>
+
+  <!-- Q1 -->
+  <div class="qz" id="q1">
+    <div class="qz-hd"><div class="qz-n">1</div><h4>SQL Standard + コスト重視 + HA</h4></div>
+    <p class="q">中規模の業務システムで、SQL Server Standard エディションを使用しています。コストを最小化しながら、サーバー障害時に自動でフェールオーバーするHA構成を組みたい。最も適切な構成はどれですか？</p>
+    <ul class="choices">
+      <li onclick="qa(this,'q1',true)">A. Always On フェールオーバークラスターインスタンス (FCI)</li>
+      <li onclick="qa(this,'q1',false)">B. Always On 可用性グループ (AG) — Enterprise Edition に変更して</li>
+      <li onclick="qa(this,'q1',false)">C. ログ配布 (Log Shipping)</li>
+      <li onclick="qa(this,'q1',false)">D. データベースミラーリング</li>
+    </ul>
+    <div id="ex-q1" class="exp"><strong style="color:#00C878">✅ 正解: A — FCI</strong><br><br>
+    SQL Server Standard でも FCI は使用可能です。AG は Enterprise Edition 推奨（Standard では 1DB/グループ・2レプリカの制限）なのでコストが増大します。<br><br>
+    <strong>なぜCは不正解か:</strong> ログ配布は RPO が数分以上あり、自動フェールオーバーも手動操作が必要です。<br>
+    <strong>なぜDは不正解か:</strong> データベースミラーリングは SQL Server 2012 以降で非推奨（Deprecated）です。</div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="qz" id="q2">
+    <div class="qz-hd"><div class="qz-n">2</div><h4>読み取りオフロード + DR</h4></div>
+    <p class="q">大規模なECサイトのデータベースで、次の2つの要件があります。①本番DBへの影響なしでレポートクエリを実行したい ②東日本リージョン障害時に西日本リージョンにDRフェールオーバーしたい。最適な構成はどれですか？</p>
+    <ul class="choices">
+      <li onclick="qa(this,'q2',false)">A. FCI（共有ストレージを東西リージョンに延伸）</li>
+      <li onclick="qa(this,'q2',true)">B. AG（同期コミット+読み取り可能セカンダリで東日本HA、非同期コミットで西日本DR）</li>
+      <li onclick="qa(this,'q2',false)">C. FCI（東日本のみ）+ バックアップを西日本にリストア</li>
+      <li onclick="qa(this,'q2',false)">D. AG（全レプリカ同期コミット）で東日本・西日本の3ノード</li>
+    </ul>
+    <div id="ex-q2" class="exp"><strong style="color:#00C878">✅ 正解: B — AG ハイブリッド構成</strong><br><br>
+    AG の読み取り可能セカンダリで①を満たし、非同期コミットの西日本レプリカで②を実現します。これが AG の典型的なHA+DR+読み取りオフロードの構成です。<br><br>
+    <strong>なぜAは不正解か:</strong> 共有ストレージをリージョン間で延伸するのはほぼ不可能（レイテンシの問題）かつ非常に高コストです。<br>
+    <strong>なぜDは不正解か:</strong> 全レプリカを同期コミットにすると、最も遠いレプリカへの書き込みを待つため、東西のレイテンシ分だけプライマリのレスポンスが遅くなります。DR拠点は非同期が適切です。</div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="qz" id="q3">
+    <div class="qz-hd"><div class="qz-n">3</div><h4>フェールオーバー時間の違い</h4></div>
+    <p class="q">FCI と AG のフェールオーバー時間が異なる根本的な理由として、最も正確なものはどれですか？</p>
+    <ul class="choices">
+      <li onclick="qa(this,'q3',false)">A. FCI は共有ストレージへのアクセス権移転に時間がかかるため</li>
+      <li onclick="qa(this,'q3',true)">B. FCI はフェールオーバー先のノードで SQL Server の起動とすべての DB のクラッシュリカバリが必要なため。AG のセカンダリは SQL Server が稼働済みのため DB の昇格のみで完了する</li>
+      <li onclick="qa(this,'q3',false)">C. AG はネットワーク経由でデータを同期しているためデータ適用が速いため</li>
+      <li onclick="qa(this,'q3',false)">D. FCI はクラスターノード間の通信に余分な時間がかかるため</li>
+    </ul>
+    <div id="ex-q3" class="exp"><strong style="color:#00C878">✅ 正解: B</strong><br><br>
+    FCI のフェールオーバーが30〜60秒かかる根本的な理由は、<strong>パッシブノードでは SQL Server が停止していること</strong>です。フェールオーバー時にSQL Serverを起動し、全データベースのクラッシュリカバリ（コミット済みトランザクションのロールフォワード）を実行する必要があります。<br><br>
+    AG のセカンダリはすでに SQL Server が稼働しており、ログも継続的に適用されているため、プライマリへの昇格はDBをONLINE状態にするだけで完了します（秒単位〜30秒以内）。<br><br>
+    <strong>なぜAは間違いか:</strong> ストレージ所有権の移転は比較的速く、ボトルネックはクラッシュリカバリです。</div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="qz" id="q4">
+    <div class="qz-hd"><div class="qz-n">4</div><h4>Contained AG（SQL Server 2022）</h4></div>
+    <p class="q">AGを使用していますが、フェールオーバー後に「セカンダリに SQL Server Agent ジョブが存在しない」「ログインが見つからない」という問題が発生しています。SQL Server 2022 でこの問題を根本解決する機能はどれですか？</p>
+    <ul class="choices">
+      <li onclick="qa(this,'q4',false)">A. 同期コミットモードに変更する</li>
+      <li onclick="qa(this,'q4',false)">B. AG Listener を使用する</li>
+      <li onclick="qa(this,'q4',true)">C. Contained Availability Group を使用する</li>
+      <li onclick="qa(this,'q4',false)">D. FCI に移行する</li>
+    </ul>
+    <div id="ex-q4" class="exp"><strong style="color:#00C878">✅ 正解: C — Contained Availability Group</strong><br><br>
+    通常の AG では、ログインや SQL Server Agent ジョブは「インスタンスレベルオブジェクト」のため AG のレプリケーション対象外です。各セカンダリに手動で同期する必要があります。<br><br>
+    SQL Server 2022 の <strong>Contained AG</strong> では、<strong>master / msdb データベースが AG のスコープに含まれる</strong>ため、ログイン・Agent Job・リンクサーバーなども自動でフェールオーバー先に複製されます。<br><br>
+    <strong>なぜDは不正解か:</strong> FCI に移行すれば確かにインスタンス全体が一括で守られますが、読み取りレプリカや DR 機能を失います。Contained AG はAGを維持しながらこの問題を解決します。</div>
+  </div>
+
+  <!-- Q5 -->
+  <div class="qz" id="q5">
+    <div class="qz-hd"><div class="qz-n">5</div><h4>FCI + AG 組み合わせの制限</h4></div>
+    <p class="q">Site A の FCI（Node1/Node2 + 共有ストレージ）を AG の Primary レプリカとして使用し、Site B のスタンドアロン SQL Server を Secondary レプリカとして AG を構成しました。この構成で「自動フェールオーバー」を設定しようとしています。この設定は可能ですか？</p>
+    <ul class="choices">
+      <li onclick="qa(this,'q5',false)">A. 可能。同期コミットに設定すれば自動フェールオーバーが機能する</li>
+      <li onclick="qa(this,'q5',true)">B. FCI ノード上の AG レプリカは手動フェールオーバーのみ。自動フェールオーバーは設定できない</li>
+      <li onclick="qa(this,'q5',false)">C. 可能。ただし WSFC のクォーラムを3ノードにする必要がある</li>
+      <li onclick="qa(this,'q5',false)">D. 不可能。FCI と AG は組み合わせることができない</li>
+    </ul>
+    <div id="ex-q5" class="exp"><strong style="color:#00C878">✅ 正解: B</strong><br><br>
+    Microsoft の仕様として、<strong>FCI ノードがホストする AG レプリカは手動フェールオーバーのみ</strong>に設定する必要があります。自動フェールオーバーはスタンドアロン SQL Server インスタンスがレプリカをホストする場合のみ機能します。<br><br>
+    <strong>なぜDは不正解か:</strong> FCI と AG の組み合わせは完全に対応しています。FCI を Primary レプリカとして使いつつ、AG で別サイトに Secondary を追加することができます。ただし自動フェールオーバーの制限があります。</div>
+  </div>
+
+  <!-- Summary -->
+  <div class="dw" style="margin-top:32px;">
+    <div class="dw-hd"><span>演習まとめ — 判断の軸</span></div>
+    <div class="tw" style="margin-bottom:0;">
+      <table>
+        <thead>
+          <tr><th class="thg">キーワード</th><th class="thb">答え</th><th class="thg">決め手</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>SQL Standard・コスト重視・HA</td><td><span class="badge b-fci">FCI</span></td><td>FCI は Standard でも使用可能。AG は Enterprise 推奨</td></tr>
+          <tr><td>読み取りオフロード・別リージョンDR</td><td><span class="badge b-ag">AG</span></td><td>読み取り可能セカンダリ + 非同期コミットDR</td></tr>
+          <tr><td>フェールオーバーが遅い（30〜60秒）</td><td><span class="badge b-fci">FCI</span></td><td>パッシブノードのSQL Server起動+クラッシュリカバリが原因</td></tr>
+          <tr><td>AG でログイン・Agent Job を自動同期</td><td><span class="badge b-ag">Contained AG (2022)</span></td><td>master/msdb が AG スコープに含まれる</td></tr>
+          <tr><td>FCI上のAGレプリカで自動フェールオーバー</td><td><span class="badge b-both" style="background:rgba(240,48,64,.15);border-color:rgba(240,48,64,.4);color:#F08090;">不可</span></td><td>FCI上のAGレプリカは手動フェールオーバーのみ</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div><!-- /p5 -->
+</main>
+
+<script>
+function go(id, btn) {
+  document.querySelectorAll('.pg').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(b => b.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  if (btn) btn.classList.add('on');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function qa(el, qid, correct) {
+  const c = document.getElementById(qid);
+  c.querySelectorAll('.choices li').forEach(li => { li.onclick = null; li.style.cursor = 'default'; });
+  el.classList.add(correct ? 'correct' : 'wrong');
+  el.textContent = (correct ? '✅ ' : '❌ ') + el.textContent;
+  const ex = document.getElementById('ex-' + qid);
+  if (ex) ex.classList.add('show');
+}
+</script>
+</body>
+</html>
