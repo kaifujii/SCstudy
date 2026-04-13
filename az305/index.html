@@ -287,6 +287,9 @@ main {
 .desc-arrow { color: var(--muted); transition: color 0.15s, transform 0.15s; }
 .desc-card:hover .desc-arrow { color: #5c2d91; transform: translateX(2px); }
 .section-gap { margin-top: 28px; }
+.desc-cat { display: flex; align-items: center; gap: 8px; margin: 20px 0 8px; }
+.desc-cat-label { font-size: 0.62rem; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); }
+.desc-cat::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
 /* ===== DARK MODE ===== */
 [data-dark] {
@@ -468,9 +471,12 @@ main {
   <div class="section-label">参考解説</div>
   <div class="desc-list">
 
+    <!-- ネットワーキング -->
+    <div class="desc-cat"><span class="desc-cat-label">ネットワーキング</span></div>
+
     <a href="descriptions/bgp-az305-guide.html" class="desc-card">
       <div class="desc-icon">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
       </div>
       <div class="desc-body">
         <div class="desc-title">BGP 完全解説</div>
@@ -478,6 +484,103 @@ main {
       </div>
       <svg class="desc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
     </a>
+
+    <a href="descriptions/az305_v2_complete.html" class="desc-card">
+      <div class="desc-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8l4 4-4 4"/></svg>
+      </div>
+      <div class="desc-body">
+        <div class="desc-title">サービスEP・プライベートEP・強制トンネリング 完全攻略</div>
+        <div class="desc-sub">エンドポイント種別の違いと強制トンネリングの動作を体系的に整理</div>
+      </div>
+      <svg class="desc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </a>
+
+    <a href="descriptions/private-dns-forwarder-guide.html" class="desc-card">
+      <div class="desc-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </div>
+      <div class="desc-body">
+        <div class="desc-title">Azure プライベートDNSゾーン フォワーダー設定</div>
+        <div class="desc-sub">オンプレミスからプライベートDNSゾーンへの名前解決フローを完全解説</div>
+      </div>
+      <svg class="desc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </a>
+
+    <!-- コンテナ・Kubernetes -->
+    <div class="desc-cat"><span class="desc-cat-label">コンテナ・Kubernetes</span></div>
+
+    <a href="descriptions/aks_apim_explanation.html" class="desc-card">
+      <div class="desc-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+      </div>
+      <div class="desc-body">
+        <div class="desc-title">AKS + API Management アーキテクチャ</div>
+        <div class="desc-sub">単一プライベートIP・mTLS・レート制限によるマイクロサービス公開を解説</div>
+      </div>
+      <svg class="desc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </a>
+
+    <a href="descriptions/az_aks_scaling.html" class="desc-card">
+      <div class="desc-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+      </div>
+      <div class="desc-body">
+        <div class="desc-title">AKS スケーリング完全ガイド</div>
+        <div class="desc-sub">HPA・VPA・KEDA・Cluster Autoscaler の違いと使い分けを解説</div>
+      </div>
+      <svg class="desc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </a>
+
+    <a href="descriptions/flux-dapr-istio-guide.html" class="desc-card">
+      <div class="desc-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="8" height="8" rx="2"/><rect x="14" y="2" width="8" height="8" rx="2"/><rect x="2" y="14" width="8" height="8" rx="2"/><rect x="14" y="14" width="8" height="8" rx="2"/></svg>
+      </div>
+      <div class="desc-body">
+        <div class="desc-title">Flux・Dapr・Istio 完全解説</div>
+        <div class="desc-sub">AKS のGitOps・サービスメッシュ・分散アプリ基盤の役割を整理</div>
+      </div>
+      <svg class="desc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </a>
+
+    <!-- データ・ストレージ -->
+    <div class="desc-cat"><span class="desc-cat-label">データ・ストレージ</span></div>
+
+    <a href="descriptions/az_sql_tiers.html" class="desc-card">
+      <div class="desc-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/></svg>
+      </div>
+      <div class="desc-body">
+        <div class="desc-title">Azure SQL — デプロイモデル × サービスティア 完全マトリクス</div>
+        <div class="desc-sub">SQL DB / SQL MI / SQL VM の選択基準とティア比較を体系整理</div>
+      </div>
+      <svg class="desc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </a>
+
+    <a href="descriptions/az_fci_vs_ag.html" class="desc-card">
+      <div class="desc-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>
+      </div>
+      <div class="desc-body">
+        <div class="desc-title">Always On FCI vs Availability Group 完全解説</div>
+        <div class="desc-sub">SQL Server 高可用性の2方式の違い・使い分け・Azure 上の構成を解説</div>
+      </div>
+      <svg class="desc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </a>
+
+    <a href="descriptions/az305_tools3_final.html" class="desc-card">
+      <div class="desc-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+      </div>
+      <div class="desc-body">
+        <div class="desc-title">データ転送・移行ツール完全ガイド</div>
+        <div class="desc-sub">AzCopy・Data Box・Database Migration Service など移行ツールの選択基準</div>
+      </div>
+      <svg class="desc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </a>
+
+    <!-- 認証・セキュリティ -->
+    <div class="desc-cat"><span class="desc-cat-label">認証・セキュリティ</span></div>
 
     <a href="descriptions/entra-appreg-delegated-guide.html" class="desc-card">
       <div class="desc-icon">
@@ -501,16 +604,8 @@ main {
       <svg class="desc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
     </a>
 
-    <a href="descriptions/flux-dapr-istio-guide.html" class="desc-card">
-      <div class="desc-icon">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="8" height="8" rx="2"/><rect x="14" y="2" width="8" height="8" rx="2"/><rect x="2" y="14" width="8" height="8" rx="2"/><rect x="14" y="14" width="8" height="8" rx="2"/></svg>
-      </div>
-      <div class="desc-body">
-        <div class="desc-title">Flux・Dapr・Istio 完全解説</div>
-        <div class="desc-sub">AKS のGitOps・サービスメッシュ・分散アプリ基盤の役割を整理</div>
-      </div>
-      <svg class="desc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-    </a>
+    <!-- 統合・アプリケーション -->
+    <div class="desc-cat"><span class="desc-cat-label">統合・アプリケーション</span></div>
 
     <a href="descriptions/logicapps-db2-gateway-guide.html" class="desc-card">
       <div class="desc-icon">
@@ -519,39 +614,6 @@ main {
       <div class="desc-body">
         <div class="desc-title">Logic Apps × オンプレミス DB2 接続</div>
         <div class="desc-sub">オンプレミスデータゲートウェイ経由でDB2に接続する構成を解説</div>
-      </div>
-      <svg class="desc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-    </a>
-
-    <a href="descriptions/aks_apim_explanation.html" class="desc-card">
-      <div class="desc-icon">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M4.93 4.93a10 10 0 0 0 0 14.14"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
-      </div>
-      <div class="desc-body">
-        <div class="desc-title">AKS + API Management アーキテクチャ</div>
-        <div class="desc-sub">単一プライベートIP・mTLS・レート制限によるマイクロサービス公開を解説</div>
-      </div>
-      <svg class="desc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-    </a>
-
-    <a href="descriptions/az305_v2_complete.html" class="desc-card">
-      <div class="desc-icon">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-      </div>
-      <div class="desc-body">
-        <div class="desc-title">サービスEP・プライベートEP・強制トンネリング 完全攻略</div>
-        <div class="desc-sub">エンドポイント種別の違いと強制トンネリングの動作を体系的に整理</div>
-      </div>
-      <svg class="desc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-    </a>
-
-    <a href="descriptions/private-dns-forwarder-guide.html" class="desc-card">
-      <div class="desc-icon">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10H3"/><path d="M21 6H3"/><path d="M21 14H3"/><path d="M21 18H3"/></svg>
-      </div>
-      <div class="desc-body">
-        <div class="desc-title">Azure プライベートDNSゾーン フォワーダー設定</div>
-        <div class="desc-sub">オンプレミスからプライベートDNSゾーンへの名前解決フローを完全解説</div>
       </div>
       <svg class="desc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
     </a>
