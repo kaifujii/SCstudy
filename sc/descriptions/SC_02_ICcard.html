@@ -421,7 +421,7 @@
   </svg>
   <div style="position:relative">
     <p class="cover-kicker">技術解説書 — 情報処理安全確保支援士対応</p>
-    <h1>暗号認証の基礎から<br><em>ICカード認証</em>まで</h1>
+    <h1>共通鍵・公開鍵認証から<br><em>ICカード認証</em>まで</h1>
     <p class="cover-desc">共通鍵認証・公開鍵認証の仕組みと違いを丁寧に解説したうえで、ICカード認証にどうつながるかを接続します。シーケンス図・脅威分析・セキュリティ要件・試験頻出比較・練習問題まで網羅した完全版解説書です。</p>
     <div class="cover-tags">
       <span class="ctag">共通鍵認証</span>
@@ -462,515 +462,639 @@
   <main class="main">
 
 
-    <!-- ══════════════════════════════════════════
-         前段 01 — 共通鍵認証
-    ══════════════════════════════════════════ -->
+
+    <!-- ═══════════════════════════════════════════════════════
+         01 — 共通鍵認証の仕組み
+    ═══════════════════════════════════════════════════════ -->
     <section class="section" id="s0a">
       <div class="section-header">
         <span class="s-num">01</span>
         <h2>共通鍵認証の仕組み</h2>
       </div>
 
-      <p>共通鍵認証とは、<strong>サーバと利用者の双方が同じ秘密の鍵（共通鍵）を事前に共有</strong>し、その鍵を使って生成したMAC値やハッシュ値を照合することで「正しい鍵を持っている＝本人である」と確認する認証方式です。パスワードのハッシュ照合・HMAC認証・Kerberos などが代表例です。</p>
+      <p>共通鍵認証とは、<strong>サーバと利用者の双方がまったく同じ秘密の鍵を事前に共有</strong>し、その鍵を使って生成したMAC値やハッシュ値を照合することで「正しい鍵を持っている＝本人」と確認する認証方式です。</p>
 
-      <!-- 図1：共通鍵イラスト -->
-      <div class="seq-wrap" style="padding:32px 32px 24px;">
-        <p class="seq-cap">図 1 — 共通鍵認証：双方がまったく同じ鍵を保有する</p>
-        <svg viewBox="0 0 700 220" style="min-width:540px;display:block" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <marker id="mDash1" viewBox="0 0 6 6" refX="3" refY="3" markerWidth="6" markerHeight="6" orient="auto">
-              <circle cx="3" cy="3" r="2" fill="#b5821e"/>
-            </marker>
-          </defs>
-
-          <!-- ─── 利用者カード ─── -->
-          <rect x="30" y="30" width="180" height="160" rx="12" fill="#141824" stroke="#1570b8" stroke-width="1.2"/>
-          <rect x="30" y="30" width="180" height="44" rx="12" fill="#1e3560"/>
-          <rect x="30" y="62" width="180" height="12" fill="#1e3560"/>
-          <text x="120" y="56" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="13" font-weight="500" fill="white">利用者</text>
-          <text x="120" y="94" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="rgba(255,255,255,.45)">CLIENT</text>
-          <!-- 共通鍵イラスト（利用者） cx=100 cy=148 -->
-          <g transform="translate(52,118)">
-            <!-- 鍵のリング部分 -->
-            <circle cx="22" cy="22" r="19" fill="#2a1f00" stroke="#d4a820" stroke-width="2.5"/>
-            <circle cx="22" cy="22" r="11" fill="#141824" stroke="#d4a820" stroke-width="2"/>
-            <!-- リングのハイライト -->
-            <path d="M10,14 A14,14 0 0,1 34,14" fill="none" stroke="#f5d060" stroke-width="1.2" stroke-linecap="round" opacity=".7"/>
-            <!-- 鍵の柄（シャフト） -->
-            <rect x="41" y="18" width="64" height="8" rx="4" fill="#d4a820"/>
-            <!-- 歯1 -->
-            <rect x="76" y="26" width="7" height="14" rx="2" fill="#d4a820"/>
-            <!-- 歯2 -->
-            <rect x="90" y="26" width="7" height="10" rx="2" fill="#d4a820"/>
-            <!-- シャフトのハイライト -->
-            <rect x="41" y="19" width="64" height="3" rx="2" fill="#f5d060" opacity=".5"/>
-          </g>
-          <text x="120" y="182" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10.5" fill="#d4a820" font-weight="500">共通鍵 K</text>
-
-          <!-- ─── 中央パネル ─── -->
-          <rect x="256" y="68" width="188" height="84" rx="10" fill="#fff8e6" stroke="#d4a820" stroke-width="1.2"/>
-          <text x="350" y="98" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="12" font-weight="700" fill="#7a4208">= 同一の鍵を共有</text>
-          <text x="350" y="118" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10.5" fill="#7a4208">同じ鍵を持っている</text>
-          <text x="350" y="133" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10.5" fill="#7a4208">＝ 本人であることの証明</text>
-          <!-- 両端の破線 -->
-          <line x1="210" y1="110" x2="255" y2="110" stroke="#d4a820" stroke-width="1.5" stroke-dasharray="4 3"/>
-          <line x1="444" y1="110" x2="489" y2="110" stroke="#d4a820" stroke-width="1.5" stroke-dasharray="4 3"/>
-
-          <!-- ─── サーバカード ─── -->
-          <rect x="490" y="30" width="180" height="160" rx="12" fill="#141824" stroke="#1a9e6a" stroke-width="1.2"/>
-          <rect x="490" y="30" width="180" height="44" rx="12" fill="#0d3d28"/>
-          <rect x="490" y="62" width="180" height="12" fill="#0d3d28"/>
-          <text x="580" y="56" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="13" font-weight="500" fill="white">サーバ</text>
-          <text x="580" y="94" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="rgba(255,255,255,.45)">SERVER</text>
-          <!-- 共通鍵イラスト（サーバ・まったく同じ形） -->
-          <g transform="translate(512,118)">
-            <circle cx="22" cy="22" r="19" fill="#2a1f00" stroke="#d4a820" stroke-width="2.5"/>
-            <circle cx="22" cy="22" r="11" fill="#141824" stroke="#d4a820" stroke-width="2"/>
-            <path d="M10,14 A14,14 0 0,1 34,14" fill="none" stroke="#f5d060" stroke-width="1.2" stroke-linecap="round" opacity=".7"/>
-            <rect x="41" y="18" width="64" height="8" rx="4" fill="#d4a820"/>
-            <rect x="76" y="26" width="7" height="14" rx="2" fill="#d4a820"/>
-            <rect x="90" y="26" width="7" height="10" rx="2" fill="#d4a820"/>
-            <rect x="41" y="19" width="64" height="3" rx="2" fill="#f5d060" opacity=".5"/>
-          </g>
-          <text x="580" y="182" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10.5" fill="#d4a820" font-weight="500">共通鍵 K（同一）</text>
-
-          <!-- 下部注記 -->
-          <rect x="30" y="200" width="640" height="18" rx="5" fill="#fdf0f0" stroke="#7a1818" stroke-width="0.8"/>
-          <text x="350" y="212" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#7a1818">課題：サーバが侵害されると保管中の共通鍵 K が流出し、全ユーザへのなりすましが可能になる</text>
-        </svg>
+      <!-- たとえ話 -->
+      <div class="note warn">
+        <div class="note-i">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#b5821e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+        </div>
+        <p><strong>たとえ話 — 合鍵の合言葉：</strong>アリスとボブが金庫屋さんで全く同じ鍵を1本ずつ作り、別々に持ち帰った状態です。「同じ鍵を持っているか？」を確かめるとき、鍵そのものは渡さず、「この鍵でこの暗号を解いてみて」という問題（チャレンジ）を出し合います。答えが合えば相手が同じ鍵を持っていると証明できます。<br><strong>問題点：</strong>金庫屋の在庫（サーバのDBリスト）が盗まれると、全員の鍵情報が一度に漏れます。</p>
       </div>
 
-      <h3>認証シーケンス（チャレンジ応答 + HMAC の例）</h3>
-      <p>共通鍵認証の典型的なフローを示します。サーバが乱数（チャレンジ）を送り、利用者が共通鍵でMAC値を生成して応答し、サーバが同じ計算結果と照合します。</p>
+      <!-- 図1：共通鍵アイコンイラスト（HTMLとCSSで構築） -->
+      <div style="background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:24px 0;">
+        <div style="background:var(--ink2);color:#fff;padding:10px 18px;font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;display:flex;align-items:center;gap:8px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><circle cx="8" cy="8" r="3"/><line x1="14" y1="14" x2="22" y2="22"/></svg>
+          図 1 — 共通鍵認証：双方がまったく同じ鍵を保有する
+        </div>
+        <div style="padding:28px 32px 20px;overflow-x:auto;">
+          <div style="min-width:600px;display:flex;align-items:center;justify-content:space-between;gap:0;">
 
-      <div class="seq-wrap">
-        <p class="seq-cap">シーケンス図 A — 共通鍵認証（HMAC チャレンジ応答）</p>
-        <svg class="seq" viewBox="0 0 660 358" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <marker id="ahA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
-              <path d="M1 1L9 5L1 9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </marker>
-          </defs>
-          <!-- 事前共有バナー -->
-          <rect x="14" y="8" width="632" height="22" rx="4" fill="#fff8e6" stroke="#b5821e" stroke-width="0.8"/>
-          <text x="330" y="22" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#7a4208">【事前】安全な手段で共通鍵 K を双方に配布・保管済み</text>
-          <!-- Headers -->
-          <rect x="30" y="38" width="140" height="44" rx="6" fill="#1e2d4a"/>
-          <text x="100" y="58" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="12" font-weight="500" fill="white">利用者</text>
-          <text x="100" y="74" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9" fill="rgba(255,255,255,.45)">CLIENT</text>
-          <rect x="490" y="38" width="140" height="44" rx="6" fill="#155f44"/>
-          <text x="560" y="58" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="12" font-weight="500" fill="white">サーバ</text>
-          <text x="560" y="74" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9" fill="rgba(255,255,255,.45)">SERVER</text>
-          <!-- Lifelines -->
-          <line x1="100" y1="82" x2="100" y2="338" stroke="#cdd7e6" stroke-width="1" stroke-dasharray="4 4"/>
-          <line x1="560" y1="82" x2="560" y2="338" stroke="#cdd7e6" stroke-width="1" stroke-dasharray="4 4"/>
-          <!-- Activation -->
-          <rect x="93" y="128" width="14" height="160" rx="2" fill="#d8eaff" stroke="#0b4a82" stroke-width="0.8"/>
-          <rect x="553" y="90" width="14" height="218" rx="2" fill="#d0f0e0" stroke="#155f44" stroke-width="0.8"/>
-          <!-- ① 認証要求 -->
-          <line x1="107" y1="104" x2="552" y2="104" stroke="#141824" stroke-width="1.5" marker-end="url(#ahA)"/>
-          <rect x="196" y="88" width="138" height="16" rx="3" fill="white"/>
-          <text x="265" y="99" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10.5" fill="#141824">① 認証要求（ID 送信）</text>
-          <!-- ② チャレンジ生成ボックス（ライフラインの外側右） -->
-          <rect x="574" y="112" width="72" height="30" rx="5" fill="#d0f0e0" stroke="#155f44" stroke-width="0.8"/>
-          <text x="610" y="125" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9.5" fill="#0d3d28">乱数 R 生成</text>
-          <text x="610" y="136" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9.5" fill="#0d3d28">（チャレンジ）</text>
-          <!-- ② 矢印 -->
-          <line x1="553" y1="148" x2="108" y2="148" stroke="#155f44" stroke-width="1.5" stroke-dasharray="6 3" marker-end="url(#ahA)"/>
-          <rect x="202" y="132" width="132" height="16" rx="3" fill="#eaf7f1"/>
-          <text x="268" y="143" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10.5" fill="#155f44">② チャレンジ R 送信</text>
-          <!-- ③ MAC計算ボックス（ライフラインの外側左） -->
-          <rect x="14" y="162" width="80" height="34" rx="5" fill="#fff8e6" stroke="#b5821e" stroke-width="0.8"/>
-          <text x="54" y="176" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9.5" fill="#7a4208">共通鍵 K で</text>
-          <text x="54" y="188" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9.5" fill="#7a4208">HMAC(K,R) 計算</text>
-          <!-- ④ MAC 送信 -->
-          <line x1="107" y1="210" x2="552" y2="210" stroke="#0b4a82" stroke-width="1.5" marker-end="url(#ahA)"/>
-          <rect x="180" y="194" width="176" height="16" rx="3" fill="white"/>
-          <text x="268" y="205" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10.5" fill="#0b4a82">③ MAC 値 = HMAC(K, R) 送信</text>
-          <!-- ⑤ サーバ照合ボックス（ライフラインの外側右） -->
-          <rect x="574" y="220" width="72" height="44" rx="5" fill="#d0f0e0" stroke="#155f44" stroke-width="0.8"/>
-          <text x="610" y="234" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9.5" fill="#0d3d28">同じ計算で</text>
-          <text x="610" y="246" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9.5" fill="#0d3d28">HMAC(K,R) を</text>
-          <text x="610" y="258" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9.5" fill="#0d3d28">算出し照合</text>
-          <!-- ⑥ 認証成功 -->
-          <line x1="553" y1="278" x2="108" y2="278" stroke="#155f44" stroke-width="1.5" stroke-dasharray="6 3" marker-end="url(#ahA)"/>
-          <rect x="200" y="262" width="132" height="16" rx="3" fill="#eaf7f1"/>
-          <text x="266" y="273" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10.5" fill="#155f44">④ 認証成功・許可</text>
-          <!-- ポイント注記 -->
-          <rect x="14" y="302" width="632" height="38" rx="5" fill="#fdf0f0" stroke="#7a1818" stroke-width="0.8"/>
-          <text x="330" y="320" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10.5" font-weight="600" fill="#7a1818">共通鍵認証の課題：鍵が漏洩するとサーバ・利用者の両方がなりすまされる</text>
-          <text x="330" y="334" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#7a1818">サーバ側の鍵 DB への侵入で全ユーザの鍵が一括漏洩するリスクがある</text>
-        </svg>
+            <!-- 利用者ノード -->
+            <div style="display:flex;flex-direction:column;align-items:center;gap:10px;flex:0 0 140px;">
+              <div style="width:72px;height:72px;background:#daeeff;border:2.5px solid #0b4a82;border-radius:12px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(11,74,130,.18);">
+                <!-- 利用者アイコン -->
+                <svg width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="19" cy="13" r="7" fill="#b8d6f5" stroke="#0b4a82" stroke-width="1.5"/>
+                  <path d="M6 34c0-7.2 5.8-13 13-13s13 5.8 13 13" fill="#daeeff" stroke="#0b4a82" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <span style="font-size:11px;font-weight:700;color:var(--ink2);">利用者</span>
+              <!-- 案Dの鍵アイコン（共通鍵・ゴールド） -->
+              <div style="background:#fdf5e6;border:2px solid #b5821e;border-radius:10px;padding:10px 14px;display:flex;flex-direction:column;align-items:center;gap:6px;">
+                <svg width="52" height="32" viewBox="0 0 52 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <!-- 外リング -->
+                  <circle cx="16" cy="16" r="13" fill="#f5d98a" stroke="#7a4208" stroke-width="2"/>
+                  <!-- 内リング -->
+                  <circle cx="16" cy="16" r="7.5" fill="#fdf5e6" stroke="#b5821e" stroke-width="1.6"/>
+                  <!-- 中心穴 -->
+                  <circle cx="16" cy="16" r="3" fill="#b5821e"/>
+                  <!-- クロス刻み -->
+                  <line x1="16" y1="8.5" x2="16" y2="23.5" stroke="#7a4208" stroke-width="1.2" opacity=".35"/>
+                  <line x1="8.5" y1="16" x2="23.5" y2="16" stroke="#7a4208" stroke-width="1.2" opacity=".35"/>
+                  <!-- シャフト -->
+                  <rect x="28" y="13" width="21" height="6" rx="3" fill="#b5821e"/>
+                  <rect x="28" y="14" width="21" height="2.5" rx="1.5" fill="#f0c040" opacity=".5"/>
+                  <!-- 歯1 -->
+                  <rect x="36" y="19" width="5" height="8" rx="2" fill="#7a4208"/>
+                  <!-- 歯2 -->
+                  <rect x="42" y="19" width="4" height="5" rx="2" fill="#7a4208"/>
+                  <!-- 先端キャップ -->
+                  <rect x="46" y="13" width="5" height="6" rx="2" fill="#f0c040"/>
+                </svg>
+                <span style="font-size:9.5px;font-weight:700;color:#7a4208;font-family:var(--mono);">共通鍵 K</span>
+              </div>
+            </div>
+
+            <!-- 中央：同一であることを示す -->
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;padding:0 16px;">
+              <div style="width:100%;height:2px;background:var(--line);background:repeating-linear-gradient(90deg,#b5821e 0,#b5821e 8px,transparent 8px,transparent 14px);"></div>
+              <div style="background:#fff8e6;border:1.5px solid #b5821e;border-radius:10px;padding:12px 18px;text-align:center;min-width:160px;">
+                <div style="font-size:22px;font-weight:700;color:#b5821e;margin-bottom:4px;">=</div>
+                <div style="font-size:11px;font-weight:700;color:#7a4208;">同一の鍵を共有</div>
+                <div style="font-size:10px;color:#7a4208;margin-top:3px;">同じ鍵 ＝ 本人の証明</div>
+              </div>
+              <div style="width:100%;height:2px;background:repeating-linear-gradient(90deg,#b5821e 0,#b5821e 8px,transparent 8px,transparent 14px);"></div>
+            </div>
+
+            <!-- サーバノード -->
+            <div style="display:flex;flex-direction:column;align-items:center;gap:10px;flex:0 0 140px;">
+              <div style="width:72px;height:72px;background:#d0f0e0;border:2.5px solid #155f44;border-radius:12px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(21,95,68,.18);">
+                <svg width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="4" y="6" width="30" height="11" rx="3" fill="#b8e0cc" stroke="#155f44" stroke-width="1.5"/>
+                  <rect x="4" y="21" width="30" height="11" rx="3" fill="#b8e0cc" stroke="#155f44" stroke-width="1.5"/>
+                  <circle cx="8.5" cy="11.5" r="2" fill="#155f44"/>
+                  <circle cx="8.5" cy="26.5" r="2" fill="#155f44"/>
+                  <line x1="14" y1="11.5" x2="28" y2="11.5" stroke="#155f44" stroke-width="1.2"/>
+                  <line x1="14" y1="26.5" x2="24" y2="26.5" stroke="#155f44" stroke-width="1.2"/>
+                </svg>
+              </div>
+              <span style="font-size:11px;font-weight:700;color:var(--ink2);">サーバ</span>
+              <!-- 同じ鍵アイコン -->
+              <div style="background:#fdf5e6;border:2px solid #b5821e;border-radius:10px;padding:10px 14px;display:flex;flex-direction:column;align-items:center;gap:6px;">
+                <svg width="52" height="32" viewBox="0 0 52 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="16" cy="16" r="13" fill="#f5d98a" stroke="#7a4208" stroke-width="2"/>
+                  <circle cx="16" cy="16" r="7.5" fill="#fdf5e6" stroke="#b5821e" stroke-width="1.6"/>
+                  <circle cx="16" cy="16" r="3" fill="#b5821e"/>
+                  <line x1="16" y1="8.5" x2="16" y2="23.5" stroke="#7a4208" stroke-width="1.2" opacity=".35"/>
+                  <line x1="8.5" y1="16" x2="23.5" y2="16" stroke="#7a4208" stroke-width="1.2" opacity=".35"/>
+                  <rect x="28" y="13" width="21" height="6" rx="3" fill="#b5821e"/>
+                  <rect x="28" y="14" width="21" height="2.5" rx="1.5" fill="#f0c040" opacity=".5"/>
+                  <rect x="36" y="19" width="5" height="8" rx="2" fill="#7a4208"/>
+                  <rect x="42" y="19" width="4" height="5" rx="2" fill="#7a4208"/>
+                  <rect x="46" y="13" width="5" height="6" rx="2" fill="#f0c040"/>
+                </svg>
+                <span style="font-size:9.5px;font-weight:700;color:#7a4208;font-family:var(--mono);">共通鍵 K（同一）</span>
+              </div>
+            </div>
+
+          </div>
+          <!-- 危険注記 -->
+          <div style="margin-top:16px;background:#fdf0f0;border:1px solid #e8a8a8;border-radius:7px;padding:8px 14px;font-size:10.5px;color:#7a1818;display:flex;align-items:center;gap:8px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7a1818" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17" stroke-width="2.5"/></svg>
+            <span><strong>課題：</strong>サーバのDB漏洩 → 全ユーザの共通鍵が一括流出。否認防止にも使えない。</span>
+          </div>
+        </div>
+      </div>
+
+      <h3>認証シーケンス（HMAC チャレンジ応答）</h3>
+      <p>鍵そのものは送らず、<strong>鍵から派生した値（HMAC値）</strong>だけをやり取りします。毎回異なる乱数（チャレンジ）を使うことでリプレイ攻撃も防ぎます。</p>
+
+      <!-- シーケンス図A（HTMLとCSSで構築） -->
+      <div style="background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:20px 0;">
+        <div style="background:var(--ink2);color:#fff;padding:10px 18px;font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;display:flex;align-items:center;gap:8px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          シーケンス図 A — 共通鍵認証（HMAC チャレンジ応答）
+        </div>
+        <div style="padding:24px 28px 20px;overflow-x:auto;">
+          <div style="min-width:620px;">
+
+            <!-- 事前共有バナー -->
+            <div style="background:#fff8e6;border:1px solid #e8c97a;border-radius:6px;padding:7px 14px;margin-bottom:16px;font-size:10.5px;color:#7a4208;text-align:center;">
+              【事前】安全な手段で共通鍵 K を双方に配布・保管済み
+            </div>
+
+            <!-- アクターヘッダ行 -->
+            <div style="display:flex;align-items:flex-end;margin-bottom:0;">
+              <div style="flex:0 0 150px;display:flex;flex-direction:column;align-items:center;gap:5px;">
+                <div style="width:60px;height:50px;background:#1e2d4a;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="7" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+                  <span style="font-size:8.5px;font-weight:700;color:white;font-family:var(--mono);">利用者</span>
+                </div>
+              </div>
+              <div style="flex:1;"></div>
+              <div style="flex:0 0 150px;display:flex;flex-direction:column;align-items:center;gap:5px;">
+                <div style="width:60px;height:50px;background:#155f44;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round"><rect x="2" y="3" width="20" height="8" rx="2"/><rect x="2" y="13" width="20" height="8" rx="2"/><circle cx="6" cy="7" r="1.2" fill="white"/><circle cx="6" cy="17" r="1.2" fill="white"/></svg>
+                  <span style="font-size:8.5px;font-weight:700;color:white;font-family:var(--mono);">サーバ</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- ライフラインと矢印群 -->
+            <div style="display:flex;position:relative;padding-top:0;">
+              <!-- 左ライフライン -->
+              <div style="position:absolute;left:75px;top:0;bottom:0;width:2px;z-index:0;background:repeating-linear-gradient(180deg,#cdd7e6 0,#cdd7e6 6px,transparent 6px,transparent 10px);"></div>
+              <!-- 右ライフライン -->
+              <div style="position:absolute;right:75px;top:0;bottom:0;width:2px;z-index:0;background:repeating-linear-gradient(180deg,#cdd7e6 0,#cdd7e6 6px,transparent 6px,transparent 10px);"></div>
+              <!-- 左アクティベーションバー -->
+              <div style="position:absolute;left:69px;top:100px;width:14px;height:160px;background:#d8eaff;border:1px solid #0b4a82;border-radius:3px;z-index:0;"></div>
+              <!-- 右アクティベーションバー -->
+              <div style="position:absolute;right:69px;top:8px;width:14px;height:290px;background:#d0f0e0;border:1px solid #155f44;border-radius:3px;z-index:0;"></div>
+
+              <div style="flex:1;display:flex;flex-direction:column;gap:0;padding:8px 0;position:relative;z-index:1;">
+
+                <!-- Step①: 認証要求 -->
+                <div style="display:flex;align-items:center;height:52px;padding:0 90px;">
+                  <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;position:relative;">
+                    <span style="font-size:10px;background:#fff;padding:0 6px;color:#141824;font-weight:500;white-space:nowrap;">① 認証要求（ID 送信）</span>
+                    <div style="width:100%;display:flex;align-items:center;">
+                      <div style="flex:1;height:2px;background:#141824;"></div>
+                      <div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:8px solid #141824;"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Step②: サーバ内処理（右外） -->
+                <div style="display:flex;align-items:center;height:52px;padding:0 8px 0 90px;">
+                  <div style="flex:1;"></div>
+                  <div style="background:#d0f0e0;border:1px solid #155f44;border-radius:7px;padding:6px 10px;font-size:9.5px;color:#0d3d28;white-space:nowrap;flex-shrink:0;">乱数 R 生成（チャレンジ）</div>
+                </div>
+
+                <!-- Step③: チャレンジ送信（右→左） -->
+                <div style="display:flex;align-items:center;height:52px;padding:0 90px;">
+                  <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;">
+                    <span style="font-size:10px;background:#fff;padding:0 6px;color:#155f44;font-weight:500;white-space:nowrap;">② チャレンジ R 送信</span>
+                    <div style="width:100%;display:flex;align-items:center;">
+                      <div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:8px solid #155f44;"></div>
+                      <div style="flex:1;height:2px;background:repeating-linear-gradient(90deg,#155f44 0,#155f44 7px,transparent 7px,transparent 11px);"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Step④: 利用者内処理（左外） -->
+                <div style="display:flex;align-items:center;height:52px;padding:0 90px 0 8px;">
+                  <div style="background:#fff8e6;border:1px solid #b5821e;border-radius:7px;padding:6px 10px;font-size:9.5px;color:#7a4208;white-space:nowrap;flex-shrink:0;">共通鍵 K で HMAC(K,R) 計算</div>
+                  <div style="flex:1;"></div>
+                </div>
+
+                <!-- Step⑤: MAC送信（左→右） -->
+                <div style="display:flex;align-items:center;height:52px;padding:0 90px;">
+                  <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;">
+                    <span style="font-size:10px;background:#fff;padding:0 6px;color:#0b4a82;font-weight:500;white-space:nowrap;">③ MAC 値 = HMAC(K, R) 送信</span>
+                    <div style="width:100%;display:flex;align-items:center;">
+                      <div style="flex:1;height:2px;background:#0b4a82;"></div>
+                      <div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:8px solid #0b4a82;"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Step⑥: サーバ照合（右外） -->
+                <div style="display:flex;align-items:center;height:52px;padding:0 8px 0 90px;">
+                  <div style="flex:1;"></div>
+                  <div style="background:#d0f0e0;border:1px solid #155f44;border-radius:7px;padding:6px 10px;font-size:9.5px;color:#0d3d28;white-space:nowrap;flex-shrink:0;">HMAC(K,R) 照合 → 一致確認</div>
+                </div>
+
+                <!-- Step⑦: 認証成功（右→左） -->
+                <div style="display:flex;align-items:center;height:52px;padding:0 90px;">
+                  <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;">
+                    <span style="font-size:10px;background:#fff;padding:0 6px;color:#155f44;font-weight:500;white-space:nowrap;">④ 認証成功・アクセス許可</span>
+                    <div style="width:100%;display:flex;align-items:center;">
+                      <div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:8px solid #155f44;"></div>
+                      <div style="flex:1;height:2px;background:repeating-linear-gradient(90deg,#155f44 0,#155f44 7px,transparent 7px,transparent 11px);"></div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- 課題バナー -->
+            <div style="background:#fdf0f0;border:1px solid #e8a8a8;border-radius:7px;padding:9px 14px;font-size:10.5px;color:#7a1818;display:flex;align-items:flex-start;gap:8px;margin-top:4px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7a1818" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+              <span><strong>共通鍵認証の限界：</strong>サーバ側の鍵 DB が侵害されると全ユーザの鍵が一括漏洩。また署名が「共通鍵保有者全員」に帰属するため否認防止に使えない。</span>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="steps">
-        <div class="step hi"><span class="sn">②</span><div class="sb">サーバが毎回異なる<strong>乱数（チャレンジ R）</strong>を生成して送ります。使い捨ての値を使うことで、リプレイ攻撃（傍受した応答の再送）を防ぎます。</div></div>
-        <div class="step hi"><span class="sn">③</span><div class="sb">利用者は共通鍵 K を使って R から HMAC 値を計算し、サーバに返します。<strong>鍵そのものは送信せず</strong>、鍵から派生した値だけを送ります。</div></div>
-        <div class="step ng"><span class="sn">!</span><div class="sb"><strong>限界：</strong>サーバが保管する鍵データベースが漏洩すると全ユーザの鍵が露出します。また「誰が署名したか」を第三者に証明できないため、<strong>否認防止に使えません</strong>。</div></div>
+        <div class="step hi"><span class="sn">②</span><div class="sb"><strong>乱数チャレンジ R：</strong>毎回異なる値を使うことでリプレイ攻撃（傍受した応答の再送）を防ぎます。</div></div>
+        <div class="step hi"><span class="sn">③</span><div class="sb"><strong>HMAC 値の送信：</strong>鍵 K そのものは送らず、鍵から派生した値のみ送信します。</div></div>
+        <div class="step ng"><span class="sn">!</span><div class="sb"><strong>根本課題：</strong>サーバが K を DB 管理するため侵害リスクがある。署名者の特定が困難で否認防止にならない。→ この課題を解決するのが次の公開鍵認証です。</div></div>
       </div>
     </section>
 
-    <!-- ══════════════════════════════════════════
-         前段 02 — 公開鍵認証
-    ══════════════════════════════════════════ -->
+    <!-- ═══════════════════════════════════════════════════════
+         02 — 公開鍵認証の仕組み
+    ═══════════════════════════════════════════════════════ -->
     <section class="section" id="s0b">
       <div class="section-header">
         <span class="s-num">02</span>
         <h2>公開鍵認証の仕組み</h2>
       </div>
 
-      <p>公開鍵認証とは、<strong>数学的にペアになった2種類の鍵（公開鍵・秘密鍵）</strong>を使う認証方式です。公開鍵は誰でも入手できますが、秘密鍵は本人だけが保管します。「秘密鍵を持っている＝本人」をサーバに証明するために、秘密鍵でデジタル署名を生成し、サーバが公開鍵で検証します。</p>
+      <p>公開鍵認証とは、<strong>数学的にペアになった2種類の鍵（公開鍵・秘密鍵）</strong>を使う認証方式です。秘密鍵は本人だけが保管し、公開鍵は誰でも入手可能です。「秘密鍵を持っている＝本人」をサーバに証明するために、秘密鍵でデジタル署名を生成し、サーバが公開鍵で検証します。</p>
 
-      <!-- 図2：鍵ペアのイラスト -->
-      <div class="seq-wrap" style="padding:32px 32px 24px;">
-        <p class="seq-cap">図 2 — 公開鍵・秘密鍵のペア：形が違う2本でワンセット</p>
-        <svg viewBox="0 0 700 230" style="min-width:540px;display:block" xmlns="http://www.w3.org/2000/svg">
-
-          <!-- ─── 秘密鍵カード ─── -->
-          <rect x="30" y="24" width="290" height="168" rx="12" fill="#141824" stroke="#1570b8" stroke-width="1.2"/>
-          <rect x="30" y="24" width="290" height="44" rx="12" fill="#1a2d5a"/>
-          <rect x="30" y="56" width="290" height="12" fill="#1a2d5a"/>
-          <text x="175" y="50" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="13" font-weight="600" fill="white">秘密鍵（Private Key）</text>
-          <text x="175" y="82" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="rgba(255,255,255,.5)">本人だけが保管。絶対に外に出さない</text>
-          <!-- 秘密鍵イラスト（複雑な歯・青系） cx=175 cy=148 -->
-          <g transform="translate(96, 96)">
-            <!-- リング外形 -->
-            <circle cx="26" cy="26" r="23" fill="#0d1f3c" stroke="#6ab4f5" stroke-width="3"/>
-            <!-- リング内穴 -->
-            <circle cx="26" cy="26" r="13" fill="#141824" stroke="#4a90d9" stroke-width="2"/>
-            <!-- 内穴の更に内側 -->
-            <circle cx="26" cy="26" r="6" fill="#0d1f3c" stroke="#6ab4f5" stroke-width="1.5"/>
-            <!-- リングのハイライト（上部光沢） -->
-            <path d="M10,16 A18,18 0 0,1 42,16" fill="none" stroke="#a8d8f8" stroke-width="1.5" stroke-linecap="round" opacity=".6"/>
-            <!-- シャフト（太め） -->
-            <rect x="49" y="21" width="80" height="10" rx="5" fill="#4a90d9"/>
-            <rect x="49" y="22" width="80" height="4" rx="3" fill="#8ac4f0" opacity=".5"/>
-            <!-- 歯（複雑・3本） -->
-            <rect x="76" y="31" width="9" height="18" rx="3" fill="#4a90d9"/>
-            <rect x="76" y="32" width="5" height="4" rx="2" fill="#8ac4f0" opacity=".5"/>
-            <rect x="90" y="31" width="9" height="24" rx="3" fill="#4a90d9"/>
-            <rect x="90" y="32" width="5" height="4" rx="2" fill="#8ac4f0" opacity=".5"/>
-            <rect x="104" y="31" width="9" height="13" rx="3" fill="#4a90d9"/>
-            <rect x="104" y="32" width="5" height="4" rx="2" fill="#8ac4f0" opacity=".5"/>
-            <!-- 先端のキャップ -->
-            <rect x="127" y="21" width="8" height="10" rx="4" fill="#6ab4f5"/>
-          </g>
-          <text x="175" y="184" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="11" fill="#6ab4f5" font-weight="500">署名の生成に使用</text>
-
-          <!-- ─── ペア接続部 ─── -->
-          <rect x="336" y="84" width="28" height="64" rx="6" fill="#f3f6fb" stroke="#cdd7e6" stroke-width="0.8"/>
-          <text x="350" y="113" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="11" font-weight="700" fill="#1e2d4a">≠</text>
-          <text x="350" y="130" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="8.5" fill="#6a6e8e">ペア</text>
-
-          <!-- ─── 公開鍵カード ─── -->
-          <rect x="380" y="24" width="290" height="168" rx="12" fill="#141824" stroke="#b5821e" stroke-width="1.2"/>
-          <rect x="380" y="24" width="290" height="44" rx="12" fill="#3a2800"/>
-          <rect x="380" y="56" width="290" height="12" fill="#3a2800"/>
-          <text x="525" y="50" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="13" font-weight="600" fill="white">公開鍵（Public Key）</text>
-          <text x="525" y="82" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="rgba(255,255,255,.5)">誰でも入手可能。公開してよい</text>
-          <!-- 公開鍵イラスト（シンプルな歯・ゴールド系） -->
-          <g transform="translate(446, 96)">
-            <!-- リング外形 -->
-            <circle cx="26" cy="26" r="23" fill="#2a1800" stroke="#d4a820" stroke-width="3"/>
-            <!-- リング内穴 -->
-            <circle cx="26" cy="26" r="13" fill="#141824" stroke="#b5821e" stroke-width="2"/>
-            <!-- ハイライト -->
-            <path d="M10,16 A18,18 0 0,1 42,16" fill="none" stroke="#f5e080" stroke-width="1.5" stroke-linecap="round" opacity=".6"/>
-            <!-- シャフト（細め） -->
-            <rect x="49" y="22" width="72" height="8" rx="4" fill="#d4a820"/>
-            <rect x="49" y="23" width="72" height="3" rx="2" fill="#f5d060" opacity=".5"/>
-            <!-- 歯（シンプル・2本） -->
-            <rect x="78" y="30" width="9" height="16" rx="3" fill="#d4a820"/>
-            <rect x="78" y="31" width="5" height="3" rx="2" fill="#f5d060" opacity=".5"/>
-            <rect x="95" y="30" width="9" height="10" rx="3" fill="#d4a820"/>
-            <rect x="95" y="31" width="5" height="3" rx="2" fill="#f5d060" opacity=".5"/>
-            <!-- 先端のキャップ -->
-            <rect x="118" y="22" width="7" height="8" rx="3" fill="#f0c040"/>
-          </g>
-          <text x="525" y="184" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="11" fill="#d4a820" font-weight="500">署名の検証に使用</text>
-
-          <!-- 下部注記 -->
-          <rect x="30" y="202" width="640" height="18" rx="5" fill="#eaf3ff" stroke="#0b4a82" stroke-width="0.8"/>
-          <text x="350" y="214" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#0b3a6a">秘密鍵で作った署名は、ペアになった公開鍵でしか検証できない（逆方向も不可）</text>
-        </svg>
+      <!-- たとえ話 -->
+      <div class="note info">
+        <div class="note-i">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1570b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16" stroke-width="2.5"/></svg>
+        </div>
+        <p><strong>たとえ話 — 南京錠と専用の鍵：</strong>ボブが「開いたままの南京錠（公開鍵）」を世界中にばらまきます。アリスはその南京錠でメッセージを施錠（署名）して送ります。開錠（検証）できるのは<strong>ボブだけが持つ専用の鍵（秘密鍵）</strong>のみ。施錠した人（アリス）でさえ開けられません。<br><strong>ポイント：</strong>サーバが侵害されても「南京錠（公開鍵）」しか奪われません。南京錠は最初から公開情報なので実害なし。</p>
       </div>
 
-      <h3>認証シーケンス（公開鍵認証の基本フロー）</h3>
-      <p>サーバが乱数（チャレンジ）を送り、利用者が<strong>秘密鍵で署名</strong>して返します。サーバは事前に登録された<strong>公開鍵で署名を検証</strong>します。秘密鍵は一切ネットワークに出ません。</p>
+      <!-- 図2：公開鍵・秘密鍵ペアイラスト（HTMLとCSSで構築） -->
+      <div style="background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:24px 0;">
+        <div style="background:var(--ink2);color:#fff;padding:10px 18px;font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;display:flex;align-items:center;gap:8px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><circle cx="8" cy="8" r="3"/><line x1="14" y1="14" x2="22" y2="22"/></svg>
+          図 2 — 公開鍵・秘密鍵のペア：形が違う2本でワンセット
+        </div>
+        <div style="padding:28px 32px 20px;overflow-x:auto;">
+          <div style="min-width:580px;display:flex;align-items:stretch;gap:20px;">
 
-      <div class="seq-wrap">
-        <p class="seq-cap">シーケンス図 B — 公開鍵認証（チャレンジ＋デジタル署名）</p>
-        <svg class="seq" viewBox="0 0 660 380" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <marker id="ahB" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
-              <path d="M1 1L9 5L1 9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </marker>
-          </defs>
-          <!-- 事前登録バナー -->
-          <rect x="14" y="8" width="632" height="22" rx="4" fill="#eaf3ff" stroke="#0b4a82" stroke-width="0.8"/>
-          <text x="330" y="22" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#0b4a82">【事前】利用者の公開鍵をサーバに登録済み（秘密鍵はサーバに送らない）</text>
-          <!-- Headers -->
-          <rect x="30" y="38" width="140" height="52" rx="6" fill="#1e2d4a"/>
-          <text x="100" y="58" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="12" font-weight="500" fill="white">利用者</text>
-          <text x="100" y="72" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9" fill="rgba(255,255,255,.45)">秘密鍵を保有</text>
-          <!-- 秘密鍵ミニアイコン（ヘッダー内） -->
-          <g transform="translate(72, 76)">
-            <circle cx="8" cy="8" r="7" fill="#0d1f3c" stroke="#6ab4f5" stroke-width="1.8"/>
-            <circle cx="8" cy="8" r="3.5" fill="#141824" stroke="#4a90d9" stroke-width="1.2"/>
-            <rect x="15" y="5.5" width="24" height="5" rx="2.5" fill="#4a90d9"/>
-            <rect x="25" y="10.5" width="5" height="8" rx="2" fill="#4a90d9"/>
-            <rect x="32" y="10.5" width="5" height="5" rx="2" fill="#4a90d9"/>
-          </g>
-          <rect x="490" y="38" width="140" height="52" rx="6" fill="#155f44"/>
-          <text x="560" y="58" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="12" font-weight="500" fill="white">サーバ</text>
-          <text x="560" y="72" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9" fill="rgba(255,255,255,.45)">公開鍵を登録保有</text>
-          <!-- 公開鍵ミニアイコン（ヘッダー内） -->
-          <g transform="translate(532, 76)">
-            <circle cx="8" cy="8" r="7" fill="#2a1800" stroke="#d4a820" stroke-width="1.8"/>
-            <circle cx="8" cy="8" r="3.5" fill="#141824" stroke="#b5821e" stroke-width="1.2"/>
-            <rect x="15" y="5.5" width="22" height="5" rx="2.5" fill="#d4a820"/>
-            <rect x="23" y="10.5" width="5" height="7" rx="2" fill="#d4a820"/>
-            <rect x="30" y="10.5" width="5" height="4" rx="2" fill="#d4a820"/>
-          </g>
-          <!-- Lifelines -->
-          <line x1="100" y1="90" x2="100" y2="362" stroke="#cdd7e6" stroke-width="1" stroke-dasharray="4 4"/>
-          <line x1="560" y1="90" x2="560" y2="362" stroke="#cdd7e6" stroke-width="1" stroke-dasharray="4 4"/>
-          <!-- Activation -->
-          <rect x="93" y="136" width="14" height="180" rx="2" fill="#d8eaff" stroke="#0b4a82" stroke-width="0.8"/>
-          <rect x="553" y="96" width="14" height="240" rx="2" fill="#d0f0e0" stroke="#155f44" stroke-width="0.8"/>
-          <!-- ① 認証要求 -->
-          <line x1="107" y1="110" x2="552" y2="110" stroke="#141824" stroke-width="1.5" marker-end="url(#ahB)"/>
-          <rect x="198" y="95" width="136" height="16" rx="3" fill="white"/>
-          <text x="266" y="106" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10.5" fill="#141824">① 認証要求（ID 送信）</text>
-          <!-- ② チャレンジ生成ボックス（右外側） -->
-          <rect x="574" y="118" width="72" height="28" rx="5" fill="#d0f0e0" stroke="#155f44" stroke-width="0.8"/>
-          <text x="610" y="130" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9.5" fill="#0d3d28">乱数 R 生成</text>
-          <text x="610" y="141" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9.5" fill="#0d3d28">（チャレンジ）</text>
-          <!-- ② 矢印 -->
-          <line x1="553" y1="156" x2="108" y2="156" stroke="#155f44" stroke-width="1.5" stroke-dasharray="6 3" marker-end="url(#ahB)"/>
-          <rect x="202" y="140" width="134" height="16" rx="3" fill="#eaf7f1"/>
-          <text x="269" y="151" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10.5" fill="#155f44">② チャレンジ R 送信</text>
-          <!-- ③ 署名ボックス（左外側） -->
-          <rect x="14" y="168" width="80" height="40" rx="5" fill="#e4eeff" stroke="#0b4a82" stroke-width="0.8"/>
-          <!-- 秘密鍵ミニ -->
-          <g transform="translate(18, 172)">
-            <circle cx="7" cy="7" r="6" fill="#0d1f3c" stroke="#6ab4f5" stroke-width="1.5"/>
-            <circle cx="7" cy="7" r="3" fill="#141824" stroke="#4a90d9" stroke-width="1"/>
-            <rect x="13" y="4.5" width="18" height="5" rx="2.5" fill="#4a90d9"/>
-            <rect x="20" y="9.5" width="4" height="7" rx="1.5" fill="#4a90d9"/>
-            <rect x="26" y="9.5" width="4" height="4" rx="1.5" fill="#4a90d9"/>
-          </g>
-          <text x="54" y="195" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9" fill="#0b4a82">秘密鍵で署名</text>
-          <text x="54" y="205" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9" fill="#0b4a82">S = Sign(K,R)</text>
-          <!-- ③ 署名送信 -->
-          <line x1="107" y1="222" x2="552" y2="222" stroke="#0b4a82" stroke-width="1.5" marker-end="url(#ahB)"/>
-          <rect x="186" y="207" width="160" height="16" rx="3" fill="white"/>
-          <text x="266" y="218" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10.5" fill="#0b4a82">③ 署名値 S を送信</text>
-          <!-- ④ 検証ボックス（右外側） -->
-          <rect x="574" y="232" width="72" height="44" rx="5" fill="#d0f0e0" stroke="#155f44" stroke-width="0.8"/>
-          <!-- 公開鍵ミニ -->
-          <g transform="translate(579, 236)">
-            <circle cx="7" cy="7" r="6" fill="#2a1800" stroke="#d4a820" stroke-width="1.5"/>
-            <circle cx="7" cy="7" r="3" fill="#141824" stroke="#b5821e" stroke-width="1"/>
-            <rect x="13" y="4.5" width="17" height="5" rx="2.5" fill="#d4a820"/>
-            <rect x="19" y="9.5" width="4" height="6" rx="1.5" fill="#d4a820"/>
-            <rect x="25" y="9.5" width="4" height="4" rx="1.5" fill="#d4a820"/>
-          </g>
-          <text x="610" y="259" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9.5" fill="#0d3d28">公開鍵で</text>
-          <text x="610" y="270" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9.5" fill="#0d3d28">署名 S を検証</text>
-          <!-- ④ 認証成功 -->
-          <line x1="553" y1="290" x2="108" y2="290" stroke="#155f44" stroke-width="1.5" stroke-dasharray="6 3" marker-end="url(#ahB)"/>
-          <rect x="202" y="274" width="134" height="16" rx="3" fill="#eaf7f1"/>
-          <text x="269" y="285" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10.5" fill="#155f44">④ 認証成功・許可</text>
-          <!-- ポイント注記 -->
-          <rect x="14" y="316" width="632" height="38" rx="5" fill="#eaf3ff" stroke="#0b4a82" stroke-width="0.8"/>
-          <text x="330" y="334" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10.5" font-weight="600" fill="#0b4a82">秘密鍵はネットワークに一切出ない ＝ 傍受されても認証を破れない</text>
-          <text x="330" y="348" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#0b4a82">サーバが侵害されても「公開鍵」しか漏洩しない（公開鍵は元から公開情報）</text>
-        </svg>
+            <!-- 秘密鍵カード（案D・青・複雑） -->
+            <div style="flex:1;background:#daeeff;border:2.5px solid #0b4a82;border-radius:12px;padding:20px 16px;display:flex;flex-direction:column;align-items:center;gap:12px;">
+              <div style="font-size:13px;font-weight:700;color:#0b4a82;">秘密鍵（Private Key）</div>
+              <div style="font-size:10.5px;color:#1e2d4a;text-align:center;line-height:1.5;">本人だけが保管<br>絶対に外に出さない</div>
+              <!-- 案D 秘密鍵（青・ダブルリング・クロス刻み） -->
+              <svg width="120" height="72" viewBox="0 0 120 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="36" cy="36" r="32" fill="#b8d6f5" stroke="#0b4a82" stroke-width="2.5"/>
+                <circle cx="36" cy="36" r="19" fill="#daeeff" stroke="#1570b8" stroke-width="2"/>
+                <circle cx="36" cy="36" r="8" fill="#0b4a82"/>
+                <line x1="36" y1="17" x2="36" y2="55" stroke="#0b4a82" stroke-width="1.5" opacity=".35"/>
+                <line x1="17" y1="36" x2="55" y2="36" stroke="#0b4a82" stroke-width="1.5" opacity=".35"/>
+                <rect x="68" y="30" width="46" height="12" rx="5" fill="#1570b8"/>
+                <rect x="68" y="31.5" width="46" height="5" rx="3" fill="#6ab4f5" opacity=".45"/>
+                <rect x="83" y="42" width="10" height="18" rx="4" fill="#0b4a82"/>
+                <rect x="95" y="42" width="9" height="12" rx="4" fill="#0b4a82"/>
+                <rect x="106" y="30" width="10" height="12" rx="4" fill="#6ab4f5"/>
+              </svg>
+              <div style="background:#0b4a82;color:white;border-radius:6px;padding:5px 12px;font-size:10.5px;font-weight:700;font-family:var(--mono);">署名の生成に使用</div>
+            </div>
+
+            <!-- ペアコネクタ -->
+            <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;flex:0 0 80px;">
+              <div style="width:1px;flex:1;background:var(--line);"></div>
+              <div style="background:#f3f6fb;border:1px solid var(--line);border-radius:8px;padding:10px 8px;text-align:center;">
+                <div style="font-size:20px;font-weight:700;color:var(--ink2);">≠</div>
+                <div style="font-size:9px;color:#6a6e8e;margin-top:3px;line-height:1.4;">数学的<br>ペア</div>
+              </div>
+              <div style="width:1px;flex:1;background:var(--line);"></div>
+            </div>
+
+            <!-- 公開鍵カード（案D・ゴールド・シンプル） -->
+            <div style="flex:1;background:#fdf5e6;border:2.5px solid #b5821e;border-radius:12px;padding:20px 16px;display:flex;flex-direction:column;align-items:center;gap:12px;">
+              <div style="font-size:13px;font-weight:700;color:#7a4208;">公開鍵（Public Key）</div>
+              <div style="font-size:10.5px;color:#5a3200;text-align:center;line-height:1.5;">誰でも入手可能<br>公開してよい</div>
+              <!-- 案D 公開鍵（ゴールド・シングルリング） -->
+              <svg width="120" height="72" viewBox="0 0 120 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="36" cy="36" r="32" fill="#f5d98a" stroke="#7a4208" stroke-width="2.5"/>
+                <circle cx="36" cy="36" r="18" fill="#fdf5e6" stroke="#b5821e" stroke-width="2"/>
+                <circle cx="36" cy="36" r="7" fill="#b5821e"/>
+                <rect x="68" y="31" width="40" height="10" rx="5" fill="#b5821e"/>
+                <rect x="68" y="32.5" width="40" height="4.5" rx="2.5" fill="#f0c040" opacity=".5"/>
+                <rect x="80" y="41" width="9" height="15" rx="3.5" fill="#7a4208"/>
+                <rect x="91" y="31" width="10" height="10" rx="3.5" fill="#f0c040"/>
+              </svg>
+              <div style="background:#b5821e;color:white;border-radius:6px;padding:5px 12px;font-size:10.5px;font-weight:700;font-family:var(--mono);">署名の検証に使用</div>
+            </div>
+
+          </div>
+          <div style="margin-top:14px;text-align:center;font-size:10.5px;color:#3a3d52;padding:8px;background:var(--surface);border-radius:6px;">
+            秘密鍵で作った署名は、ペアになった公開鍵でしか検証できない（逆方向も不可）
+          </div>
+        </div>
+      </div>
+
+      <h3>認証シーケンス（チャレンジ＋デジタル署名）</h3>
+      <p>サーバが乱数（チャレンジ）を送り、利用者が<strong>秘密鍵で署名</strong>して返します。秘密鍵は一切ネットワークに出ません。</p>
+
+      <!-- シーケンス図B（HTMLとCSSで構築） -->
+      <div style="background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:20px 0;">
+        <div style="background:var(--ink2);color:#fff;padding:10px 18px;font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;display:flex;align-items:center;gap:8px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          シーケンス図 B — 公開鍵認証（チャレンジ＋デジタル署名）
+        </div>
+        <div style="padding:24px 28px 20px;overflow-x:auto;">
+          <div style="min-width:620px;">
+
+            <!-- 事前登録バナー -->
+            <div style="background:#eaf3ff;border:1px solid #a8cef5;border-radius:6px;padding:7px 14px;margin-bottom:16px;font-size:10.5px;color:#0b3a6a;text-align:center;">
+              【事前】利用者の<strong>公開鍵</strong>をサーバに登録済み（秘密鍵はサーバに送らない）
+            </div>
+
+            <!-- アクターヘッダ行 -->
+            <div style="display:flex;align-items:flex-end;margin-bottom:0;">
+              <div style="flex:0 0 150px;display:flex;flex-direction:column;align-items:center;gap:5px;">
+                <div style="width:60px;height:58px;background:#1e2d4a;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="7" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+                  <span style="font-size:7.5px;font-weight:700;color:white;font-family:var(--mono);">利用者</span>
+                  <!-- 秘密鍵ミニアイコン（案D） -->
+                  <svg width="28" height="14" viewBox="0 0 28 14" fill="none">
+                    <circle cx="7" cy="7" r="6" fill="#b8d6f5" stroke="#0b4a82" stroke-width="1.2"/>
+                    <circle cx="7" cy="7" r="3.5" fill="#daeeff" stroke="#1570b8" stroke-width="1"/>
+                    <circle cx="7" cy="7" r="1.5" fill="#0b4a82"/>
+                    <line x1="7" y1="1" x2="7" y2="13" stroke="#0b4a82" stroke-width=".8" opacity=".3"/>
+                    <line x1="1" y1="7" x2="13" y2="7" stroke="#0b4a82" stroke-width=".8" opacity=".3"/>
+                    <rect x="13" y="5" width="12" height="4" rx="2" fill="#1570b8"/>
+                    <rect x="17" y="9" width="3" height="4" rx="1.5" fill="#0b4a82"/>
+                    <rect x="21" y="5" width="3" height="4" rx="1.5" fill="#6ab4f5"/>
+                  </svg>
+                </div>
+              </div>
+              <div style="flex:1;"></div>
+              <div style="flex:0 0 150px;display:flex;flex-direction:column;align-items:center;gap:5px;">
+                <div style="width:60px;height:58px;background:#155f44;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round"><rect x="2" y="3" width="20" height="8" rx="2"/><rect x="2" y="13" width="20" height="8" rx="2"/><circle cx="6" cy="7" r="1.2" fill="white"/><circle cx="6" cy="17" r="1.2" fill="white"/></svg>
+                  <span style="font-size:7.5px;font-weight:700;color:white;font-family:var(--mono);">サーバ</span>
+                  <!-- 公開鍵ミニアイコン（案D・ゴールド） -->
+                  <svg width="26" height="14" viewBox="0 0 26 14" fill="none">
+                    <circle cx="7" cy="7" r="6" fill="#f5d98a" stroke="#7a4208" stroke-width="1.2"/>
+                    <circle cx="7" cy="7" r="3" fill="#fdf5e6" stroke="#b5821e" stroke-width="1"/>
+                    <circle cx="7" cy="7" r="1.2" fill="#b5821e"/>
+                    <rect x="13" y="5.5" width="10" height="3" rx="1.5" fill="#b5821e"/>
+                    <rect x="16" y="8.5" width="3" height="4" rx="1.2" fill="#7a4208"/>
+                    <rect x="21" y="5.5" width="3" height="3" rx="1.2" fill="#f0c040"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- ライフライン + ステップ -->
+            <div style="display:flex;position:relative;">
+              <div style="position:absolute;left:75px;top:0;bottom:0;width:2px;z-index:0;background:repeating-linear-gradient(180deg,#cdd7e6 0,#cdd7e6 6px,transparent 6px,transparent 10px);"></div>
+              <div style="position:absolute;right:75px;top:0;bottom:0;width:2px;z-index:0;background:repeating-linear-gradient(180deg,#cdd7e6 0,#cdd7e6 6px,transparent 6px,transparent 10px);"></div>
+              <div style="position:absolute;left:69px;top:96px;width:14px;height:180px;background:#d8eaff;border:1px solid #0b4a82;border-radius:3px;z-index:0;"></div>
+              <div style="position:absolute;right:69px;top:8px;width:14px;height:310px;background:#d0f0e0;border:1px solid #155f44;border-radius:3px;z-index:0;"></div>
+
+              <div style="flex:1;display:flex;flex-direction:column;gap:0;padding:8px 0;position:relative;z-index:1;">
+
+                <div style="display:flex;align-items:center;height:52px;padding:0 90px;">
+                  <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;">
+                    <span style="font-size:10px;background:#fff;padding:0 6px;color:#141824;font-weight:500;white-space:nowrap;">① 認証要求（ID 送信）</span>
+                    <div style="width:100%;display:flex;align-items:center;"><div style="flex:1;height:2px;background:#141824;"></div><div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:8px solid #141824;"></div></div>
+                  </div>
+                </div>
+
+                <div style="display:flex;align-items:center;height:52px;padding:0 8px 0 90px;">
+                  <div style="flex:1;"></div>
+                  <div style="background:#d0f0e0;border:1px solid #155f44;border-radius:7px;padding:6px 10px;font-size:9.5px;color:#0d3d28;white-space:nowrap;flex-shrink:0;">乱数 R 生成（チャレンジ）</div>
+                </div>
+
+                <div style="display:flex;align-items:center;height:52px;padding:0 90px;">
+                  <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;">
+                    <span style="font-size:10px;background:#fff;padding:0 6px;color:#155f44;font-weight:500;white-space:nowrap;">② チャレンジ R 送信</span>
+                    <div style="width:100%;display:flex;align-items:center;"><div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:8px solid #155f44;"></div><div style="flex:1;height:2px;background:repeating-linear-gradient(90deg,#155f44 0,#155f44 7px,transparent 7px,transparent 11px);"></div></div>
+                  </div>
+                </div>
+
+                <div style="display:flex;align-items:center;height:52px;padding:0 90px 0 8px;">
+                  <div style="background:#e8f0fa;border:1px solid #0b4a82;border-radius:7px;padding:6px 10px;font-size:9.5px;color:#0b3a6a;white-space:nowrap;flex-shrink:0;display:flex;align-items:center;gap:6px;">
+                    <!-- 秘密鍵ミニ -->
+                    <svg width="20" height="12" viewBox="0 0 20 12" fill="none"><circle cx="5" cy="6" r="4.5" fill="#b8d6f5" stroke="#0b4a82" stroke-width="1"/><circle cx="5" cy="6" r="2.5" fill="#daeeff" stroke="#1570b8" stroke-width=".8"/><circle cx="5" cy="6" r="1" fill="#0b4a82"/><line x1="5" y1="1.5" x2="5" y2="10.5" stroke="#0b4a82" stroke-width=".6" opacity=".3"/><line x1=".5" y1="6" x2="9.5" y2="6" stroke="#0b4a82" stroke-width=".6" opacity=".3"/><rect x="9.5" y="4" width="9" height="4" rx="2" fill="#1570b8"/><rect x="13" y="8" width="3" height="3.5" rx="1.5" fill="#0b4a82"/></svg>
+                    秘密鍵で R に署名 → S = Sign(秘密鍵, R)
+                  </div>
+                  <div style="flex:1;"></div>
+                </div>
+
+                <div style="display:flex;align-items:center;height:52px;padding:0 90px;">
+                  <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;">
+                    <span style="font-size:10px;background:#fff;padding:0 6px;color:#0b4a82;font-weight:500;white-space:nowrap;">③ 署名値 S を送信</span>
+                    <div style="width:100%;display:flex;align-items:center;"><div style="flex:1;height:2px;background:#0b4a82;"></div><div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:8px solid #0b4a82;"></div></div>
+                  </div>
+                </div>
+
+                <div style="display:flex;align-items:center;height:52px;padding:0 8px 0 90px;">
+                  <div style="flex:1;"></div>
+                  <div style="background:#d0f0e0;border:1px solid #155f44;border-radius:7px;padding:6px 10px;font-size:9.5px;color:#0d3d28;white-space:nowrap;flex-shrink:0;display:flex;align-items:center;gap:6px;">
+                    <!-- 公開鍵ミニ -->
+                    <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><circle cx="5" cy="6" r="4.5" fill="#f5d98a" stroke="#7a4208" stroke-width="1"/><circle cx="5" cy="6" r="2" fill="#fdf5e6" stroke="#b5821e" stroke-width=".8"/><circle cx="5" cy="6" r=".8" fill="#b5821e"/><rect x="9.5" y="4" width="7" height="4" rx="2" fill="#b5821e"/><rect x="12" y="8" width="3" height="3" rx="1.2" fill="#7a4208"/></svg>
+                    公開鍵で署名 S を検証 → Verify(公開鍵, S)
+                  </div>
+                </div>
+
+                <div style="display:flex;align-items:center;height:52px;padding:0 90px;">
+                  <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;">
+                    <span style="font-size:10px;background:#fff;padding:0 6px;color:#155f44;font-weight:500;white-space:nowrap;">④ 認証成功・アクセス許可</span>
+                    <div style="width:100%;display:flex;align-items:center;"><div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:8px solid #155f44;"></div><div style="flex:1;height:2px;background:repeating-linear-gradient(90deg,#155f44 0,#155f44 7px,transparent 7px,transparent 11px);"></div></div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <div style="background:#eaf3ff;border:1px solid #a8cef5;border-radius:7px;padding:9px 14px;font-size:10.5px;color:#0b3a6a;display:flex;align-items:flex-start;gap:8px;margin-top:4px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1570b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px"><polyline points="20 6 9 17 4 12"/></svg>
+              <span><strong>秘密鍵はネットワークに一切出ない</strong> ＝ 傍受されても認証を破れない。サーバが侵害されても「公開鍵」しか漏洩しない（元から公開情報なので実害なし）。</span>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="steps">
-        <div class="step hi"><span class="sn">③</span><div class="sb">利用者は<strong>秘密鍵でチャレンジ R に署名</strong>します。この処理は秘密鍵を外に出さずに実行できます。ICカードでは <code>INTERNAL AUTHENTICATE</code> コマンドがこの役割を担います。</div></div>
-        <div class="step ok"><span class="sn">④</span><div class="sb">サーバは<strong>登録済みの公開鍵</strong>で署名を検証します。「この署名は対応する秘密鍵でしか作れない」という数学的性質により、本人確認が成立します。</div></div>
-        <div class="step ok"><span class="sn">強み</span><div class="sb"><strong>サーバ側には公開鍵だけを保管</strong>すればよいため、サーバが侵害されても利用者の秘密鍵は漏洩しません。また秘密鍵の保有者しか作れない署名により、<strong>否認防止</strong>も実現します。</div></div>
+        <div class="step hi"><span class="sn">③</span><div class="sb"><strong>秘密鍵署名：</strong>ICカードでは <code>INTERNAL AUTHENTICATE</code> コマンドがこの役割を担います。署名処理はカード内部で完結し、秘密鍵は外に出ません。</div></div>
+        <div class="step ok"><span class="sn">強み</span><div class="sb">サーバには<strong>公開鍵のみ</strong>を保管。秘密鍵保有者しか作れない署名で<strong>否認防止</strong>も実現します。</div></div>
       </div>
     </section>
 
-    <!-- ══════════════════════════════════════════
-         前段 03 — 比較とICカードへの橋渡し
-    ══════════════════════════════════════════ -->
+    <!-- ═══════════════════════════════════════════════════════
+         03 — 比較とICカードへの接続（インタラクティブ比較付き）
+    ═══════════════════════════════════════════════════════ -->
     <section class="section" id="s0c">
       <div class="section-header">
         <span class="s-num">03</span>
         <h2>共通鍵認証 vs 公開鍵認証 — 比較とICカードへの接続</h2>
       </div>
 
-      <p>2つの認証方式の違いを整理します。そのうえで、ICカード認証がどちらをどう使っているかを確認します。</p>
+      <p>2つの認証方式の違いを整理し、ICカード認証がどのように「公開鍵認証の発展形」として位置づけられるかを確認します。</p>
 
-      <!-- 図3：鍵の対比イラスト -->
-      <div class="seq-wrap" style="padding:28px 28px 20px;">
-        <p class="seq-cap">図 3 — 共通鍵認証 vs 公開鍵認証：鍵の構造の違い</p>
-        <svg viewBox="0 0 700 200" style="min-width:540px;display:block" xmlns="http://www.w3.org/2000/svg">
+      <!-- インタラクティブ比較パネル -->
+      <div style="background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:24px 0;">
+        <div style="background:var(--ink2);color:#fff;padding:10px 18px;font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;display:flex;align-items:center;gap:8px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+          図 3 — 比較：鍵の構造の違い（クリックで詳細を展開）
+        </div>
+        <div style="padding:24px 28px 8px;overflow-x:auto;">
+          <div style="min-width:540px;display:flex;align-items:stretch;gap:16px;margin-bottom:20px;">
 
-          <!-- ─── 左：共通鍵認証 ─── -->
-          <rect x="14" y="14" width="316" height="172" rx="12" fill="#fff8e6" stroke="#d4a820" stroke-width="1.2"/>
-          <rect x="14" y="14" width="316" height="38" rx="12" fill="#3a2800"/>
-          <rect x="14" y="40" width="316" height="12" fill="#3a2800"/>
-          <text x="172" y="37" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="12" font-weight="600" fill="white">共通鍵認証</text>
+            <!-- 共通鍵認証パネル -->
+            <div id="panel-sym" style="flex:1;background:#fff8e6;border:2px solid #b5821e;border-radius:10px;padding:18px;cursor:pointer;transition:all .2s;" onclick="togglePanel('sym')">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+                <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+                  <circle cx="11" cy="18" r="9" fill="#f5d98a" stroke="#7a4208" stroke-width="1.8"/>
+                  <circle cx="11" cy="18" r="5" fill="#fdf5e6" stroke="#b5821e" stroke-width="1.4"/>
+                  <circle cx="11" cy="18" r="2" fill="#b5821e"/>
+                  <rect x="20" y="15.5" width="13" height="5" rx="2.5" fill="#b5821e"/>
+                  <rect x="24" y="20.5" width="4" height="6" rx="2" fill="#7a4208"/>
+                  <rect x="29" y="15.5" width="3" height="5" rx="1.5" fill="#f0c040"/>
+                </svg>
+                <div>
+                  <div style="font-size:12.5px;font-weight:700;color:#7a4208;">共通鍵認証</div>
+                  <div style="font-size:10px;color:#7a4208;opacity:.8;">Symmetric Key Auth</div>
+                </div>
+              </div>
+              <div id="detail-sym" style="display:none;padding-top:10px;border-top:1px dashed #e8c97a;">
+                <table style="width:100%;font-size:11px;border-collapse:collapse;">
+                  <tr><td style="padding:4px 0;color:#7a4208;font-weight:600;width:44%;">鍵の種類</td><td style="padding:4px 0;color:#5a3200;">1種類（双方が同一）</td></tr>
+                  <tr><td style="padding:4px 0;color:#7a4208;font-weight:600;">サーバ侵害</td><td style="padding:4px 0;color:#7a1818;font-weight:600;">全ユーザの鍵が漏洩</td></tr>
+                  <tr><td style="padding:4px 0;color:#7a4208;font-weight:600;">否認防止</td><td style="padding:4px 0;color:#7a1818;">困難</td></tr>
+                  <tr><td style="padding:4px 0;color:#7a4208;font-weight:600;">処理速度</td><td style="padding:4px 0;color:#155f44;font-weight:600;">高速</td></tr>
+                  <tr><td style="padding:4px 0;color:#7a4208;font-weight:600;">代表例</td><td style="padding:4px 0;color:#5a3200;">Kerberos, HMAC</td></tr>
+                </table>
+              </div>
+              <div style="font-size:10px;color:#b5821e;text-align:center;margin-top:8px;" id="hint-sym">▼ クリックして詳細を見る</div>
+            </div>
 
-          <!-- 利用者の鍵（左） -->
-          <g transform="translate(28, 64)">
-            <circle cx="20" cy="20" r="17" fill="#2a1800" stroke="#d4a820" stroke-width="2.5"/>
-            <circle cx="20" cy="20" r="9" fill="#141824" stroke="#b5821e" stroke-width="1.8"/>
-            <path d="M8,12 A13,13 0 0,1 32,12" fill="none" stroke="#f5d060" stroke-width="1.2" stroke-linecap="round" opacity=".7"/>
-            <rect x="37" y="16" width="54" height="8" rx="4" fill="#d4a820"/>
-            <rect x="37" y="17" width="54" height="3" rx="2" fill="#f5d060" opacity=".5"/>
-            <rect x="60" y="24" width="7" height="13" rx="2.5" fill="#d4a820"/>
-            <rect x="72" y="24" width="7" height="9" rx="2.5" fill="#d4a820"/>
-          </g>
-          <text x="80" y="152" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9.5" fill="#b5821e">利用者の鍵</text>
+            <!-- VS -->
+            <div style="display:flex;align-items:center;flex:0 0 40px;justify-content:center;">
+              <div style="font-size:16px;font-weight:700;color:var(--line);">VS</div>
+            </div>
 
-          <!-- イコール -->
-          <rect x="148" y="76" width="36" height="36" rx="6" fill="white" stroke="#d4a820" stroke-width="1"/>
-          <text x="166" y="100" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="20" font-weight="700" fill="#b5821e">=</text>
+            <!-- 公開鍵認証パネル -->
+            <div id="panel-asym" style="flex:1;background:#eaf3ff;border:2px solid #0b4a82;border-radius:10px;padding:18px;cursor:pointer;transition:all .2s;" onclick="togglePanel('asym')">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+                <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+                  <circle cx="11" cy="18" r="9" fill="#b8d6f5" stroke="#0b4a82" stroke-width="1.8"/>
+                  <circle cx="11" cy="18" r="5.5" fill="#daeeff" stroke="#1570b8" stroke-width="1.4"/>
+                  <circle cx="11" cy="18" r="2.5" fill="#0b4a82"/>
+                  <line x1="11" y1="9" x2="11" y2="27" stroke="#0b4a82" stroke-width="1" opacity=".3"/>
+                  <line x1="2" y1="18" x2="20" y2="18" stroke="#0b4a82" stroke-width="1" opacity=".3"/>
+                  <rect x="20" y="15.5" width="13" height="5" rx="2.5" fill="#1570b8"/>
+                  <rect x="24" y="20.5" width="4" height="7" rx="2" fill="#0b4a82"/>
+                  <rect x="29" y="20.5" width="3" height="5" rx="1.5" fill="#0b4a82"/>
+                  <rect x="31" y="15.5" width="4" height="5" rx="2" fill="#6ab4f5"/>
+                </svg>
+                <div>
+                  <div style="font-size:12.5px;font-weight:700;color:#0b4a82;">公開鍵認証</div>
+                  <div style="font-size:10px;color:#0b4a82;opacity:.8;">Asymmetric Key Auth</div>
+                </div>
+              </div>
+              <div id="detail-asym" style="display:none;padding-top:10px;border-top:1px dashed #a8cef5;">
+                <table style="width:100%;font-size:11px;border-collapse:collapse;">
+                  <tr><td style="padding:4px 0;color:#0b4a82;font-weight:600;width:44%;">鍵の種類</td><td style="padding:4px 0;color:#1e2d4a;">2種類（秘密鍵・公開鍵）</td></tr>
+                  <tr><td style="padding:4px 0;color:#0b4a82;font-weight:600;">サーバ侵害</td><td style="padding:4px 0;color:#155f44;font-weight:600;">公開鍵のみ（実害なし）</td></tr>
+                  <tr><td style="padding:4px 0;color:#0b4a82;font-weight:600;">否認防止</td><td style="padding:4px 0;color:#155f44;font-weight:600;">可能（署名で証明）</td></tr>
+                  <tr><td style="padding:4px 0;color:#0b4a82;font-weight:600;">処理速度</td><td style="padding:4px 0;color:#7a4208;">共通鍵より重い</td></tr>
+                  <tr><td style="padding:4px 0;color:#0b4a82;font-weight:600;">代表例</td><td style="padding:4px 0;color:#1e2d4a;">SSH, TLS, ICカード</td></tr>
+                </table>
+              </div>
+              <div style="font-size:10px;color:#0b4a82;text-align:center;margin-top:8px;" id="hint-asym">▼ クリックして詳細を見る</div>
+            </div>
 
-          <!-- サーバの鍵（右・同じ形） -->
-          <g transform="translate(198, 64)">
-            <circle cx="20" cy="20" r="17" fill="#2a1800" stroke="#d4a820" stroke-width="2.5"/>
-            <circle cx="20" cy="20" r="9" fill="#141824" stroke="#b5821e" stroke-width="1.8"/>
-            <path d="M8,12 A13,13 0 0,1 32,12" fill="none" stroke="#f5d060" stroke-width="1.2" stroke-linecap="round" opacity=".7"/>
-            <rect x="37" y="16" width="54" height="8" rx="4" fill="#d4a820"/>
-            <rect x="37" y="17" width="54" height="3" rx="2" fill="#f5d060" opacity=".5"/>
-            <rect x="60" y="24" width="7" height="13" rx="2.5" fill="#d4a820"/>
-            <rect x="72" y="24" width="7" height="9" rx="2.5" fill="#d4a820"/>
-          </g>
-          <text x="250" y="152" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9.5" fill="#b5821e">サーバの鍵</text>
-
-          <text x="172" y="171" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#7a1818" font-weight="500">サーバ侵害 → 全ユーザの鍵が流出</text>
-
-          <!-- ─── 右：公開鍵認証 ─── -->
-          <rect x="370" y="14" width="316" height="172" rx="12" fill="#f0f6ff" stroke="#1570b8" stroke-width="1.2"/>
-          <rect x="370" y="14" width="316" height="38" rx="12" fill="#1a2d5a"/>
-          <rect x="370" y="40" width="316" height="12" fill="#1a2d5a"/>
-          <text x="528" y="37" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="12" font-weight="600" fill="white">公開鍵認証</text>
-
-          <!-- 秘密鍵（左・複雑） -->
-          <g transform="translate(382, 62)">
-            <circle cx="22" cy="22" r="19" fill="#0d1f3c" stroke="#6ab4f5" stroke-width="2.5"/>
-            <circle cx="22" cy="22" r="11" fill="#141824" stroke="#4a90d9" stroke-width="1.8"/>
-            <circle cx="22" cy="22" r="5" fill="#0d1f3c" stroke="#6ab4f5" stroke-width="1.2"/>
-            <path d="M9,14 A15,15 0 0,1 35,14" fill="none" stroke="#a8d8f8" stroke-width="1.2" stroke-linecap="round" opacity=".6"/>
-            <rect x="41" y="18" width="62" height="8" rx="4" fill="#4a90d9"/>
-            <rect x="41" y="19" width="62" height="3" rx="2" fill="#8ac4f0" opacity=".5"/>
-            <rect x="60" y="26" width="8" height="16" rx="3" fill="#4a90d9"/>
-            <rect x="73" y="26" width="8" height="21" rx="3" fill="#4a90d9"/>
-            <rect x="86" y="26" width="8" height="11" rx="3" fill="#4a90d9"/>
-          </g>
-          <text x="432" y="152" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9.5" fill="#6ab4f5">秘密鍵（本人のみ）</text>
-
-          <!-- ≠ -->
-          <rect x="504" y="76" width="36" height="36" rx="6" fill="white" stroke="#1570b8" stroke-width="1"/>
-          <text x="522" y="100" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="19" font-weight="700" fill="#1570b8">≠</text>
-
-          <!-- 公開鍵（右・シンプル） -->
-          <g transform="translate(554, 64)">
-            <circle cx="20" cy="20" r="17" fill="#2a1800" stroke="#d4a820" stroke-width="2.5"/>
-            <circle cx="20" cy="20" r="9" fill="#141824" stroke="#b5821e" stroke-width="1.8"/>
-            <path d="M8,12 A13,13 0 0,1 32,12" fill="none" stroke="#f5d060" stroke-width="1.2" stroke-linecap="round" opacity=".7"/>
-            <rect x="37" y="16" width="50" height="8" rx="4" fill="#d4a820"/>
-            <rect x="37" y="17" width="50" height="3" rx="2" fill="#f5d060" opacity=".5"/>
-            <rect x="58" y="24" width="7" height="11" rx="2.5" fill="#d4a820"/>
-            <rect x="70" y="24" width="7" height="7" rx="2.5" fill="#d4a820"/>
-          </g>
-          <text x="598" y="152" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9.5" fill="#d4a820">公開鍵（サーバ保管）</text>
-
-          <text x="528" y="171" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#155f44" font-weight="500">サーバ侵害 → 公開鍵のみ（元から公開）</text>
-        </svg>
+          </div>
+        </div>
       </div>
 
       <table class="cmp-table">
-        <thead>
-          <tr>
-            <th>比較項目</th>
-            <th>共通鍵認証</th>
-            <th>公開鍵認証</th>
-          </tr>
-        </thead>
+        <thead><tr><th>比較項目</th><th>共通鍵認証</th><th>公開鍵認証</th></tr></thead>
         <tbody>
-          <tr><td>使用する鍵</td><td>双方が同一の秘密鍵を保有</td><td>秘密鍵（本人）と公開鍵（サーバ）が別</td></tr>
-          <tr><td>鍵の事前配布</td><td class="cmp-bad">安全な配布経路が必要（鍵配送問題）</td><td class="cmp-good">公開鍵はそのまま公開できる</td></tr>
-          <tr><td>サーバ侵害時のリスク</td><td class="cmp-bad">全ユーザの鍵が漏洩</td><td class="cmp-good">公開鍵のみ漏洩（元から公開情報）</td></tr>
-          <tr><td>秘密情報の通信</td><td class="cmp-mid">鍵そのものは送らないが共有秘密に依存</td><td class="cmp-good">秘密鍵はネットワークに一切出ない</td></tr>
+          <tr><td>使用する鍵</td><td>双方が同一の秘密鍵</td><td>秘密鍵（本人）と公開鍵（サーバ）が別</td></tr>
+          <tr><td>鍵の事前配布</td><td class="cmp-bad">安全な配布経路が必要</td><td class="cmp-good">公開鍵はそのまま公開できる</td></tr>
+          <tr><td>サーバ侵害リスク</td><td class="cmp-bad">全ユーザの鍵が漏洩</td><td class="cmp-good">公開鍵のみ（元から公開情報）</td></tr>
           <tr><td>否認防止</td><td class="cmp-bad">困難（共有鍵保有者全員が作成可能）</td><td class="cmp-good">可能（秘密鍵保有者のみ署名可能）</td></tr>
-          <tr><td>計算コスト</td><td class="cmp-good">低い（高速）</td><td class="cmp-mid">高い（署名演算が重い）</td></tr>
           <tr><td>スケーラビリティ</td><td class="cmp-bad">n(n-1)/2 本の鍵が必要</td><td class="cmp-good">1人あたり鍵ペア1組で済む</td></tr>
-          <tr><td>代表的な用途</td><td>Kerberos、HMAC 認証、パスワードハッシュ照合</td><td>SSH 公開鍵認証、TLS クライアント認証、ICカード認証</td></tr>
+          <tr><td>代表的な用途</td><td>Kerberos、HMAC 認証</td><td>SSH 公開鍵認証、ICカード認証</td></tr>
         </tbody>
       </table>
 
       <h3>ICカード認証への接続</h3>
-      <p>ICカード認証は<strong>公開鍵認証の発展形</strong>です。秘密鍵をネットワークから切り離すだけでなく、ICチップという物理的なハードウェア内に封印することで、さらに高い安全性を実現します。</p>
 
-      <div class="seq-wrap" style="padding:20px 24px 18px;">
-        <svg viewBox="0 0 700 148" style="min-width:520px;display:block" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <marker id="ahBridge" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
-              <path d="M1 1L9 5L1 9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </marker>
-          </defs>
-          <!-- 公開鍵認証ボックス -->
-          <rect x="8" y="14" width="192" height="120" rx="8" fill="#eaf3ff" stroke="#0b4a82" stroke-width="1"/>
-          <text x="104" y="36" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="11" font-weight="600" fill="#0b4a82">公開鍵認証</text>
-          <text x="104" y="54" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#3a3d52">秘密鍵はソフトウェアで保管</text>
-          <text x="104" y="70" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#3a3d52">チャレンジ＋署名で認証</text>
-          <text x="104" y="86" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#7a1818">PCへの侵入で漏洩の可能性</text>
-          <!-- 矢印と強化ラベル -->
-          <line x1="200" y1="74" x2="252" y2="74" stroke="#b5821e" stroke-width="2" marker-end="url(#ahBridge)"/>
-          <text x="226" y="67" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="9.5" fill="#7a4208" font-weight="600">強化</text>
-          <!-- ICカード認証ボックス -->
-          <rect x="254" y="8" width="438" height="132" rx="8" fill="#1e2d4a" stroke="#1570b8" stroke-width="1.5"/>
-          <text x="473" y="30" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="12" font-weight="600" fill="white">ICカード認証（公開鍵認証の発展形）</text>
-          <!-- 秘密鍵行 -->
-          <rect x="268" y="40" width="410" height="28" rx="5" fill="rgba(106,180,245,.12)" stroke="#6ab4f5" stroke-width="0.8"/>
-          <!-- 秘密鍵ミニイコン -->
-          <g transform="translate(274, 46)">
-            <circle cx="8" cy="8" r="7" fill="#0d1f3c" stroke="#6ab4f5" stroke-width="1.8"/>
-            <circle cx="8" cy="8" r="3.5" fill="#141824" stroke="#4a90d9" stroke-width="1.2"/>
-            <rect x="15" y="5.5" width="22" height="5" rx="2.5" fill="#4a90d9"/>
-            <rect x="24" y="10.5" width="4" height="7" rx="2" fill="#4a90d9"/>
-            <rect x="30" y="10.5" width="4" height="5" rx="2" fill="#4a90d9"/>
-          </g>
-          <text x="473" y="56" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#6ab4f5">秘密鍵 → ICチップ内に物理封印（カード外に絶対に出ない）</text>
-          <!-- 公開鍵行 -->
-          <rect x="268" y="76" width="410" height="28" rx="5" fill="rgba(212,168,32,.1)" stroke="#d4a820" stroke-width="0.8"/>
-          <!-- 公開鍵ミニアイコン -->
-          <g transform="translate(274, 82)">
-            <circle cx="8" cy="8" r="7" fill="#2a1800" stroke="#d4a820" stroke-width="1.8"/>
-            <circle cx="8" cy="8" r="3.5" fill="#141824" stroke="#b5821e" stroke-width="1.2"/>
-            <rect x="15" y="5.5" width="20" height="5" rx="2.5" fill="#d4a820"/>
-            <rect x="22" y="10.5" width="4" height="6" rx="2" fill="#d4a820"/>
-            <rect x="28" y="10.5" width="4" height="4" rx="2" fill="#d4a820"/>
-          </g>
-          <text x="473" y="92" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="#d4a820">公開鍵証明書（X.509）→ サーバ・CA が検証</text>
-          <!-- 2要素行 -->
-          <text x="473" y="122" text-anchor="middle" font-family="'Noto Sans JP',sans-serif" font-size="10" fill="rgba(255,255,255,.65)">所持（ICカード）＋ 知識（PIN）の 2要素認証も同時に実現</text>
-        </svg>
+      <!-- たとえ話 -->
+      <div class="note info">
+        <div class="note-i">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1570b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="7" width="10" height="10" rx="2"/><path d="M12 1v3M12 20v3M1 12h3M20 12h3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg>
+        </div>
+        <p><strong>たとえ話 — 銀行の金庫室と手形：</strong>公開鍵認証では「秘密鍵をパソコンに保存する」ため、PCに侵入されると鍵が盗まれます。ICカードは「秘密鍵を銀行の金庫（ICチップ）に預けた状態」に相当します。金庫（チップ）から鍵は絶対に出てこない。金庫の外では「この金庫の所有者が確かにここにいた」という<strong>手形（デジタル署名）</strong>だけが発行されます。金庫を壊そうとすると中身が自動消去される（耐タンパ設計）のも同じです。</p>
+      </div>
+
+      <!-- ICカード接続図（HTMLとCSSで構築） -->
+      <div style="background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:20px 0;">
+        <div style="background:var(--ink2);color:#fff;padding:10px 18px;font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;display:flex;align-items:center;gap:8px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          図 4 — 公開鍵認証 → ICカード認証への発展
+        </div>
+        <div style="padding:24px 28px 20px;overflow-x:auto;">
+          <div style="min-width:560px;display:flex;align-items:center;gap:0;">
+
+            <!-- 公開鍵認証ボックス -->
+            <div style="flex:0 0 200px;background:#eaf3ff;border:2px solid #0b4a82;border-radius:10px;padding:16px 14px;">
+              <div style="font-size:12px;font-weight:700;color:#0b4a82;margin-bottom:10px;">公開鍵認証</div>
+              <div style="font-size:10px;color:#1e2d4a;line-height:1.7;">秘密鍵はソフトウェアで保管<br>チャレンジ＋署名で認証<br><span style="color:#7a1818;">PC 侵入で漏洩の可能性</span></div>
+            </div>
+
+            <!-- 矢印 + 強化ラベル -->
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:0 12px;">
+              <span style="font-size:10px;font-weight:700;color:#b5821e;white-space:nowrap;">物理的に強化</span>
+              <div style="width:100%;height:2px;background:#b5821e;position:relative;"><div style="position:absolute;right:-1px;top:-4px;border:5px solid transparent;border-left:7px solid #b5821e;"></div></div>
+            </div>
+
+            <!-- ICカード認証ボックス -->
+            <div style="flex:0 0 280px;background:#1e2d4a;border:2px solid #1570b8;border-radius:10px;padding:16px 14px;">
+              <div style="font-size:12px;font-weight:700;color:white;margin-bottom:10px;">ICカード認証（公開鍵認証の発展形）</div>
+              <!-- 案D鍵アイコン（小） -->
+              <div style="background:rgba(106,180,245,.12);border:1px solid rgba(106,180,245,.4);border-radius:6px;padding:7px 10px;margin-bottom:7px;display:flex;align-items:center;gap:8px;">
+                <svg width="32" height="18" viewBox="0 0 32 18" fill="none">
+                  <circle cx="9" cy="9" r="8" fill="#b8d6f5" stroke="#0b4a82" stroke-width="1.5"/>
+                  <circle cx="9" cy="9" r="4.5" fill="#daeeff" stroke="#1570b8" stroke-width="1.2"/>
+                  <circle cx="9" cy="9" r="2" fill="#0b4a82"/>
+                  <line x1="9" y1="1" x2="9" y2="17" stroke="#0b4a82" stroke-width=".8" opacity=".3"/>
+                  <line x1="1" y1="9" x2="17" y2="9" stroke="#0b4a82" stroke-width=".8" opacity=".3"/>
+                  <rect x="17" y="6.5" width="13" height="5" rx="2.5" fill="#1570b8"/>
+                  <rect x="22" y="11.5" width="3.5" height="5.5" rx="1.5" fill="#0b4a82"/>
+                  <rect x="26.5" y="6.5" width="3.5" height="5" rx="1.5" fill="#6ab4f5"/>
+                </svg>
+                <span style="font-size:10px;color:#6ab4f5;">秘密鍵 → ICチップ内に物理封印</span>
+              </div>
+              <!-- 案D公開鍵（小） -->
+              <div style="background:rgba(212,168,32,.1);border:1px solid rgba(212,168,32,.35);border-radius:6px;padding:7px 10px;display:flex;align-items:center;gap:8px;">
+                <svg width="28" height="16" viewBox="0 0 28 16" fill="none">
+                  <circle cx="8" cy="8" r="7" fill="#f5d98a" stroke="#7a4208" stroke-width="1.3"/>
+                  <circle cx="8" cy="8" r="3.5" fill="#fdf5e6" stroke="#b5821e" stroke-width="1"/>
+                  <circle cx="8" cy="8" r="1.5" fill="#b5821e"/>
+                  <rect x="15" y="5.5" width="11" height="5" rx="2.5" fill="#b5821e"/>
+                  <rect x="19" y="10.5" width="3.5" height="4.5" rx="1.5" fill="#7a4208"/>
+                </svg>
+                <span style="font-size:10px;color:#d4a820;">公開鍵証明書（X.509）→ CA が検証</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
       </div>
 
       <div class="keypoint">
         <p class="kp-label">前段まとめ — ICカード認証の位置づけ</p>
         <p>
-          共通鍵認証は手軽だが<strong>サーバ側の鍵漏洩リスク</strong>と<strong>否認防止の困難さ</strong>がある。<br>
-          公開鍵認証は秘密鍵をクライアントだけが保管することでサーバ漏洩リスクを排除し、否認防止も実現する。<br>
-          ICカード認証は公開鍵認証をさらに強化し、<strong>秘密鍵をICチップという物理ハードウェア内に封印</strong>することで、ソフトウェア攻撃・サーバ侵害・ネットワーク傍受のいずれにも耐える認証基盤を実現します。
+          共通鍵認証は手軽だが<strong>サーバ側漏洩リスク</strong>と<strong>否認防止の困難さ</strong>がある。公開鍵認証はこれを解決するが、秘密鍵はソフトウェア管理のためPC侵入には無力。<br>
+          ICカード認証は「公開鍵認証 ＋ 耐タンパICチップ」の組み合わせで、<strong>秘密鍵を物理的なハードウェア内に封印</strong>。ネットワーク傍受・サーバ侵害・PC侵入のいずれにも耐える最強の認証基盤を実現します。
         </p>
       </div>
     </section>
 
     <!-- ── 以下、ICカード認証本論 ── -->
-    <!-- ── 01 基礎 ── -->
-    <!-- ── 01 基礎 ── -->
-    <!-- ── 01 基礎 ── -->
+    <!-- ── 04 基礎 ── -->
     <section class="section" id="s1">
       <div class="section-header">
         <span class="s-num">04</span>
@@ -1852,6 +1976,16 @@
       link.classList.toggle('active', link.getAttribute('href') === '#' + current);
     });
   }, { passive: true });
+
+  function togglePanel(type) {
+    const det = document.getElementById("detail-" + type);
+    const hint = document.getElementById("hint-" + type);
+    const panel = document.getElementById("panel-" + type);
+    const open = det.style.display === "block";
+    det.style.display = open ? "none" : "block";
+    hint.textContent = open ? "▼ クリックして詳細を見る" : "▲ 閉じる";
+    panel.style.borderWidth = open ? "2px" : "3px";
+  }
 </script>
 </body>
 </html>

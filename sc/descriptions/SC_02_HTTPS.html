@@ -1,0 +1,1924 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HTTP通信の仕組み — 技術解説書 Ver.3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600&family=Noto+Sans+JP:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#141824;--ink2:#1e2d4a;--accent:#0b4a82;--accent2:#1570b8;--gold:#b5821e;--soft:#e8edf5;--surface:#f3f6fb;--line:#cdd7e6;--success:#155f44;--warn:#7a4208;--danger:#7a1818;--mono:'JetBrains Mono',monospace;--serif:'Noto Serif JP',serif;--sans:'Noto Sans JP',sans-serif}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--sans);background:#edf1f8;color:var(--ink);font-size:15px;line-height:1.78}
+  .cover{background:var(--ink);color:#fff;padding:72px 60px 56px;position:relative;overflow:hidden}
+  .cover-geo{position:absolute;top:0;right:0;width:420px;height:420px;opacity:.06}
+  .cover-kicker{font-size:11px;font-weight:700;letter-spacing:.2em;color:rgba(255,255,255,.42);text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+  .cover-kicker::before{content:'';display:block;width:24px;height:1px;background:var(--gold)}
+  .cover h1{font-family:var(--serif);font-size:40px;font-weight:600;line-height:1.22;margin-bottom:18px}
+  .cover h1 em{color:#6ab4f5;font-style:normal}
+  .cover-desc{font-size:14px;color:rgba(255,255,255,.58);max-width:560px;margin-bottom:36px;line-height:1.8}
+  .cover-tags{display:flex;gap:7px;flex-wrap:wrap}
+  .ctag{font-size:10.5px;padding:3px 11px;border-radius:3px;border:1px solid rgba(255,255,255,.16);color:rgba(255,255,255,.6);letter-spacing:.04em;font-family:var(--mono)}
+  .layout{display:flex;align-items:flex-start}
+  .sidebar{position:sticky;top:0;width:220px;flex-shrink:0;height:100vh;overflow-y:auto;background:var(--ink2);padding:28px 0}
+  .sidebar-title{font-size:10px;font-weight:700;letter-spacing:.18em;color:rgba(255,255,255,.3);text-transform:uppercase;padding:0 20px 12px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:8px}
+  .sidebar nav a{display:block;padding:8px 20px;font-size:12.5px;color:rgba(255,255,255,.55);text-decoration:none;border-left:2px solid transparent;transition:all .15s;line-height:1.45}
+  .sidebar nav a:hover{color:#fff;background:rgba(255,255,255,.05)}
+  .sidebar nav a.active{color:#6ab4f5;border-left-color:#6ab4f5;background:rgba(100,180,245,.07)}
+  .sidebar nav .nav-num{font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.25);display:block;margin-bottom:1px}
+  .main{flex:1;min-width:0;padding:52px 52px 100px}
+  .section{margin-bottom:80px;scroll-margin-top:24px}
+  .section-header{display:flex;align-items:flex-start;gap:14px;margin-bottom:26px;padding-bottom:16px;border-bottom:1px solid var(--line)}
+  .s-num{font-family:var(--mono);font-size:10px;font-weight:500;color:#fff;background:var(--accent);padding:3px 8px;border-radius:3px;margin-top:5px;white-space:nowrap;flex-shrink:0}
+  .s-num.gold-bg{background:var(--gold)}
+  .s-num.red-bg{background:var(--danger)}
+  h2{font-family:var(--serif);font-size:24px;font-weight:600;color:var(--ink);line-height:1.3}
+  h3{font-size:15px;font-weight:700;color:var(--ink2);margin:32px 0 12px;padding-left:10px;border-left:3px solid var(--accent2)}
+  p{color:#3a3d52;margin-bottom:14px}
+  .steps{display:flex;flex-direction:column;gap:8px;margin:16px 0}
+  .step{display:flex;gap:12px;align-items:flex-start;padding:11px 15px;border-radius:6px;background:var(--surface);border-left:3px solid var(--line)}
+  .step.hi{background:#eaf3ff;border-left-color:var(--accent2)}
+  .step.ok{background:#eaf7f1;border-left-color:var(--success)}
+  .step.wn{background:#fdf5e6;border-left-color:var(--gold)}
+  .step.ng{background:#fdf0f0;border-left-color:var(--danger)}
+  .sn{font-family:var(--mono);font-size:10px;font-weight:500;color:#fff;background:var(--accent2);min-width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+  .step.ok .sn{background:var(--success)}
+  .step.wn .sn{background:var(--gold)}
+  .step.ng .sn{background:var(--danger)}
+  .sb{font-size:13.5px;color:var(--ink);line-height:1.65}
+  .sb strong{color:var(--ink2)}
+  .sb code{font-family:var(--mono);font-size:11.5px;background:rgba(11,74,130,.08);color:var(--accent);padding:1px 5px;border-radius:3px}
+  .note{display:flex;gap:11px;border-radius:6px;padding:13px 16px;margin:14px 0;border:1px solid}
+  .note-i{flex-shrink:0;margin-top:2px}
+  .note p{margin:0;font-size:13px;line-height:1.7}
+  .note.info{background:#e8f3fd;border-color:#a8cef5}
+  .note.info p{color:#0b3a6a}
+  .note.warn{background:#fdf5e6;border-color:#e8c97a}
+  .note.warn p{color:#5a3200}
+  .note.danger{background:#fdf0f0;border-color:#e8a8a8}
+  .note.danger p{color:#5a0000}
+  .keypoint{background:var(--ink);color:#fff;border-radius:8px;padding:20px 26px;margin:24px 0}
+  .kp-label{font-size:9.5px;font-weight:700;letter-spacing:.2em;color:rgba(181,130,30,.9);text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+  .kp-label::before{content:'';display:block;width:16px;height:1px;background:var(--gold)}
+  .keypoint p{color:rgba(255,255,255,.82);margin:0;font-size:13.5px;line-height:1.8}
+  .keypoint strong{color:#6ab4f5}
+  .cmp-table{width:100%;border-collapse:collapse;font-size:13px;margin:16px 0}
+  .cmp-table th{background:var(--accent);color:#fff;padding:9px 13px;text-align:center;font-size:11px;font-weight:600;letter-spacing:.06em}
+  .cmp-table th:first-child{text-align:left;background:var(--ink2)}
+  .cmp-table td{padding:9px 13px;border:1px solid var(--line);text-align:center;font-size:12.5px;vertical-align:middle}
+  .cmp-table td:first-child{text-align:left;font-weight:600;color:var(--ink2);background:var(--surface);white-space:nowrap}
+  .cmp-good{color:var(--success);font-weight:600}
+  .cmp-bad{color:var(--danger)}
+  .cmp-mid{color:var(--warn)}
+  .req-table{width:100%;border-collapse:collapse;font-size:13.5px;margin:16px 0}
+  .req-table th{background:var(--ink2);color:#fff;padding:9px 13px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em}
+  .req-table td{padding:9px 13px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.6}
+  .req-table tr:last-child td{border-bottom:none}
+  .req-table tr:nth-child(even) td{background:var(--surface)}
+  .req-table td:first-child{font-weight:600;color:var(--ink2);white-space:nowrap}
+  .term-table{width:100%;border-collapse:collapse;font-size:13px;margin:12px 0}
+  .term-table td{padding:8px 11px;border-bottom:1px dashed var(--line);vertical-align:top}
+  .term-table td:first-child{font-family:var(--mono);font-size:11px;color:var(--accent2);font-weight:500;white-space:nowrap;min-width:160px}
+  .term-table tr:last-child td{border-bottom:none}
+  .quiz-wrap{display:flex;flex-direction:column;gap:24px;margin:20px 0}
+  .quiz{background:#fff;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+  .quiz-q{padding:14px 18px;background:var(--ink2);color:#fff;font-size:13.5px;line-height:1.65;display:flex;gap:12px}
+  .quiz-qn{font-family:var(--mono);font-size:10px;background:rgba(255,255,255,.15);padding:2px 8px;border-radius:3px;white-space:nowrap;flex-shrink:0;height:fit-content;margin-top:2px}
+  .quiz-opts{padding:14px 18px;display:flex;flex-direction:column;gap:7px}
+  .quiz-opt{padding:8px 13px;border:1px solid var(--line);border-radius:5px;font-size:13px;color:var(--ink);cursor:pointer;transition:all .15s;background:#fff;text-align:left}
+  .quiz-opt:hover{background:var(--surface);border-color:var(--accent2)}
+  .quiz-opt.correct{background:#eaf7f1;border-color:var(--success);color:var(--success)}
+  .quiz-opt.wrong{background:#fdf0f0;border-color:var(--danger);color:var(--danger)}
+  .quiz-opt.reveal{background:var(--surface);color:#aaa}
+  .quiz-exp{display:none;padding:12px 18px;background:#f0f6ff;border-top:1px solid #b8d5f5;font-size:13px;color:#0b3a6a;line-height:1.7}
+  .quiz-exp.show{display:block}
+  .msg-box{background:#0f1729;border-radius:8px;padding:20px 24px;margin:18px 0;font-family:var(--mono);font-size:12.5px;line-height:2;overflow-x:auto}
+  .http-method{color:#f5a623}
+  .http-path{color:#6ab4f5}
+  .http-ver{color:rgba(255,255,255,.45)}
+  .http-header-name{color:#a8d8a0}
+  .http-header-value{color:rgba(255,255,255,.7)}
+  .http-status-ok{color:#6adb9a}
+  .http-body{color:#d4a8f5}
+  .seq-wrap{background:#fff;border:1px solid var(--line);border-radius:10px;padding:28px 24px 20px;margin:24px 0;overflow-x:auto}
+  .seq-cap{font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:20px;display:flex;align-items:center;gap:10px}
+  .seq-cap::after{content:'';flex:1;height:1px;background:var(--line)}
+  .threat-card{background:#fff;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+  .tc-head{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--danger);color:#fff}
+  .tc-head.warn-head{background:var(--warn)}
+  .tc-head.blue-head{background:var(--accent)}
+  .tc-head.ok-head{background:var(--success)}
+  .tc-head span{font-size:12.5px;font-weight:700}
+  .tc-body{padding:12px 14px}
+  .tc-body p{font-size:12.5px;color:#3a3d52;margin:0 0 8px;line-height:1.6}
+  .tc-counter{font-size:11.5px;color:var(--success);padding:6px 10px;background:#eaf7f1;border-radius:4px;margin:0;border-left:3px solid var(--success)}
+  /* lifeline helpers */
+  .actor-row{display:flex;justify-content:space-between;padding:0 40px}
+  .actor-box{display:flex;flex-direction:column;align-items:center;width:140px}
+  .actor-inner{padding:7px 14px;border-radius:5px;font-size:12px;font-weight:600;color:#fff;text-align:center;width:130px}
+  .actor-sub{font-family:var(--mono);font-size:9px;color:rgba(30,45,74,.4);margin-top:3px}
+  .lifeline-zone{position:relative;padding:0 105px}
+  .lifeline-zone::before{content:'';position:absolute;left:105px;top:0;bottom:0;width:1px;border-left:1px dashed var(--line)}
+  .lifeline-zone::after{content:'';position:absolute;right:105px;top:0;bottom:0;width:1px;border-left:1px dashed var(--line)}
+  .arr-row{display:flex;align-items:center;height:52px;position:relative}
+  .arr-fwd{position:absolute;left:0;right:0;height:2px;background:var(--accent2)}
+  .arr-fwd-r{position:absolute;right:0;top:50%;transform:translateY(-50%);width:0;height:0;border-top:6px solid transparent;border-bottom:6px solid transparent;border-left:9px solid var(--accent2)}
+  .arr-ret{position:absolute;left:0;right:0;height:0;border-top:2px dashed var(--success)}
+  .arr-ret-l{position:absolute;left:0;top:50%;transform:translateY(-50%);width:0;height:0;border-top:6px solid transparent;border-bottom:6px solid transparent;border-right:9px solid var(--success)}
+  .arr-err{position:absolute;left:0;right:0;height:0;border-top:2px dashed var(--danger)}
+  .arr-err-l{position:absolute;left:0;top:50%;transform:translateY(-50%);width:0;height:0;border-top:6px solid transparent;border-bottom:6px solid transparent;border-right:9px solid var(--danger)}
+  .arr-lbl{position:absolute;left:50%;transform:translateX(-50%);background:#fff;border:1px solid var(--line);border-radius:3px;padding:2px 10px;font-size:10.5px;color:var(--accent2);white-space:nowrap;z-index:3}
+  .arr-lbl.ret{background:#eaf7f1;border-color:#b0dcca;color:var(--success)}
+  .arr-lbl.err{background:#fdf0f0;border-color:#e8a8a8;color:var(--danger)}
+  .arr-lbl.wn{background:#fff8e6;border-color:#e8c97a;color:var(--warn)}
+  .proc-box-r{display:flex;align-items:center;height:40px;position:relative;justify-content:flex-end}
+  .proc-box-l{display:flex;align-items:center;height:40px;position:relative;justify-content:flex-start}
+  .proc-tag{border-radius:5px;padding:5px 14px;font-size:10.5px;white-space:nowrap;z-index:3}
+  .proc-tag.ok{background:#eaf7f1;border:1px solid #b0dcca;color:var(--success)}
+  .proc-tag.info{background:#e8f3fd;border:1px solid #a8cef5;color:var(--accent)}
+  .proc-tag.wn{background:#fff8e6;border:1px solid #e8c97a;color:var(--warn)}
+  .proc-tag.ng{background:#fdf0f0;border:1px solid #e8a8a8;color:var(--danger)}
+  .hf-box{background:#0f1729;border-radius:8px;padding:18px 22px;margin:16px 0;font-family:var(--mono);font-size:12px;line-height:1.9;overflow-x:auto}
+  footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;padding:22px;font-size:11.5px;letter-spacing:.05em;line-height:1.8}
+  @media(max-width:800px){.sidebar{display:none}.main{padding:28px 20px 60px}.cover{padding:48px 24px 40px}.cover h1{font-size:28px}}
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <svg class="cover-geo" viewBox="0 0 400 400" fill="none"><rect x="60" y="60" width="280" height="280" stroke="white" stroke-width="1"/><rect x="100" y="100" width="200" height="200" stroke="white" stroke-width="1"/><circle cx="200" cy="200" r="160" stroke="white" stroke-width=".8"/><circle cx="200" cy="200" r="100" stroke="white" stroke-width=".8"/><line x1="40" y1="200" x2="360" y2="200" stroke="white" stroke-width=".5"/><line x1="200" y1="40" x2="200" y2="360" stroke="white" stroke-width=".5"/><line x1="60" y1="60" x2="340" y2="340" stroke="white" stroke-width=".4"/><line x1="340" y1="60" x2="60" y2="340" stroke="white" stroke-width=".4"/></svg>
+  <div style="position:relative">
+    <p class="cover-kicker">技術解説書 Ver.3 — 情報処理安全確保支援士対応</p>
+    <h1>HTTP通信・セッション管理・<br><em>Webセキュリティ</em>の仕組み</h1>
+    <p class="cover-desc">HTTPの基礎からセッション管理の3方式（Cookie・Hiddenフィールド・URLリライティング）、セッション攻撃と対策、クロスドメイン制御（CORS・SOP）、Webサーバのセキュリティ対策まで網羅した完全版解説書です。</p>
+    <div class="cover-tags">
+      <span class="ctag">HTTP/1.1〜3</span><span class="ctag">Cookie / Session</span><span class="ctag">Hidden Field</span><span class="ctag">CSRF / XSS</span><span class="ctag">セッションハイジャック</span><span class="ctag">CORS / SOP</span><span class="ctag">HSTS / CSP / WAF</span>
+    </div>
+  </div>
+</div>
+
+<div class="layout">
+<aside class="sidebar">
+  <p class="sidebar-title">目次</p>
+  <nav>
+    <a href="#s1"  onclick="setActive(this)"><span class="nav-num">01</span>HTTPとは — 全体像と位置づけ</a>
+    <a href="#s2"  onclick="setActive(this)"><span class="nav-num">02</span>HTTPリクエスト</a>
+    <a href="#s3"  onclick="setActive(this)"><span class="nav-num">03</span>HTTPメソッド</a>
+    <a href="#s4"  onclick="setActive(this)"><span class="nav-num">04</span>リクエストヘッダ</a>
+    <a href="#s5"  onclick="setActive(this)"><span class="nav-num">05</span>HTTPレスポンス</a>
+    <a href="#s6"  onclick="setActive(this)"><span class="nav-num">06</span>レスポンスヘッダ</a>
+    <a href="#s7"  onclick="setActive(this)"><span class="nav-num">07</span>HTTP認証</a>
+    <a href="#s8"  onclick="setActive(this)"><span class="nav-num">08</span>セッション管理の方式</a>
+    <a href="#s9"  onclick="setActive(this)"><span class="nav-num">09</span>Cookie の安全な管理</a>
+    <a href="#s10" onclick="setActive(this)"><span class="nav-num">10</span>セッション攻撃と対策</a>
+    <a href="#s11" onclick="setActive(this)"><span class="nav-num">11</span>クロスドメイン（SOP / CORS）</a>
+    <a href="#s12" onclick="setActive(this)"><span class="nav-num">12</span>Webサーバのセキュリティ対策</a>
+    <a href="#s13" onclick="setActive(this)"><span class="nav-num">13</span>練習問題</a>
+    <a href="#s14" onclick="setActive(this)"><span class="nav-num">14</span>重要用語まとめ</a>
+  </nav>
+</aside>
+
+<main class="main">
+
+<!-- ══ 01 全体像 ══ -->
+
+<!-- ══ 01 HTTPとは ══ -->
+<section class="section" id="s1">
+  <div class="section-header"><span class="s-num">01</span><h2>HTTPとは — 全体像と位置づけ</h2></div>
+
+  <!-- たとえ話バナー: 手紙のやり取り -->
+  <div style="display:flex;gap:0;border-radius:12px;overflow:hidden;border:1.5px solid var(--line);margin-bottom:20px;">
+    <!-- たとえ列 -->
+    <div style="flex:1;background:var(--ink);padding:20px 22px;display:flex;flex-direction:column;gap:16px;">
+      <div style="font-size:9px;font-weight:700;letter-spacing:.18em;color:rgba(181,130,30,.85);text-transform:uppercase;">たとえ話 — 手紙の往復</div>
+      <!-- 3ステップ横並び -->
+      <div style="display:flex;align-items:center;gap:0;">
+        <!-- ブラウザ(手紙を書く人) -->
+        <div style="flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:6px;">
+          <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
+            <!-- browser window -->
+            <rect x="2" y="6" width="48" height="36" rx="5" fill="#1e2d4a" stroke="#378ADD" stroke-width="2"/>
+            <rect x="2" y="6" width="48" height="14" rx="5" fill="#185FA5" stroke-width="0"/>
+            <rect x="2" y="14" width="48" height="6" fill="#185FA5" stroke-width="0"/>
+            <!-- traffic lights -->
+            <circle cx="11" cy="13" r="3" fill="#E24B4A"/>
+            <circle cx="20" cy="13" r="3" fill="#EF9F27"/>
+            <circle cx="29" cy="13" r="3" fill="#3B6D11"/>
+            <!-- address bar -->
+            <rect x="35" y="9" width="10" height="7" rx="2" fill="rgba(255,255,255,.15)"/>
+            <!-- content lines -->
+            <rect x="8" y="26" width="36" height="4" rx="2" fill="rgba(255,255,255,.15)"/>
+            <rect x="8" y="32" width="28" height="3" rx="1.5" fill="rgba(255,255,255,.08)"/>
+            <!-- pencil writing icon -->
+            <path d="M6 42 L14 34 L18 38 L10 46 Z" fill="#6ab4f5" stroke="#378ADD" stroke-width="1"/>
+            <path d="M14 34 L17 31 L21 35 L18 38 Z" fill="#B5D4F4"/>
+            <path d="M6 46 L10 46 L6 42 Z" fill="#6ab4f5"/>
+          </svg>
+          <div style="font-size:10px;font-weight:700;color:#6ab4f5;">ブラウザ</div>
+          <div style="font-size:9px;color:rgba(255,255,255,.45);text-align:center;line-height:1.4;">手紙を<br>書く人</div>
+        </div>
+        <!-- request arrow -->
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;padding:0 6px;gap:3px;">
+          <div style="font-size:9px;color:#6ab4f5;font-weight:600;">リクエスト</div>
+          <div style="width:100%;display:flex;align-items:center;">
+            <div style="flex:1;height:2px;background:#378ADD;"></div>
+            <div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:8px solid #378ADD;"></div>
+          </div>
+          <div style="font-size:8.5px;color:rgba(255,255,255,.35);">「この情報ください」</div>
+        </div>
+        <!-- server -->
+        <div style="flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:6px;">
+          <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
+            <!-- server rack -->
+            <rect x="6" y="4" width="40" height="11" rx="3" fill="#0F6E56" stroke="#1D9E75" stroke-width="1.5"/>
+            <rect x="6" y="18" width="40" height="11" rx="3" fill="#0F6E56" stroke="#1D9E75" stroke-width="1.5"/>
+            <rect x="6" y="32" width="40" height="11" rx="3" fill="#0F6E56" stroke="#1D9E75" stroke-width="1.5"/>
+            <!-- LEDs -->
+            <circle cx="12" cy="9.5" r="2.5" fill="#56d364"/>
+            <circle cx="12" cy="23.5" r="2.5" fill="#56d364"/>
+            <circle cx="12" cy="37.5" r="2.5" fill="#EF9F27"/>
+            <!-- rack lines -->
+            <rect x="18" y="7" width="22" height="5" rx="1.5" fill="rgba(255,255,255,.12)"/>
+            <rect x="18" y="21" width="22" height="5" rx="1.5" fill="rgba(255,255,255,.12)"/>
+            <rect x="18" y="35" width="22" height="5" rx="1.5" fill="rgba(255,255,255,.12)"/>
+            <!-- DB cylinder at bottom -->
+            <ellipse cx="26" cy="47" rx="10" ry="3" fill="#085041" stroke="#1D9E75" stroke-width="1.2"/>
+            <rect x="16" y="44" width="20" height="3" fill="#085041"/>
+            <ellipse cx="26" cy="44" rx="10" ry="3" fill="#0F6E56" stroke="#1D9E75" stroke-width="1.2"/>
+          </svg>
+          <div style="font-size:10px;font-weight:700;color:#56d364;">Webサーバ</div>
+          <div style="font-size:9px;color:rgba(255,255,255,.45);text-align:center;line-height:1.4;">手紙を<br>受け取る人</div>
+        </div>
+        <!-- response arrow -->
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;padding:0 6px;gap:3px;">
+          <div style="font-size:9px;color:#56d364;font-weight:600;">レスポンス</div>
+          <div style="width:100%;display:flex;align-items:center;">
+            <div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:8px solid #56d364;"></div>
+            <div style="flex:1;height:2px;background:#56d364;"></div>
+          </div>
+          <div style="font-size:8.5px;color:rgba(255,255,255,.35);">「はい、こちらです」</div>
+        </div>
+        <!-- browser receiving -->
+        <div style="flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:6px;">
+          <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
+            <rect x="2" y="6" width="48" height="36" rx="5" fill="#1e2d4a" stroke="#378ADD" stroke-width="2"/>
+            <rect x="2" y="6" width="48" height="14" rx="5" fill="#185FA5" stroke-width="0"/>
+            <rect x="2" y="14" width="48" height="6" fill="#185FA5" stroke-width="0"/>
+            <circle cx="11" cy="13" r="3" fill="#E24B4A"/>
+            <circle cx="20" cy="13" r="3" fill="#EF9F27"/>
+            <circle cx="29" cy="13" r="3" fill="#3B6D11"/>
+            <!-- webpage loaded with image placeholder -->
+            <rect x="8" y="24" width="16" height="12" rx="2" fill="rgba(255,255,255,.12)"/>
+            <path d="M9 34 L14 27 L18 31 L20 29 L23 34Z" fill="#56d364" opacity=".4"/>
+            <rect x="28" y="24" width="14" height="3" rx="1" fill="rgba(255,255,255,.2)"/>
+            <rect x="28" y="29" width="10" height="2" rx="1" fill="rgba(255,255,255,.12)"/>
+            <rect x="28" y="33" width="12" height="2" rx="1" fill="rgba(255,255,255,.12)"/>
+          </svg>
+          <div style="font-size:10px;font-weight:700;color:#6ab4f5;">ブラウザ</div>
+          <div style="font-size:9px;color:rgba(255,255,255,.45);text-align:center;line-height:1.4;">ページが<br>表示される</div>
+        </div>
+      </div>
+    </div>
+    <!-- OSI layer stack -->
+    <div style="flex:0 0 200px;background:var(--surface);padding:16px 14px;border-left:1px solid var(--line);">
+      <div style="font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(30,45,74,.4);margin-bottom:8px;">OSI位置</div>
+      <div style="display:flex;flex-direction:column;gap:2px;">
+        <div style="background:#141824;color:#6ab4f5;padding:6px 10px;border-radius:4px 4px 0 0;font-size:11px;font-weight:700;display:flex;justify-content:space-between;"><span>7 アプリ層</span><span style="font-family:var(--mono);font-size:9px;color:#f5a623;">HTTP/HTTPS</span></div>
+        <div style="background:#0b4a82;color:rgba(255,255,255,.6);padding:5px 10px;font-size:10.5px;display:flex;justify-content:space-between;"><span>6 プレゼン</span><span style="font-family:var(--mono);font-size:9px;">TLS</span></div>
+        <div style="background:#0b4a82;color:rgba(255,255,255,.4);padding:5px 10px;font-size:10.5px;">5 セッション</div>
+        <div style="background:#155f44;color:rgba(255,255,255,.8);padding:5px 10px;font-size:10.5px;display:flex;justify-content:space-between;"><span>4 トランスポート</span><span style="font-family:var(--mono);font-size:9px;">TCP/QUIC</span></div>
+        <div style="background:#3a3200;color:rgba(255,255,255,.5);padding:5px 10px;font-size:10.5px;display:flex;justify-content:space-between;"><span>3 ネットワーク</span><span style="font-family:var(--mono);font-size:9px;">IP</span></div>
+        <div style="background:#3a3200;color:rgba(255,255,255,.3);padding:5px 10px;border-radius:0 0 4px 4px;font-size:10.5px;">1-2 物理/データリンク</div>
+      </div>
+    </div>
+    <!-- HTTP versions -->
+    <div style="flex:0 0 180px;background:var(--surface);padding:16px 14px;border-left:1px solid var(--line);">
+      <div style="font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(30,45,74,.4);margin-bottom:8px;">バージョン比較</div>
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        <!-- 1.1 -->
+        <div style="border:1.5px solid var(--line);border-radius:6px;overflow:hidden;">
+          <div style="background:var(--ink2);color:#fff;padding:5px 10px;font-family:var(--mono);font-size:11px;font-weight:700;">HTTP/1.1</div>
+          <div style="padding:6px 10px;font-size:10px;color:#3a3d52;display:flex;flex-direction:column;gap:2px;">
+            <div style="display:flex;gap:4px;align-items:center;"><svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#E24B4A"/><path d="M3 3 L7 7 M7 3 L3 7" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg><span>多重化なし</span></div>
+            <div style="display:flex;gap:4px;align-items:center;"><svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#E24B4A"/><path d="M3 3 L7 7 M7 3 L3 7" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg><span>ヘッダ圧縮なし</span></div>
+            <div style="font-family:var(--mono);font-size:9.5px;color:var(--accent2);">TCP</div>
+          </div>
+        </div>
+        <!-- 2 -->
+        <div style="border:1.5px solid #9FE1CB;border-radius:6px;overflow:hidden;">
+          <div style="background:#155f44;color:#fff;padding:5px 10px;font-family:var(--mono);font-size:11px;font-weight:700;">HTTP/2</div>
+          <div style="padding:6px 10px;font-size:10px;color:#3a3d52;display:flex;flex-direction:column;gap:2px;">
+            <div style="display:flex;gap:4px;align-items:center;"><svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#3B6D11"/><path d="M2.5 5 L4.5 7 L7.5 3" stroke="white" stroke-width="1.2" stroke-linecap="round" fill="none"/></svg><span>多重化あり</span></div>
+            <div style="display:flex;gap:4px;align-items:center;"><svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#3B6D11"/><path d="M2.5 5 L4.5 7 L7.5 3" stroke="white" stroke-width="1.2" stroke-linecap="round" fill="none"/></svg><span>HPACK圧縮</span></div>
+            <div style="font-family:var(--mono);font-size:9.5px;color:var(--accent2);">TCP</div>
+          </div>
+        </div>
+        <!-- 3 -->
+        <div style="border:1.5px solid #FAC775;border-radius:6px;overflow:hidden;">
+          <div style="background:#854F0B;color:#fff;padding:5px 10px;font-family:var(--mono);font-size:11px;font-weight:700;">HTTP/3</div>
+          <div style="padding:6px 10px;font-size:10px;color:#3a3d52;display:flex;flex-direction:column;gap:2px;">
+            <div style="display:flex;gap:4px;align-items:center;"><svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#3B6D11"/><path d="M2.5 5 L4.5 7 L7.5 3" stroke="white" stroke-width="1.2" stroke-linecap="round" fill="none"/></svg><span>多重化あり</span></div>
+            <div style="display:flex;gap:4px;align-items:center;"><svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#3B6D11"/><path d="M2.5 5 L4.5 7 L7.5 3" stroke="white" stroke-width="1.2" stroke-linecap="round" fill="none"/></svg><span>QPACK圧縮</span></div>
+            <div style="font-family:var(--mono);font-size:9.5px;color:var(--gold);">QUIC/UDP ← 高速</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 02 リクエスト ══ -->
+<section class="section" id="s2">
+  <div class="section-header"><span class="s-num">02</span><h2>HTTPリクエスト</h2></div>
+  <!-- リクエスト構造図 -->
+  <div style="display:flex;gap:16px;align-items:flex-start;">
+    <!-- 封筒アナロジー -->
+    <div style="flex:0 0 140px;display:flex;flex-direction:column;align-items:center;gap:10px;">
+      <div style="font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(30,45,74,.4);">たとえ — 手紙</div>
+      <!-- envelope illustration -->
+      <svg width="120" height="160" viewBox="0 0 120 160" fill="none">
+        <!-- envelope body -->
+        <rect x="8" y="30" width="104" height="122" rx="6" fill="#E6F1FB" stroke="#185FA5" stroke-width="2"/>
+        <!-- flap (open) -->
+        <path d="M8 30 L60 72 L112 30 Z" fill="#B5D4F4" stroke="#185FA5" stroke-width="1.5" stroke-linejoin="round"/>
+        <!-- dividers inside envelope -->
+        <line x1="8" y1="70" x2="112" y2="70" stroke="#185FA5" stroke-width="1" stroke-dasharray="4 3" opacity=".4"/>
+        <line x1="8" y1="100" x2="112" y2="100" stroke="#185FA5" stroke-width="1" stroke-dasharray="4 3" opacity=".3"/>
+        <line x1="8" y1="118" x2="112" y2="118" stroke="#185FA5" stroke-width="1" stroke-dasharray="4 3" opacity=".2"/>
+        <!-- section labels inside -->
+        <rect x="14" y="37" width="40" height="14" rx="3" fill="#f5a623" opacity=".85"/>
+        <text font-family="monospace" font-size="7.5" font-weight="700" fill="#412402" x="17" y="47">リクエスト行</text>
+        <rect x="14" y="75" width="28" height="14" rx="3" fill="#6ab4f5" opacity=".7"/>
+        <text font-family="monospace" font-size="7.5" font-weight="700" fill="#0C447C" x="17" y="85">ヘッダ群</text>
+        <rect x="14" y="104" width="20" height="10" rx="2" fill="rgba(30,45,74,.2)"/>
+        <text font-family="monospace" font-size="6.5" fill="rgba(30,45,74,.5)" x="16" y="112">空行</text>
+        <rect x="14" y="122" width="28" height="14" rx="3" fill="#d4a8f5" opacity=".7"/>
+        <text font-family="monospace" font-size="7.5" font-weight="700" fill="#3C3489" x="17" y="132">ボディ</text>
+      </svg>
+    </div>
+    <!-- actual request code -->
+    <div style="flex:1;">
+      <div class="msg-box" style="margin:0;">
+        <div style="font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.25);margin-bottom:10px;font-family:var(--mono);">HTTP Request</div>
+        <!-- request line -->
+        <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:4px;">
+          <div style="flex:0 0 80px;font-size:9px;font-weight:700;letter-spacing:.1em;color:#f5a623;text-transform:uppercase;font-family:var(--mono);">リクエスト行</div>
+          <div style="font-family:var(--mono);font-size:12.5px;"><span style="background:rgba(245,166,35,.25);color:#f5a623;padding:2px 7px;border-radius:3px;font-weight:700;">POST</span> <span style="color:#6ab4f5;">/api/login</span> <span style="color:rgba(255,255,255,.4);">HTTP/1.1</span></div>
+        </div>
+        <div style="border-top:1px dashed rgba(255,255,255,.08);margin:8px 0;"></div>
+        <!-- headers -->
+        <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:8px;">
+          <div style="flex:0 0 80px;font-size:9px;font-weight:700;letter-spacing:.1em;color:#6ab4f5;text-transform:uppercase;font-family:var(--mono);">ヘッダ</div>
+          <div style="font-family:var(--mono);font-size:11.5px;line-height:2;color:rgba(255,255,255,.5);">
+            <div><span style="color:#a8d8a0;">Host</span><span style="color:rgba(255,255,255,.3);">: </span><span style="color:rgba(255,255,255,.7);">www.example.com</span></div>
+            <div><span style="color:#a8d8a0;">Content-Type</span><span style="color:rgba(255,255,255,.3);">: </span><span style="color:rgba(255,255,255,.7);">application/json</span></div>
+            <div><span style="color:#a8d8a0;">Authorization</span><span style="color:rgba(255,255,255,.3);">: </span><span style="color:#d4a8f5;">Bearer eyJhbGci...</span></div>
+            <div><span style="color:#a8d8a0;">Cookie</span><span style="color:rgba(255,255,255,.3);">: </span><span style="color:#f5a623;">session_id=abc123</span></div>
+          </div>
+        </div>
+        <div style="border-top:1px dashed rgba(255,255,255,.08);margin:8px 0;"></div>
+        <!-- empty line -->
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+          <div style="flex:0 0 80px;font-size:9px;font-weight:700;letter-spacing:.1em;color:rgba(255,255,255,.2);text-transform:uppercase;font-family:var(--mono);">空行</div>
+          <div style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.2);">&lt;CRLF&gt;</div>
+        </div>
+        <div style="border-top:1px dashed rgba(255,255,255,.08);margin:8px 0;"></div>
+        <!-- body -->
+        <div style="display:flex;align-items:baseline;gap:8px;">
+          <div style="flex:0 0 80px;font-size:9px;font-weight:700;letter-spacing:.1em;color:#d4a8f5;text-transform:uppercase;font-family:var(--mono);">ボディ</div>
+          <div style="font-family:var(--mono);font-size:11.5px;color:#d4a8f5;">{"username":"alice","password":"s3cr3t"}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 03 HTTPメソッド ══ -->
+<section class="section" id="s3">
+  <div class="section-header"><span class="s-num">03</span><h2>HTTPメソッド — 「何をしたいか」を伝える動詞</h2></div>
+  <!-- Method cards grid -->
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;">
+
+    <!-- GET -->
+    <div style="border:2px solid #185FA5;border-radius:10px;overflow:hidden;">
+      <div style="background:#185FA5;padding:12px;display:flex;flex-direction:column;align-items:center;gap:6px;">
+        <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
+          <circle cx="19" cy="19" r="13" fill="#B5D4F4" stroke="white" stroke-width="2"/>
+          <circle cx="19" cy="19" r="6" fill="#185FA5"/>
+          <circle cx="19" cy="19" r="2.5" fill="white"/>
+          <line x1="28" y1="28" x2="38" y2="38" stroke="white" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+        <div style="font-family:var(--mono);font-size:14px;font-weight:800;color:white;letter-spacing:.05em;">GET</div>
+      </div>
+      <div style="padding:10px;background:#E6F1FB;display:flex;flex-direction:column;gap:5px;">
+        <div style="font-size:11px;font-weight:700;color:#0C447C;">リソース取得</div>
+        <div style="font-size:10px;color:#185FA5;line-height:1.5;">虫眼鏡で情報を探す。URLにパラメータを含め、キャッシュ可能。</div>
+        <div style="display:flex;gap:4px;flex-wrap:wrap;">
+          <span style="background:#E6F1FB;border:1px solid #185FA5;border-radius:10px;padding:2px 7px;font-size:9.5px;color:#0C447C;font-family:var(--mono);">冪等 ✓</span>
+          <span style="background:#EAF3DE;border:1px solid #3B6D11;border-radius:10px;padding:2px 7px;font-size:9.5px;color:#3B6D11;font-family:var(--mono);">安全 ✓</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- POST -->
+    <div style="border:2px solid #3B6D11;border-radius:10px;overflow:hidden;">
+      <div style="background:#3B6D11;padding:12px;display:flex;flex-direction:column;align-items:center;gap:6px;">
+        <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
+          <rect x="4" y="8" width="36" height="28" rx="5" fill="#C0DD97" stroke="white" stroke-width="2"/>
+          <!-- plus sign -->
+          <line x1="22" y1="14" x2="22" y2="30" stroke="white" stroke-width="3.5" stroke-linecap="round"/>
+          <line x1="14" y1="22" x2="30" y2="22" stroke="white" stroke-width="3.5" stroke-linecap="round"/>
+        </svg>
+        <div style="font-family:var(--mono);font-size:14px;font-weight:800;color:white;">POST</div>
+      </div>
+      <div style="padding:10px;background:#EAF3DE;display:flex;flex-direction:column;gap:5px;">
+        <div style="font-size:11px;font-weight:700;color:#173404;">新規作成</div>
+        <div style="font-size:10px;color:#3B6D11;line-height:1.5;">ボディにデータを入れて新規作成。フォーム送信・ログイン等。</div>
+        <div style="display:flex;gap:4px;">
+          <span style="background:#FCEBEB;border:1px solid #E24B4A;border-radius:10px;padding:2px 7px;font-size:9.5px;color:#A32D2D;font-family:var(--mono);">冪等 ✗</span>
+          <span style="background:#FCEBEB;border:1px solid #E24B4A;border-radius:10px;padding:2px 7px;font-size:9.5px;color:#A32D2D;font-family:var(--mono);">安全 ✗</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PUT -->
+    <div style="border:2px solid #854F0B;border-radius:10px;overflow:hidden;">
+      <div style="background:#854F0B;padding:12px;display:flex;flex-direction:column;align-items:center;gap:6px;">
+        <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
+          <!-- old box faded -->
+          <rect x="4" y="14" width="28" height="20" rx="4" fill="#FAC775" stroke="white" stroke-width="1.5" opacity=".4"/>
+          <!-- new box solid -->
+          <rect x="12" y="8" width="28" height="20" rx="4" fill="#EF9F27" stroke="white" stroke-width="2"/>
+          <!-- arrow overlapping -->
+          <path d="M8 32 L16 40 L16 36 L26 36 L26 28 L16 28 L16 24 Z" fill="white" opacity=".7"/>
+        </svg>
+        <div style="font-family:var(--mono);font-size:14px;font-weight:800;color:white;">PUT</div>
+      </div>
+      <div style="padding:10px;background:#FAEEDA;display:flex;flex-direction:column;gap:5px;">
+        <div style="font-size:11px;font-weight:700;color:#412402;">完全置換</div>
+        <div style="font-size:10px;color:#633806;line-height:1.5;">リソース全体を新しいものに丸ごと入れ替え。</div>
+        <div style="display:flex;gap:4px;">
+          <span style="background:#EAF3DE;border:1px solid #3B6D11;border-radius:10px;padding:2px 7px;font-size:9.5px;color:#3B6D11;font-family:var(--mono);">冪等 ✓</span>
+          <span style="background:#FCEBEB;border:1px solid #E24B4A;border-radius:10px;padding:2px 7px;font-size:9.5px;color:#A32D2D;font-family:var(--mono);">安全 ✗</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- DELETE -->
+    <div style="border:2px solid #A32D2D;border-radius:10px;overflow:hidden;">
+      <div style="background:#A32D2D;padding:12px;display:flex;flex-direction:column;align-items:center;gap:6px;">
+        <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
+          <!-- trash can -->
+          <rect x="8" y="14" width="28" height="26" rx="4" fill="#F09595" stroke="white" stroke-width="2"/>
+          <line x1="4" y1="10" x2="40" y2="10" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+          <rect x="16" y="4" width="12" height="6" rx="3" fill="#F7C1C1" stroke="white" stroke-width="1.5"/>
+          <!-- vertical lines in can -->
+          <line x1="16" y1="20" x2="16" y2="34" stroke="#A32D2D" stroke-width="1.8" stroke-linecap="round"/>
+          <line x1="22" y1="19" x2="22" y2="35" stroke="#A32D2D" stroke-width="1.8" stroke-linecap="round"/>
+          <line x1="28" y1="20" x2="28" y2="34" stroke="#A32D2D" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <div style="font-family:var(--mono);font-size:14px;font-weight:800;color:white;">DELETE</div>
+      </div>
+      <div style="padding:10px;background:#FCEBEB;display:flex;flex-direction:column;gap:5px;">
+        <div style="font-size:11px;font-weight:700;color:#501313;">削除</div>
+        <div style="font-size:10px;color:#A32D2D;line-height:1.5;">指定リソースをゴミ箱に捨てる。</div>
+        <div style="display:flex;gap:4px;">
+          <span style="background:#EAF3DE;border:1px solid #3B6D11;border-radius:10px;padding:2px 7px;font-size:9.5px;color:#3B6D11;font-family:var(--mono);">冪等 ✓</span>
+          <span style="background:#FCEBEB;border:1px solid #E24B4A;border-radius:10px;padding:2px 7px;font-size:9.5px;color:#A32D2D;font-family:var(--mono);">安全 ✗</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <!-- PATCH + HEAD + OPTIONS smaller row -->
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+
+    <!-- PATCH -->
+    <div style="border:1.5px solid #534AB7;border-radius:8px;overflow:hidden;display:flex;">
+      <div style="background:#534AB7;padding:10px 12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;flex:0 0 70px;">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+          <!-- bandage -->
+          <rect x="4" y="12" width="28" height="12" rx="6" fill="#AFA9EC" stroke="white" stroke-width="1.5" transform="rotate(-12 18 18)"/>
+          <rect x="12" y="14" width="12" height="8" rx="2" fill="#534AB7" stroke="white" stroke-width="1" transform="rotate(-12 18 18)"/>
+          <circle cx="7" cy="20" r="2.5" fill="#CECBF6" transform="rotate(-12 18 18)"/>
+          <circle cx="29" cy="16" r="2.5" fill="#CECBF6" transform="rotate(-12 18 18)"/>
+        </svg>
+        <div style="font-family:var(--mono);font-size:11px;font-weight:800;color:white;">PATCH</div>
+      </div>
+      <div style="padding:10px;background:#EEEDFE;flex:1;">
+        <div style="font-size:11px;font-weight:700;color:#26215C;">部分更新</div>
+        <div style="font-size:10px;color:#534AB7;line-height:1.4;margin-top:3px;">リソースの一部だけを絆創膏で修正。PUTより小さな変更向き。</div>
+      </div>
+    </div>
+
+    <!-- HEAD -->
+    <div style="border:1.5px solid #5F5E5A;border-radius:8px;overflow:hidden;display:flex;">
+      <div style="background:#5F5E5A;padding:10px 12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;flex:0 0 70px;">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+          <!-- envelope header only (no body) -->
+          <rect x="3" y="6" width="30" height="20" rx="4" fill="#B4B2A9" stroke="white" stroke-width="1.5"/>
+          <path d="M3 6 L18 18 L33 6" stroke="white" stroke-width="1.5" fill="none"/>
+          <!-- body section crossed out -->
+          <rect x="3" y="28" width="30" height="5" rx="2" fill="rgba(255,255,255,.15)" stroke="rgba(255,255,255,.3)" stroke-width="1" stroke-dasharray="3 2"/>
+          <line x1="3" y1="28" x2="33" y2="33" stroke="rgba(255,255,255,.4)" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <div style="font-family:var(--mono);font-size:11px;font-weight:800;color:white;">HEAD</div>
+      </div>
+      <div style="padding:10px;background:#F1EFE8;flex:1;">
+        <div style="font-size:11px;font-weight:700;color:#2C2C2A;">ヘッダのみ取得</div>
+        <div style="font-size:10px;color:#5F5E5A;line-height:1.4;margin-top:3px;">GETと同じだがボディなし。メタデータ確認・存在確認に利用。</div>
+      </div>
+    </div>
+
+    <!-- OPTIONS -->
+    <div style="border:1.5px solid #0F6E56;border-radius:8px;overflow:hidden;display:flex;">
+      <div style="background:#0F6E56;padding:10px 12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;flex:0 0 70px;">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+          <!-- menu list with checkboxes -->
+          <rect x="4" y="4" width="28" height="28" rx="4" fill="#E1F5EE" stroke="white" stroke-width="1.5"/>
+          <rect x="8" y="10" width="6" height="5" rx="1.5" fill="white" stroke="#0F6E56" stroke-width="1"/>
+          <line x1="17" y1="12" x2="28" y2="12" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+          <rect x="8" y="18" width="6" height="5" rx="1.5" fill="white" stroke="#0F6E56" stroke-width="1"/>
+          <line x1="17" y1="20" x2="28" y2="20" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+          <rect x="8" y="26" width="6" height="5" rx="1.5" fill="#9FE1CB" stroke="#0F6E56" stroke-width="1"/>
+          <path d="M9.5 28.5 L11 30 L13.5 27" stroke="#0F6E56" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+          <line x1="17" y1="28" x2="28" y2="28" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <div style="font-family:var(--mono);font-size:11px;font-weight:800;color:white;">OPTIONS</div>
+      </div>
+      <div style="padding:10px;background:#E1F5EE;flex:1;">
+        <div style="font-size:11px;font-weight:700;color:#085041;">対応メソッド確認</div>
+        <div style="font-size:10px;color:#0F6E56;line-height:1.4;margin-top:3px;">サーバが許可するメソッドのメニューを取得。CORSプリフライトに利用。</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══ 04 リクエストヘッダ ══ -->
+<section class="section" id="s4">
+  <div class="section-header"><span class="s-num">04</span><h2>リクエストヘッダ — 封筒の宛名欄</h2></div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
+
+    <div style="border-left:4px solid #185FA5;border-radius:0 8px 8px 0;background:#E6F1FB;padding:12px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="3" width="16" height="14" rx="2.5" fill="#185FA5"/><path d="M2 6 L10 11 L18 6" stroke="white" stroke-width="1.5" fill="none"/></svg>
+        <div style="font-family:var(--mono);font-size:11px;font-weight:700;color:#0C447C;">Host</div>
+      </div>
+      <div style="font-size:10px;color:#185FA5;line-height:1.5;">リクエスト先ホスト名。HTTP/1.1で必須。バーチャルホスト識別に使用。</div>
+      <div style="margin-top:6px;background:white;border-radius:4px;padding:4px 8px;font-family:var(--mono);font-size:9.5px;color:#185FA5;">www.example.com</div>
+    </div>
+
+    <div style="border-left:4px solid #0F6E56;border-radius:0 8px 8px 0;background:#E1F5EE;padding:12px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="14" height="14" rx="2.5" fill="#0F6E56"/><path d="M3 7 L17 7 M7 3 L7 17" stroke="white" stroke-width="1.5"/></svg>
+        <div style="font-family:var(--mono);font-size:11px;font-weight:700;color:#085041;">Content-Type</div>
+      </div>
+      <div style="font-size:10px;color:#0F6E56;line-height:1.5;">ボディのMIMEタイプ。POST・PUT時に送信形式を伝える。</div>
+      <div style="margin-top:6px;background:white;border-radius:4px;padding:4px 8px;font-family:var(--mono);font-size:9.5px;color:#0F6E56;">application/json</div>
+    </div>
+
+    <div style="border-left:4px solid #534AB7;border-radius:0 8px 8px 0;background:#EEEDFE;padding:12px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="4" y="8" width="12" height="10" rx="2" fill="#534AB7"/><path d="M6 8 L6 6 Q6 2 10 2 Q14 2 14 6 L14 8" stroke="#534AB7" stroke-width="1.8" fill="none" stroke-linecap="round"/><circle cx="10" cy="13" r="1.5" fill="white"/></svg>
+        <div style="font-family:var(--mono);font-size:11px;font-weight:700;color:#26215C;">Authorization</div>
+      </div>
+      <div style="font-size:10px;color:#534AB7;line-height:1.5;">認証トークン（Basic / Bearer）。入場パスを首から提示するイメージ。</div>
+      <div style="margin-top:6px;background:white;border-radius:4px;padding:4px 8px;font-family:var(--mono);font-size:9.5px;color:#534AB7;">Bearer eyJhbGci...</div>
+    </div>
+
+    <div style="border-left:4px solid #EF9F27;border-radius:0 8px 8px 0;background:#FAEEDA;padding:12px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="5" width="16" height="12" rx="2" fill="#EF9F27"/><rect x="6" y="9" width="8" height="5" rx="1" fill="white"/><text font-size="4" font-weight="700" fill="#854F0B" font-family="monospace" x="7.5" y="13">sid</text></svg>
+        <div style="font-family:var(--mono);font-size:11px;font-weight:700;color:#412402;">Cookie</div>
+      </div>
+      <div style="font-size:10px;color:#633806;line-height:1.5;">以前にサーバが発行したCookieを自動で送信。セッション識別に使用。</div>
+      <div style="margin-top:6px;background:white;border-radius:4px;padding:4px 8px;font-family:var(--mono);font-size:9.5px;color:#633806;">session_id=abc123</div>
+    </div>
+
+    <div style="border-left:4px solid #A32D2D;border-radius:0 8px 8px 0;background:#FCEBEB;padding:12px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 10 L10 4 L16 10 L10 16 Z" fill="#A32D2D"/><path d="M10 4 L10 1 L13 4" stroke="#A32D2D" stroke-width="1.5" fill="none"/></svg>
+        <div style="font-family:var(--mono);font-size:11px;font-weight:700;color:#791F1F;">Referer</div>
+      </div>
+      <div style="font-size:10px;color:#A32D2D;line-height:1.5;">どのページからのアクセスか。URLリライティング方式ではIDが漏洩する危険あり。</div>
+      <div style="margin-top:6px;background:white;border-radius:4px;padding:4px 8px;font-family:var(--mono);font-size:9.5px;color:#A32D2D;">https://example.com/top</div>
+    </div>
+
+    <div style="border-left:4px solid #1D9E75;border-radius:0 8px 8px 0;background:#E1F5EE;padding:12px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" fill="none" stroke="#1D9E75" stroke-width="1.5"/><path d="M2 10 L18 10 M10 2 Q14 10 10 18 Q6 10 10 2" stroke="#1D9E75" stroke-width="1.2" fill="none"/></svg>
+        <div style="font-family:var(--mono);font-size:11px;font-weight:700;color:#085041;">Origin</div>
+      </div>
+      <div style="font-size:10px;color:#0F6E56;line-height:1.5;">CORSリクエスト元オリジン（スキーム+ホスト+ポート）。プリフライトで使用。</div>
+      <div style="margin-top:6px;background:white;border-radius:4px;padding:4px 8px;font-family:var(--mono);font-size:9.5px;color:#0F6E56;">https://app.example.com</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══ 05 HTTPレスポンス ══ -->
+<section class="section" id="s5">
+  <div class="section-header"><span class="s-num">05</span><h2>HTTPレスポンス — ステータスコードと返信の構造</h2></div>
+  <div style="display:flex;gap:16px;align-items:flex-start;">
+    <!-- response structure -->
+    <div style="flex:1;">
+      <div class="msg-box" style="margin:0 0 14px;">
+        <div style="font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.25);margin-bottom:10px;font-family:var(--mono);">HTTP Response</div>
+        <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:6px;">
+          <div style="flex:0 0 80px;font-size:9px;font-weight:700;letter-spacing:.1em;color:#6adb9a;text-transform:uppercase;font-family:var(--mono);">ステータス行</div>
+          <div style="font-family:var(--mono);font-size:12.5px;"><span style="color:rgba(255,255,255,.4);">HTTP/1.1</span> <span style="background:rgba(86,211,100,.2);color:#56d364;padding:2px 7px;border-radius:3px;font-weight:700;">200 OK</span></div>
+        </div>
+        <div style="border-top:1px dashed rgba(255,255,255,.08);margin:8px 0;"></div>
+        <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:6px;">
+          <div style="flex:0 0 80px;font-size:9px;font-weight:700;letter-spacing:.1em;color:#a8d8a0;text-transform:uppercase;font-family:var(--mono);">ヘッダ</div>
+          <div style="font-family:var(--mono);font-size:11px;line-height:2;color:rgba(255,255,255,.5);">
+            <div><span style="color:#a8d8a0;">Content-Type</span><span style="color:rgba(255,255,255,.3);">: </span><span style="color:rgba(255,255,255,.7);">application/json</span></div>
+            <div><span style="color:#a8d8a0;">Set-Cookie</span><span style="color:rgba(255,255,255,.3);">: </span><span style="color:#f5a623;">sid=abc123; HttpOnly; Secure</span></div>
+            <div><span style="color:#a8d8a0;">Strict-Transport-Security</span><span style="color:rgba(255,255,255,.3);">: </span><span style="color:#56d364;">max-age=31536000</span></div>
+          </div>
+        </div>
+        <div style="border-top:1px dashed rgba(255,255,255,.08);margin:8px 0;"></div>
+        <div style="display:flex;align-items:baseline;gap:8px;">
+          <div style="flex:0 0 80px;font-size:9px;font-weight:700;letter-spacing:.1em;color:#d4a8f5;text-transform:uppercase;font-family:var(--mono);">ボディ</div>
+          <div style="font-family:var(--mono);font-size:11px;color:#d4a8f5;">{"status":"ok","data":{...}}</div>
+        </div>
+      </div>
+    </div>
+    <!-- status code visual -->
+    <div style="flex:0 0 300px;display:flex;flex-direction:column;gap:5px;">
+      <!-- 2xx -->
+      <div style="background:#EAF3DE;border-left:5px solid #3B6D11;border-radius:0 8px 8px 0;padding:9px 12px;display:flex;align-items:center;gap:10px;">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="12" fill="#3B6D11"/><path d="M8 14 L12 18 L20 10" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div><div style="font-family:var(--mono);font-size:12px;font-weight:700;color:#173404;">2xx 成功</div><div style="font-size:10.5px;color:#3B6D11;">200 OK / 201 Created / 204 No Content</div></div>
+      </div>
+      <!-- 3xx -->
+      <div style="background:#FAEEDA;border-left:5px solid #854F0B;border-radius:0 8px 8px 0;padding:9px 12px;display:flex;align-items:center;gap:10px;">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="12" fill="#854F0B"/><path d="M10 14 L18 14 M15 10 L20 14 L15 18" stroke="white" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div><div style="font-family:var(--mono);font-size:12px;font-weight:700;color:#412402;">3xx リダイレクト</div><div style="font-size:10.5px;color:#633806;">301 Moved Permanently / 304 Not Modified</div></div>
+      </div>
+      <!-- 401 vs 403 special -->
+      <div style="background:#FCEBEB;border-left:5px solid #A32D2D;border-radius:0 8px 8px 0;padding:9px 12px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="12" fill="#A32D2D"/><line x1="14" y1="8" x2="14" y2="16" stroke="white" stroke-width="2.5" stroke-linecap="round"/><circle cx="14" cy="20" r="1.5" fill="white"/></svg>
+          <div style="font-family:var(--mono);font-size:12px;font-weight:700;color:#501313;">4xx クライアントエラー</div>
+        </div>
+        <!-- 401 vs 403 visual diff -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+          <div style="background:white;border-radius:6px;padding:8px;border:1.5px solid #F09595;">
+            <div style="font-family:var(--mono);font-size:11px;font-weight:700;color:#A32D2D;margin-bottom:4px;">401 Unauthorized</div>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="4" y="9" width="14" height="11" rx="2.5" fill="#F09595" stroke="#A32D2D" stroke-width="1.5"/><path d="M7 9 L7 6.5 Q7 3 11 3 Q15 3 15 6.5 L15 9" fill="none" stroke="#E24B4A" stroke-width="1.5" stroke-dasharray="2 1.5" stroke-linecap="round"/><circle cx="11" cy="14.5" r="1.5" fill="#A32D2D"/></svg>
+              <div style="font-size:9.5px;color:#A32D2D;line-height:1.4;"><strong>未認証</strong><br>鍵を持っていない</div>
+            </div>
+          </div>
+          <div style="background:white;border-radius:6px;padding:8px;border:1.5px solid #F09595;">
+            <div style="font-family:var(--mono);font-size:11px;font-weight:700;color:#A32D2D;margin-bottom:4px;">403 Forbidden</div>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="4" y="9" width="14" height="11" rx="2.5" fill="#F09595" stroke="#A32D2D" stroke-width="1.5"/><path d="M7 9 L7 6.5 Q7 3 11 3 Q15 3 11 3" fill="none" stroke="#3B6D11" stroke-width="1.5" stroke-linecap="round"/><path d="M11 3 Q15 3 15 6.5 L15 9" fill="none" stroke="#3B6D11" stroke-width="1.5" stroke-linecap="round"/><circle cx="11" cy="14.5" r="1.5" fill="#A32D2D"/><line x1="5" y1="8" x2="16" y2="19" stroke="#E24B4A" stroke-width="2" stroke-linecap="round"/></svg>
+              <div style="font-size:9.5px;color:#A32D2D;line-height:1.4;"><strong>認可なし</strong><br>鍵はあるが入れない</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 5xx -->
+      <div style="background:#FAEEDA;border-left:5px solid #7a4208;border-radius:0 8px 8px 0;padding:9px 12px;display:flex;align-items:center;gap:10px;">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="12" fill="#7a4208"/><path d="M10 10 L18 18 M18 10 L10 18" stroke="white" stroke-width="2.5" stroke-linecap="round"/></svg>
+        <div><div style="font-family:var(--mono);font-size:12px;font-weight:700;color:#412402;">5xx サーバエラー</div><div style="font-size:10.5px;color:#633806;">500 Internal Server Error / 503 Unavailable</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 06 レスポンスヘッダ ══ -->
+<section class="section" id="s6">
+  <div class="section-header"><span class="s-num">06</span><h2>レスポンスヘッダ — サーバからの指示書</h2></div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
+
+    <div style="border-left:4px solid #185FA5;border-radius:0 8px 8px 0;background:#E6F1FB;padding:12px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="4" width="16" height="12" rx="2.5" fill="#185FA5"/><path d="M2 7 L10 12 L18 7" stroke="white" stroke-width="1.5" fill="none"/><line x1="2" y1="14" x2="6" y2="14" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg>
+        <div style="font-family:var(--mono);font-size:11px;font-weight:700;color:#0C447C;">Content-Type</div>
+      </div>
+      <div style="font-size:10px;color:#185FA5;line-height:1.5;">レスポンスボディのMIMEタイプ。charset指定を含む。</div>
+      <div style="margin-top:6px;background:white;border-radius:4px;padding:4px 8px;font-family:var(--mono);font-size:9.5px;color:#185FA5;">application/json; charset=utf-8</div>
+    </div>
+
+    <div style="border-left:4px solid #EF9F27;border-radius:0 8px 8px 0;background:#FAEEDA;padding:12px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="5" width="16" height="12" rx="2" fill="#EF9F27"/><rect x="5" y="8" width="10" height="6" rx="1.5" fill="white"/><text font-size="4" font-family="monospace" font-weight="700" fill="#854F0B" x="6" y="12.5">COOKIE</text></svg>
+        <div style="font-family:var(--mono);font-size:11px;font-weight:700;color:#412402;">Set-Cookie</div>
+      </div>
+      <div style="font-size:10px;color:#633806;line-height:1.5;">ブラウザにCookieを保存させる。HttpOnly・Secure・SameSite属性が重要。</div>
+      <div style="margin-top:6px;background:white;border-radius:4px;padding:4px 8px;font-family:var(--mono);font-size:9px;color:#633806;">sid=abc; HttpOnly; Secure; SameSite=Lax</div>
+    </div>
+
+    <div style="border-left:4px solid #1D9E75;border-radius:0 8px 8px 0;background:#E1F5EE;padding:12px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2 L18 5 L18 11 Q18 17 10 19 Q2 17 2 11 L2 5 Z" fill="#1D9E75"/><text font-size="4.5" font-family="monospace" font-weight="700" fill="white" x="5" y="11.5">HTTPS</text></svg>
+        <div style="font-family:var(--mono);font-size:11px;font-weight:700;color:#085041;">Strict-Transport-Security</div>
+      </div>
+      <div style="font-size:10px;color:#0F6E56;line-height:1.5;">HSTS。ブラウザにHTTPS接続を強制させる。</div>
+      <div style="margin-top:6px;background:white;border-radius:4px;padding:4px 8px;font-family:var(--mono);font-size:9px;color:#0F6E56;">max-age=31536000; includeSubDomains</div>
+    </div>
+
+    <div style="border-left:4px solid #185FA5;border-radius:0 8px 8px 0;background:#E6F1FB;padding:12px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="14" height="14" rx="2.5" fill="#185FA5"/><line x1="6" y1="7" x2="14" y2="7" stroke="white" stroke-width="1.3" stroke-linecap="round"/><line x1="6" y1="10" x2="14" y2="10" stroke="white" stroke-width="1.3" stroke-linecap="round"/><line x1="6" y1="13" x2="10" y2="13" stroke="white" stroke-width="1.3" stroke-linecap="round"/><circle cx="15" cy="13" r="3" fill="#56d364" stroke="white" stroke-width="1"/><path d="M13.5 13 L14.5 14 L16.5 12" stroke="white" stroke-width="1" fill="none" stroke-linecap="round"/></svg>
+        <div style="font-family:var(--mono);font-size:11px;font-weight:700;color:#0C447C;">Content-Security-Policy</div>
+      </div>
+      <div style="font-size:10px;color:#185FA5;line-height:1.5;">CSP。スクリプト・スタイルの読み込み元を制限しXSSを緩和。</div>
+      <div style="margin-top:6px;background:white;border-radius:4px;padding:4px 8px;font-family:var(--mono);font-size:9px;color:#185FA5;">default-src 'self'; script-src 'self'</div>
+    </div>
+
+    <div style="border-left:4px solid #854F0B;border-radius:0 8px 8px 0;background:#FAEEDA;padding:12px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="2" width="16" height="16" rx="2.5" fill="none" stroke="#854F0B" stroke-width="2"/><rect x="5" y="5" width="10" height="10" rx="2" fill="#EF9F27" stroke="#854F0B" stroke-width="1.2" stroke-dasharray="3 2"/><line x1="2" y1="2" x2="18" y2="18" stroke="#A32D2D" stroke-width="2.5" stroke-linecap="round"/></svg>
+        <div style="font-family:var(--mono);font-size:11px;font-weight:700;color:#412402;">X-Frame-Options</div>
+      </div>
+      <div style="font-size:10px;color:#633806;line-height:1.5;">iframeへの埋め込みを禁止。クリックジャッキング攻撃を防止。</div>
+      <div style="margin-top:6px;background:white;border-radius:4px;padding:4px 8px;font-family:var(--mono);font-size:9.5px;color:#633806;">DENY</div>
+    </div>
+
+    <div style="border-left:4px solid #5F5E5A;border-radius:0 8px 8px 0;background:#F1EFE8;padding:12px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" fill="none" stroke="#5F5E5A" stroke-width="1.5"/><rect x="7" y="7" width="6" height="6" rx="1" fill="#5F5E5A"/><path d="M10 2 L10 5 M10 15 L10 18" stroke="#888780" stroke-width="1.2" stroke-linecap="round"/></svg>
+        <div style="font-family:var(--mono);font-size:11px;font-weight:700;color:#2C2C2A;">X-Content-Type-Options</div>
+      </div>
+      <div style="font-size:10px;color:#5F5E5A;line-height:1.5;">MIMEスニッフィング防止。ブラウザがContent-Typeを勝手に推測しない。</div>
+      <div style="margin-top:6px;background:white;border-radius:4px;padding:4px 8px;font-family:var(--mono);font-size:9.5px;color:#5F5E5A;">nosniff</div>
+    </div>
+
+  </div>
+</section>
+
+
+
+
+<!-- ══ 07 HTTP認証 ══ -->
+<section class="section" id="s7">
+  <div class="section-header"><span class="s-num">07</span><h2>HTTP認証 — 入口でどう身元を証明するか</h2></div>
+  <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;">
+
+    <!-- Basic認証 -->
+    <div style="border:2px solid #185FA5;border-radius:12px;overflow:hidden;">
+      <div style="background:#185FA5;padding:14px 16px;display:flex;align-items:center;gap:12px;">
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+          <!-- ID card body -->
+          <rect x="3" y="10" width="42" height="28" rx="5" fill="#B5D4F4" stroke="white" stroke-width="2"/>
+          <!-- photo area -->
+          <rect x="8" y="15" width="14" height="16" rx="3" fill="#0C447C" stroke="white" stroke-width="1.2"/>
+          <circle cx="15" cy="20" r="4" fill="#378ADD"/>
+          <path d="M9 31 Q9 26 15 26 Q21 26 21 31" fill="#378ADD"/>
+          <!-- name lines -->
+          <rect x="26" y="17" width="14" height="3" rx="1.5" fill="white" opacity=".6"/>
+          <rect x="26" y="23" width="10" height="2.5" rx="1.2" fill="white" opacity=".4"/>
+          <!-- Base64 warning bar -->
+          <rect x="8" y="34" width="32" height="6" rx="2" fill="#EF9F27" stroke="white" stroke-width="0.8"/>
+          <text font-family="monospace" font-size="5.5" font-weight="700" fill="#412402" x="10" y="38.5">Base64（暗号化ではない！）</text>
+        </svg>
+        <div>
+          <div style="font-size:13px;font-weight:700;color:white;">Basic認証</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.7);margin-top:2px;">IDカードを受付に見せる（Base64は可逆）</div>
+        </div>
+      </div>
+      <div style="padding:14px 16px;background:#E6F1FB;display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;gap:8px;align-items:center;">
+          <div style="flex:1;background:white;border-radius:5px;padding:7px 10px;font-family:var(--mono);font-size:10.5px;color:#185FA5;">Authorization: Basic <span style="color:#EF9F27;">dXNlcjpwYXNz</span></div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <div style="background:#FCEBEB;border:1px solid #F09595;border-radius:10px;padding:3px 9px;font-size:10px;color:#791F1F;display:flex;align-items:center;gap:4px;"><svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#E24B4A"/><path d="M3 3 L7 7 M7 3 L3 7" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg>Base64は誰でもデコード可能</div>
+          <div style="background:#FAEEDA;border:1px solid #FAC775;border-radius:10px;padding:3px 9px;font-size:10px;color:#633806;display:flex;align-items:center;gap:4px;"><svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#854F0B"/><line x1="5" y1="2.5" x2="5" y2="5.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/><circle cx="5" cy="7" r="0.7" fill="white"/></svg>HTTPS必須</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bearer Token / JWT -->
+    <div style="border:2px solid #534AB7;border-radius:12px;overflow:hidden;">
+      <div style="background:#534AB7;padding:14px 16px;display:flex;align-items:center;gap:12px;">
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+          <!-- scroll body -->
+          <rect x="6" y="8" width="30" height="34" rx="4" fill="#CECBF6" stroke="white" stroke-width="1.8"/>
+          <ellipse cx="21" cy="8" rx="15" ry="4" fill="#AFA9EC" stroke="white" stroke-width="1.5"/>
+          <ellipse cx="21" cy="42" rx="15" ry="4" fill="#AFA9EC" stroke="white" stroke-width="1.5"/>
+          <!-- 3-part JWT segments colored -->
+          <rect x="10" y="15" width="22" height="4" rx="1.5" fill="#E24B4A" opacity=".8"/>
+          <rect x="10" y="22" width="22" height="4" rx="1.5" fill="#EF9F27" opacity=".8"/>
+          <rect x="10" y="29" width="22" height="4" rx="1.5" fill="#56d364" opacity=".8"/>
+          <!-- stamp -->
+          <circle cx="40" cy="12" r="9" fill="#3C3489" stroke="white" stroke-width="2"/>
+          <path d="M35 12 L39 16 L46 8" stroke="white" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div>
+          <div style="font-size:13px;font-weight:700;color:white;">Bearer Token / JWT</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.7);margin-top:2px;">公証済み巻物（署名で改ざん検知）</div>
+        </div>
+      </div>
+      <div style="padding:14px 16px;background:#EEEDFE;display:flex;flex-direction:column;gap:8px;">
+        <!-- JWT 3-part visual -->
+        <div style="display:flex;align-items:center;gap:2px;font-family:var(--mono);font-size:10px;">
+          <div style="background:#A32D2D;color:white;padding:3px 7px;border-radius:4px 0 0 4px;">ヘッダ</div>
+          <div style="background:#854F0B;color:white;padding:3px 4px;">.</div>
+          <div style="background:#854F0B;color:white;padding:3px 7px;">ペイロード</div>
+          <div style="background:#854F0B;color:white;padding:3px 4px;">.</div>
+          <div style="background:#3B6D11;color:white;padding:3px 7px;border-radius:0 4px 4px 0;">署名</div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <div style="background:#EAF3DE;border:1px solid #C0DD97;border-radius:10px;padding:3px 9px;font-size:10px;color:#27500A;display:flex;align-items:center;gap:4px;"><svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#3B6D11"/><path d="M2.5 5 L4.5 7 L7.5 3" stroke="white" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>ステートレス・署名検証</div>
+          <div style="background:#EAF3DE;border:1px solid #C0DD97;border-radius:10px;padding:3px 9px;font-size:10px;color:#27500A;display:flex;align-items:center;gap:4px;"><svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#3B6D11"/><path d="M2.5 5 L4.5 7 L7.5 3" stroke="white" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>API・SPA向け</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OAuth 2.0 -->
+    <div style="border:2px solid #1D9E75;border-radius:12px;overflow:hidden;">
+      <div style="background:#1D9E75;padding:14px 16px;display:flex;align-items:center;gap:12px;">
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+          <!-- user requesting -->
+          <circle cx="10" cy="16" r="6" fill="#9FE1CB" stroke="white" stroke-width="1.5"/>
+          <path d="M4 30 Q4 24 10 24 Q16 24 16 30" fill="#9FE1CB" stroke="white" stroke-width="1.2"/>
+          <!-- auth server (middle) -->
+          <rect x="18" y="10" width="12" height="20" rx="3" fill="#0F6E56" stroke="white" stroke-width="1.5"/>
+          <rect x="20" y="14" width="8" height="3" rx="1" fill="#9FE1CB"/>
+          <rect x="20" y="19" width="8" height="3" rx="1" fill="#9FE1CB"/>
+          <rect x="20" y="24" width="8" height="3" rx="1" fill="#9FE1CB"/>
+          <!-- resource server -->
+          <rect x="34" y="10" width="12" height="20" rx="3" fill="#085041" stroke="white" stroke-width="1.5"/>
+          <circle cx="40" cy="18" r="4" fill="#56d364"/>
+          <path d="M37.5 18 L39.5 20 L42.5 16" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <!-- token arrows -->
+          <path d="M16 20 L18 20" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M30 20 L34 20" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M33 21 L35 25 L31 25" stroke="#EF9F27" stroke-width="1.3" fill="#EF9F27" opacity=".8"/>
+          <!-- "Google" key -->
+          <circle cx="24" cy="38" r="6" fill="#EF9F27" stroke="white" stroke-width="1.5"/>
+          <text font-family="monospace" font-size="5" font-weight="700" fill="#412402" x="20.5" y="40.5">G-key</text>
+        </svg>
+        <div>
+          <div style="font-size:13px;font-weight:700;color:white;">OAuth 2.0 / OpenID Connect</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.7);margin-top:2px;">鍵屋（認可サーバ）に代理で鍵を作ってもらう</div>
+        </div>
+      </div>
+      <div style="padding:14px 16px;background:#E1F5EE;display:flex;flex-direction:column;gap:8px;">
+        <!-- flow mini diagram -->
+        <div style="display:flex;align-items:center;gap:4px;font-size:10px;">
+          <div style="background:#085041;color:white;padding:3px 8px;border-radius:4px;">ユーザ</div>
+          <div style="color:#0F6E56;">→ 許可 →</div>
+          <div style="background:#0F6E56;color:white;padding:3px 8px;border-radius:4px;">認可SV</div>
+          <div style="color:#0F6E56;">→ token →</div>
+          <div style="background:#1D9E75;color:white;padding:3px 8px;border-radius:4px;">リソースSV</div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <div style="background:#EAF3DE;border:1px solid #C0DD97;border-radius:10px;padding:3px 9px;font-size:10px;color:#27500A;">Social Login向け</div>
+          <div style="background:#EAF3DE;border:1px solid #C0DD97;border-radius:10px;padding:3px 9px;font-size:10px;color:#27500A;">API連携</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Digest認証 (deprecated) -->
+    <div style="border:2px solid #5F5E5A;border-radius:12px;overflow:hidden;opacity:.8;">
+      <div style="background:#5F5E5A;padding:14px 16px;display:flex;align-items:center;gap:12px;">
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+          <!-- hash funnel -->
+          <path d="M8 10 L40 10 L32 28 L32 40 L16 40 L16 28 Z" fill="#B4B2A9" stroke="white" stroke-width="2" stroke-linejoin="round"/>
+          <!-- MD5 warning label -->
+          <rect x="14" y="30" width="20" height="8" rx="2" fill="#FAEEDA" stroke="#854F0B" stroke-width="1"/>
+          <text font-family="monospace" font-size="6.5" font-weight="700" fill="#633806" x="16.5" y="36.5">MD5 ← 非推奨</text>
+          <!-- strikethrough line -->
+          <line x1="4" y1="4" x2="44" y2="44" stroke="#E24B4A" stroke-width="3" stroke-linecap="round" opacity=".6"/>
+        </svg>
+        <div>
+          <div style="font-size:13px;font-weight:700;color:white;">Digest認証 <span style="font-size:10px;background:rgba(224,74,74,.4);padding:2px 6px;border-radius:4px;">非推奨</span></div>
+          <div style="font-size:10px;color:rgba(255,255,255,.7);margin-top:2px;">ハッシュ化して送るが MD5 は既に脆弱</div>
+        </div>
+      </div>
+      <div style="padding:14px 16px;background:#F1EFE8;display:flex;flex-direction:column;gap:6px;">
+        <div style="font-size:11px;color:#5F5E5A;line-height:1.5;">nonce＋パスワードをMD5でハッシュ化して送信。パスワード平文送信を避けるが、MD5自体がすでに脆弱。現代では <strong>HTTPS + Bearer Token</strong> が推奨。</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="section" id="s8">
+  <div class="section-header"><span class="s-num">08</span><h2>セッション管理の方式</h2></div>
+
+
+  <!-- ── セッション管理3方式 SVGイラスト ── -->
+  <div class="seq-wrap" style="padding:24px 20px;">
+    <p class="seq-cap">図 — セッションIDの3つの運び方（たとえ ↔ HTTP技術の対応）</p>
+    <div style="display:flex;flex-direction:column;gap:4px;">
+
+      <!-- ① Cookie方式 -->
+      <div style="display:flex;align-items:stretch;border-radius:10px 10px 0 0;overflow:hidden;border:1.5px solid #1570b8;">
+        <!-- 左ラベル帯 116px固定 -->
+        <div style="flex:0 0 116px;background:#1570b8;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:14px 8px;">
+          <div style="font-family:var(--mono);font-size:11px;font-weight:700;color:white;">① Cookie</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.8);text-align:center;line-height:1.5;">財布に入れて<br>自動で提示</div>
+        </div>
+        <!-- アナロジー図 260px固定 -->
+        <div style="flex:0 0 260px;background:#eaf3ff;display:flex;align-items:center;justify-content:center;gap:8px;padding:16px 10px;">
+          <!-- ブラウザ -->
+          <div style="display:flex;flex-direction:column;align-items:center;gap:5px;">
+            <div style="width:70px;height:52px;background:white;border:2px solid #1570b8;border-radius:6px;overflow:hidden;">
+              <div style="height:13px;background:#1570b8;display:flex;align-items:center;padding:0 5px;gap:3px;">
+                <div style="width:5px;height:5px;border-radius:50%;background:#85B7EB;"></div>
+                <div style="width:5px;height:5px;border-radius:50%;background:#85B7EB;"></div>
+                <div style="width:5px;height:5px;border-radius:50%;background:#85B7EB;"></div>
+              </div>
+              <div style="margin:4px 4px 0;background:#0C447C;border-radius:3px;padding:3px 4px;">
+                <div style="font-family:var(--mono);font-size:7px;color:#B5D4F4;">sid=abc123</div>
+                <div style="font-size:7px;color:rgba(255,255,255,.6);">Cookie Store</div>
+              </div>
+            </div>
+            <div style="font-size:10px;color:#0C447C;font-weight:600;">ブラウザ</div>
+          </div>
+          <!-- 矢印 -->
+          <div style="flex:0 0 64px;display:flex;flex-direction:column;align-items:center;gap:3px;">
+            <div style="font-size:9px;color:#1570b8;font-weight:600;">Cookie: ヘッダ</div>
+            <div style="width:100%;display:flex;align-items:center;">
+              <div style="flex:1;height:2px;background:#1570b8;"></div>
+              <div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:7px solid #1570b8;"></div>
+            </div>
+            <div style="font-size:9px;color:#185FA5;">自動付与</div>
+          </div>
+          <!-- サーバ -->
+          <div style="display:flex;flex-direction:column;align-items:center;gap:5px;">
+            <div style="width:52px;height:52px;background:white;border:2px solid #1570b8;border-radius:6px;padding:5px;display:flex;flex-direction:column;gap:3px;">
+              <div style="height:9px;background:#B5D4F4;border-radius:2px;"></div>
+              <div style="height:9px;background:#B5D4F4;border-radius:2px;"></div>
+              <div style="height:9px;background:#B5D4F4;border-radius:2px;"></div>
+            </div>
+            <div style="font-size:10px;color:#0C447C;font-weight:600;">Webサーバ</div>
+          </div>
+        </div>
+        <!-- 技術コード: flex:1でoverflow-x:auto -->
+        <div style="flex:1;min-width:0;background:white;padding:14px 16px;display:flex;flex-direction:column;gap:6px;justify-content:center;border-left:1px solid #B5D4F4;overflow-x:auto;">
+          <div style="font-size:10px;font-weight:700;color:#0C447C;">Set-Cookie（サーバ→ブラウザ）</div>
+          <div style="background:#E6F1FB;border-radius:4px;padding:5px 9px;font-family:var(--mono);font-size:10.5px;color:#185FA5;">Set-Cookie: sid=abc123; <strong>HttpOnly</strong>; <strong>Secure</strong>; SameSite=Lax</div>
+          <div style="font-size:10px;font-weight:700;color:#0C447C;margin-top:2px;">Cookie（次回以降、ブラウザが自動付与）</div>
+          <div style="background:#E6F1FB;border-radius:4px;padding:5px 9px;font-family:var(--mono);font-size:10.5px;color:#185FA5;">Cookie: sid=abc123</div>
+          <div style="background:#EAF3DE;border-radius:4px;padding:4px 9px;font-size:10.5px;color:#27500A;">✓ HttpOnly → JS読取不可　✓ Secure → HTTPS限定</div>
+        </div>
+      </div>
+
+      <!-- ② Hiddenフィールド方式 -->
+      <div style="display:flex;align-items:stretch;overflow:hidden;border:1.5px solid #0F6E56;">
+        <div style="flex:0 0 116px;background:#0F6E56;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:14px 8px;">
+          <div style="font-family:var(--mono);font-size:11px;font-weight:700;color:white;">② Hidden Field</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.8);text-align:center;line-height:1.5;">封筒に隠して<br>POSTで送付</div>
+        </div>
+        <!-- アナロジー図 260px固定 -->
+        <div style="flex:0 0 260px;background:#eaf7f1;display:flex;align-items:center;justify-content:center;gap:8px;padding:16px 10px;">
+          <!-- 封筒 -->
+          <div style="display:flex;flex-direction:column;align-items:center;gap:5px;">
+            <div style="width:70px;height:52px;position:relative;">
+              <div style="width:66px;height:44px;background:#E1F5EE;border:2px solid #0F6E56;border-radius:4px;overflow:hidden;">
+                <!-- フラップ三角 -->
+                <div style="position:absolute;top:0;left:0;right:2px;height:0;border-left:33px solid transparent;border-right:33px solid transparent;border-top:20px solid #0F6E56;"></div>
+                <!-- Hiddenメモ -->
+                <div style="position:absolute;bottom:4px;left:7px;right:7px;height:12px;background:#9FE1CB;border:1px dashed #0F6E56;border-radius:2px;display:flex;align-items:center;justify-content:center;">
+                  <span style="font-family:var(--mono);font-size:7px;color:#085041;">sid=abc</span>
+                </div>
+              </div>
+            </div>
+            <div style="font-size:10px;color:#085041;font-weight:600;">フォーム(封筒)</div>
+          </div>
+          <!-- 矢印 -->
+          <div style="flex:0 0 64px;display:flex;flex-direction:column;align-items:center;gap:3px;">
+            <div style="font-size:9px;color:#0F6E56;font-weight:600;">POSTボディ</div>
+            <div style="width:100%;display:flex;align-items:center;">
+              <div style="flex:1;height:2px;background:#0F6E56;"></div>
+              <div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:7px solid #0F6E56;"></div>
+            </div>
+            <div style="font-size:9px;color:#1D9E75;">POST送信</div>
+          </div>
+          <!-- サーバ -->
+          <div style="display:flex;flex-direction:column;align-items:center;gap:5px;">
+            <div style="width:52px;height:52px;background:white;border:2px solid #0F6E56;border-radius:6px;padding:5px;display:flex;flex-direction:column;gap:3px;">
+              <div style="height:9px;background:#9FE1CB;border-radius:2px;"></div>
+              <div style="height:9px;background:#9FE1CB;border-radius:2px;"></div>
+              <div style="height:9px;background:#9FE1CB;border-radius:2px;"></div>
+            </div>
+            <div style="font-size:10px;color:#085041;font-weight:600;">Webサーバ</div>
+          </div>
+        </div>
+        <!-- 技術コード -->
+        <div style="flex:1;min-width:0;background:white;padding:14px 16px;display:flex;flex-direction:column;gap:6px;justify-content:center;border-left:1px solid #9FE1CB;">
+          <div style="font-size:10px;font-weight:700;color:#085041;">HTMLフォームに埋め込む</div>
+          <div style="background:#E1F5EE;border-radius:4px;padding:5px 9px;font-family:var(--mono);font-size:10.5px;color:#0F6E56;line-height:1.75;">&lt;input type="hidden" name="sid" value="abc123"&gt;<br>&lt;input type="hidden" name="csrf_token" value="e8f3b..."&gt;</div>
+          <div style="background:#FAEEDA;border-radius:4px;padding:4px 9px;font-size:10.5px;color:#633806;line-height:1.55;">! HTMLソースに値が見える<br>! GETリクエストには使えない</div>
+        </div>
+      </div>
+
+      <!-- ③ URLリライティング方式 -->
+      <div style="display:flex;align-items:stretch;border-radius:0 0 10px 10px;overflow:hidden;border:1.5px solid #854F0B;">
+        <div style="flex:0 0 116px;background:#854F0B;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:14px 8px;">
+          <div style="font-family:var(--mono);font-size:11px;font-weight:700;color:white;">③ URLに付与</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.8);text-align:center;line-height:1.5;">IDをURLに<br>剥き出しで表示</div>
+        </div>
+        <!-- アナロジー図 260px固定 -->
+        <div style="flex:0 0 260px;background:#fff3d0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:14px 10px;">
+          <!-- アドレスバー -->
+          <div style="width:230px;height:28px;background:white;border:2px solid #854F0B;border-radius:5px;display:flex;align-items:center;padding:0 8px;gap:6px;">
+            <!-- 警告錠前 -->
+            <div style="flex:0 0 14px;height:14px;position:relative;">
+              <div style="width:10px;height:6px;border:1.5px solid #E24B4A;border-radius:2px 2px 0 0;border-bottom:none;position:absolute;top:0;left:2px;"></div>
+              <div style="width:14px;height:8px;background:#EF9F27;border:1.5px solid #854F0B;border-radius:2px;position:absolute;bottom:0;left:0;"></div>
+            </div>
+            <div style="font-family:var(--mono);font-size:10px;color:#412402;">/page?<span style="background:#FCEBEB;color:#A32D2D;padding:1px 3px;border-radius:2px;">sid=abc123</span></div>
+          </div>
+          <!-- 漏洩ラベル3つ -->
+          <div style="display:flex;gap:6px;">
+            <div style="background:#FCEBEB;border:1px solid #E24B4A;border-radius:4px;padding:3px 7px;font-size:9.5px;color:#791F1F;text-align:center;line-height:1.4;">Referer<br>漏洩</div>
+            <div style="background:#FCEBEB;border:1px solid #E24B4A;border-radius:4px;padding:3px 7px;font-size:9.5px;color:#791F1F;text-align:center;line-height:1.4;">ブラウザ<br>履歴</div>
+            <div style="background:#FCEBEB;border:1px solid #E24B4A;border-radius:4px;padding:3px 7px;font-size:9.5px;color:#791F1F;text-align:center;line-height:1.4;">サーバ<br>ログ</div>
+          </div>
+        </div>
+        <!-- 技術コード -->
+        <div style="flex:1;min-width:0;background:white;padding:14px 16px;display:flex;flex-direction:column;gap:6px;justify-content:center;border-left:1px solid #FAC775;">
+          <div style="font-size:10px;font-weight:700;color:#412402;">URLパラメータにIDを付与</div>
+          <div style="background:#FAEEDA;border-radius:4px;padding:5px 9px;font-family:var(--mono);font-size:10.5px;color:#633806;">/page?sid=abc123xyz789</div>
+          <div style="background:#FCEBEB;border-radius:4px;padding:5px 9px;font-size:10.5px;color:#A32D2D;line-height:1.6;">URLバーに表示 → Referer・ログ・履歴から漏洩<br>✗ 現代のWebでは非推奨 → Cookie方式を使うこと</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── 3方式の「どこでIDが動くか」フロー図 ── -->
+  <div class="seq-wrap">
+    <p class="seq-cap">構成図 — 3方式「セッションIDはどこを通るか」</p>
+    <div style="display:flex;flex-direction:column;gap:18px;min-width:560px;">
+
+      <!-- Cookie方式フロー -->
+      <div style="display:flex;align-items:center;gap:0;">
+        <div style="flex:0 0 110px;font-size:11px;font-weight:700;color:white;background:var(--accent2);padding:7px 10px;border-radius:6px 0 0 6px;text-align:center;line-height:1.4;">Cookie<br>方式</div>
+        <!-- ブラウザ -->
+        <div style="flex:0 0 110px;background:#eaf3ff;border:1.5px solid #a8cef5;padding:9px 10px;font-size:11px;color:var(--accent);line-height:1.5;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:middle;margin-right:4px;"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>ブラウザ<br><span style="font-family:var(--mono);font-size:9px;">Cookie Store</span>
+        </div>
+        <!-- 矢印1 -->
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;padding:0 6px;">
+          <span style="font-size:9px;font-family:var(--mono);color:var(--accent2);">Cookieヘッダで自動送信</span>
+          <div style="width:100%;height:2px;background:var(--accent2);position:relative;"><div style="position:absolute;right:-1px;top:-4px;width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:7px solid var(--accent2);"></div></div>
+        </div>
+        <!-- サーバ -->
+        <div style="flex:0 0 110px;background:#eaf7f1;border:1.5px solid #80c898;padding:9px 10px;font-size:11px;color:var(--success);line-height:1.5;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:middle;margin-right:4px;"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/></svg>Webサーバ<br><span style="font-family:var(--mono);font-size:9px;">Session Store</span>
+        </div>
+        <div style="flex:0 0 80px;background:#d0f0e0;border:1.5px solid #80c898;padding:7px 10px;font-size:10px;color:var(--success);border-radius:0 6px 6px 0;line-height:1.5;margin-left:-1px;">✓ HTTPS+<br>HttpOnly<br>で保護可</div>
+      </div>
+
+      <!-- Hidden Field フロー -->
+      <div style="display:flex;align-items:center;gap:0;">
+        <div style="flex:0 0 110px;font-size:11px;font-weight:700;color:white;background:var(--success);padding:7px 10px;border-radius:6px 0 0 6px;text-align:center;line-height:1.4;">Hidden<br>Field</div>
+        <!-- HTML内 -->
+        <div style="flex:0 0 110px;background:#f0fbf5;border:1.5px solid #80c898;padding:9px 10px;font-size:11px;color:var(--success);line-height:1.5;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:middle;margin-right:4px;"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>HTMLフォーム<br><span style="font-family:var(--mono);font-size:9px;">&lt;input hidden&gt;</span>
+        </div>
+        <!-- 矢印 -->
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;padding:0 6px;">
+          <span style="font-size:9px;font-family:var(--mono);color:var(--success);">POSTボディで送信</span>
+          <div style="width:100%;height:2px;background:var(--success);position:relative;"><div style="position:absolute;right:-1px;top:-4px;width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:7px solid var(--success);"></div></div>
+        </div>
+        <!-- サーバ -->
+        <div style="flex:0 0 110px;background:#eaf7f1;border:1.5px solid #80c898;padding:9px 10px;font-size:11px;color:var(--success);line-height:1.5;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:middle;margin-right:4px;"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/></svg>Webサーバ
+        </div>
+        <div style="flex:0 0 80px;background:#fff8e6;border:1.5px solid #e0c070;padding:7px 10px;font-size:10px;color:var(--warn);border-radius:0 6px 6px 0;line-height:1.5;margin-left:-1px;">! HTMLソース<br>にID露出<br>GET不可</div>
+      </div>
+
+      <!-- URLリライティングフロー -->
+      <div style="display:flex;align-items:center;gap:0;">
+        <div style="flex:0 0 110px;font-size:11px;font-weight:700;color:white;background:var(--warn);padding:7px 10px;border-radius:6px 0 0 6px;text-align:center;line-height:1.4;">URL<br>リライティング</div>
+        <!-- URLバー -->
+        <div style="flex:0 0 110px;background:#fffaf0;border:1.5px solid #e0c070;padding:9px 10px;font-size:11px;color:var(--warn);line-height:1.5;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:middle;margin-right:4px;"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>URLバー<br><span style="font-family:var(--mono);font-size:9px;">?sid=abc123</span>
+        </div>
+        <!-- 矢印+漏洩ラベル -->
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;padding:0 6px;gap:2px;">
+          <span style="font-size:9px;font-family:var(--mono);color:var(--danger);">URLパラメータで送信（危険）</span>
+          <div style="width:100%;height:2px;background:var(--danger);position:relative;"><div style="position:absolute;right:-1px;top:-4px;width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:7px solid var(--danger);"></div></div>
+          <div style="background:#fdf0f0;border:1px dashed var(--danger);border-radius:4px;padding:2px 8px;font-size:9px;color:var(--danger);">Referer漏洩 / 履歴 / ログ</div>
+        </div>
+        <!-- サーバ -->
+        <div style="flex:0 0 110px;background:#fdf0f0;border:1.5px solid #e8a8a8;padding:9px 10px;font-size:11px;color:var(--danger);line-height:1.5;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:middle;margin-right:4px;"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/></svg>Webサーバ
+        </div>
+        <div style="flex:0 0 80px;background:#fdf0f0;border:1.5px solid #e8a8a8;padding:7px 10px;font-size:10px;color:var(--danger);border-radius:0 6px 6px 0;line-height:1.5;margin-left:-1px;">✗ 現代では<br>非推奨<br>危険</div>
+      </div>
+
+    </div>
+  </div>
+
+  <h3>Hiddenフィールドのフォーマット</h3>
+  <div class="hf-box">
+    <div style="font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:12px;">HTML — Hidden Field + CSRFトークンの組み合わせ</div>
+    <div style="color:rgba(255,255,255,.45);">&lt;<span style="color:#a8d8a0;">form</span> <span style="color:#6ab4f5;">method</span>=<span style="color:#d4a8f5;">"post"</span> <span style="color:#6ab4f5;">action</span>=<span style="color:#d4a8f5;">"/transfer"</span>&gt;</div>
+    <div style="color:rgba(255,255,255,.45);">&nbsp;&nbsp;&lt;<span style="color:#a8d8a0;">input</span> <span style="color:#6ab4f5;">type</span>=<span style="color:#d4a8f5;">"hidden"</span> <span style="color:#6ab4f5;">name</span>=<span style="color:#d4a8f5;">"session_id"</span> <span style="color:#6ab4f5;">value</span>=<span style="color:#f5a623;">"abc123xyz789"</span>&gt;</div>
+    <div style="color:rgba(255,255,255,.45);">&nbsp;&nbsp;&lt;<span style="color:#a8d8a0;">input</span> <span style="color:#6ab4f5;">type</span>=<span style="color:#d4a8f5;">"hidden"</span> <span style="color:#6ab4f5;">name</span>=<span style="color:#d4a8f5;">"csrf_token"</span> <span style="color:#6ab4f5;">value</span>=<span style="color:#f5a623;">"e8f3bca12d..."</span>&gt; <span style="color:rgba(255,255,255,.25);">/* CSRF対策ワンタイムトークン */</span></div>
+    <div style="color:rgba(255,255,255,.45);">&nbsp;&nbsp;&lt;<span style="color:#a8d8a0;">input</span> <span style="color:#6ab4f5;">type</span>=<span style="color:#d4a8f5;">"text"</span> <span style="color:#6ab4f5;">name</span>=<span style="color:#d4a8f5;">"amount"</span>&gt;</div>
+    <div style="color:rgba(255,255,255,.45);">&nbsp;&nbsp;&lt;<span style="color:#a8d8a0;">button</span> <span style="color:#6ab4f5;">type</span>=<span style="color:#d4a8f5;">"submit"</span>&gt;送信&lt;/<span style="color:#a8d8a0;">button</span>&gt;</div>
+    <div style="color:rgba(255,255,255,.45);">&lt;/<span style="color:#a8d8a0;">form</span>&gt;</div>
+    <div style="border-top:1px dashed rgba(255,255,255,.1);margin:12px 0;"></div>
+    <div style="font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:8px;">POSTリクエスト ボディ（送信される内容）</div>
+    <div style="color:#d4a8f5;">session_id=abc123xyz789&amp;csrf_token=e8f3bca12d...&amp;amount=10000</div>
+  </div>
+
+  <h3>セッション管理方式の比較</h3>
+  <table class="cmp-table">
+    <thead><tr><th>比較項目</th><th>Cookie</th><th>Hiddenフィールド</th><th>URLリライティング</th><th>JWT（Bearer）</th></tr></thead>
+    <tbody>
+      <tr><td>Cookieの使用</td><td class="cmp-mid">あり</td><td class="cmp-good">なし</td><td class="cmp-good">なし</td><td class="cmp-mid">オプション</td></tr>
+      <tr><td>GETリクエスト対応</td><td class="cmp-good">可</td><td class="cmp-bad">不可（POSTのみ）</td><td class="cmp-mid">可（URLに付与）</td><td class="cmp-good">可</td></tr>
+      <tr><td>URLへの情報露出</td><td class="cmp-good">なし</td><td class="cmp-good">なし</td><td class="cmp-bad">あり（高リスク）</td><td class="cmp-good">なし</td></tr>
+      <tr><td>CSRF対策の必要性</td><td class="cmp-bad">必要</td><td class="cmp-mid">トークンで対策可</td><td class="cmp-bad">必要</td><td class="cmp-good">不要（ヘッダ送信）</td></tr>
+      <tr><td>即時無効化</td><td class="cmp-good">サーバ側で可能</td><td class="cmp-good">サーバ側で可能</td><td class="cmp-good">サーバ側で可能</td><td class="cmp-bad">有効期限まで有効</td></tr>
+      <tr><td>現代的な推奨度</td><td class="cmp-good">高い（属性設定必須）</td><td class="cmp-mid">限定的な場面で有効</td><td class="cmp-bad">非推奨</td><td class="cmp-good">API・SPA向けに高い</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ══ 08 Cookie の仕組みと安全な管理 ══ -->
+<section class="section" id="s9">
+  <div class="section-header"><span class="s-num">09</span><h2>Cookie の仕組みと安全な管理</h2></div>
+  <div class="msg-box">
+    <div style="font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:12px;">Set-Cookie Header — 推奨設定例</div>
+    <div style="font-family:var(--mono);font-size:12.5px;line-height:2.2;"><span class="http-header-name">Set-Cookie</span><span style="color:rgba(255,255,255,.4);">: </span><span class="http-path">session_id</span><span style="color:rgba(255,255,255,.6);">=</span><span style="color:#d4a8f5;">abc123xyz789</span><span style="color:rgba(255,255,255,.3);">; </span><span class="http-status-ok">HttpOnly</span><span style="color:rgba(255,255,255,.3);">; </span><span class="http-status-ok">Secure</span><span style="color:rgba(255,255,255,.3);">; </span><span class="http-header-name">SameSite</span><span style="color:rgba(255,255,255,.4);">=</span><span class="http-header-value">Lax</span><span style="color:rgba(255,255,255,.3);">; </span><span class="http-header-name">Max-Age</span><span style="color:rgba(255,255,255,.4);">=</span><span class="http-header-value">3600</span></div>
+  </div>
+  <table class="req-table">
+    <thead><tr><th>Cookie属性</th><th>説明</th><th>セキュリティ上の意義</th></tr></thead>
+    <tbody>
+      <tr><td>HttpOnly</td><td>JavaScriptの<code style="font-family:var(--mono);font-size:11px;">document.cookie</code>からのアクセスを禁止する。</td><td><strong>XSS攻撃によるCookie窃取を防ぐ</strong></td></tr>
+      <tr><td>Secure</td><td>HTTPS接続時にのみCookieを送信する。HTTP接続では送信しない。</td><td><strong>通信経路上の盗聴（MITM）を防ぐ</strong></td></tr>
+      <tr><td>SameSite=Strict</td><td>同一サイトからのリクエストのみCookieを送信。外部リンク遷移でも送信しない。</td><td><strong>CSRF攻撃を最も強く防ぐ</strong></td></tr>
+      <tr><td>SameSite=Lax</td><td>同一サイト＋トップレベルナビゲーション（GETリンク遷移）でCookieを送信。フォームPOSTでは送信しない。</td><td><strong>CSRFを防ぎつつ使い勝手を保つ（推奨）</strong></td></tr>
+      <tr><td>SameSite=None</td><td>クロスサイトリクエストでもCookieを送信。Secure属性必須。</td><td>サードパーティCookie・埋め込みコンテンツ用。プライバシーリスクあり。</td></tr>
+      <tr><td>Domain</td><td>Cookieを送信するドメインを指定。指定するとサブドメインにも送信される。</td><td>省略時は発行元ホストのみ対象（より安全）</td></tr>
+      <tr><td>Max-Age / Expires</td><td>Cookieの有効期限。省略するとセッションCookie（ブラウザを閉じると削除）になる。</td><td>長すぎる有効期限は盗まれたCookieの悪用期間を延ばす</td></tr>
+    </tbody>
+  </table>
+  <div class="steps" style="margin-top:16px;">
+    <div class="step ok"><span class="sn">1</span><div class="sb"><strong>HttpOnly + Secure + SameSite=Lax の3点セット</strong>を必ず設定する。</div></div>
+    <div class="step ok"><span class="sn">2</span><div class="sb"><strong>セッションIDは128ビット以上のCSPRNG</strong>で生成。連番・推測可能な値は厳禁。</div></div>
+    <div class="step ok"><span class="sn">3</span><div class="sb"><strong>ログイン成功後はセッションIDを再発行</strong>する（セッション固定攻撃対策）。</div></div>
+    <div class="step ok"><span class="sn">4</span><div class="sb"><strong>タイムアウト2種類：</strong>アイドルタイムアウト（最終操作から）＋絶対タイムアウト（最長有効期間）を設定。</div></div>
+    <div class="step wn"><span class="sn" style="background:var(--warn)">!</span><div class="sb"><strong>URLへのセッションID埋め込みを避ける。</strong>Referer・履歴・プロキシログに漏洩する。</div></div>
+  </div>
+  <div class="keypoint"><p class="kp-label">Cookieセキュリティの3原則</p><p><strong>HttpOnly</strong>（XSS盗取防止）＋ <strong>Secure</strong>（HTTPS強制）＋ <strong>SameSite=Lax以上</strong>（CSRF緩和）の3属性を必ずセッションCookieに設定する。この3つが最低限の基準です。</p></div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     09 セッション管理への攻撃と対策 — 大幅ビジュアル強化
+══════════════════════════════════════════════════════════ -->
+<section class="section" id="s10">
+  <div class="section-header"><span class="s-num red-bg">10</span><h2>セッション管理への攻撃と対策</h2></div>
+
+  <div class="seq-wrap" style="padding:24px 20px;">
+    <p class="seq-cap">図 — セッション攻撃3パターン（シーン ↔ HTTP技術・防御の対応）</p>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+
+      <!-- ① XSS: Cookie盗取 -->
+      <div style="border:1.5px solid #A32D2D;border-radius:10px;overflow:hidden;">
+        <!-- タイトルバー -->
+        <div style="background:#A32D2D;color:white;padding:9px 16px;display:flex;align-items:center;gap:10px;">
+          <div style="width:28px;height:28px;background:rgba(255,255,255,.15);border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          </div>
+          <div>
+            <div style="font-size:13px;font-weight:700;">① XSS — Cookieを掲示板の盗聴器で盗む</div>
+            <div style="font-size:10px;color:rgba(255,255,255,.7);">攻撃対象: ブラウザのCookie Store</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:stretch;">
+          <!-- シーン -->
+          <div style="flex:0 0 320px;background:#FCEBEB;padding:16px;display:flex;flex-direction:column;gap:10px;">
+            <div style="font-size:10px;font-weight:700;color:#791F1F;letter-spacing:.08em;text-transform:uppercase;margin-bottom:2px;">攻撃シーン</div>
+            <!-- 横並びシーン: 掲示板 → ブラウザ(Cookie) → 攻撃者サーバ -->
+            <div style="display:flex;align-items:flex-end;gap:6px;">
+              <!-- 掲示板 -->
+              <div style="flex:0 0 78px;display:flex;flex-direction:column;align-items:center;gap:4px;">
+                <div style="width:74px;height:60px;background:white;border:2px solid #A32D2D;border-radius:5px;overflow:hidden;">
+                  <div style="height:14px;background:#A32D2D;display:flex;align-items:center;padding:0 6px;">
+                    <span style="font-size:8px;color:white;font-weight:600;">掲示板</span>
+                  </div>
+                  <div style="padding:4px 5px;display:flex;flex-direction:column;gap:2px;">
+                    <div style="height:6px;background:#F7C1C1;border-radius:2px;"></div>
+                    <div style="height:6px;background:#F7C1C1;border-radius:2px;"></div>
+                    <!-- 悪意のJSバッジ -->
+                    <div style="background:#E24B4A;border-radius:2px;padding:1px 4px;display:flex;align-items:center;justify-content:center;">
+                      <span style="font-size:7px;color:white;font-weight:700;font-family:var(--mono);">悪意のJS</span>
+                    </div>
+                  </div>
+                </div>
+                <div style="font-size:9px;color:#791F1F;text-align:center;line-height:1.3;">攻撃者が<br>スクリプト投稿</div>
+              </div>
+              <!-- 矢印 + ラベル -->
+              <div style="flex:0 0 50px;display:flex;flex-direction:column;align-items:center;gap:2px;padding-bottom:22px;">
+                <div style="font-size:8px;color:#A32D2D;">被害者が閲覧</div>
+                <div style="width:100%;display:flex;align-items:center;">
+                  <div style="flex:1;height:1.5px;background:#A32D2D;border-top:1.5px dashed #A32D2D;"></div>
+                  <div style="width:0;height:0;border-top:4px solid transparent;border-bottom:4px solid transparent;border-left:6px solid #A32D2D;"></div>
+                </div>
+              </div>
+              <!-- ブラウザ with Cookie -->
+              <div style="flex:0 0 78px;display:flex;flex-direction:column;align-items:center;gap:4px;">
+                <div style="width:74px;height:60px;background:white;border:2px solid #A32D2D;border-radius:5px;overflow:hidden;">
+                  <div style="height:14px;background:#A32D2D;display:flex;align-items:center;padding:0 6px;gap:3px;">
+                    <div style="width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.5);"></div>
+                    <div style="width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.5);"></div>
+                    <div style="width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.5);"></div>
+                  </div>
+                  <div style="padding:4px 5px;">
+                    <div style="background:#F09595;border-radius:3px;padding:3px 4px;">
+                      <div style="font-size:7px;color:#501313;font-weight:600;">Cookie:</div>
+                      <div style="font-family:var(--mono);font-size:7px;color:#501313;">sid=abc</div>
+                    </div>
+                  </div>
+                </div>
+                <div style="font-size:9px;color:#791F1F;text-align:center;line-height:1.3;">被害者<br>ブラウザ</div>
+              </div>
+              <!-- 盗取矢印 (曲線を点線で表現) -->
+              <div style="flex:0 0 44px;display:flex;flex-direction:column;align-items:center;gap:2px;padding-bottom:22px;">
+                <div style="font-size:8px;color:#A32D2D;text-align:center;line-height:1.2;">Cookie<br>を盗む</div>
+                <div style="width:100%;display:flex;align-items:center;">
+                  <div style="flex:1;height:1.5px;border-top:1.5px dashed #E24B4A;"></div>
+                  <div style="width:0;height:0;border-top:4px solid transparent;border-bottom:4px solid transparent;border-left:6px solid #E24B4A;"></div>
+                </div>
+              </div>
+              <!-- 攻撃者サーバ -->
+              <div style="flex:0 0 66px;display:flex;flex-direction:column;align-items:center;gap:4px;">
+                <div style="width:62px;height:60px;background:white;border:2px solid #791F1F;border-radius:5px;overflow:hidden;">
+                  <div style="height:14px;background:#791F1F;display:flex;align-items:center;padding:0 5px;">
+                    <span style="font-size:7px;color:white;font-weight:600;">攻撃者SV</span>
+                  </div>
+                  <div style="padding:4px 4px;">
+                    <div style="background:#E24B4A;border-radius:3px;padding:3px;text-align:center;">
+                      <div style="font-size:7px;color:white;font-weight:600;">盗Cookie</div>
+                      <div style="font-family:var(--mono);font-size:7px;color:rgba(255,255,255,.8);">sid=abc</div>
+                    </div>
+                  </div>
+                </div>
+                <div style="font-size:9px;color:#791F1F;text-align:center;line-height:1.3;">攻撃者が<br>ID入手</div>
+              </div>
+            </div>
+          </div>
+          <!-- 防御 -->
+          <div style="flex:1;background:white;padding:16px;border-left:1px solid #F7C1C1;display:flex;flex-direction:column;gap:7px;">
+            <div style="font-size:10px;font-weight:700;color:#A32D2D;margin-bottom:2px;">HTTP攻撃の核心</div>
+            <div style="background:#FCEBEB;border-radius:4px;padding:6px 10px;font-size:11.5px;color:#A32D2D;font-family:var(--mono);">document.cookie → 攻撃者のサーバに送信</div>
+            <div style="font-size:10px;font-weight:700;color:#27500A;margin-top:4px;">対策</div>
+            <div style="display:flex;flex-direction:column;gap:4px;">
+              <div style="background:#EAF3DE;border-radius:4px;padding:5px 10px;font-size:11.5px;color:#3B6D11;">HttpOnly 属性 → JS から document.cookie が読めなくなる</div>
+              <div style="background:#EAF3DE;border-radius:4px;padding:5px 10px;font-size:11.5px;color:#3B6D11;">CSP ヘッダ → 外部へのデータ送信をブロック</div>
+              <div style="background:#EAF3DE;border-radius:4px;padding:5px 10px;font-size:11.5px;color:#3B6D11;">出力時のHTMLエスケープ → スクリプト注入を根本から防ぐ</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ② CSRF -->
+      <div style="border:1.5px solid #993C1D;border-radius:10px;overflow:hidden;">
+        <div style="background:#993C1D;color:white;padding:9px 16px;display:flex;align-items:center;gap:10px;">
+          <div style="width:28px;height:28px;background:rgba(255,255,255,.15);border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </div>
+          <div>
+            <div style="font-size:13px;font-weight:700;">② CSRF — 正規Cookieを使って偽リクエストを送らせる</div>
+            <div style="font-size:10px;color:rgba(255,255,255,.7);">攻撃対象: Cookieの自動付与の仕組みを悪用</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:stretch;">
+          <div style="flex:0 0 320px;background:#FAECE7;padding:16px;display:flex;flex-direction:column;gap:10px;">
+            <div style="font-size:10px;font-weight:700;color:#712B13;letter-spacing:.08em;text-transform:uppercase;margin-bottom:2px;">攻撃シーン</div>
+            <div style="display:flex;align-items:flex-end;gap:6px;">
+              <!-- 銀行サイト -->
+              <div style="flex:0 0 72px;display:flex;flex-direction:column;align-items:center;gap:4px;">
+                <div style="width:68px;height:52px;background:white;border:2px solid #993C1D;border-radius:5px;overflow:hidden;">
+                  <div style="height:14px;background:#993C1D;display:flex;align-items:center;padding:0 5px;"><span style="font-size:7.5px;color:white;font-weight:600;">銀行サイト</span></div>
+                  <div style="padding:4px 5px;">
+                    <div style="background:#FAEEDA;border-radius:2px;padding:2px 3px;"><span style="font-size:7px;color:#412402;">ログイン済</span></div>
+                    <div style="background:#EF9F27;border-radius:2px;padding:2px 3px;margin-top:2px;"><span style="font-family:var(--mono);font-size:7px;color:#412402;">Cookie保持</span></div>
+                  </div>
+                </div>
+                <div style="font-size:9px;color:#712B13;text-align:center;line-height:1.3;">被害者<br>ブラウザ</div>
+              </div>
+              <!-- 罠サイト訪問矢印 -->
+              <div style="flex:0 0 44px;display:flex;flex-direction:column;align-items:center;gap:2px;padding-bottom:22px;">
+                <div style="font-size:8px;color:#993C1D;text-align:center;line-height:1.3;">罠サイト<br>へ誘導</div>
+                <div style="width:100%;display:flex;align-items:center;">
+                  <div style="flex:1;border-top:1.5px dashed #993C1D;"></div>
+                  <div style="width:0;height:0;border-top:4px solid transparent;border-bottom:4px solid transparent;border-left:6px solid #993C1D;"></div>
+                </div>
+              </div>
+              <!-- 罠サイト -->
+              <div style="flex:0 0 72px;display:flex;flex-direction:column;align-items:center;gap:4px;">
+                <div style="width:68px;height:52px;background:white;border:2px solid #E24B4A;border-radius:5px;overflow:hidden;">
+                  <div style="height:14px;background:#E24B4A;display:flex;align-items:center;padding:0 5px;"><span style="font-size:7.5px;color:white;font-weight:600;">罠サイト</span></div>
+                  <div style="padding:4px 5px;">
+                    <div style="background:#F09595;border:1px dashed #A32D2D;border-radius:2px;padding:2px 3px;"><span style="font-size:7px;color:#501313;">隠しフォーム</span></div>
+                    <div style="background:#F09595;border:1px dashed #A32D2D;border-radius:2px;padding:2px 3px;margin-top:2px;"><span style="font-size:7px;color:#501313;">自動POST</span></div>
+                  </div>
+                </div>
+                <div style="font-size:9px;color:#712B13;text-align:center;line-height:1.3;">攻撃者が<br>用意</div>
+              </div>
+              <!-- Cookie自動付与矢印 -->
+              <div style="flex:0 0 48px;display:flex;flex-direction:column;align-items:center;gap:2px;padding-bottom:22px;">
+                <div style="font-size:8px;color:#A32D2D;text-align:center;line-height:1.3;">Cookie<br>自動付与</div>
+                <div style="width:100%;display:flex;align-items:center;">
+                  <div style="flex:1;height:2px;background:#A32D2D;"></div>
+                  <div style="width:0;height:0;border-top:4px solid transparent;border-bottom:4px solid transparent;border-left:6px solid #A32D2D;"></div>
+                </div>
+              </div>
+              <!-- 銀行サーバ -->
+              <div style="flex:0 0 60px;display:flex;flex-direction:column;align-items:center;gap:4px;">
+                <div style="width:56px;height:52px;background:white;border:2px solid #993C1D;border-radius:5px;padding:5px;display:flex;flex-direction:column;gap:3px;">
+                  <div style="height:8px;background:#F5C4B3;border-radius:2px;"></div>
+                  <div style="height:8px;background:#F5C4B3;border-radius:2px;"></div>
+                  <div style="height:8px;background:#F5C4B3;border-radius:2px;"></div>
+                </div>
+                <div style="font-size:9px;color:#712B13;text-align:center;line-height:1.3;">銀行<br>サーバ</div>
+              </div>
+            </div>
+          </div>
+          <div style="flex:1;background:white;padding:16px;border-left:1px solid #F5C4B3;display:flex;flex-direction:column;gap:7px;">
+            <div style="font-size:10px;font-weight:700;color:#993C1D;margin-bottom:2px;">攻撃の核心</div>
+            <div style="background:#FAECE7;border-radius:4px;padding:6px 10px;font-size:11.5px;color:#993C1D;">Cookie は同一ドメインへ<strong>自動付与</strong>されるため、罠サイト経由のPOSTでも正規リクエストと誤認される</div>
+            <div style="font-size:10px;font-weight:700;color:#27500A;margin-top:4px;">対策</div>
+            <div style="display:flex;flex-direction:column;gap:4px;">
+              <div style="background:#EAF3DE;border-radius:4px;padding:5px 10px;font-size:11.5px;color:#3B6D11;font-family:var(--mono);">&lt;input type="hidden" name="csrf_token" value="<em>ランダム値</em>"&gt; → サーバ側で照合</div>
+              <div style="background:#EAF3DE;border-radius:4px;padding:5px 10px;font-size:11.5px;color:#3B6D11;">SameSite=Lax → クロスサイトPOSTにCookieを付与しない</div>
+              <div style="background:#EAF3DE;border-radius:4px;padding:5px 10px;font-size:11.5px;color:#3B6D11;">Referer ヘッダ検証 → 送信元の確認</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ③ セッション固定 -->
+      <div style="border:1.5px solid #3C3489;border-radius:10px;overflow:hidden;">
+        <div style="background:#3C3489;color:white;padding:9px 16px;display:flex;align-items:center;gap:10px;">
+          <div style="width:28px;height:28px;background:rgba(255,255,255,.15);border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+          <div>
+            <div style="font-size:13px;font-weight:700;">③ セッション固定 — 合鍵を先に渡してドアを開ける</div>
+            <div style="font-size:10px;color:rgba(255,255,255,.7);">攻撃対象: ログイン後のセッションID引き継ぎ</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:stretch;">
+          <div style="flex:0 0 320px;background:#EEEDFE;padding:16px;display:flex;flex-direction:column;gap:10px;">
+            <div style="font-size:10px;font-weight:700;color:#3C3489;letter-spacing:.08em;text-transform:uppercase;margin-bottom:2px;">攻撃シーン（3ステップ）</div>
+            <div style="display:flex;flex-direction:column;gap:6px;">
+              <!-- Step 1 -->
+              <div style="display:flex;align-items:center;gap:6px;">
+                <div style="flex:0 0 18px;height:18px;background:#3C3489;border-radius:50%;display:flex;align-items:center;justify-content:center;"><span style="font-size:9px;color:white;font-weight:700;">1</span></div>
+                <div style="flex:1;background:white;border:1px solid #CECBF6;border-radius:4px;padding:4px 8px;">
+                  <div style="font-size:10px;color:#26215C;line-height:1.4;">攻撃者が<span style="font-family:var(--mono);background:#AFA9EC;padding:0 3px;border-radius:2px;">/login?sid=FIXED_ID</span>のURLを被害者に送りつける</div>
+                </div>
+              </div>
+              <!-- Step 2 -->
+              <div style="display:flex;align-items:center;gap:6px;">
+                <div style="flex:0 0 18px;height:18px;background:#3C3489;border-radius:50%;display:flex;align-items:center;justify-content:center;"><span style="font-size:9px;color:white;font-weight:700;">2</span></div>
+                <div style="flex:1;background:white;border:1px solid #CECBF6;border-radius:4px;padding:4px 8px;">
+                  <div style="font-size:10px;color:#26215C;line-height:1.4;">被害者が<span style="font-family:var(--mono);background:#AFA9EC;padding:0 3px;border-radius:2px;">FIXED_ID</span>のままログイン → サーバが被害者に紐付ける</div>
+                </div>
+              </div>
+              <!-- Step 3 -->
+              <div style="display:flex;align-items:center;gap:6px;">
+                <div style="flex:0 0 18px;height:18px;background:#E24B4A;border-radius:50%;display:flex;align-items:center;justify-content:center;"><span style="font-size:9px;color:white;font-weight:700;">3</span></div>
+                <div style="flex:1;background:#FCEBEB;border:1px solid #F09595;border-radius:4px;padding:4px 8px;">
+                  <div style="font-size:10px;color:#791F1F;line-height:1.4;">攻撃者も<span style="font-family:var(--mono);background:#F09595;padding:0 3px;border-radius:2px;">FIXED_ID</span>で同じセッションにアクセス → 被害者として侵入</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="flex:1;background:white;padding:16px;border-left:1px solid #CECBF6;display:flex;flex-direction:column;gap:7px;">
+            <div style="font-size:10px;font-weight:700;color:#3C3489;margin-bottom:2px;">攻撃の核心</div>
+            <div style="background:#EEEDFE;border-radius:4px;padding:6px 10px;font-size:11.5px;color:#3C3489;">ログイン前後でセッションIDが変わらないことを悪用。<br>攻撃者が知っているIDが被害者のログイン済みセッションに紐付く。</div>
+            <div style="font-size:10px;font-weight:700;color:#27500A;margin-top:4px;">対策</div>
+            <div style="display:flex;flex-direction:column;gap:4px;">
+              <div style="background:#EAF3DE;border-radius:4px;padding:5px 10px;font-size:11.5px;color:#3B6D11;font-family:var(--mono);">session_regenerate_id() — ログイン後に必ず新IDを発行</div>
+              <div style="background:#EAF3DE;border-radius:4px;padding:5px 10px;font-size:11.5px;color:#3B6D11;">古い FIXED_ID は無効化される → 攻撃者のIDが使えなくなる</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <h3>攻撃手法の全体整理</h3>
+  <div style="display:flex;flex-direction:column;gap:10px;margin:16px 0;">
+    <div style="background:#fff;border:1px solid var(--line);border-radius:8px;overflow:hidden;display:flex;align-items:stretch;">
+      <div style="background:var(--danger);width:6px;flex-shrink:0;"></div>
+      <div style="padding:12px 16px;flex:1;display:grid;grid-template-columns:160px 1fr 1fr;gap:12px;align-items:center;">
+        <div><div style="font-size:11.5px;font-weight:700;color:var(--danger);">XSSによるCookie窃取</div><div style="font-size:10px;color:rgba(30,45,74,.5);margin-top:2px;">ブラウザのCookie → JS経由で盗取</div></div>
+        <div style="font-size:12px;color:#3a3d52;line-height:1.6;">掲示板等にスクリプトを注入してdocument.cookieを読み、外部サーバへ送信。セッションIDが漏洩する。</div>
+        <div style="background:#eaf7f1;border-radius:5px;padding:8px 10px;font-size:11.5px;color:var(--success);line-height:1.5;"><strong>対策：</strong>HttpOnly属性 / CSP / 出力時のHTMLエスケープ</div>
+      </div>
+    </div>
+    <div style="background:#fff;border:1px solid var(--line);border-radius:8px;overflow:hidden;display:flex;align-items:stretch;">
+      <div style="background:var(--danger);width:6px;flex-shrink:0;"></div>
+      <div style="padding:12px 16px;flex:1;display:grid;grid-template-columns:160px 1fr 1fr;gap:12px;align-items:center;">
+        <div><div style="font-size:11.5px;font-weight:700;color:var(--danger);">通信経路での盗聴</div><div style="font-size:10px;color:rgba(30,45,74,.5);margin-top:2px;">HTTP通信 → MITM攻撃</div></div>
+        <div style="font-size:12px;color:#3a3d52;line-height:1.6;">HTTP（非暗号化）通信を傍受しCookieを盗む。公衆Wi-Fi等で特に危険。</div>
+        <div style="background:#eaf7f1;border-radius:5px;padding:8px 10px;font-size:11.5px;color:var(--success);line-height:1.5;"><strong>対策：</strong>HTTPS強制 / Secure属性 / HSTS</div>
+      </div>
+    </div>
+    <div style="background:#fff;border:1px solid var(--line);border-radius:8px;overflow:hidden;display:flex;align-items:stretch;">
+      <div style="background:var(--warn);width:6px;flex-shrink:0;"></div>
+      <div style="padding:12px 16px;flex:1;display:grid;grid-template-columns:160px 1fr 1fr;gap:12px;align-items:center;">
+        <div><div style="font-size:11.5px;font-weight:700;color:var(--warn);">CSRF</div><div style="font-size:10px;color:rgba(30,45,74,.5);margin-top:2px;">Cookie自動送信 → 被害者を操作</div></div>
+        <div style="font-size:12px;color:#3a3d52;line-height:1.6;">被害者のブラウザを使って不正リクエストを送信。CookieがGET/POST時に自動付与されるためサーバが正規と誤認。</div>
+        <div style="background:#eaf7f1;border-radius:5px;padding:8px 10px;font-size:11.5px;color:var(--success);line-height:1.5;"><strong>対策：</strong>CSRFトークン / SameSite=Lax / Referer検証</div>
+      </div>
+    </div>
+    <div style="background:#fff;border:1px solid var(--line);border-radius:8px;overflow:hidden;display:flex;align-items:stretch;">
+      <div style="background:var(--warn);width:6px;flex-shrink:0;"></div>
+      <div style="padding:12px 16px;flex:1;display:grid;grid-template-columns:160px 1fr 1fr;gap:12px;align-items:center;">
+        <div><div style="font-size:11.5px;font-weight:700;color:var(--warn);">セッション固定攻撃</div><div style="font-size:10px;color:rgba(30,45,74,.5);margin-top:2px;">ログイン処理 → 合鍵を仕込む</div></div>
+        <div style="font-size:12px;color:#3a3d52;line-height:1.6;">攻撃者がセットしたIDを被害者に使わせる。ログイン後も同一IDで攻撃者がアクセス可能。</div>
+        <div style="background:#eaf7f1;border-radius:5px;padding:8px 10px;font-size:11.5px;color:var(--success);line-height:1.5;"><strong>対策：</strong>ログイン後にセッションID再発行（必須）</div>
+      </div>
+    </div>
+    <div style="background:#fff;border:1px solid var(--line);border-radius:8px;overflow:hidden;display:flex;align-items:stretch;">
+      <div style="background:var(--accent2);width:6px;flex-shrink:0;"></div>
+      <div style="padding:12px 16px;flex:1;display:grid;grid-template-columns:160px 1fr 1fr;gap:12px;align-items:center;">
+        <div><div style="font-size:11.5px;font-weight:700;color:var(--accent2);">セッションID推測</div><div style="font-size:10px;color:rgba(30,45,74,.5);margin-top:2px;">ID生成ロジック → 総当たり</div></div>
+        <div style="font-size:12px;color:#3a3d52;line-height:1.6;">連番・短い・予測可能なIDを試行する。脆弱なID生成では全IDの試行が現実的になる。</div>
+        <div style="background:#eaf7f1;border-radius:5px;padding:8px 10px;font-size:11.5px;color:var(--success);line-height:1.5;"><strong>対策：</strong>CSPRNG + 128ビット以上 / フレームワーク利用</div>
+      </div>
+    </div>
+    <div style="background:#fff;border:1px solid var(--line);border-radius:8px;overflow:hidden;display:flex;align-items:stretch;">
+      <div style="background:var(--gold);width:6px;flex-shrink:0;"></div>
+      <div style="padding:12px 16px;flex:1;display:grid;grid-template-columns:160px 1fr 1fr;gap:12px;align-items:center;">
+        <div><div style="font-size:11.5px;font-weight:700;color:var(--warn);">URLからの漏洩</div><div style="font-size:10px;color:rgba(30,45,74,.5);margin-top:2px;">URLリライティング → ログ露出</div></div>
+        <div style="font-size:12px;color:#3a3d52;line-height:1.6;">URLリライティング方式でIDがReferer・履歴・プロキシログに記録される。</div>
+        <div style="background:#eaf7f1;border-radius:5px;padding:8px 10px;font-size:11.5px;color:var(--success);line-height:1.5;"><strong>対策：</strong>URLへのID埋め込み禁止 / Cookie方式を使う</div>
+      </div>
+    </div>
+    <div style="background:#fff;border:1px solid var(--line);border-radius:8px;overflow:hidden;display:flex;align-items:stretch;">
+      <div style="background:var(--danger);width:6px;flex-shrink:0;"></div>
+      <div style="padding:12px 16px;flex:1;display:grid;grid-template-columns:160px 1fr 1fr;gap:12px;align-items:center;">
+        <div><div style="font-size:11.5px;font-weight:700;color:var(--danger);">クリックジャッキング</div><div style="font-size:10px;color:rgba(30,45,74,.5);margin-top:2px;">透明iframe → 偽クリック誘導</div></div>
+        <div style="font-size:12px;color:#3a3d52;line-height:1.6;">透明iframeで対象サイトを重ね、被害者が気づかずにクリック操作（送金・設定変更等）を実行させる。</div>
+        <div style="background:#eaf7f1;border-radius:5px;padding:8px 10px;font-size:11.5px;color:var(--success);line-height:1.5;"><strong>対策：</strong>X-Frame-Options: DENY / CSP frame-ancestors</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 10 クロスドメイン ══ -->
+<section class="section" id="s11">
+  <div class="section-header"><span class="s-num">11</span><h2>クロスドメイン（SOP / CORS）</h2></div>
+
+  <div class="seq-wrap" style="padding:20px 24px;">
+    <p class="seq-cap">構成図 — オリジンの判定ルール（基準：https://example.com）</p>
+    <div style="display:flex;flex-direction:column;gap:6px;min-width:400px;">
+      <div style="display:grid;grid-template-columns:240px 80px 1fr;gap:0;border-radius:6px;overflow:hidden;border:1px solid var(--line);">
+        <div style="background:var(--ink2);color:rgba(255,255,255,.5);padding:6px 12px;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;">URL</div>
+        <div style="background:var(--ink2);color:rgba(255,255,255,.5);padding:6px 12px;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;text-align:center;">判定</div>
+        <div style="background:var(--ink2);color:rgba(255,255,255,.5);padding:6px 12px;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;">理由</div>
+      </div>
+      <div style="display:grid;grid-template-columns:240px 80px 1fr;gap:0;border-radius:6px;overflow:hidden;border:1px solid var(--line);">
+        <div style="background:#fff;padding:8px 12px;font-family:var(--mono);font-size:11px;color:var(--ink);">https://example.com/other</div>
+        <div style="background:#eaf7f1;padding:8px 12px;font-size:11px;font-weight:700;color:var(--success);text-align:center;">同一</div>
+        <div style="background:#fff;padding:8px 12px;font-size:11.5px;color:#3a3d52;">パスのみ異なる</div>
+      </div>
+      <div style="display:grid;grid-template-columns:240px 80px 1fr;gap:0;border-radius:6px;overflow:hidden;border:1px solid var(--line);">
+        <div style="background:#fff;padding:8px 12px;font-family:var(--mono);font-size:11px;color:var(--ink);">http://example.com</div>
+        <div style="background:#fdf0f0;padding:8px 12px;font-size:11px;font-weight:700;color:var(--danger);text-align:center;">異なる</div>
+        <div style="background:#fff;padding:8px 12px;font-size:11.5px;color:#3a3d52;">スキームが違う（httpとhttps）</div>
+      </div>
+      <div style="display:grid;grid-template-columns:240px 80px 1fr;gap:0;border-radius:6px;overflow:hidden;border:1px solid var(--line);">
+        <div style="background:#fff;padding:8px 12px;font-family:var(--mono);font-size:11px;color:var(--ink);">https://api.example.com</div>
+        <div style="background:#fdf0f0;padding:8px 12px;font-size:11px;font-weight:700;color:var(--danger);text-align:center;">異なる</div>
+        <div style="background:#fff;padding:8px 12px;font-size:11.5px;color:#3a3d52;">サブドメインが違う</div>
+      </div>
+      <div style="display:grid;grid-template-columns:240px 80px 1fr;gap:0;border-radius:6px;overflow:hidden;border:1px solid var(--line);">
+        <div style="background:#fff;padding:8px 12px;font-family:var(--mono);font-size:11px;color:var(--ink);">https://example.com:8080</div>
+        <div style="background:#fdf0f0;padding:8px 12px;font-size:11px;font-weight:700;color:var(--danger);text-align:center;">異なる</div>
+        <div style="background:#fff;padding:8px 12px;font-size:11.5px;color:#3a3d52;">ポートが違う</div>
+      </div>
+    </div>
+  </div>
+
+  <h3>CORS プリフライトフロー</h3>
+  <div class="seq-wrap">
+    <p class="seq-cap">シーケンス図 — CORSプリフライトリクエスト</p>
+    <div class="actor-row">
+      <div class="actor-box"><div class="actor-inner" style="background:#141824;font-size:11px;">ブラウザ<br><small style="opacity:.6;font-size:9px;">app.example.com</small></div><div class="actor-sub">BROWSER</div></div>
+      <div class="actor-box"><div class="actor-inner" style="background:#155f44;font-size:11px;">APIサーバ<br><small style="opacity:.6;font-size:9px;">api.backend.com</small></div><div class="actor-sub">API SERVER</div></div>
+    </div>
+    <div class="lifeline-zone">
+      <div class="arr-row"><div class="arr-fwd"></div><div class="arr-fwd-r"></div><div class="arr-lbl wn">① OPTIONS（プリフライト）— Origin: https://app.example.com</div></div>
+      <div class="proc-box-r"><div class="proc-tag ok">オリジン確認：許可リストと照合</div></div>
+      <div class="arr-row"><div class="arr-ret"></div><div class="arr-ret-l"></div><div class="arr-lbl ret">② 200 OK + Access-Control-Allow-Origin: https://app.example.com</div></div>
+      <div class="proc-box-l"><div class="proc-tag info">CORS許可を確認 → 本来のリクエストを送信</div></div>
+      <div class="arr-row"><div class="arr-fwd"></div><div class="arr-fwd-r"></div><div class="arr-lbl">③ POST /api/data（本来のリクエスト）</div></div>
+      <div class="arr-row"><div class="arr-ret"></div><div class="arr-ret-l"></div><div class="arr-lbl ret">④ 200 OK + レスポンスデータ</div></div>
+    </div>
+  </div>
+
+  <div class="note danger"><div class="note-i"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7a1818" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg></div><p><strong>Access-Control-Allow-Origin: * の危険性：</strong>認証情報（Cookie・Authorizationヘッダ）を使うAPIで<code style="font-family:var(--mono);font-size:11px;">*</code>を設定すると任意サイトからAPIを呼べます。<code>Allow-Credentials: true</code>との組み合わせはブラウザに拒否されますが、設計ミスで全オリジン許可にならないよう注意が必要です。</p></div>
+</section>
+
+<!-- ══ 11 HTTP認証 ══ -->
+<section class="section" id="s12">
+  <div class="section-header"><span class="s-num red-bg">12</span><h2>Webサーバのセキュリティ対策</h2></div>
+
+
+  <div class="seq-wrap" style="padding:24px 20px;">
+    <p class="seq-cap">図 — 多層防御マップ（城の防衛ライン ↔ セキュリティ技術の対応）</p>
+    <div style="display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap;">
+
+      <!-- LEFT: Castle nested layers -->
+      <div style="flex:0 0 260px;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(30,45,74,.5);margin-bottom:10px;">城の防衛ライン（たとえ）</div>
+        <!-- Layer 4: Network / Outer moat -->
+        <div style="background:#E1F5EE;border:2px solid #1D9E75;border-radius:14px;padding:12px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <div style="width:28px;height:28px;background:#1D9E75;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+            </div>
+            <div>
+              <div style="font-size:11px;font-weight:700;color:#085041;">外堀 — ネットワーク層</div>
+              <div style="font-size:10px;color:#0F6E56;">Firewall / IDS・IPS / DDoS対策</div>
+            </div>
+          </div>
+          <!-- Layer 3: Webserver / Outer wall -->
+          <div style="background:#E6F1FB;border:2px solid #185FA5;border-radius:10px;padding:10px;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+              <div style="width:26px;height:26px;background:#185FA5;border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              </div>
+              <div>
+                <div style="font-size:11px;font-weight:700;color:#0C447C;">城壁 — Webサーバ層</div>
+                <div style="font-size:10px;color:#185FA5;">HTTPS・HSTS / セキュリティヘッダ / WAF</div>
+              </div>
+            </div>
+            <!-- Layer 2: App / Inner keep -->
+            <div style="background:#FAEEDA;border:2px solid #854F0B;border-radius:8px;padding:8px;">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+                <div style="width:24px;height:24px;background:#854F0B;border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="23 21 17 15 23 9"/></svg>
+                </div>
+                <div>
+                  <div style="font-size:11px;font-weight:700;color:#412402;">城門の警備 — アプリ層</div>
+                  <div style="font-size:10px;color:#633806;">認証・認可 / CSRF対策 / Session管理</div>
+                </div>
+              </div>
+              <!-- Layer 1: Data / Vault -->
+              <div style="background:#F1EFE8;border:2px solid #444441;border-radius:6px;padding:8px;display:flex;align-items:center;gap:8px;">
+                <div style="width:22px;height:22px;background:#444441;border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                </div>
+                <div>
+                  <div style="font-size:11px;font-weight:700;color:#2C2C2A;">金庫 — データ層</div>
+                  <div style="font-size:10px;color:#444441;">SQL対策 / 暗号化 / バックアップ</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:8px;font-size:10px;color:rgba(30,45,74,.45);text-align:center;line-height:1.5;">いずれか1層が破られても<br>次の層で止める ＝ 多層防御</div>
+      </div>
+
+      <!-- RIGHT: Header → threat mapping -->
+      <div style="flex:1;min-width:320px;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(30,45,74,.5);margin-bottom:10px;">セキュリティヘッダ → 防ぐ攻撃</div>
+        <div style="display:flex;flex-direction:column;gap:5px;">
+
+          <!-- Header row template: colored left badge + description + threat pill -->
+          <div style="display:flex;align-items:stretch;border-radius:6px;overflow:hidden;border:1px solid #9FE1CB;">
+            <div style="flex:0 0 130px;background:#E1F5EE;padding:7px 10px;display:flex;flex-direction:column;justify-content:center;border-right:2px solid #1D9E75;">
+              <div style="font-family:var(--mono);font-size:10.5px;font-weight:700;color:#085041;">Strict-Transport</div>
+              <div style="font-size:9.5px;color:#0F6E56;">-Security (HSTS)</div>
+            </div>
+            <div style="flex:1;background:white;padding:7px 10px;font-size:11px;color:#3a3d52;display:flex;align-items:center;">ブラウザにHTTPS接続を強制。max-ageで期間を指定。</div>
+            <div style="flex:0 0 120px;background:#E1F5EE;padding:7px 10px;display:flex;align-items:center;justify-content:center;border-left:1px solid #9FE1CB;">
+              <div style="font-size:10px;color:#085041;font-weight:600;text-align:center;line-height:1.4;">通信傍受・<br>ダウングレード防止</div>
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:stretch;border-radius:6px;overflow:hidden;border:1px solid #B5D4F4;">
+            <div style="flex:0 0 130px;background:#E6F1FB;padding:7px 10px;display:flex;flex-direction:column;justify-content:center;border-right:2px solid #185FA5;">
+              <div style="font-family:var(--mono);font-size:10.5px;font-weight:700;color:#0C447C;">Content-Security</div>
+              <div style="font-size:9.5px;color:#185FA5;">-Policy (CSP)</div>
+            </div>
+            <div style="flex:1;background:white;padding:7px 10px;font-size:11px;color:#3a3d52;display:flex;align-items:center;">スクリプト・スタイル等の読み込み元オリジンを制限。</div>
+            <div style="flex:0 0 120px;background:#E6F1FB;padding:7px 10px;display:flex;align-items:center;justify-content:center;border-left:1px solid #B5D4F4;">
+              <div style="font-size:10px;color:#0C447C;font-weight:600;text-align:center;line-height:1.4;">XSS・<br>コンテンツ注入防止</div>
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:stretch;border-radius:6px;overflow:hidden;border:1px solid #FAC775;">
+            <div style="flex:0 0 130px;background:#FAEEDA;padding:7px 10px;display:flex;flex-direction:column;justify-content:center;border-right:2px solid #854F0B;">
+              <div style="font-family:var(--mono);font-size:10.5px;font-weight:700;color:#412402;">X-Frame-Options</div>
+              <div style="font-size:9.5px;color:#633806;">DENY / SAMEORIGIN</div>
+            </div>
+            <div style="flex:1;background:white;padding:7px 10px;font-size:11px;color:#3a3d52;display:flex;align-items:center;">ページのiframe埋め込みを禁止または同一オリジンに限定。</div>
+            <div style="flex:0 0 120px;background:#FAEEDA;padding:7px 10px;display:flex;align-items:center;justify-content:center;border-left:1px solid #FAC775;">
+              <div style="font-size:10px;color:#412402;font-weight:600;text-align:center;line-height:1.4;">クリックジャッキング<br>防止</div>
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:stretch;border-radius:6px;overflow:hidden;border:1px solid #CECBF6;">
+            <div style="flex:0 0 130px;background:#EEEDFE;padding:7px 10px;display:flex;flex-direction:column;justify-content:center;border-right:2px solid #534AB7;">
+              <div style="font-family:var(--mono);font-size:10.5px;font-weight:700;color:#26215C;">X-Content-Type</div>
+              <div style="font-size:9.5px;color:#534AB7;">-Options: nosniff</div>
+            </div>
+            <div style="flex:1;background:white;padding:7px 10px;font-size:11px;color:#3a3d52;display:flex;align-items:center;">ブラウザがContent-Typeを無視してコンテンツを推測することを防ぐ。</div>
+            <div style="flex:0 0 120px;background:#EEEDFE;padding:7px 10px;display:flex;align-items:center;justify-content:center;border-left:1px solid #CECBF6;">
+              <div style="font-size:10px;color:#26215C;font-weight:600;text-align:center;line-height:1.4;">MIMEスニッフィング<br>攻撃防止</div>
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:stretch;border-radius:6px;overflow:hidden;border:1px solid #C0DD97;">
+            <div style="flex:0 0 130px;background:#EAF3DE;padding:7px 10px;display:flex;flex-direction:column;justify-content:center;border-right:2px solid #3B6D11;">
+              <div style="font-family:var(--mono);font-size:10.5px;font-weight:700;color:#173404;">HttpOnly</div>
+              <div style="font-size:9.5px;color:#3B6D11;">Set-Cookie 属性</div>
+            </div>
+            <div style="flex:1;background:white;padding:7px 10px;font-size:11px;color:#3a3d52;display:flex;align-items:center;">JavaScriptからのCookieアクセスを禁止。ブラウザ→サーバ間のみ使用。</div>
+            <div style="flex:0 0 120px;background:#EAF3DE;padding:7px 10px;display:flex;align-items:center;justify-content:center;border-left:1px solid #C0DD97;">
+              <div style="font-size:10px;color:#173404;font-weight:600;text-align:center;line-height:1.4;">XSSによる<br>Cookie盗取防止</div>
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:stretch;border-radius:6px;overflow:hidden;border:1px solid #F5C4B3;">
+            <div style="flex:0 0 130px;background:#FAECE7;padding:7px 10px;display:flex;flex-direction:column;justify-content:center;border-right:2px solid #993C1D;">
+              <div style="font-family:var(--mono);font-size:10.5px;font-weight:700;color:#4A1B0C;">SameSite=Lax</div>
+              <div style="font-size:9.5px;color:#993C1D;">Set-Cookie 属性</div>
+            </div>
+            <div style="flex:1;background:white;padding:7px 10px;font-size:11px;color:#3a3d52;display:flex;align-items:center;">クロスサイトのフォームPOSTやXHRにCookieを付与しない。</div>
+            <div style="flex:0 0 120px;background:#FAECE7;padding:7px 10px;display:flex;align-items:center;justify-content:center;border-left:1px solid #F5C4B3;">
+              <div style="font-size:10px;color:#4A1B0C;font-weight:600;text-align:center;line-height:1.4;">CSRF防止</div>
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:stretch;border-radius:6px;overflow:hidden;border:1px solid #D3D1C7;">
+            <div style="flex:0 0 130px;background:#F1EFE8;padding:7px 10px;display:flex;flex-direction:column;justify-content:center;border-right:2px solid #5F5E5A;">
+              <div style="font-family:var(--mono);font-size:10.5px;font-weight:700;color:#2C2C2A;">Referrer-Policy</div>
+              <div style="font-size:9.5px;color:#5F5E5A;">strict-origin-when-cross-origin</div>
+            </div>
+            <div style="flex:1;background:white;padding:7px 10px;font-size:11px;color:#3a3d52;display:flex;align-items:center;">クロスサイトリクエスト時のRefererヘッダ情報を制限する。</div>
+            <div style="flex:0 0 120px;background:#F1EFE8;padding:7px 10px;display:flex;align-items:center;justify-content:center;border-left:1px solid #D3D1C7;">
+              <div style="font-size:10px;color:#2C2C2A;font-weight:600;text-align:center;line-height:1.4;">URLパラメータの<br>Referer漏洩防止</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── セキュリティヘッダ視覚マップ ── -->
+  <h3>セキュリティヘッダ — 何の攻撃に対して何が守るか</h3>
+  <div style="display:flex;flex-direction:column;gap:8px;margin:16px 0;">
+
+    <div style="background:#fff;border:1px solid var(--line);border-radius:8px;display:flex;align-items:stretch;overflow:hidden;">
+      <div style="width:7px;background:var(--success);flex-shrink:0;"></div>
+      <div style="padding:12px 16px;flex:1;display:grid;grid-template-columns:220px 1fr 1fr;gap:12px;align-items:center;">
+        <div style="font-family:var(--mono);font-size:11.5px;font-weight:700;color:var(--accent);">Strict-Transport-Security</div>
+        <div style="font-size:12px;color:#3a3d52;line-height:1.6;">ブラウザにHTTPS接続を強制させる。max-ageで適用期間を秒単位で指定。</div>
+        <div style="background:#eaf7f1;border-radius:5px;padding:7px 10px;font-size:11.5px;color:var(--success);">防御：<strong>HTTPダウングレード</strong>・通信傍受</div>
+      </div>
+    </div>
+
+    <div style="background:#fff;border:1px solid var(--line);border-radius:8px;display:flex;align-items:stretch;overflow:hidden;">
+      <div style="width:7px;background:var(--accent2);flex-shrink:0;"></div>
+      <div style="padding:12px 16px;flex:1;display:grid;grid-template-columns:220px 1fr 1fr;gap:12px;align-items:center;">
+        <div style="font-family:var(--mono);font-size:11.5px;font-weight:700;color:var(--accent);">Content-Security-Policy</div>
+        <div style="font-size:12px;color:#3a3d52;line-height:1.6;">スクリプト・スタイル・画像等の読み込み元オリジンを制限する。<code style="font-family:var(--mono);font-size:10px;">default-src 'self'</code>が基本。</div>
+        <div style="background:#eaf3ff;border-radius:5px;padding:7px 10px;font-size:11.5px;color:var(--accent2);">防御：<strong>XSS</strong>・コンテンツインジェクション</div>
+      </div>
+    </div>
+
+    <div style="background:#fff;border:1px solid var(--line);border-radius:8px;display:flex;align-items:stretch;overflow:hidden;">
+      <div style="width:7px;background:var(--warn);flex-shrink:0;"></div>
+      <div style="padding:12px 16px;flex:1;display:grid;grid-template-columns:220px 1fr 1fr;gap:12px;align-items:center;">
+        <div style="font-family:var(--mono);font-size:11.5px;font-weight:700;color:var(--accent);">X-Frame-Options</div>
+        <div style="font-size:12px;color:#3a3d52;line-height:1.6;">ページのiframe埋め込みを制御。<code style="font-family:var(--mono);font-size:10px;">DENY</code>または<code style="font-family:var(--mono);font-size:10px;">SAMEORIGIN</code>。</div>
+        <div style="background:#fdf5e6;border-radius:5px;padding:7px 10px;font-size:11.5px;color:var(--warn);">防御：<strong>クリックジャッキング</strong></div>
+      </div>
+    </div>
+
+    <div style="background:#fff;border:1px solid var(--line);border-radius:8px;display:flex;align-items:stretch;overflow:hidden;">
+      <div style="width:7px;background:var(--accent);flex-shrink:0;"></div>
+      <div style="padding:12px 16px;flex:1;display:grid;grid-template-columns:220px 1fr 1fr;gap:12px;align-items:center;">
+        <div style="font-family:var(--mono);font-size:11.5px;font-weight:700;color:var(--accent);">X-Content-Type-Options</div>
+        <div style="font-size:12px;color:#3a3d52;line-height:1.6;"><code style="font-family:var(--mono);font-size:10px;">nosniff</code>を指定。ブラウザがContent-Typeを無視してコンテンツ種別を推測することを防ぐ。</div>
+        <div style="background:#eaf3ff;border-radius:5px;padding:7px 10px;font-size:11.5px;color:var(--accent2);">防御：<strong>MIMEスニッフィング</strong>攻撃</div>
+      </div>
+    </div>
+
+    <div style="background:#fff;border:1px solid var(--line);border-radius:8px;display:flex;align-items:stretch;overflow:hidden;">
+      <div style="width:7px;background:#5a1a9e;flex-shrink:0;"></div>
+      <div style="padding:12px 16px;flex:1;display:grid;grid-template-columns:220px 1fr 1fr;gap:12px;align-items:center;">
+        <div style="font-family:var(--mono);font-size:11.5px;font-weight:700;color:var(--accent);">Referrer-Policy</div>
+        <div style="font-size:12px;color:#3a3d52;line-height:1.6;"><code style="font-family:var(--mono);font-size:10px;">strict-origin-when-cross-origin</code>を推奨。クロスサイトへのURL漏洩を防ぐ。</div>
+        <div style="background:#ede8ff;border-radius:5px;padding:7px 10px;font-size:11.5px;color:#5a1a9e;">防御：<strong>URLパラメータ</strong>のReferer漏洩</div>
+      </div>
+    </div>
+
+  </div>
+
+  <h3>主要な攻撃と対策の対応表</h3>
+  <div style="display:flex;flex-direction:column;gap:8px;margin:16px 0;">
+
+    <div style="background:#fff;border:1.5px solid var(--danger);border-radius:8px;overflow:hidden;">
+      <div style="background:#fdf0f0;border-bottom:1.5px solid var(--danger);padding:10px 16px;display:flex;align-items:center;gap:10px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        <span style="font-size:13px;font-weight:700;color:var(--danger);">XSS — クロスサイトスクリプティング</span>
+        <span style="font-size:10px;color:var(--danger);background:rgba(122,24,24,.1);padding:2px 8px;border-radius:3px;font-family:var(--mono);margin-left:auto;">アプリケーション層を攻撃</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;padding:0;">
+        <div style="padding:12px 16px;border-right:1px solid var(--line);"><div style="font-size:11px;font-weight:700;color:var(--danger);margin-bottom:5px;">攻撃の仕組み</div><div style="font-size:12px;color:#3a3d52;line-height:1.65;">攻撃者が悪意あるスクリプトをWebページに注入し被害者ブラウザで実行させる。Cookieの窃取・フィッシング・偽フォーム表示が可能。</div></div>
+        <div style="padding:12px 16px;background:#eaf7f1;"><div style="font-size:11px;font-weight:700;color:var(--success);margin-bottom:5px;">対策</div><div style="font-size:12px;color:#3a3d52;line-height:1.65;">出力時のHTMLエスケープ / Content-Security-Policy / HttpOnly Cookie / DOMPurify等のサニタイザー</div></div>
+      </div>
+    </div>
+
+    <div style="background:#fff;border:1.5px solid var(--danger);border-radius:8px;overflow:hidden;">
+      <div style="background:#fdf0f0;border-bottom:1.5px solid var(--danger);padding:10px 16px;display:flex;align-items:center;gap:10px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+        <span style="font-size:13px;font-weight:700;color:var(--danger);">SQLインジェクション</span>
+        <span style="font-size:10px;color:var(--danger);background:rgba(122,24,24,.1);padding:2px 8px;border-radius:3px;font-family:var(--mono);margin-left:auto;">データ層を攻撃</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;padding:0;">
+        <div style="padding:12px 16px;border-right:1px solid var(--line);"><div style="font-size:11px;font-weight:700;color:var(--danger);margin-bottom:5px;">攻撃の仕組み</div><div style="font-size:12px;color:#3a3d52;line-height:1.65;">入力値にSQL文を混入させてDBを不正操作する。認証バイパス・情報漏洩・データ改ざん・削除が可能。</div></div>
+        <div style="padding:12px 16px;background:#eaf7f1;"><div style="font-size:11px;font-weight:700;color:var(--success);margin-bottom:5px;">対策</div><div style="font-size:12px;color:#3a3d52;line-height:1.65;">プリペアドステートメント / パラメータ化クエリ / ORM使用 / 入力値バリデーション / 最小権限DBアカウント</div></div>
+      </div>
+    </div>
+
+    <div style="background:#fff;border:1.5px solid var(--warn);border-radius:8px;overflow:hidden;">
+      <div style="background:#fdf5e6;border-bottom:1.5px solid var(--warn);padding:10px 16px;display:flex;align-items:center;gap:10px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--warn)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        <span style="font-size:13px;font-weight:700;color:var(--warn);">ディレクトリトラバーサル</span>
+        <span style="font-size:10px;color:var(--warn);background:rgba(122,64,8,.1);padding:2px 8px;border-radius:3px;font-family:var(--mono);margin-left:auto;">Webサーバ層を攻撃</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;padding:0;">
+        <div style="padding:12px 16px;border-right:1px solid var(--line);"><div style="font-size:11px;font-weight:700;color:var(--warn);margin-bottom:5px;">攻撃の仕組み</div><div style="font-size:12px;color:#3a3d52;line-height:1.65;"><code style="font-family:var(--mono);font-size:11px;">../</code>を使い公開ディレクトリ外のファイルにアクセス。設定ファイル・パスワードファイルの漏洩が可能。</div></div>
+        <div style="padding:12px 16px;background:#eaf7f1;"><div style="font-size:11px;font-weight:700;color:var(--success);margin-bottom:5px;">対策</div><div style="font-size:12px;color:#3a3d52;line-height:1.65;">ファイルパスの正規化 / ホワイトリスト検証 / Webルート外へのアクセス禁止 / 特殊文字の除去</div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <h3>Webサーバ設定の強化チェックリスト</h3>
+  <div class="steps">
+    <div class="step ok"><span class="sn">A</span><div class="sb"><strong>バナー情報の非公開：</strong>Serverヘッダ（<code>Server: Apache/2.4.51</code>等）のバージョン情報を削除。攻撃者への情報提供を減らす。</div></div>
+    <div class="step ok"><span class="sn">B</span><div class="sb"><strong>不要なHTTPメソッドの無効化：</strong>TRACEメソッド（XST攻撃の温床）やDELETE・PUT等の不要なメソッドを無効化する。</div></div>
+    <div class="step ok"><span class="sn">C</span><div class="sb"><strong>ディレクトリリスティングの無効化：</strong>インデックスファイルが存在しないディレクトリの一覧表示を禁止する。</div></div>
+    <div class="step ok"><span class="sn">D</span><div class="sb"><strong>エラーメッセージの適切な制御：</strong>スタックトレース・DB情報・ファイルパスを含む詳細エラーを本番環境で表示しない。詳細はログに記録し、ユーザには汎用エラーページを表示。</div></div>
+    <div class="step ok"><span class="sn">E</span><div class="sb"><strong>レート制限：</strong>ログインページ・APIへの短時間の大量リクエストをレート制限（<code>429 Too Many Requests</code>）。CAPTCHA・アカウントロックアウトも組み合わせる。</div></div>
+    <div class="step ok"><span class="sn">F</span><div class="sb"><strong>WAF（Webアプリケーションファイアウォール）：</strong>SQLi・XSS・パストラバーサル等の攻撃パターンをシグネチャで検知・遮断する。</div></div>
+    <div class="step wn"><span class="sn" style="background:var(--warn)">!</span><div class="sb"><strong>ソフトウェアの定期的な更新：</strong>CVEが公開されたWebサーバ・ミドルウェアはすぐに更新。未パッチの既知脆弱性は攻撃の主要な入口になる。</div></div>
+  </div>
+</section>
+
+<!-- ══ 13 練習問題 ══ -->
+<section class="section" id="s13">
+  <div class="section-header"><span class="s-num gold-bg">13</span><h2>過去問スタイル 練習問題</h2></div>
+  <div class="quiz-wrap">
+
+    <div class="quiz" id="q1">
+      <div class="quiz-q"><span class="quiz-qn">Q1</span><span>セッション固定攻撃（Session Fixation Attack）の対策として、最も適切なものはどれか。</span></div>
+      <div class="quiz-opts">
+        <button class="quiz-opt" onclick="answer('q1','a','c')">ア. セッションIDをHTTPSで送信する。</button>
+        <button class="quiz-opt" onclick="answer('q1','b','c')">イ. セッションIDをCookieではなくURLパラメータで管理する。</button>
+        <button class="quiz-opt" onclick="answer('q1','c','c')">ウ. ログイン成功後にサーバ側でセッションIDを再発行する。</button>
+        <button class="quiz-opt" onclick="answer('q1','d','c')">エ. セッションIDの有効期限を長くする。</button>
+      </div>
+      <div class="quiz-exp" id="q1-exp"><strong>正解：ウ</strong><br>セッション固定攻撃は攻撃者がセットしたIDを被害者に使わせ、ログイン後に同一IDで不正アクセスする攻撃です。<strong>ログイン成功後にセッションIDを必ず再発行（新規ID発行）する</strong>ことで、攻撃者がセットした古いIDは無効になり攻撃が無効化されます。<br>ア：HTTPS化は重要ですが、根本対策ではありません。<br>イ：URLへのID埋め込みは漏洩リスクがあり非推奨。<br>エ：有効期限を長くするのはリスクを高めます。</div>
+    </div>
+
+    <div class="quiz" id="q2">
+      <div class="quiz-q"><span class="quiz-qn">Q2</span><span>CSRFトークンをHiddenフィールドに埋め込む対策について、正しいものはどれか。</span></div>
+      <div class="quiz-opts">
+        <button class="quiz-opt" onclick="answer('q2','a','c')">ア. CSRFトークンをCookieに格納することでHiddenフィールドと同等のCSRF対策効果が得られる。</button>
+        <button class="quiz-opt" onclick="answer('q2','b','c')">イ. Hiddenフィールドの値はHTMLソースには表示されないため、攻撃者には見えない。</button>
+        <button class="quiz-opt" onclick="answer('q2','c','c')">ウ. サーバが生成したランダムなCSRFトークンをHiddenフィールドに埋め込み、POSTリクエスト時にサーバ側で検証することで、攻撃者がトークンを知らずに偽リクエストを送ることを防ぐ。</button>
+        <button class="quiz-opt" onclick="answer('q2','d','c')">エ. URLリライティング方式でセッションを管理している場合、CSRFトークンは不要である。</button>
+      </div>
+      <div class="quiz-exp" id="q2-exp"><strong>正解：ウ</strong><br>CSRFトークン（同期トークンパターン）は、フォーム生成時にサーバがランダム値を生成してHiddenフィールドとセッションに紐付ける仕組みです。攻撃者は正規ページを読めないためトークンを入手できず、不一致でリクエストが拒否されます。<br>ア：Cookieに入れると自動送信されるためCSRF防止の効果がなくなります。<br>イ：Hiddenフィールドはブラウザには表示されませんが、HTMLソースを見れば値が分かります。<br>エ：URLリライティングでもCSRF攻撃は成立します。</div>
+    </div>
+
+    <div class="quiz" id="q3">
+      <div class="quiz-q"><span class="quiz-qn">Q3</span><span>Cookie の SameSite=Lax 属性の動作として、正しいものはどれか。</span></div>
+      <div class="quiz-opts">
+        <button class="quiz-opt" onclick="answer('q3','a','b')">ア. すべてのクロスサイトリクエストでCookieを送信しない（Strictと同一）。</button>
+        <button class="quiz-opt" onclick="answer('q3','b','b')">イ. 同一サイトからのリクエストおよびトップレベルナビゲーション（GETのリンク遷移）ではCookieを送信するが、クロスサイトのフォームPOSTやXHRでは送信しない。</button>
+        <button class="quiz-opt" onclick="answer('q3','c','b')">ウ. Secure属性なしにクロスサイトでのCookie送信を許可する。</button>
+        <button class="quiz-opt" onclick="answer('q3','d','b')">エ. HttpOnly属性と同様にJavaScriptからのCookieアクセスを禁止する。</button>
+      </div>
+      <div class="quiz-exp" id="q3-exp"><strong>正解：イ</strong><br>SameSite=Laxは「緩やかな同一サイト制限」です。外部サイトのリンクをクリックした通常のGET遷移ではCookieを送信しますが、クロスサイトのフォームPOST・XHR・iframeリクエストではCookieを送信しません。CSRF攻撃（多くはPOSTリクエスト）を防ぎながら、通常のユーザ体験（外部リンクからのアクセス）を維持します。<br>ア：SameSite=Strictは外部リンクからの遷移でもCookieを送らないため、より厳格です。<br>ウ：SameSite=Noneの説明（Secure属性必須）。<br>エ：JavaScriptアクセスの禁止はHttpOnly属性の役割です。</div>
+    </div>
+
+    <div class="quiz" id="q4">
+      <div class="quiz-q"><span class="quiz-qn">Q4</span><span>同一オリジンポリシー（SOP）とCORSの関係として、正しいものはどれか。</span></div>
+      <div class="quiz-opts">
+        <button class="quiz-opt" onclick="answer('q4','a','b')">ア. SOPはサーバのレスポンスヘッダで設定し、CORSはブラウザのデフォルト動作として機能する。</button>
+        <button class="quiz-opt" onclick="answer('q4','b','b')">イ. SOPはブラウザのデフォルトセキュリティ制約であり、CORSはサーバのレスポンスヘッダによってその制約を管理された形で緩和する仕組みである。</button>
+        <button class="quiz-opt" onclick="answer('q4','c','b')">ウ. SOPによってフォームからのPOSTリクエストもクロスオリジンでは禁止される。これがCSRFが成立しない理由である。</button>
+        <button class="quiz-opt" onclick="answer('q4','d','b')">エ. Access-Control-Allow-Origin: * を設定すると認証情報（Cookie）を含むクロスオリジンリクエストも無制限に許可される。</button>
+      </div>
+      <div class="quiz-exp" id="q4-exp"><strong>正解：イ</strong><br>SOPはブラウザに実装されたデフォルトのセキュリティ制約（クロスオリジンのXHR等を禁止）です。CORSはサーバがAccess-Control-Allow-Originなどのレスポンスヘッダを返すことで、SOPを管理された形で緩和する仕組みです。<br>ア：SOPとCORSの説明が逆です。<br>ウ：SOPはXHR/Fetchを制限しますが、HTMLフォームからのPOSTはSOPの対象外です。これがCSRFが成立する理由の一つです。<br>エ：<code>*</code>とCredentials=trueの組み合わせはブラウザが拒否します。</div>
+    </div>
+
+    <div class="quiz" id="q5">
+      <div class="quiz-q"><span class="quiz-qn">Q5</span><span>X-Frame-Options: DENY を設定する主な目的として、正しいものはどれか。</span></div>
+      <div class="quiz-opts">
+        <button class="quiz-opt" onclick="answer('q5','a','c')">ア. XSSによるJavaScript実行を防ぐため。</button>
+        <button class="quiz-opt" onclick="answer('q5','b','c')">イ. HTTPからHTTPSへの自動リダイレクトを実現するため。</button>
+        <button class="quiz-opt" onclick="answer('q5','c','c')">ウ. iframeへのページ埋め込みを禁止してクリックジャッキング攻撃を防ぐため。</button>
+        <button class="quiz-opt" onclick="answer('q5','d','c')">エ. SQLインジェクション攻撃を防ぐため。</button>
+      </div>
+      <div class="quiz-exp" id="q5-exp"><strong>正解：ウ</strong><br>クリックジャッキング攻撃は透明なiframeで対象サイトを重ね、被害者に気づかれずにクリックさせる攻撃です。<code>X-Frame-Options: DENY</code>はどのサイトもこのページをiframeで表示できないようにし、クリックジャッキングを防ぎます。現代的には<code>Content-Security-Policy: frame-ancestors 'none'</code>も同様の効果があります。<br>ア：XSS対策はCSP・出力エスケープ・HttpOnly Cookieが担います。<br>イ：HTTPS強制・リダイレクトはHSTS（Strict-Transport-Security）が担います。<br>エ：SQLi対策はプリペアドステートメント等が担います。</div>
+    </div>
+
+    <div class="quiz" id="q6">
+      <div class="quiz-q"><span class="quiz-qn">Q6</span><span>セッションIDの管理に関して、最も不適切なものはどれか。</span></div>
+      <div class="quiz-opts">
+        <button class="quiz-opt" onclick="answer('q6','a','b')">ア. セッションIDは暗号論的に安全な乱数生成器（CSPRNG）を使用して128ビット以上で生成する。</button>
+        <button class="quiz-opt" onclick="answer('q6','b','b')">イ. URLパラメータでセッションIDを管理することは、Cookieが無効な環境への対応として推奨される手法である。</button>
+        <button class="quiz-opt" onclick="answer('q6','c','b')">ウ. セッションCookieにはHttpOnly・Secure・SameSite=Laxを設定する。</button>
+        <button class="quiz-opt" onclick="answer('q6','d','b')">エ. ログアウト時はサーバ側のセッションデータも即座に削除する。</button>
+      </div>
+      <div class="quiz-exp" id="q6-exp"><strong>正解：イ（最も不適切）</strong><br>URLパラメータにセッションIDを含める方式（URLリライティング）は、アドレスバー表示・ブラウザ履歴への記録・Refererヘッダによる漏洩・プロキシやサーバのアクセスログへの記録など多くの経路でIDが漏洩します。<strong>Cookieが無効な環境への対応であっても推奨されない手法</strong>です。<br>ア・ウ・エはいずれも正しいセッション管理の実践です。</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══ 14 用語まとめ ══ -->
+<section class="section" id="s14">
+  <div class="section-header"><span class="s-num">14</span><h2>重要用語まとめ</h2></div>
+  <table class="term-table">
+    <tr><td>HTTP</td><td>HyperText Transfer Protocol。Webの通信プロトコル。アプリケーション層（OSI第7層）。ステートレス。</td></tr>
+    <tr><td>HTTPS</td><td>HTTPをTLSで暗号化したプロトコル。ポート443。サーバ証明書による認証も実施。</td></tr>
+    <tr><td>CRLF</td><td>Carriage Return + Line Feed（\r\n）。HTTPメッセージの行末区切り。空行でヘッダとボディを区切る。</td></tr>
+    <tr><td>冪等性（Idempotent）</td><td>同じ操作を複数回実行しても結果が変わらない性質。GET・PUT・DELETE=冪等。POST=非冪等。</td></tr>
+    <tr><td>セッション</td><td>HTTPのステートレス性を補うためにサーバ側で維持するユーザの状態情報。セッションIDで識別。</td></tr>
+    <tr><td>Cookie</td><td>サーバがSet-Cookieヘッダでクライアントに渡す小データ。以降のリクエストでCookieヘッダとして自動送信。</td></tr>
+    <tr><td>Hiddenフィールド</td><td>&lt;input type="hidden"&gt;によるフォーム内の非表示フィールド。セッション管理・CSRFトークン格納に使用。HTMLソースには露出。</td></tr>
+    <tr><td>URLリライティング</td><td>URLパラメータにセッションIDを付与する方式。Referer・履歴・ログへの漏洩リスクがあり現代では非推奨。</td></tr>
+    <tr><td>HttpOnly</td><td>JavaScriptからのCookieアクセスを禁止するCookie属性。XSSによるCookie窃取を防ぐ。</td></tr>
+    <tr><td>Secure（Cookie属性）</td><td>HTTPS接続時のみCookieを送信するCookie属性。通信経路での盗聴を防ぐ。</td></tr>
+    <tr><td>SameSite</td><td>クロスサイトリクエストでのCookie送信を制御するCookie属性。Strict/Lax/None。CSRF対策。</td></tr>
+    <tr><td>CSRF</td><td>Cross-Site Request Forgery。被害者のブラウザを利用して不正リクエストを送信させる攻撃。CSRFトークン・SameSiteで対策。</td></tr>
+    <tr><td>XSS</td><td>Cross-Site Scripting。悪意あるスクリプトをWebページに注入し被害者ブラウザで実行させる攻撃。HttpOnly・CSP・エスケープで対策。</td></tr>
+    <tr><td>セッション固定攻撃</td><td>攻撃者がセットしたセッションIDを被害者に使用させる攻撃。ログイン後のセッションID再発行で対策。</td></tr>
+    <tr><td>CSRFトークン</td><td>CSRF対策のためフォームに埋め込むランダム値。サーバ側で生成・検証し、攻撃者は入手不可。</td></tr>
+    <tr><td>SOP（同一オリジンポリシー）</td><td>ブラウザのデフォルトセキュリティ制約。スキーム・ホスト・ポートがすべて一致しないクロスオリジンアクセスを制限。</td></tr>
+    <tr><td>CORS</td><td>Cross-Origin Resource Sharing。サーバのレスポンスヘッダでSOPを管理された形で緩和する仕組み。</td></tr>
+    <tr><td>HSTS</td><td>HTTP Strict Transport Security。Strict-Transport-SecurityヘッダでブラウザにHTTPS強制を指示。</td></tr>
+    <tr><td>CSP</td><td>Content Security Policy。Content-Security-PolicyヘッダでXSSを軽減するリソース制限ポリシー。</td></tr>
+    <tr><td>X-Frame-Options</td><td>ページのiframe埋め込みを制御するレスポンスヘッダ。クリックジャッキング対策。DENY/SAMEORIGIN。</td></tr>
+    <tr><td>WAF</td><td>Web Application Firewall。SQLi・XSS・パストラバーサル等の攻撃パターンをシグネチャで検知・遮断。</td></tr>
+    <tr><td>クリックジャッキング</td><td>透明なiframeで対象サイトを重ね、被害者に気づかれずにクリック操作を実行させる攻撃。X-Frame-Optionsで対策。</td></tr>
+  </table>
+
+  <div class="keypoint" style="margin-top:28px">
+    <p class="kp-label">試験対策 8つの鉄則</p>
+    <p>
+      1. <strong>401 vs 403</strong> — 401は「未認証」、403は「認可失敗（権限なし）」<br>
+      2. <strong>Cookie3属性</strong> — HttpOnly（XSS）＋Secure（盗聴）＋SameSite=Lax以上（CSRF）<br>
+      3. <strong>セッション固定の対策</strong> — ログイン後にセッションIDを必ず再発行する<br>
+      4. <strong>CSRFトークン = Hiddenフィールド活用</strong> — サーバ生成ランダム値をフォームに埋め込みサーバ側で検証<br>
+      5. <strong>URLへのセッションID埋め込みは禁止</strong> — Referer・履歴・ログへの漏洩リスク<br>
+      6. <strong>SOPはフォームPOSTを制限しない</strong> — これがCSRFが成立する根拠<br>
+      7. <strong>XSSの根本対策は出力エスケープ</strong> — HttpOnlyはCookie窃取防止にすぎない<br>
+      8. <strong>セキュリティヘッダの役割対応</strong> — HSTS=HTTPS強制 / CSP=XSS軽減 / X-Frame-Options=クリックジャッキング対策
+    </p>
+  </div>
+</section>
+
+</main>
+</div>
+
+<footer>
+</footer>
+
+<script>
+  function setActive(el){document.querySelectorAll('.sidebar nav a').forEach(a=>a.classList.remove('active'));el.classList.add('active')}
+  function answer(qid,selected,correct){
+    const quiz=document.getElementById(qid);
+    const opts=quiz.querySelectorAll('.quiz-opt');
+    const exp=document.getElementById(qid+'-exp');
+    const letters=['a','b','c','d'];
+    opts.forEach((btn,i)=>{btn.disabled=true;const l=letters[i];if(l===correct)btn.classList.add('correct');else if(l===selected)btn.classList.add('wrong');else btn.classList.add('reveal')});
+    exp.classList.add('show');
+    exp.scrollIntoView({behavior:'smooth',block:'nearest'});
+  }
+  const sections=document.querySelectorAll('section.section');
+  const navLinks=document.querySelectorAll('.sidebar nav a');
+  window.addEventListener('scroll',()=>{
+    let current='';
+    sections.forEach(sec=>{if(window.scrollY>=sec.offsetTop-80)current=sec.id});
+    navLinks.forEach(link=>{link.classList.toggle('active',link.getAttribute('href')==='#'+current)});
+  },{passive:true});
+</script>
+</body>
+</html>

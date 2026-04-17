@@ -538,41 +538,47 @@
       <h3>PKIが解決する問題</h3>
       <div class="card-grid">
         <div class="icard">
-          <div class="icard-icon">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-              <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17" stroke-width="2.5"/>
-            </svg>
-          </div>
+          <div class="icard-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7a1818" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+  <line x1="2" y1="2" x2="22" y2="22"/>
+</svg></div>
           <div class="icard-label">課題：なりすまし</div>
           <div class="icard-val">「この公開鍵は本当に銀行のもの？」という問いに答えられない。悪意ある第三者が偽の公開鍵を配布できる。</div>
         </div>
         <div class="icard">
-          <div class="icard-icon">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-              <polyline points="9 12 11 14 15 10"/>
-            </svg>
-          </div>
+          <div class="icard-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#155f44" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+  <polyline points="9 12 11 14 15 10"/>
+</svg></div>
           <div class="icard-label">解決：デジタル証明書</div>
           <div class="icard-val">信頼された第三者機関（CA）が「この公開鍵は確かに○○のもの」と電子的に証明する文書を発行。</div>
         </div>
         <div class="icard">
-          <div class="icard-icon">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 0 1 2 2v7"/><line x1="6" y1="9" x2="6" y2="21"/>
-            </svg>
-          </div>
+          <div class="icard-icon"><svg width="44" height="44" viewBox="0 0 52 52">
+  <circle cx="26" cy="10" r="7" fill="#e8f3fd" stroke="#0b4a82" stroke-width="1.8"/>
+  <line x1="26" y1="17" x2="16" y2="25" stroke="#0b4a82" stroke-width="1.5"/>
+  <line x1="26" y1="17" x2="36" y2="25" stroke="#0b4a82" stroke-width="1.5"/>
+  <circle cx="16" cy="30" r="6" fill="#d0f0e0" stroke="#155f44" stroke-width="1.5"/>
+  <circle cx="36" cy="30" r="6" fill="#d0f0e0" stroke="#155f44" stroke-width="1.5"/>
+  <line x1="13" y1="36" x2="8"  y2="44" stroke="#155f44" stroke-width="1.2"/>
+  <line x1="19" y1="36" x2="24" y2="44" stroke="#155f44" stroke-width="1.2"/>
+  <circle cx="8"  cy="46" r="4" fill="#fdf5e6" stroke="#b5821e" stroke-width="1.2"/>
+  <circle cx="24" cy="46" r="4" fill="#fdf5e6" stroke="#b5821e" stroke-width="1.2"/>
+</svg></div>
           <div class="icard-label">仕組み：信頼の連鎖</div>
           <div class="icard-val">ルートCAを起点に中間CAを経由して末端証明書まで署名の連鎖で信頼を伝播する「チェーンオブトラスト」。</div>
         </div>
         <div class="icard">
-          <div class="icard-icon">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-              <line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/>
-            </svg>
-          </div>
+          <div class="icard-icon"><svg width="44" height="44" viewBox="0 0 52 52">
+  <rect x="8" y="4" width="28" height="36" rx="4" fill="#fdf0f0" stroke="#7a1818" stroke-width="1.8"/>
+  <rect x="8" y="4" width="28" height="12" rx="4" fill="#7a1818" opacity="0.7"/>
+  <rect x="8" y="4" width="28" height="6" fill="#7a1818" opacity="0.7"/>
+  <line x1="14" y1="22" x2="30" y2="22" stroke="#7a1818" stroke-width="1.2"/>
+  <line x1="14" y1="28" x2="26" y2="28" stroke="#7a1818" stroke-width="1.2"/>
+  <circle cx="38" cy="38" r="10" fill="#7a1818"/>
+  <line x1="33" y1="33" x2="43" y2="43" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="43" y1="33" x2="33" y2="43" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+</svg></div>
           <div class="icard-label">運用：失効管理</div>
           <div class="icard-val">秘密鍵の漏洩・組織変更時に証明書を失効させる仕組み（CRL・OCSP）。発行した証明書を取り消せる。</div>
         </div>
@@ -873,10 +879,7 @@
       <div class="threat-grid">
         <div class="threat-card">
           <div class="tc-head">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-              <polyline points="9 12 11 14 15 10"/>
-            </svg>
+            <svg width="22" height="22" viewBox="0 0 52 52"><polygon points="26,3 46,14 46,34 26,45 6,34 6,14" fill="rgba(255,255,255,.15)" stroke="white" stroke-width="2"/><polygon points="26,10 39,18 39,30 26,38 13,30 13,18" fill="none" stroke="white" stroke-width="1.2" opacity="0.7"/><rect x="20" y="22" width="12" height="9" rx="2" fill="none" stroke="white" stroke-width="1.5"/><path d="M23 22V19a3 3 0 0 1 6 0v3" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round"/><circle cx="26" cy="26" r="2" fill="white"/></svg>
             <span>CA（認証局）Certification Authority</span>
           </div>
           <div class="tc-body">
@@ -886,12 +889,7 @@
         </div>
         <div class="threat-card">
           <div class="tc-head">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-              <circle cx="9" cy="7" r="4"/>
-              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-            </svg>
+            <svg width="22" height="22" viewBox="0 0 52 52"><rect x="6" y="12" width="40" height="30" rx="6" fill="rgba(255,255,255,.15)" stroke="white" stroke-width="2"/><circle cx="20" cy="26" r="7" fill="none" stroke="white" stroke-width="1.8"/><path d="M9 42q0-10 11-10q11 0 11 10" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round"/><circle cx="36" cy="20" r="8" fill="white" opacity="0.9"/><path d="M32 20l2.5 2.5 5.5-5.5" fill="none" stroke="#155f44" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             <span>RA（登録局）Registration Authority</span>
           </div>
           <div class="tc-body">
@@ -901,10 +899,7 @@
         </div>
         <div class="threat-card">
           <div class="tc-head warn-head">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="2" y="3" width="20" height="14" rx="2"/>
-              <line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
-            </svg>
+            <svg width="22" height="22" viewBox="0 0 52 52"><rect x="6" y="6" width="28" height="34" rx="4" fill="rgba(255,255,255,.15)" stroke="white" stroke-width="1.8"/><line x1="12" y1="16" x2="28" y2="16" stroke="white" stroke-width="1.2"/><line x1="12" y1="22" x2="24" y2="22" stroke="white" stroke-width="1.2"/><line x1="12" y1="28" x2="26" y2="28" stroke="white" stroke-width="1.2"/><rect x="6" y="38" width="28" height="6" rx="1" fill="white" opacity="0.6"/><rect x="26" y="26" width="20" height="20" rx="10" fill="white" opacity="0.9"/><rect x="30" y="33" width="12" height="2.5" rx="1" fill="#7a4208"/><rect x="34.75" y="28" width="2.5" height="12" rx="1" fill="#7a4208"/></svg>
             <span>IA（発行局）Issuing Authority</span>
           </div>
           <div class="tc-body">
@@ -914,10 +909,7 @@
         </div>
         <div class="threat-card">
           <div class="tc-head warn-head">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-              <polyline points="22,6 12,13 2,6"/>
-            </svg>
+            <svg width="22" height="22" viewBox="0 0 52 52"><circle cx="26" cy="26" r="22" fill="rgba(255,255,255,.1)" stroke="white" stroke-width="2"/><circle cx="26" cy="26" r="15" fill="none" stroke="white" stroke-width="1.2" opacity="0.5"/><circle cx="26" cy="26" r="8" fill="none" stroke="white" stroke-width="1.2" opacity="0.7"/><circle cx="26" cy="26" r="3" fill="white"/><line x1="26" y1="4" x2="26" y2="10" stroke="white" stroke-width="1.5" stroke-linecap="round"/><line x1="26" y1="42" x2="26" y2="48" stroke="white" stroke-width="1.5" stroke-linecap="round"/><line x1="4" y1="26" x2="10" y2="26" stroke="white" stroke-width="1.5" stroke-linecap="round"/><line x1="42" y1="26" x2="48" y2="26" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
             <span>OCSP レスポンダ（失効確認サービス）</span>
           </div>
           <div class="tc-body">
@@ -1025,15 +1017,7 @@
             <div class="pki-node" style="background:#141824; color:white; border:2px solid #1570b8; width:260px;">
               <div style="display:flex; align-items:center; gap:10px;">
                 <!-- 王冠アイコン -->
-                <svg width="36" height="36" viewBox="0 0 36 36" style="flex-shrink:0;">
-                  <circle cx="18" cy="18" r="16" fill="#1570b8" opacity="0.2"/>
-                  <!-- crown -->
-                  <path d="M8 24 L8 16 L12 20 L18 12 L24 20 L28 16 L28 24 Z"
-                        fill="none" stroke="#6ab4f5" stroke-width="1.8"
-                        stroke-linejoin="round" stroke-linecap="round"/>
-                  <rect x="8" y="24" width="20" height="4" rx="1"
-                        fill="#6ab4f5" opacity="0.8"/>
-                </svg>
+<svg width="36" height="36" viewBox="0 0 44 44" style="flex-shrink:0;"><rect x="8" y="26" width="28" height="16" rx="3" fill="#141824" stroke="#1570b8" stroke-width="1.8"/><path d="M10 27V20L14 23L18 16L22 19L26 14L30 19L34 23L38 20V27Z" fill="#1570b8" opacity=".8" stroke="#1570b8" stroke-width="0.5" stroke-linejoin="round"/><rect x="18" y="33" width="8" height="9" rx="1" fill="#6ab4f5" opacity=".6"/></svg>
                 <div>
                   <div class="pki-node-title">ルートCA</div>
                   <div class="pki-node-sub">自己署名 / 信頼チェーン起点</div>
@@ -1063,15 +1047,7 @@
             <div class="pki-node" style="background:#1e2d4a; color:white; border:2px solid #1570b8; width:340px;">
               <div style="display:flex; align-items:center; gap:10px;">
                 <!-- 二重盾アイコン -->
-                <svg width="36" height="36" viewBox="0 0 36 36" style="flex-shrink:0;">
-                  <circle cx="18" cy="18" r="16" fill="#1570b8" opacity="0.15"/>
-                  <path d="M6 10 L18 6 L30 10 L30 20 Q30 28 18 32 Q6 28 6 20 Z"
-                        fill="none" stroke="#6ab4f5" stroke-width="1.5" opacity="0.6"/>
-                  <path d="M10 12 L18 9 L26 12 L26 20 Q26 26 18 29 Q10 26 10 20 Z"
-                        fill="none" stroke="#6ab4f5" stroke-width="1.5" opacity="0.9"/>
-                  <path d="M14 18 L17 21 L23 15" fill="none" stroke="#6ab4f5"
-                        stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
+<svg width="36" height="36" viewBox="0 0 44 44" style="flex-shrink:0;"><path d="M6 12L22 6L38 12L38 26Q38 38 22 42Q6 38 6 26Z" fill="#1e2d4a" stroke="#1570b8" stroke-width="1.8"/><path d="M11 14L22 10L33 14L33 25Q33 34 22 38Q11 34 11 25Z" fill="none" stroke="#6ab4f5" stroke-width="1.4" opacity=".7"/><path d="M16 24L19 27L28 18" fill="none" stroke="#6ab4f5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 <div>
                   <div class="pki-node-title">中間CA（SubCA）</div>
                   <div class="pki-node-sub">ルートCAから証明書を受領 / エンド証明書の発行</div>
@@ -1116,14 +1092,7 @@
               <div style="display:flex; align-items:center; gap:8px;">
                 <!-- レーダー波紋 -->
                 <svg width="34" height="34" viewBox="0 0 34 34" style="flex-shrink:0;">
-                  <circle cx="17" cy="17" r="15" fill="#c8aaee" opacity="0.1"/>
-                  <circle cx="17" cy="17" r="11" fill="none" stroke="#c8aaee" stroke-width="1" opacity="0.4"/>
-                  <circle cx="17" cy="17" r="7"  fill="none" stroke="#c8aaee" stroke-width="1.2" opacity="0.6"/>
-                  <circle cx="17" cy="17" r="3.5" fill="#c8aaee" opacity="0.9"/>
-                  <line x1="17" y1="2"  x2="17" y2="6"  stroke="#c8aaee" stroke-width="1.2" stroke-linecap="round" opacity="0.5"/>
-                  <line x1="17" y1="28" x2="17" y2="32" stroke="#c8aaee" stroke-width="1.2" stroke-linecap="round" opacity="0.5"/>
-                  <line x1="2"  y1="17" x2="6"  y2="17" stroke="#c8aaee" stroke-width="1.2" stroke-linecap="round" opacity="0.5"/>
-                  <line x1="28" y1="17" x2="32" y2="17" stroke="#c8aaee" stroke-width="1.2" stroke-linecap="round" opacity="0.5"/>
+<circle cx="22" cy="22" r="18" fill="#f5eeff" stroke="#5a1a6e" stroke-width="0.8" opacity=".35"/><circle cx="22" cy="22" r="11" fill="none" stroke="#5a1a6e" stroke-width="1.2" opacity=".6"/><circle cx="22" cy="22" r="5" fill="#5a1a6e" opacity=".8"/><line x1="22" y1="4" x2="22" y2="11" stroke="#5a1a6e" stroke-width="1.5" stroke-linecap="round" opacity=".6"/><line x1="22" y1="33" x2="22" y2="40" stroke="#5a1a6e" stroke-width="1.5" stroke-linecap="round" opacity=".6"/><line x1="4" y1="22" x2="11" y2="22" stroke="#5a1a6e" stroke-width="1.5" stroke-linecap="round" opacity=".6"/><line x1="33" y1="22" x2="40" y2="22" stroke="#5a1a6e" stroke-width="1.5" stroke-linecap="round" opacity=".6"/>
                 </svg>
                 <div>
                   <div class="pki-node-title" style="font-size:11.5px;">OCSPレスポンダ</div>
@@ -1145,13 +1114,15 @@
             <div class="pki-node" style="background:#3a3200; color:white; border:2px solid #c8981e; width:148px; flex-shrink:0;">
               <div style="display:flex; align-items:center; gap:8px;">
                 <!-- スタンプアイコン -->
-                <svg width="34" height="34" viewBox="0 0 34 34" style="flex-shrink:0;">
-                  <circle cx="17" cy="17" r="15" fill="#c8981e" opacity="0.15"/>
-                  <rect x="8"  y="8"  width="14" height="12" rx="2" fill="none" stroke="#f0c060" stroke-width="1.3"/>
-                  <line x1="11" y1="13" x2="19" y2="13" stroke="#f0c060" stroke-width="1"/>
-                  <line x1="11" y1="16" x2="17" y2="16" stroke="#f0c060" stroke-width="1"/>
-                  <rect x="6"  y="22" width="18" height="5" rx="1.5" fill="#f0c060" opacity="0.85"/>
-                  <rect x="11" y="27" width="8"  height="4" rx="1"   fill="#f0c060" opacity="0.6"/>
+                <svg width="34" height="34" viewBox="0 0 52 52" style="flex-shrink:0;">
+                  <rect x="6" y="6" width="28" height="34" rx="4" fill="rgba(181,130,30,.15)" stroke="#b5821e" stroke-width="1.8"/>
+                  <line x1="12" y1="16" x2="28" y2="16" stroke="#b5821e" stroke-width="1.2"/>
+                  <line x1="12" y1="22" x2="24" y2="22" stroke="#b5821e" stroke-width="1.2"/>
+                  <line x1="12" y1="28" x2="26" y2="28" stroke="#b5821e" stroke-width="1.2"/>
+                  <rect x="6" y="38" width="28" height="6" rx="1" fill="#b5821e" opacity="0.7"/>
+                  <circle cx="38" cy="32" r="10" fill="#b5821e"/>
+                  <rect x="32" y="30" width="12" height="2.5" rx="1" fill="white"/>
+                  <rect x="35.75" y="25" width="2.5" height="12" rx="1" fill="white"/>
                 </svg>
                 <div>
                   <div class="pki-node-title" style="font-size:11.5px;">IA（発行局）</div>
@@ -1173,15 +1144,12 @@
             <div class="pki-node" style="background:#155f44; color:white; border:2px solid #60c090; width:148px; flex-shrink:0;">
               <div style="display:flex; align-items:center; gap:8px;">
                 <!-- 人物＋チェック -->
-                <svg width="34" height="34" viewBox="0 0 34 34" style="flex-shrink:0;">
-                  <circle cx="17" cy="17" r="15" fill="#60c090" opacity="0.15"/>
-                  <circle cx="14" cy="12" r="5"  fill="none" stroke="#9de8c0" stroke-width="1.4"/>
-                  <path d="M5 28 Q5 20 14 20 Q23 20 23 28"
-                        fill="none" stroke="#9de8c0" stroke-width="1.4" stroke-linecap="round"/>
-                  <circle cx="25" cy="12" r="6"  fill="#9de8c0" opacity="0.9"/>
-                  <path d="M21.5 12 L24 14.5 L29 9"
-                        fill="none" stroke="#155f44" stroke-width="1.8"
-                        stroke-linecap="round" stroke-linejoin="round"/>
+                <svg width="34" height="34" viewBox="0 0 52 52" style="flex-shrink:0;">
+                  <rect x="6" y="12" width="40" height="30" rx="6" fill="rgba(21,95,68,.15)" stroke="#155f44" stroke-width="1.8"/>
+                  <circle cx="20" cy="26" r="7" fill="none" stroke="#155f44" stroke-width="1.8"/>
+                  <path d="M9 42q0-10 11-10q11 0 11 10" fill="none" stroke="#155f44" stroke-width="1.8" stroke-linecap="round"/>
+                  <circle cx="36" cy="20" r="8" fill="#155f44"/>
+                  <path d="M32 20l2.5 2.5 5.5-5.5" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
                 <div>
                   <div class="pki-node-title" style="font-size:11.5px;">RA（登録局）</div>
@@ -1301,35 +1269,35 @@
         <p style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;border-bottom:1px solid var(--line);padding-bottom:8px;">シルエットの形 = 所有者・役割 ／ 暖色 = 秘密鍵 ／ 寒色 = 公開鍵</p>
         <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px 18px;">
           <div style="display:flex;align-items:center;gap:10px;">
-            <svg width="44" height="44" viewBox="0 0 44 44"><rect x="8" y="20" width="28" height="20" rx="4" fill="#fdf0dc" stroke="#b5821e" stroke-width="1.8"/><path d="M15 20V14a7 7 0 0 1 14 0v6" fill="none" stroke="#b5821e" stroke-width="1.8" stroke-linecap="round"/><circle cx="22" cy="28" r="4" fill="#b5821e"/><line x1="22" y1="32" x2="22" y2="36" stroke="#b5821e" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <svg width="44" height="44" viewBox="0 0 44 44"><rect x="11" y="22" width="22" height="18" rx="4" fill="#fdf0dc" stroke="#b5821e" stroke-width="1.8"/><path d="M14 22V16a8 8 0 0 1 16 0v6" fill="none" stroke="#b5821e" stroke-width="1.8" stroke-linecap="round"/><circle cx="22" cy="29" r="4" fill="#b5821e"/><rect x="20" y="33" width="4" height="5" rx="1" fill="#b5821e"/></svg>
             <div><div style="font-size:12px;font-weight:700;color:#7a4208;">申請者の秘密鍵</div><div style="font-size:11px;color:#5a3200;">南京錠・閉（暖色）/ 端末内のみ</div></div>
           </div>
           <div style="display:flex;align-items:center;gap:10px;">
-            <svg width="44" height="44" viewBox="0 0 44 44"><rect x="8" y="20" width="28" height="20" rx="4" fill="#e8f3fd" stroke="#1570b8" stroke-width="1.8"/><path d="M15 20V14a7 7 0 0 1 14 0" fill="none" stroke="#1570b8" stroke-width="1.8" stroke-linecap="round"/><line x1="29" y1="14" x2="36" y2="14" stroke="#1570b8" stroke-width="1.8" stroke-linecap="round"/><circle cx="22" cy="28" r="4" fill="#1570b8"/><line x1="22" y1="32" x2="22" y2="36" stroke="#1570b8" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <svg width="44" height="44" viewBox="0 0 44 44"><rect x="11" y="22" width="22" height="18" rx="4" fill="#e8f3fd" stroke="#1570b8" stroke-width="1.8"/><path d="M14 22V16a8 8 0 0 1 16 0" fill="none" stroke="#1570b8" stroke-width="1.8" stroke-linecap="round"/><line x1="30" y1="16" x2="38" y2="16" stroke="#1570b8" stroke-width="1.8" stroke-linecap="round"/><circle cx="22" cy="29" r="4" fill="#1570b8"/><rect x="20" y="33" width="4" height="5" rx="1" fill="#1570b8"/></svg>
             <div><div style="font-size:12px;font-weight:700;color:#0b4a82;">申請者の公開鍵</div><div style="font-size:11px;color:#1a3a5c;">南京錠・開（寒色）/ 配布可</div></div>
           </div>
           <div style="display:flex;align-items:center;gap:10px;">
-            <svg width="44" height="44" viewBox="0 0 44 44"><polygon points="22,2 40,12 40,32 22,42 4,32 4,12" fill="#fdf0f0" stroke="#7a1818" stroke-width="1.8"/><polygon points="22,9 34,16 34,28 22,35 10,28 10,16" fill="none" stroke="#7a1818" stroke-width="1" opacity="0.4"/><text x="22" y="24" text-anchor="middle" font-family="monospace" font-size="7" fill="#7a1818" font-weight="700">CA</text><text x="22" y="33" text-anchor="middle" font-family="monospace" font-size="6" fill="#7a1818">秘密鍵</text></svg>
+            <svg width="44" height="44" viewBox="0 0 52 52"><polygon points="26,3 46,14 46,34 26,45 6,34 6,14" fill="#fdf0f0" stroke="#7a1818" stroke-width="2"/><polygon points="26,10 39,18 39,30 26,38 13,30 13,18" fill="none" stroke="#7a1818" stroke-width="1.2" opacity="0.5"/><rect x="20" y="22" width="12" height="9" rx="2" fill="none" stroke="#7a1818" stroke-width="1.5"/><path d="M23 22V19a3 3 0 0 1 6 0v3" fill="none" stroke="#7a1818" stroke-width="1.5" stroke-linecap="round"/><circle cx="26" cy="26" r="2" fill="#7a1818"/></svg>
             <div><div style="font-size:12px;font-weight:700;color:#7a1818;">CAの秘密鍵</div><div style="font-size:11px;color:#5a0000;">六角盾（暖色）/ HSM内のみ</div></div>
           </div>
           <div style="display:flex;align-items:center;gap:10px;">
-            <svg width="44" height="44" viewBox="0 0 44 44"><polygon points="22,2 40,12 40,32 22,42 4,32 4,12" fill="#eaf7f1" stroke="#155f44" stroke-width="1.8"/><polygon points="22,9 34,16 34,28 22,35 10,28 10,16" fill="none" stroke="#155f44" stroke-width="1" opacity="0.4"/><text x="22" y="24" text-anchor="middle" font-family="monospace" font-size="7" fill="#155f44" font-weight="700">CA</text><text x="22" y="33" text-anchor="middle" font-family="monospace" font-size="6" fill="#155f44">公開鍵</text></svg>
+            <svg width="44" height="44" viewBox="0 0 52 52"><polygon points="26,3 46,14 46,34 26,45 6,34 6,14" fill="#eaf7f1" stroke="#155f44" stroke-width="2"/><polygon points="26,10 39,18 39,30 26,38 13,30 13,18" fill="none" stroke="#155f44" stroke-width="1.2" opacity="0.5"/><circle cx="26" cy="27" r="7" fill="none" stroke="#155f44" stroke-width="1.5"/><path d="M22 27l3 3 6-6" fill="none" stroke="#155f44" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
             <div><div style="font-size:12px;font-weight:700;color:#155f44;">CAの公開鍵</div><div style="font-size:11px;color:#0d3d28;">六角盾（寒色）/ トラストストア</div></div>
           </div>
           <div style="display:flex;align-items:center;gap:10px;">
-            <svg width="44" height="44" viewBox="0 0 44 44"><rect x="4" y="4" width="36" height="36" rx="6" fill="#f5eeff" stroke="#5a1a6e" stroke-width="1.5"/><path d="M27 10L33 16L19 30L11 32L13 24Z" fill="#5a1a6e" opacity="0.2" stroke="#5a1a6e" stroke-width="1.2" stroke-linejoin="round"/><line x1="25" y1="12" x2="31" y2="18" stroke="#5a1a6e" stroke-width="1.2"/><path d="M10 38Q14 32 18 36Q22 40 26 34Q30 28 34 32" fill="none" stroke="#5a1a6e" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <svg width="44" height="44" viewBox="0 0 44 44"><rect x="4" y="4" width="36" height="36" rx="6" fill="#f5eeff" stroke="#5a1a6e" stroke-width="1.8"/><path d="M28 10L34 16L20 30L12 32L14 24Z" fill="#5a1a6e" opacity="0.25" stroke="#5a1a6e" stroke-width="1.4" stroke-linejoin="round"/><line x1="26" y1="12" x2="32" y2="18" stroke="#5a1a6e" stroke-width="1.4"/><path d="M10 38Q14 32 18 36Q22 40 26 34Q30 28 34 32" fill="none" stroke="#5a1a6e" stroke-width="2" stroke-linecap="round"/></svg>
             <div><div style="font-size:12px;font-weight:700;color:#5a1a6e;">デジタル署名</div><div style="font-size:11px;color:#3a006e;">ペン＋波形 / 秘密鍵で生成</div></div>
           </div>
           <div style="display:flex;align-items:center;gap:10px;">
-            <svg width="44" height="44" viewBox="0 0 44 44"><rect x="4" y="3" width="26" height="32" rx="4" fill="#d8eaff" stroke="#0b4a82" stroke-width="1.5"/><rect x="4" y="3" width="26" height="10" rx="4" fill="#0b4a82"/><rect x="4" y="9" width="26" height="4" fill="#0b4a82"/><line x1="9" y1="20" x2="26" y2="20" stroke="#0b4a82" stroke-width="1.2"/><line x1="9" y1="26" x2="22" y2="26" stroke="#0b4a82" stroke-width="1.2"/><circle cx="34" cy="34" r="8" fill="#0b4a82" stroke="white" stroke-width="2"/><path d="M29 34L32.5 37.5L40 30" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <svg width="44" height="44" viewBox="0 0 44 44"><rect x="5" y="3" width="26" height="32" rx="4" fill="#d8eaff" stroke="#0b4a82" stroke-width="1.8"/><rect x="5" y="3" width="26" height="10" rx="4" fill="#0b4a82"/><rect x="5" y="9" width="26" height="4" fill="#0b4a82"/><line x1="10" y1="20" x2="27" y2="20" stroke="#0b4a82" stroke-width="1.2"/><line x1="10" y1="26" x2="22" y2="26" stroke="#0b4a82" stroke-width="1.2"/><circle cx="34" cy="36" r="7" fill="#0b4a82" stroke="white" stroke-width="1.8"/><path d="M30 36L33 39L39 33" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
             <div><div style="font-size:12px;font-weight:700;color:#0b4a82;">デジタル証明書</div><div style="font-size:11px;color:#1a3a5c;">文書＋認証メダル / 公開鍵＋CA署名</div></div>
           </div>
           <div style="display:flex;align-items:center;gap:10px;">
-            <svg width="44" height="44" viewBox="0 0 44 44"><rect x="4" y="14" width="36" height="26" rx="4" fill="#fdf5e6" stroke="#b5821e" stroke-width="1.5"/><path d="M4 19L22 29L40 19" fill="none" stroke="#b5821e" stroke-width="1.5" stroke-linejoin="round"/><polygon points="16,9 22,1 28,9" fill="#b5821e"/></svg>
+            <svg width="44" height="44" viewBox="0 0 44 44"><rect x="5" y="16" width="34" height="24" rx="4" fill="#fdf5e6" stroke="#b5821e" stroke-width="1.8"/><path d="M5 21L22 31L39 21" fill="none" stroke="#b5821e" stroke-width="1.6" stroke-linejoin="round"/><polygon points="16,12 22,4 28,12" fill="#b5821e"/><line x1="22" y1="4" x2="22" y2="16" stroke="#b5821e" stroke-width="1.8" stroke-linecap="round"/></svg>
             <div><div style="font-size:12px;font-weight:700;color:#7a4208;">CSR</div><div style="font-size:11px;color:#5a3200;">封筒＋上矢印 / CAへの申請書</div></div>
           </div>
           <div style="display:flex;align-items:center;gap:10px;">
-            <svg width="44" height="44" viewBox="0 0 44 44"><rect x="6" y="5" width="32" height="34" rx="4" fill="#e4eaf5" stroke="#1e2d4a" stroke-width="1.5"/><rect x="6" y="5" width="32" height="12" rx="4" fill="#1e2d4a"/><rect x="6" y="13" width="32" height="4" fill="#1e2d4a"/><rect x="10" y="23" width="14" height="7" rx="2" fill="none" stroke="#1e2d4a" stroke-width="1"/><circle cx="32" cy="27" r="4" fill="none" stroke="#1e2d4a" stroke-width="1.2"/><circle cx="32" cy="27" r="1.5" fill="#1e2d4a"/><text x="22" y="12" text-anchor="middle" font-family="monospace" font-size="6.5" fill="white" font-weight="700">HSM</text></svg>
+            <svg width="44" height="44" viewBox="0 0 44 44"><rect x="6" y="5" width="32" height="34" rx="4" fill="#e4eaf5" stroke="#1e2d4a" stroke-width="1.8"/><rect x="6" y="5" width="32" height="12" rx="4" fill="#1e2d4a"/><rect x="6" y="13" width="32" height="4" fill="#1e2d4a"/><rect x="10" y="23" width="13" height="7" rx="2" fill="none" stroke="#1e2d4a" stroke-width="1.2"/><circle cx="30" cy="26" r="4" fill="none" stroke="#1e2d4a" stroke-width="1.2"/><circle cx="30" cy="26" r="1.5" fill="#1e2d4a"/><rect x="10" y="33" width="24" height="4" rx="2" fill="#1e2d4a" opacity=".2" stroke="#1e2d4a" stroke-width="0.8"/></svg>
             <div><div style="font-size:12px;font-weight:700;color:#1e2d4a;">HSM</div><div style="font-size:11px;color:#3a3d52;">サーバラック / CA秘密鍵の保管庫</div></div>
           </div>
         </div>
@@ -1357,11 +1325,11 @@
                 <div style="font-size:10px;font-weight:700;color:#0b4a82;letter-spacing:.1em;margin-bottom:10px;">① 鍵ペア生成</div>
                 <div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:8px;">
                   <div>
-                    <svg width="44" height="44" viewBox="0 0 44 44"><rect x="8" y="20" width="28" height="20" rx="4" fill="#fdf0dc" stroke="#b5821e" stroke-width="1.8"/><path d="M15 20V14a7 7 0 0 1 14 0v6" fill="none" stroke="#b5821e" stroke-width="1.8" stroke-linecap="round"/><circle cx="22" cy="28" r="4" fill="#b5821e"/><line x1="22" y1="32" x2="22" y2="36" stroke="#b5821e" stroke-width="1.8" stroke-linecap="round"/></svg>
+                    <svg width="44" height="44" viewBox="0 0 44 44"><rect x="11" y="22" width="22" height="18" rx="4" fill="#fdf0dc" stroke="#b5821e" stroke-width="1.8"/><path d="M14 22V16a8 8 0 0 1 16 0v6" fill="none" stroke="#b5821e" stroke-width="1.8" stroke-linecap="round"/><circle cx="22" cy="29" r="4" fill="#b5821e"/><rect x="20" y="33" width="4" height="5" rx="1" fill="#b5821e"/></svg>
                     <div style="font-size:9px;color:#7a4208;text-align:center;margin-top:2px;">秘密鍵</div>
                   </div>
                   <div>
-                    <svg width="44" height="44" viewBox="0 0 44 44"><rect x="8" y="20" width="28" height="20" rx="4" fill="#e8f3fd" stroke="#1570b8" stroke-width="1.8"/><path d="M15 20V14a7 7 0 0 1 14 0" fill="none" stroke="#1570b8" stroke-width="1.8" stroke-linecap="round"/><line x1="29" y1="14" x2="36" y2="14" stroke="#1570b8" stroke-width="1.8" stroke-linecap="round"/><circle cx="22" cy="28" r="4" fill="#1570b8"/><line x1="22" y1="32" x2="22" y2="36" stroke="#1570b8" stroke-width="1.8" stroke-linecap="round"/></svg>
+                    <svg width="44" height="44" viewBox="0 0 44 44"><rect x="11" y="22" width="22" height="18" rx="4" fill="#e8f3fd" stroke="#1570b8" stroke-width="1.8"/><path d="M14 22V16a8 8 0 0 1 16 0" fill="none" stroke="#1570b8" stroke-width="1.8" stroke-linecap="round"/><line x1="30" y1="16" x2="38" y2="16" stroke="#1570b8" stroke-width="1.8" stroke-linecap="round"/><circle cx="22" cy="29" r="4" fill="#1570b8"/><rect x="20" y="33" width="4" height="5" rx="1" fill="#1570b8"/></svg>
                     <div style="font-size:9px;color:#0b4a82;text-align:center;margin-top:2px;">公開鍵</div>
                   </div>
                 </div>
@@ -1374,7 +1342,7 @@
                   <div style="font-size:8.5px;font-weight:700;color:#1e2d4a;font-family:monospace;text-align:center;margin-bottom:6px;">HSM</div>
                   <div style="display:flex;justify-content:center;">
                     <div>
-                      <svg width="40" height="40" viewBox="0 0 44 44"><polygon points="22,2 40,12 40,32 22,42 4,32 4,12" fill="#fdf0f0" stroke="#7a1818" stroke-width="1.8"/><polygon points="22,9 34,16 34,28 22,35 10,28 10,16" fill="none" stroke="#7a1818" stroke-width="1" opacity="0.4"/><text x="22" y="24" text-anchor="middle" font-family="monospace" font-size="7" fill="#7a1818" font-weight="700">CA</text><text x="22" y="33" text-anchor="middle" font-family="monospace" font-size="6" fill="#7a1818">秘密鍵</text></svg>
+                      <svg width="40" height="40" viewBox="0 0 44 44"><rect x="11" y="22" width="22" height="18" rx="4" fill="#fdf0f0" stroke="#7a1818" stroke-width="1.8"/><path d="M14 22V16a8 8 0 0 1 16 0v6" fill="none" stroke="#7a1818" stroke-width="1.8" stroke-linecap="round"/><circle cx="22" cy="29" r="4" fill="#7a1818"/><rect x="20" y="33" width="4" height="5" rx="1" fill="#7a1818"/><path d="M6 10L6 4L10 7L14 2L18 7L22 4L22 10Z" fill="#7a1818" stroke="#7a1818" stroke-width="0.5" stroke-linejoin="round"/><rect x="5" y="10" width="18" height="3" rx="1" fill="#7a1818"/></svg>
                       <div style="font-size:8px;color:#7a1818;text-align:center;">CA秘密鍵</div>
                     </div>
                   </div>
@@ -1387,7 +1355,7 @@
                   <div style="font-size:8.5px;font-weight:700;color:#1e2d4a;font-family:monospace;text-align:center;margin-bottom:6px;">トラストストア</div>
                   <div style="display:flex;justify-content:center;">
                     <div>
-                      <svg width="40" height="40" viewBox="0 0 44 44"><polygon points="22,2 40,12 40,32 22,42 4,32 4,12" fill="#eaf7f1" stroke="#155f44" stroke-width="1.8"/><polygon points="22,9 34,16 34,28 22,35 10,28 10,16" fill="none" stroke="#155f44" stroke-width="1" opacity="0.4"/><text x="22" y="24" text-anchor="middle" font-family="monospace" font-size="7" fill="#155f44" font-weight="700">CA</text><text x="22" y="33" text-anchor="middle" font-family="monospace" font-size="6" fill="#155f44">公開鍵</text></svg>
+                      <svg width="40" height="40" viewBox="0 0 44 44"><rect x="11" y="22" width="22" height="18" rx="4" fill="#eaf7f1" stroke="#155f44" stroke-width="1.8"/><path d="M14 22V16a8 8 0 0 1 16 0" fill="none" stroke="#155f44" stroke-width="1.8" stroke-linecap="round"/><line x1="30" y1="16" x2="38" y2="16" stroke="#155f44" stroke-width="1.8" stroke-linecap="round"/><circle cx="22" cy="29" r="4" fill="#155f44"/><rect x="20" y="33" width="4" height="5" rx="1" fill="#155f44"/><path d="M6 10L6 4L10 7L14 2L18 7L22 4L22 10Z" fill="#155f44" stroke="#155f44" stroke-width="0.5" stroke-linejoin="round"/><rect x="5" y="10" width="18" height="3" rx="1" fill="#155f44"/></svg>
                       <div style="font-size:8px;color:#155f44;text-align:center;">CA公開鍵</div>
                     </div>
                   </div>
@@ -1410,17 +1378,17 @@
                 <!-- CSRボックス -->
                 <div style="background:#fdf5e6;border:1.5px solid #b5821e;border-radius:6px;padding:10px;">
                   <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">
-                    <svg width="28" height="28" viewBox="0 0 44 44"><rect x="4" y="14" width="36" height="26" rx="4" fill="#fdf5e6" stroke="#b5821e" stroke-width="1.5"/><path d="M4 19L22 29L40 19" fill="none" stroke="#b5821e" stroke-width="1.5" stroke-linejoin="round"/><polygon points="16,9 22,1 28,9" fill="#b5821e"/></svg>
+                    <svg width="28" height="28" viewBox="0 0 44 44"><rect x="5" y="16" width="34" height="24" rx="4" fill="#fdf5e6" stroke="#b5821e" stroke-width="1.8"/><path d="M5 21L22 31L39 21" fill="none" stroke="#b5821e" stroke-width="1.6" stroke-linejoin="round"/><polygon points="16,12 22,4 28,12" fill="#b5821e"/><line x1="22" y1="4" x2="22" y2="16" stroke="#b5821e" stroke-width="1.8" stroke-linecap="round"/></svg>
                     <span style="font-size:10px;font-weight:700;color:#7a4208;">CSR（PKCS#10）</span>
                   </div>
                   <div style="font-size:9px;color:#5a3200;line-height:1.7;">
                     <div style="display:flex;align-items:center;gap:4px;">
-                      <svg width="13" height="13" viewBox="0 0 44 44"><rect x="8" y="20" width="28" height="20" rx="4" fill="#e8f3fd" stroke="#1570b8" stroke-width="1.8"/><path d="M15 20V14a7 7 0 0 1 14 0" fill="none" stroke="#1570b8" stroke-width="1.8" stroke-linecap="round"/><line x1="29" y1="14" x2="36" y2="14" stroke="#1570b8" stroke-width="1.8" stroke-linecap="round"/><circle cx="22" cy="28" r="4" fill="#1570b8"/></svg>
+                      <svg width="13" height="13" viewBox="0 0 44 44"><rect x="11" y="22" width="22" height="18" rx="4" fill="#e8f3fd" stroke="#1570b8" stroke-width="1.8"/><path d="M14 22V16a8 8 0 0 1 16 0" fill="none" stroke="#1570b8" stroke-width="1.8" stroke-linecap="round"/><line x1="30" y1="16" x2="38" y2="16" stroke="#1570b8" stroke-width="1.8" stroke-linecap="round"/><circle cx="22" cy="29" r="4" fill="#1570b8"/><rect x="20" y="33" width="4" height="5" rx="1" fill="#1570b8"/></svg>
                       公開鍵
                     </div>
                     <div>Subject DN（識別名）</div>
                     <div style="display:flex;align-items:center;gap:4px;">
-                      <svg width="13" height="13" viewBox="0 0 44 44"><rect x="4" y="4" width="36" height="36" rx="6" fill="#f5eeff" stroke="#5a1a6e" stroke-width="1.5"/><path d="M27 10L33 16L19 30L11 32L13 24Z" fill="#5a1a6e" opacity="0.2" stroke="#5a1a6e" stroke-width="1.2" stroke-linejoin="round"/><path d="M10 38Q14 32 18 36Q22 40 26 34" fill="none" stroke="#5a1a6e" stroke-width="1.8" stroke-linecap="round"/></svg>
+                      <svg width="13" height="13" viewBox="0 0 44 44"><rect x="4" y="4" width="36" height="36" rx="6" fill="#f5eeff" stroke="#5a1a6e" stroke-width="1.8"/><path d="M28 10L34 16L20 30L12 32L14 24Z" fill="#5a1a6e" opacity="0.25" stroke="#5a1a6e" stroke-width="1.4" stroke-linejoin="round"/><line x1="26" y1="12" x2="32" y2="18" stroke="#5a1a6e" stroke-width="1.4"/><path d="M10 38Q14 32 18 36Q22 40 26 34Q30 28 34 32" fill="none" stroke="#5a1a6e" stroke-width="2" stroke-linecap="round"/></svg>
                       自己署名（秘密鍵で生成）
                     </div>
                     <div style="color:#b5821e;font-size:8.5px;margin-top:4px;">※秘密鍵は含まれない</div>
@@ -1439,7 +1407,7 @@
                 <div style="font-size:9.5px;color:#155f44;font-weight:700;">③ CSR を RA に送付 ――――――――――――→</div>
               </div>
               <div style="background:#f1f8f4;border-right:1px solid #e4eaf5;padding:10px 8px;display:flex;align-items:center;justify-content:center;">
-                <svg width="28" height="28" viewBox="0 0 44 44"><rect x="4" y="14" width="36" height="26" rx="4" fill="#fdf5e6" stroke="#b5821e" stroke-width="1.5"/><path d="M4 19L22 29L40 19" fill="none" stroke="#b5821e" stroke-width="1.5" stroke-linejoin="round"/><polygon points="16,9 22,1 28,9" fill="#b5821e"/></svg>
+                <svg width="28" height="28" viewBox="0 0 44 44"><rect x="5" y="16" width="34" height="24" rx="4" fill="#fdf5e6" stroke="#b5821e" stroke-width="1.8"/><path d="M5 21L22 31L39 21" fill="none" stroke="#b5821e" stroke-width="1.6" stroke-linejoin="round"/><polygon points="16,12 22,4 28,12" fill="#b5821e"/><line x1="22" y1="4" x2="22" y2="16" stroke="#b5821e" stroke-width="1.8" stroke-linecap="round"/></svg>
               </div>
               <div style="background:#f3f7fd;border-right:1px solid #e4eaf5;padding:10px 8px;"></div>
               <div style="background:#fdfaf4;padding:10px 8px;"></div>
@@ -1453,11 +1421,11 @@
                 <div style="font-size:9px;color:#0d3d28;line-height:1.8;">
                   <div>本人確認（DV/OV/EV）</div>
                   <div style="display:flex;align-items:center;gap:4px;">
-                    <svg width="12" height="12" viewBox="0 0 44 44"><rect x="8" y="20" width="28" height="20" rx="4" fill="#e8f3fd" stroke="#1570b8" stroke-width="1.8"/><path d="M15 20V14a7 7 0 0 1 14 0" fill="none" stroke="#1570b8" stroke-width="1.8" stroke-linecap="round"/><line x1="29" y1="14" x2="36" y2="14" stroke="#1570b8" stroke-width="1.8" stroke-linecap="round"/><circle cx="22" cy="28" r="4" fill="#1570b8"/></svg>
+                    <svg width="12" height="12" viewBox="0 0 44 44"><rect x="11" y="22" width="22" height="18" rx="4" fill="#e8f3fd" stroke="#1570b8" stroke-width="1.8"/><path d="M14 22V16a8 8 0 0 1 16 0" fill="none" stroke="#1570b8" stroke-width="1.8" stroke-linecap="round"/><line x1="30" y1="16" x2="38" y2="16" stroke="#1570b8" stroke-width="1.8" stroke-linecap="round"/><circle cx="22" cy="29" r="4" fill="#1570b8"/><rect x="20" y="33" width="4" height="5" rx="1" fill="#1570b8"/></svg>
                     公開鍵・DNを確認
                   </div>
                   <div style="display:flex;align-items:center;gap:4px;">
-                    <svg width="12" height="12" viewBox="0 0 44 44"><rect x="4" y="4" width="36" height="36" rx="6" fill="#f5eeff" stroke="#5a1a6e" stroke-width="1.5"/><path d="M10 38Q14 32 18 36Q22 40 26 34" fill="none" stroke="#5a1a6e" stroke-width="1.8" stroke-linecap="round"/></svg>
+                    <svg width="12" height="12" viewBox="0 0 44 44"><rect x="4" y="4" width="36" height="36" rx="6" fill="#f5eeff" stroke="#5a1a6e" stroke-width="1.8"/><path d="M28 10L34 16L20 30L12 32L14 24Z" fill="#5a1a6e" opacity="0.25" stroke="#5a1a6e" stroke-width="1.4" stroke-linejoin="round"/><line x1="26" y1="12" x2="32" y2="18" stroke="#5a1a6e" stroke-width="1.4"/><path d="M10 38Q14 32 18 36Q22 40 26 34Q30 28 34 32" fill="none" stroke="#5a1a6e" stroke-width="2" stroke-linecap="round"/></svg>
                     CSR自己署名を検証
                   </div>
                   <div style="color:#155f44;font-weight:700;margin-top:6px;">→ 発行承認</div>
@@ -1474,7 +1442,7 @@
                 <div style="font-size:9.5px;color:#0b4a82;font-weight:700;">⑤ CSR転送（承認済）――→</div>
               </div>
               <div style="background:#f3f7fd;border-right:1px solid #e4eaf5;padding:10px 8px;display:flex;align-items:center;">
-                <svg width="28" height="28" viewBox="0 0 44 44"><rect x="4" y="14" width="36" height="26" rx="4" fill="#fdf5e6" stroke="#b5821e" stroke-width="1.5"/><path d="M4 19L22 29L40 19" fill="none" stroke="#b5821e" stroke-width="1.5" stroke-linejoin="round"/><polygon points="16,9 22,1 28,9" fill="#b5821e"/></svg>
+                <svg width="28" height="28" viewBox="0 0 44 44"><rect x="5" y="16" width="34" height="24" rx="4" fill="#fdf5e6" stroke="#b5821e" stroke-width="1.8"/><path d="M5 21L22 31L39 21" fill="none" stroke="#b5821e" stroke-width="1.6" stroke-linejoin="round"/><polygon points="16,12 22,4 28,12" fill="#b5821e"/><line x1="22" y1="4" x2="22" y2="16" stroke="#b5821e" stroke-width="1.8" stroke-linecap="round"/></svg>
               </div>
               <div style="background:#fdfaf4;padding:10px 8px;"></div>
             </div>
@@ -1489,12 +1457,12 @@
                   <div style="font-size:9px;font-weight:700;text-align:center;color:white;background:#0b4a82;margin:-10px -10px 8px;border-radius:4px 4px 0 0;padding:5px;">デジタル証明書（X.509）</div>
                   <div style="font-size:9px;color:#5a3200;line-height:1.8;">
                     <div style="display:flex;align-items:center;gap:4px;">
-                      <svg width="12" height="12" viewBox="0 0 44 44"><rect x="8" y="20" width="28" height="20" rx="4" fill="#e8f3fd" stroke="#1570b8" stroke-width="1.8"/><path d="M15 20V14a7 7 0 0 1 14 0" fill="none" stroke="#1570b8" stroke-width="1.8" stroke-linecap="round"/><line x1="29" y1="14" x2="36" y2="14" stroke="#1570b8" stroke-width="1.8" stroke-linecap="round"/><circle cx="22" cy="28" r="4" fill="#1570b8"/></svg>
+                      <svg width="12" height="12" viewBox="0 0 44 44"><rect x="11" y="22" width="22" height="18" rx="4" fill="#e8f3fd" stroke="#1570b8" stroke-width="1.8"/><path d="M14 22V16a8 8 0 0 1 16 0" fill="none" stroke="#1570b8" stroke-width="1.8" stroke-linecap="round"/><line x1="30" y1="16" x2="38" y2="16" stroke="#1570b8" stroke-width="1.8" stroke-linecap="round"/><circle cx="22" cy="29" r="4" fill="#1570b8"/><rect x="20" y="33" width="4" height="5" rx="1" fill="#1570b8"/></svg>
                       <span style="color:#0b4a82;">申請者の公開鍵</span>
                     </div>
                     <div>Subject DN, Validity, SAN...</div>
                     <div style="display:flex;align-items:center;gap:4px;">
-                      <svg width="12" height="12" viewBox="0 0 44 44"><rect x="4" y="4" width="36" height="36" rx="6" fill="#f5eeff" stroke="#5a1a6e" stroke-width="1.5"/><path d="M10 38Q14 32 18 36Q22 40 26 34" fill="none" stroke="#5a1a6e" stroke-width="1.8" stroke-linecap="round"/></svg>
+                      <svg width="12" height="12" viewBox="0 0 44 44"><rect x="4" y="4" width="36" height="36" rx="6" fill="#f5eeff" stroke="#5a1a6e" stroke-width="1.8"/><path d="M28 10L34 16L20 30L12 32L14 24Z" fill="#5a1a6e" opacity="0.25" stroke="#5a1a6e" stroke-width="1.4" stroke-linejoin="round"/><line x1="26" y1="12" x2="32" y2="18" stroke="#5a1a6e" stroke-width="1.4"/><path d="M10 38Q14 32 18 36Q22 40 26 34Q30 28 34 32" fill="none" stroke="#5a1a6e" stroke-width="2" stroke-linecap="round"/></svg>
                       <span style="color:#5a1a6e;">CAのデジタル署名</span>
                     </div>
                   </div>
@@ -1511,7 +1479,7 @@
               </div>
               <div style="background:#f1f8f4;border-right:1px solid #e4eaf5;padding:10px 8px;"></div>
               <div style="background:#f3f7fd;border-right:1px solid #e4eaf5;padding:10px 8px;display:flex;align-items:center;">
-                <svg width="28" height="28" viewBox="0 0 44 44"><rect x="4" y="3" width="26" height="32" rx="4" fill="#d8eaff" stroke="#0b4a82" stroke-width="1.5"/><rect x="4" y="3" width="26" height="10" rx="4" fill="#0b4a82"/><rect x="4" y="9" width="26" height="4" fill="#0b4a82"/><line x1="9" y1="20" x2="26" y2="20" stroke="#0b4a82" stroke-width="1.2"/><circle cx="34" cy="34" r="8" fill="#0b4a82" stroke="white" stroke-width="2"/><path d="M29 34L32.5 37.5L40 30" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <svg width="28" height="28" viewBox="0 0 44 44"><rect x="5" y="3" width="26" height="32" rx="4" fill="#d8eaff" stroke="#0b4a82" stroke-width="1.8"/><rect x="5" y="3" width="26" height="10" rx="4" fill="#0b4a82"/><rect x="5" y="9" width="26" height="4" fill="#0b4a82"/><line x1="10" y1="20" x2="27" y2="20" stroke="#0b4a82" stroke-width="1.2"/><line x1="10" y1="26" x2="22" y2="26" stroke="#0b4a82" stroke-width="1.2"/><circle cx="34" cy="36" r="7" fill="#0b4a82" stroke="white" stroke-width="1.8"/><path d="M30 36L33 39L39 33" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </div>
               <div style="background:#fdfaf4;padding:10px 8px;"></div>
             </div>
@@ -1525,7 +1493,7 @@
                     <div style="display:flex;align-items:center;gap:4px;"><svg width="12" height="12" viewBox="0 0 44 44"><rect x="8" y="20" width="28" height="20" rx="4" fill="#fdf0dc" stroke="#b5821e" stroke-width="1.8"/><path d="M15 20V14a7 7 0 0 1 14 0v6" fill="none" stroke="#b5821e" stroke-width="1.8" stroke-linecap="round"/><circle cx="22" cy="28" r="4" fill="#b5821e"/></svg>秘密鍵 保管中</div>
                   </div>
                   <div style="background:#d8eaff;border:1px solid #0b4a82;border-radius:4px;padding:5px 6px;font-size:9px;color:#0b4a82;">
-                    <div style="display:flex;align-items:center;gap:4px;"><svg width="12" height="12" viewBox="0 0 44 44"><rect x="4" y="3" width="26" height="32" rx="4" fill="#d8eaff" stroke="#0b4a82" stroke-width="1.5"/><rect x="4" y="3" width="26" height="10" rx="4" fill="#0b4a82"/><circle cx="34" cy="34" r="8" fill="#0b4a82" stroke="white" stroke-width="2"/><path d="M29 34L32.5 37.5L40 30" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>証明書 受領</div>
+                    <div style="display:flex;align-items:center;gap:4px;"><svg width="12" height="12" viewBox="0 0 44 44"><rect x="5" y="3" width="26" height="32" rx="4" fill="#d8eaff" stroke="#0b4a82" stroke-width="1.8"/><rect x="5" y="3" width="26" height="10" rx="4" fill="#0b4a82"/><rect x="5" y="9" width="26" height="4" fill="#0b4a82"/><line x1="10" y1="20" x2="27" y2="20" stroke="#0b4a82" stroke-width="1.2"/><line x1="10" y1="26" x2="22" y2="26" stroke="#0b4a82" stroke-width="1.2"/><circle cx="34" cy="36" r="7" fill="#0b4a82" stroke="white" stroke-width="1.8"/><path d="M30 36L33 39L39 33" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>証明書 受領</div>
                   </div>
                 </div>
               </div>
@@ -1542,7 +1510,7 @@
               <div style="background:#f1f8f4;border-right:1px solid #e4eaf5;padding:10px 8px;"></div>
               <div style="background:#f3f7fd;border-right:1px solid #e4eaf5;padding:10px 8px;"></div>
               <div style="background:#fdfaf4;padding:10px 8px;display:flex;align-items:center;justify-content:center;">
-                <svg width="28" height="28" viewBox="0 0 44 44"><rect x="4" y="3" width="26" height="32" rx="4" fill="#d8eaff" stroke="#0b4a82" stroke-width="1.5"/><rect x="4" y="3" width="26" height="10" rx="4" fill="#0b4a82"/><rect x="4" y="9" width="26" height="4" fill="#0b4a82"/><line x1="9" y1="20" x2="26" y2="20" stroke="#0b4a82" stroke-width="1.2"/><circle cx="34" cy="34" r="8" fill="#0b4a82" stroke="white" stroke-width="2"/><path d="M29 34L32.5 37.5L40 30" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <svg width="28" height="28" viewBox="0 0 44 44"><rect x="5" y="3" width="26" height="32" rx="4" fill="#d8eaff" stroke="#0b4a82" stroke-width="1.8"/><rect x="5" y="3" width="26" height="10" rx="4" fill="#0b4a82"/><rect x="5" y="9" width="26" height="4" fill="#0b4a82"/><line x1="10" y1="20" x2="27" y2="20" stroke="#0b4a82" stroke-width="1.2"/><line x1="10" y1="26" x2="22" y2="26" stroke="#0b4a82" stroke-width="1.2"/><circle cx="34" cy="36" r="7" fill="#0b4a82" stroke="white" stroke-width="1.8"/><path d="M30 36L33 39L39 33" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </div>
             </div>
 
@@ -1555,7 +1523,7 @@
                 <div style="font-size:10px;font-weight:700;color:#155f44;margin-bottom:8px;">⑨ 署名検証</div>
                 <div style="background:#eaf7f1;border:1px solid #155f44;border-radius:5px;padding:8px;">
                   <div style="display:flex;align-items:center;gap:5px;margin-bottom:5px;">
-                    <svg width="16" height="16" viewBox="0 0 44 44"><polygon points="22,2 40,12 40,32 22,42 4,32 4,12" fill="#eaf7f1" stroke="#155f44" stroke-width="1.8"/><text x="22" y="27" text-anchor="middle" font-family="monospace" font-size="8" fill="#155f44" font-weight="700">CA公開鍵</text></svg>
+                    <svg width="16" height="16" viewBox="0 0 52 52"><polygon points="26,3 46,14 46,34 26,45 6,34 6,14" fill="#eaf7f1" stroke="#155f44" stroke-width="2"/><circle cx="26" cy="27" r="7" fill="none" stroke="#155f44" stroke-width="1.5"/><path d="M22 27l3 3 6-6" fill="none" stroke="#155f44" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     <span style="font-size:9px;color:#155f44;font-weight:600;">CA公開鍵を参照</span>
                   </div>
                   <div style="font-size:9px;color:#0d3d28;line-height:1.7;">
@@ -1573,8 +1541,8 @@
 
       <div class="steps">
         <div class="step hi"><span class="sn">①②</span><div class="sb">申請者の端末で<strong>南京錠ペア（秘密鍵・公開鍵）</strong>を生成。秘密鍵（閉・暖色）は端末外に出ません。CSRには公開鍵・Subject DN・秘密鍵による自己署名が格納されます。</div></div>
-        <div class="step wn"><span class="sn" style="background:var(--warn)">⑥</span><div class="sb">CAは<strong>HSM内のCA秘密鍵（六角盾・暖色）</strong>でTBSCertificateに署名し、デジタル証明書を生成します。<strong>CA秘密鍵もHSMの外に出ません。</strong>完成した証明書には「申請者の公開鍵＋CAのデジタル署名」が含まれます。</div></div>
-        <div class="step ok"><span class="sn">⑨</span><div class="sb">検証者はトラストストアの<strong>CA公開鍵（六角盾・寒色）</strong>で証明書のCA署名を検証します。これにより証明書内の「申請者の公開鍵（南京錠・開・寒色）」が信頼できると確認されます。</div></div>
+        <div class="step wn"><span class="sn" style="background:var(--warn)">⑥</span><div class="sb">CAは<strong>HSM内のCA秘密鍵（南京錠・王冠・暖色）</strong>でTBSCertificateに署名し、デジタル証明書を生成します。<strong>CA秘密鍵もHSMの外に出ません。</strong>完成した証明書には「申請者の公開鍵＋CAのデジタル署名」が含まれます。</div></div>
+        <div class="step ok"><span class="sn">⑨</span><div class="sb">検証者はトラストストアの<strong>CA公開鍵（南京錠・王冠・寒色）</strong>で証明書のCA署名を検証します。これにより証明書内の「申請者の公開鍵（南京錠・開・寒色）」が信頼できると確認されます。</div></div>
       </div>
 
       <h3>フロー2 — デジタル署名を使ったやり取り</h3>
@@ -1597,11 +1565,11 @@
                 <div style="font-size:10px;font-weight:700;color:#0b4a82;margin-bottom:10px;">保有物</div>
                 <div style="display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap;">
                   <div style="text-align:center;">
-                    <svg width="44" height="44" viewBox="0 0 44 44"><rect x="8" y="20" width="28" height="20" rx="4" fill="#fdf0dc" stroke="#b5821e" stroke-width="1.8"/><path d="M15 20V14a7 7 0 0 1 14 0v6" fill="none" stroke="#b5821e" stroke-width="1.8" stroke-linecap="round"/><circle cx="22" cy="28" r="4" fill="#b5821e"/><line x1="22" y1="32" x2="22" y2="36" stroke="#b5821e" stroke-width="1.8" stroke-linecap="round"/></svg>
+                    <svg width="44" height="44" viewBox="0 0 44 44"><rect x="11" y="22" width="22" height="18" rx="4" fill="#fdf0dc" stroke="#b5821e" stroke-width="1.8"/><path d="M14 22V16a8 8 0 0 1 16 0v6" fill="none" stroke="#b5821e" stroke-width="1.8" stroke-linecap="round"/><circle cx="22" cy="29" r="4" fill="#b5821e"/><rect x="20" y="33" width="4" height="5" rx="1" fill="#b5821e"/></svg>
                     <div style="font-size:9px;color:#7a4208;">秘密鍵</div>
                   </div>
                   <div style="text-align:center;">
-                    <svg width="40" height="40" viewBox="0 0 44 44"><rect x="4" y="3" width="26" height="32" rx="4" fill="#d8eaff" stroke="#0b4a82" stroke-width="1.5"/><rect x="4" y="3" width="26" height="10" rx="4" fill="#0b4a82"/><rect x="4" y="9" width="26" height="4" fill="#0b4a82"/><line x1="9" y1="20" x2="26" y2="20" stroke="#0b4a82" stroke-width="1.2"/><circle cx="34" cy="34" r="8" fill="#0b4a82" stroke="white" stroke-width="2"/><path d="M29 34L32.5 37.5L40 30" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <svg width="40" height="40" viewBox="0 0 44 44"><rect x="5" y="3" width="26" height="32" rx="4" fill="#d8eaff" stroke="#0b4a82" stroke-width="1.8"/><rect x="5" y="3" width="26" height="10" rx="4" fill="#0b4a82"/><rect x="5" y="9" width="26" height="4" fill="#0b4a82"/><line x1="10" y1="20" x2="27" y2="20" stroke="#0b4a82" stroke-width="1.2"/><line x1="10" y1="26" x2="22" y2="26" stroke="#0b4a82" stroke-width="1.2"/><circle cx="34" cy="36" r="7" fill="#0b4a82" stroke="white" stroke-width="1.8"/><path d="M30 36L33 39L39 33" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     <div style="font-size:9px;color:#0b4a82;">証明書</div>
                   </div>
                 </div>
@@ -1609,7 +1577,7 @@
               <div style="background:#fdfaf4;padding:14px 16px;">
                 <div style="font-size:10px;font-weight:700;color:#0b4a82;margin-bottom:10px;">トラストストア（事前保持）</div>
                 <div style="background:#eaf7f1;border:1px solid #155f44;border-radius:5px;padding:8px;display:inline-flex;align-items:center;gap:8px;">
-                  <svg width="36" height="36" viewBox="0 0 44 44"><polygon points="22,2 40,12 40,32 22,42 4,32 4,12" fill="#eaf7f1" stroke="#155f44" stroke-width="1.8"/><polygon points="22,9 34,16 34,28 22,35 10,28 10,16" fill="none" stroke="#155f44" stroke-width="1" opacity="0.4"/><text x="22" y="24" text-anchor="middle" font-family="monospace" font-size="7" fill="#155f44" font-weight="700">CA</text><text x="22" y="33" text-anchor="middle" font-family="monospace" font-size="6" fill="#155f44">公開鍵</text></svg>
+                  <svg width="36" height="36" viewBox="0 0 44 44"><rect x="11" y="22" width="22" height="18" rx="4" fill="#eaf7f1" stroke="#155f44" stroke-width="1.8"/><path d="M14 22V16a8 8 0 0 1 16 0" fill="none" stroke="#155f44" stroke-width="1.8" stroke-linecap="round"/><line x1="30" y1="16" x2="38" y2="16" stroke="#155f44" stroke-width="1.8" stroke-linecap="round"/><circle cx="22" cy="29" r="4" fill="#155f44"/><rect x="20" y="33" width="4" height="5" rx="1" fill="#155f44"/><path d="M6 10L6 4L10 7L14 2L18 7L22 4L22 10Z" fill="#155f44" stroke="#155f44" stroke-width="0.5" stroke-linejoin="round"/><rect x="5" y="10" width="18" height="3" rx="1" fill="#155f44"/></svg>
                   <div style="font-size:9px;color:#155f44;">CA公開鍵<br>OS/ブラウザが保持</div>
                 </div>
               </div>
@@ -1636,7 +1604,7 @@
                 <div style="font-size:10px;font-weight:700;color:#7a4208;margin-bottom:10px;">② 秘密鍵でハッシュ値を暗号化 → デジタル署名</div>
                 <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
                   <div>
-                    <svg width="40" height="40" viewBox="0 0 44 44"><rect x="8" y="20" width="28" height="20" rx="4" fill="#fdf0dc" stroke="#b5821e" stroke-width="1.8"/><path d="M15 20V14a7 7 0 0 1 14 0v6" fill="none" stroke="#b5821e" stroke-width="1.8" stroke-linecap="round"/><circle cx="22" cy="28" r="4" fill="#b5821e"/><line x1="22" y1="32" x2="22" y2="36" stroke="#b5821e" stroke-width="1.8" stroke-linecap="round"/></svg>
+                    <svg width="40" height="40" viewBox="0 0 44 44"><rect x="11" y="22" width="22" height="18" rx="4" fill="#fdf0dc" stroke="#b5821e" stroke-width="1.8"/><path d="M14 22V16a8 8 0 0 1 16 0v6" fill="none" stroke="#b5821e" stroke-width="1.8" stroke-linecap="round"/><circle cx="22" cy="29" r="4" fill="#b5821e"/><rect x="20" y="33" width="4" height="5" rx="1" fill="#b5821e"/></svg>
                     <div style="font-size:8.5px;color:#7a4208;text-align:center;">秘密鍵</div>
                   </div>
                   <div style="font-size:12px;color:#b5821e;">+</div>
@@ -1661,12 +1629,12 @@
                   </div>
                   <div style="font-size:11px;color:#cdd7e6;">+</div>
                   <div style="text-align:center;">
-                    <svg width="36" height="36" viewBox="0 0 44 44"><rect x="4" y="4" width="36" height="36" rx="6" fill="#f5eeff" stroke="#5a1a6e" stroke-width="1.5"/><path d="M27 10L33 16L19 30L11 32L13 24Z" fill="#5a1a6e" opacity="0.2" stroke="#5a1a6e" stroke-width="1.2" stroke-linejoin="round"/><path d="M10 38Q14 32 18 36Q22 40 26 34" fill="none" stroke="#5a1a6e" stroke-width="1.8" stroke-linecap="round"/></svg>
+                    <svg width="36" height="36" viewBox="0 0 44 44"><rect x="4" y="4" width="36" height="36" rx="6" fill="#f5eeff" stroke="#5a1a6e" stroke-width="1.8"/><path d="M28 10L34 16L20 30L12 32L14 24Z" fill="#5a1a6e" opacity="0.25" stroke="#5a1a6e" stroke-width="1.4" stroke-linejoin="round"/><line x1="26" y1="12" x2="32" y2="18" stroke="#5a1a6e" stroke-width="1.4"/><path d="M10 38Q14 32 18 36Q22 40 26 34Q30 28 34 32" fill="none" stroke="#5a1a6e" stroke-width="2" stroke-linecap="round"/></svg>
                     <div style="font-size:8.5px;color:#5a1a6e;">署名</div>
                   </div>
                   <div style="font-size:11px;color:#cdd7e6;">+</div>
                   <div style="text-align:center;">
-                    <svg width="36" height="36" viewBox="0 0 44 44"><rect x="4" y="3" width="26" height="32" rx="4" fill="#d8eaff" stroke="#0b4a82" stroke-width="1.5"/><rect x="4" y="3" width="26" height="10" rx="4" fill="#0b4a82"/><rect x="4" y="9" width="26" height="4" fill="#0b4a82"/><circle cx="34" cy="34" r="8" fill="#0b4a82" stroke="white" stroke-width="2"/><path d="M29 34L32.5 37.5L40 30" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <svg width="36" height="36" viewBox="0 0 44 44"><rect x="5" y="3" width="26" height="32" rx="4" fill="#d8eaff" stroke="#0b4a82" stroke-width="1.8"/><rect x="5" y="3" width="26" height="10" rx="4" fill="#0b4a82"/><rect x="5" y="9" width="26" height="4" fill="#0b4a82"/><line x1="10" y1="20" x2="27" y2="20" stroke="#0b4a82" stroke-width="1.2"/><line x1="10" y1="26" x2="22" y2="26" stroke="#0b4a82" stroke-width="1.2"/><circle cx="34" cy="36" r="7" fill="#0b4a82" stroke="white" stroke-width="1.8"/><path d="M30 36L33 39L39 33" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     <div style="font-size:8.5px;color:#0b4a82;">証明書</div>
                   </div>
                 </div>
@@ -1684,9 +1652,9 @@
                 <div style="display:flex;gap:6px;align-items:center;">
                   <div style="background:white;border:1px solid #cdd7e6;border-radius:3px;padding:4px 7px;font-size:9px;color:#141824;">原文</div>
                   <div style="font-size:10px;color:#cdd7e6;">+</div>
-                  <svg width="28" height="28" viewBox="0 0 44 44"><rect x="4" y="4" width="36" height="36" rx="6" fill="#f5eeff" stroke="#5a1a6e" stroke-width="1.5"/><path d="M10 38Q14 32 18 36Q22 40 26 34" fill="none" stroke="#5a1a6e" stroke-width="1.8" stroke-linecap="round"/></svg>
+                  <svg width="28" height="28" viewBox="0 0 44 44"><rect x="4" y="4" width="36" height="36" rx="6" fill="#f5eeff" stroke="#5a1a6e" stroke-width="1.8"/><path d="M28 10L34 16L20 30L12 32L14 24Z" fill="#5a1a6e" opacity="0.25" stroke="#5a1a6e" stroke-width="1.4" stroke-linejoin="round"/><line x1="26" y1="12" x2="32" y2="18" stroke="#5a1a6e" stroke-width="1.4"/><path d="M10 38Q14 32 18 36Q22 40 26 34Q30 28 34 32" fill="none" stroke="#5a1a6e" stroke-width="2" stroke-linecap="round"/></svg>
                   <div style="font-size:10px;color:#cdd7e6;">+</div>
-                  <svg width="28" height="28" viewBox="0 0 44 44"><rect x="4" y="3" width="26" height="32" rx="4" fill="#d8eaff" stroke="#0b4a82" stroke-width="1.5"/><rect x="4" y="3" width="26" height="10" rx="4" fill="#0b4a82"/><circle cx="34" cy="34" r="8" fill="#0b4a82" stroke="white" stroke-width="2"/><path d="M29 34L32.5 37.5L40 30" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <svg width="28" height="28" viewBox="0 0 44 44"><rect x="5" y="3" width="26" height="32" rx="4" fill="#d8eaff" stroke="#0b4a82" stroke-width="1.8"/><rect x="5" y="3" width="26" height="10" rx="4" fill="#0b4a82"/><rect x="5" y="9" width="26" height="4" fill="#0b4a82"/><line x1="10" y1="20" x2="27" y2="20" stroke="#0b4a82" stroke-width="1.2"/><line x1="10" y1="26" x2="22" y2="26" stroke="#0b4a82" stroke-width="1.2"/><circle cx="34" cy="36" r="7" fill="#0b4a82" stroke="white" stroke-width="1.8"/><path d="M30 36L33 39L39 33" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </div>
               </div>
             </div>
@@ -1697,7 +1665,7 @@
               <div style="background:#fdfaf4;padding:14px 16px;">
                 <div style="font-size:10px;font-weight:700;color:#155f44;margin-bottom:8px;">⑤ 証明書を検証（CA公開鍵を使用）</div>
                 <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-                  <svg width="36" height="36" viewBox="0 0 44 44"><polygon points="22,2 40,12 40,32 22,42 4,32 4,12" fill="#eaf7f1" stroke="#155f44" stroke-width="1.8"/><text x="22" y="27" text-anchor="middle" font-family="monospace" font-size="7" fill="#155f44" font-weight="700">CA公開鍵</text></svg>
+                  <svg width="36" height="36" viewBox="0 0 44 44"><rect x="11" y="22" width="22" height="18" rx="4" fill="#eaf7f1" stroke="#155f44" stroke-width="1.8"/><path d="M14 22V16a8 8 0 0 1 16 0" fill="none" stroke="#155f44" stroke-width="1.8" stroke-linecap="round"/><line x1="30" y1="16" x2="38" y2="16" stroke="#155f44" stroke-width="1.8" stroke-linecap="round"/><circle cx="22" cy="29" r="4" fill="#155f44"/><rect x="20" y="33" width="4" height="5" rx="1" fill="#155f44"/><path d="M6 10L6 4L10 7L14 2L18 7L22 4L22 10Z" fill="#155f44" stroke="#155f44" stroke-width="0.5" stroke-linejoin="round"/><rect x="5" y="10" width="18" height="3" rx="1" fill="#155f44"/></svg>
                   <div style="font-size:12px;color:#155f44;">→</div>
                   <div style="background:#eaf7f1;border:1px solid #155f44;border-radius:4px;padding:6px 10px;font-size:9.5px;color:#155f44;">
                     <div>CA署名を検証 → 証明書が正当</div>
@@ -1713,10 +1681,10 @@
               <div style="background:#fdfaf4;padding:14px 16px;">
                 <div style="font-size:10px;font-weight:700;color:#0b4a82;margin-bottom:8px;">⑥ 署名を公開鍵で復号 → H を取得</div>
                 <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
-                  <svg width="36" height="36" viewBox="0 0 44 44"><rect x="4" y="4" width="36" height="36" rx="6" fill="#f5eeff" stroke="#5a1a6e" stroke-width="1.5"/><path d="M10 38Q14 32 18 36Q22 40 26 34" fill="none" stroke="#5a1a6e" stroke-width="1.8" stroke-linecap="round"/></svg>
+                  <svg width="36" height="36" viewBox="0 0 44 44"><rect x="4" y="4" width="36" height="36" rx="6" fill="#f5eeff" stroke="#5a1a6e" stroke-width="1.8"/><path d="M28 10L34 16L20 30L12 32L14 24Z" fill="#5a1a6e" opacity="0.25" stroke="#5a1a6e" stroke-width="1.4" stroke-linejoin="round"/><line x1="26" y1="12" x2="32" y2="18" stroke="#5a1a6e" stroke-width="1.4"/><path d="M10 38Q14 32 18 36Q22 40 26 34Q30 28 34 32" fill="none" stroke="#5a1a6e" stroke-width="2" stroke-linecap="round"/></svg>
                   <div style="font-size:10px;color:#5a1a6e;">署名</div>
                   <div style="font-size:10px;color:#cdd7e6;">+</div>
-                  <svg width="36" height="36" viewBox="0 0 44 44"><rect x="8" y="20" width="28" height="20" rx="4" fill="#e8f3fd" stroke="#1570b8" stroke-width="1.8"/><path d="M15 20V14a7 7 0 0 1 14 0" fill="none" stroke="#1570b8" stroke-width="1.8" stroke-linecap="round"/><line x1="29" y1="14" x2="36" y2="14" stroke="#1570b8" stroke-width="1.8" stroke-linecap="round"/><circle cx="22" cy="28" r="4" fill="#1570b8"/></svg>
+                  <svg width="36" height="36" viewBox="0 0 44 44"><rect x="11" y="22" width="22" height="18" rx="4" fill="#e8f3fd" stroke="#1570b8" stroke-width="1.8"/><path d="M14 22V16a8 8 0 0 1 16 0" fill="none" stroke="#1570b8" stroke-width="1.8" stroke-linecap="round"/><line x1="30" y1="16" x2="38" y2="16" stroke="#1570b8" stroke-width="1.8" stroke-linecap="round"/><circle cx="22" cy="29" r="4" fill="#1570b8"/><rect x="20" y="33" width="4" height="5" rx="1" fill="#1570b8"/></svg>
                   <div style="font-size:10px;color:#1570b8;">公開鍵（証明書から取得）</div>
                   <div style="font-size:12px;color:#0b4a82;">→</div>
                   <div style="background:white;border:1px solid #1e2d4a;border-radius:4px;padding:6px 10px;font-size:10px;font-family:monospace;color:#1e2d4a;font-weight:700;">H</div>
@@ -1752,7 +1720,7 @@
       <div class="keypoint">
         <p class="kp-label">2段階検証の核心</p>
         <p>
-          <strong>段階1 — 証明書の正当性確認：</strong><code>CA公開鍵（六角盾・寒色）</code>でデジタル証明書内のCA署名を検証。これにより証明書内の「申請者の公開鍵（南京錠・開・寒色）」が信頼できると確認。<br><br>
+          <strong>段階1 — 証明書の正当性確認：</strong><code>CA公開鍵（南京錠・王冠・寒色）</code>でデジタル証明書内のCA署名を検証。これにより証明書内の「申請者の公開鍵（南京錠・開・寒色）」が信頼できると確認。<br><br>
           <strong>段階2 — デジタル署名の検証：</strong>段階1で信頼した<code>申請者の公開鍵</code>でデジタル署名を復号しハッシュ値Hを得る。メッセージを再ハッシュしたH'と一致すれば改ざんなし＋本人確認が完了する。
         </p>
       </div>
@@ -1872,13 +1840,7 @@
       <div class="threat-grid">
         <div class="threat-card">
           <div class="tc-head">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-              <polyline points="14 2 14 8 20 8"/>
-              <line x1="16" y1="13" x2="8" y2="13"/>
-              <line x1="16" y1="17" x2="8" y2="17"/>
-              <polyline points="10 9 9 9 8 9"/>
-            </svg>
+            <svg width="22" height="22" viewBox="0 0 52 52"><rect x="8" y="4" width="28" height="38" rx="4" fill="rgba(255,255,255,.15)" stroke="white" stroke-width="1.8"/><rect x="8" y="4" width="28" height="12" rx="4" fill="white" opacity="0.3"/><rect x="8" y="10" width="28" height="6" fill="white" opacity="0.3"/><line x1="14" y1="22" x2="30" y2="22" stroke="white" stroke-width="1.2"/><line x1="14" y1="28" x2="26" y2="28" stroke="white" stroke-width="1.2"/><line x1="14" y1="34" x2="28" y2="34" stroke="white" stroke-width="1.2"/><circle cx="38" cy="36" r="10" fill="white" opacity="0.9"/><text x="38" y="40" text-anchor="middle" font-family="monospace" font-size="10" fill="#0b4a82" font-weight="700">CP</text></svg>
             <span>CP（Certificate Policy：証明書ポリシー）</span>
           </div>
           <div class="tc-body">
@@ -1888,10 +1850,7 @@
         </div>
         <div class="threat-card">
           <div class="tc-head warn-head">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M9 11l3 3L22 4"/>
-              <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
-            </svg>
+            <svg width="22" height="22" viewBox="0 0 52 52"><rect x="8" y="4" width="28" height="38" rx="4" fill="rgba(255,255,255,.15)" stroke="white" stroke-width="1.8"/><line x1="14" y1="16" x2="30" y2="16" stroke="white" stroke-width="1.2"/><line x1="14" y1="22" x2="30" y2="22" stroke="white" stroke-width="1.2"/><line x1="14" y1="28" x2="24" y2="28" stroke="white" stroke-width="1.2"/><line x1="14" y1="34" x2="28" y2="34" stroke="white" stroke-width="1.2"/><circle cx="38" cy="36" r="10" fill="white" opacity="0.9"/><path d="M32 36l2.5 2.5 7-7" fill="none" stroke="#7a4208" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             <span>CPS（CA Practice Statement：認証局運用規程）</span>
           </div>
           <div class="tc-body">
