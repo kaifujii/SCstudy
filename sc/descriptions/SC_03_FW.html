@@ -1,0 +1,2427 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ファイアウォール・IDS/IPS・UTM・WAF — 技術解説書 Ver.1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600&family=Noto+Sans+JP:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#141824;--ink2:#1e2d4a;--accent:#0b4a82;--accent2:#1570b8;--gold:#b5821e;--soft:#e8edf5;--surface:#f3f6fb;--line:#cdd7e6;--success:#155f44;--warn:#7a4208;--danger:#7a1818;--purple:#5a1a9e;--orange:#c05a20;--mono:'JetBrains Mono',monospace;--serif:'Noto Serif JP',serif;--sans:'Noto Sans JP',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:#edf1f8;color:var(--ink);font-size:15px;line-height:1.78}
+.cover{background:var(--ink);color:#fff;padding:72px 60px 56px;position:relative;overflow:hidden}
+.cover-geo{position:absolute;top:0;right:0;width:420px;height:420px;opacity:.06}
+.cover-kicker{font-size:11px;font-weight:700;letter-spacing:.2em;color:rgba(255,255,255,.42);text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.cover-kicker::before{content:'';display:block;width:24px;height:1px;background:var(--gold)}
+.cover h1{font-family:var(--serif);font-size:40px;font-weight:600;line-height:1.22;margin-bottom:18px}
+.cover h1 em{color:#6ab4f5;font-style:normal}
+.cover-desc{font-size:14px;color:rgba(255,255,255,.58);max-width:600px;margin-bottom:36px;line-height:1.8}
+.cover-tags{display:flex;gap:7px;flex-wrap:wrap}
+.ctag{font-size:10.5px;padding:3px 11px;border-radius:3px;border:1px solid rgba(255,255,255,.16);color:rgba(255,255,255,.6);letter-spacing:.04em;font-family:var(--mono)}
+.layout{display:flex;align-items:flex-start}
+.sidebar{position:sticky;top:0;width:224px;flex-shrink:0;height:100vh;overflow-y:auto;background:var(--ink2);padding:28px 0}
+.sidebar-title{font-size:10px;font-weight:700;letter-spacing:.18em;color:rgba(255,255,255,.3);text-transform:uppercase;padding:0 20px 12px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:8px}
+.sidebar nav a{display:block;padding:8px 20px;font-size:12.5px;color:rgba(255,255,255,.55);text-decoration:none;border-left:2px solid transparent;transition:all .15s;line-height:1.45}
+.sidebar nav a:hover{color:#fff;background:rgba(255,255,255,.05)}
+.sidebar nav a.active{color:#6ab4f5;border-left-color:#6ab4f5;background:rgba(100,180,245,.07)}
+.sidebar nav .nav-num{font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.25);display:block;margin-bottom:1px}
+.main{flex:1;min-width:0;padding:52px 52px 100px}
+.section{margin-bottom:80px;scroll-margin-top:24px}
+.section-header{display:flex;align-items:flex-start;gap:14px;margin-bottom:26px;padding-bottom:16px;border-bottom:1px solid var(--line)}
+.s-num{font-family:var(--mono);font-size:10px;font-weight:500;color:#fff;background:var(--accent);padding:3px 8px;border-radius:3px;margin-top:5px;white-space:nowrap;flex-shrink:0}
+.s-num.gold-bg{background:var(--gold)}
+.s-num.red-bg{background:var(--danger)}
+.s-num.purple-bg{background:var(--purple)}
+h2{font-family:var(--serif);font-size:24px;font-weight:600;color:var(--ink);line-height:1.3}
+h3{font-size:15px;font-weight:700;color:var(--ink2);margin:32px 0 12px;padding-left:10px;border-left:3px solid var(--accent2)}
+p{color:#3a3d52;margin-bottom:14px}
+.keypoint{background:var(--ink);color:#fff;border-radius:8px;padding:20px 26px;margin:24px 0}
+.kp-label{font-size:9.5px;font-weight:700;letter-spacing:.2em;color:rgba(181,130,30,.9);text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.kp-label::before{content:'';display:block;width:16px;height:1px;background:var(--gold)}
+.keypoint p{color:rgba(255,255,255,.82);margin:0;font-size:13.5px;line-height:1.8}
+.keypoint strong{color:#6ab4f5}
+.note{display:flex;gap:11px;border-radius:6px;padding:13px 16px;margin:14px 0;border:1px solid}
+.note-i{flex-shrink:0;margin-top:2px}
+.note p{margin:0;font-size:13px;line-height:1.7}
+.note.info{background:#e8f3fd;border-color:#a8cef5}
+.note.info p{color:#0b3a6a}
+.note.warn{background:#fdf5e6;border-color:#e8c97a}
+.note.warn p{color:#5a3200}
+.note.danger{background:#fdf0f0;border-color:#e8a8a8}
+.note.danger p{color:#5a0000}
+.req-table,.cmp-table,.atk-table{width:100%;border-collapse:collapse;font-size:13.5px;margin:16px 0}
+.req-table th{background:var(--ink2);color:#fff;padding:9px 13px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em}
+.req-table td{padding:9px 13px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.6}
+.req-table tr:last-child td{border-bottom:none}
+.req-table tr:nth-child(even) td{background:var(--surface)}
+.cmp-table th{background:var(--accent);color:#fff;padding:9px 13px;text-align:center;font-size:11px;font-weight:600;letter-spacing:.06em}
+.cmp-table th:first-child{text-align:left;background:var(--ink2)}
+.cmp-table td{padding:9px 13px;border:1px solid var(--line);text-align:center;font-size:12.5px;vertical-align:middle}
+.cmp-table td:first-child{text-align:left;font-weight:600;color:var(--ink2);background:var(--surface);white-space:nowrap}
+.cmp-good{color:var(--success);font-weight:600}
+.cmp-bad{color:var(--danger)}
+.cmp-mid{color:var(--warn)}
+.atk-table th{background:var(--ink);color:#fff;padding:9px 13px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em}
+.atk-table td{padding:9px 13px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.6}
+.atk-table tr:last-child td{border-bottom:none}
+.atk-table tr:nth-child(even) td{background:var(--surface)}
+.atk-table td:first-child{font-weight:600;color:var(--danger);white-space:nowrap}
+.term-table{width:100%;border-collapse:collapse;font-size:13px;margin:12px 0}
+.term-table td{padding:8px 11px;border-bottom:1px dashed var(--line);vertical-align:top}
+.term-table td:first-child{font-family:var(--mono);font-size:11px;color:var(--accent2);font-weight:500;white-space:nowrap;min-width:160px}
+.term-table tr:last-child td{border-bottom:none}
+.header-block{background:#0d1117;border-radius:8px;padding:20px 22px;margin:16px 0;font-family:var(--mono);font-size:11.5px;line-height:1.85;overflow-x:auto}
+.hbf{color:#79b8ff}
+.hbv{color:#e1e4e8}
+.hba{color:#6a737d}
+.hbw{color:#f9c74f}
+.hbok{color:#56d364}
+.hbng{color:#ff7b72}
+.steps{display:flex;flex-direction:column;gap:8px;margin:16px 0}
+.step{display:flex;gap:12px;align-items:flex-start;padding:11px 15px;border-radius:6px;background:var(--surface);border-left:3px solid var(--line)}
+.step.hi{background:#eaf3ff;border-left-color:var(--accent2)}
+.step.ok{background:#eaf7f1;border-left-color:var(--success)}
+.step.wn{background:#fdf5e6;border-left-color:var(--gold)}
+.step.ng{background:#fdf0f0;border-left-color:var(--danger)}
+.sn{font-family:var(--mono);font-size:10px;font-weight:500;color:#fff;background:var(--accent2);min-width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.step.ok .sn{background:var(--success)}
+.step.wn .sn{background:var(--gold)}
+.step.ng .sn{background:var(--danger)}
+.sb{font-size:13.5px;color:var(--ink);line-height:1.65}
+.sb strong{color:var(--ink2)}
+.sb code{font-family:var(--mono);font-size:11.5px;background:rgba(11,74,130,.08);color:var(--accent);padding:1px 5px;border-radius:3px}
+.quiz-wrap{display:flex;flex-direction:column;gap:24px;margin:20px 0}
+.quiz{background:#fff;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.quiz-q{padding:14px 18px;background:var(--ink2);color:#fff;font-size:13.5px;line-height:1.65;display:flex;gap:12px}
+.quiz-qn{font-family:var(--mono);font-size:10px;background:rgba(255,255,255,.15);padding:2px 8px;border-radius:3px;white-space:nowrap;flex-shrink:0;height:fit-content;margin-top:2px}
+.quiz-opts{padding:14px 18px;display:flex;flex-direction:column;gap:7px}
+.quiz-opt{padding:8px 13px;border:1px solid var(--line);border-radius:5px;font-size:13px;color:var(--ink);cursor:pointer;transition:all .15s;background:#fff;text-align:left;font-family:inherit}
+.quiz-opt:hover{background:var(--surface);border-color:var(--accent2)}
+.quiz-opt.correct{background:#eaf7f1;border-color:var(--success);color:var(--success)}
+.quiz-opt.wrong{background:#fdf0f0;border-color:var(--danger);color:var(--danger)}
+.quiz-opt.reveal{background:var(--surface);color:#aaa}
+.quiz-exp{display:none;padding:12px 18px;background:#f0f6ff;border-top:1px solid #b8d5f5;font-size:13px;color:#0b3a6a;line-height:1.7}
+.quiz-exp.show{display:block}
+
+/* Interactive widgets */
+.iwidget{background:#fff;border:1.5px solid var(--line);border-radius:12px;overflow:hidden;margin:22px 0}
+.iwidget-head{background:var(--ink2);color:#fff;padding:11px 18px;font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.iwidget-head-l{display:flex;align-items:center;gap:8px}
+.iwidget-body{padding:22px}
+.btn{background:var(--accent);color:#fff;border:none;padding:7px 14px;border-radius:5px;font-size:12px;font-weight:600;font-family:var(--sans);cursor:pointer;transition:all .15s;letter-spacing:.02em}
+.btn:hover{background:var(--accent2)}
+.btn:disabled{background:#bbc6d6;cursor:not-allowed}
+.btn.ok{background:var(--success)}.btn.ok:hover{background:#1e8060}
+.btn.wn{background:var(--gold)}.btn.wn:hover{background:#d0942a}
+.btn.ng{background:var(--danger)}.btn.ng:hover{background:#a02020}
+.btn.small{padding:5px 10px;font-size:11px}
+.btn.ghost{background:transparent;color:var(--accent);border:1.5px solid var(--accent)}
+.btn.ghost:hover{background:var(--soft)}
+.sel{background:#fff;border:1.5px solid var(--line);border-radius:5px;padding:6px 11px;font-size:12px;font-family:var(--mono);color:var(--ink2);cursor:pointer}
+.sel:focus{outline:none;border-color:var(--accent2)}
+
+/* Node box for diagrams */
+.node-box{border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border:2px solid;background:#fff}
+
+footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;padding:22px;font-size:11.5px;letter-spacing:.05em;line-height:1.8}
+@media(max-width:800px){.sidebar{display:none}.main{padding:28px 20px 60px}.cover{padding:48px 24px 40px}.cover h1{font-size:28px}}
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <svg class="cover-geo" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Castle walls -->
+    <rect x="80" y="140" width="240" height="200" stroke="white" stroke-width="1" fill="none"/>
+    <rect x="80" y="120" width="20" height="20" stroke="white" stroke-width="1" fill="none"/>
+    <rect x="120" y="120" width="20" height="20" stroke="white" stroke-width="1" fill="none"/>
+    <rect x="160" y="120" width="20" height="20" stroke="white" stroke-width="1" fill="none"/>
+    <rect x="200" y="120" width="20" height="20" stroke="white" stroke-width="1" fill="none"/>
+    <rect x="240" y="120" width="20" height="20" stroke="white" stroke-width="1" fill="none"/>
+    <rect x="280" y="120" width="20" height="20" stroke="white" stroke-width="1" fill="none"/>
+    <!-- gate -->
+    <path d="M170 340 L170 280 Q200 260 230 280 L230 340" stroke="white" stroke-width="0.8" fill="none"/>
+    <!-- watch tower -->
+    <circle cx="340" cy="80" r="50" stroke="white" stroke-width="0.5" fill="none"/>
+    <circle cx="340" cy="80" r="30" stroke="white" stroke-width="0.5" fill="none"/>
+    <line x1="310" y1="80" x2="370" y2="80" stroke="white" stroke-width="0.4"/>
+    <line x1="340" y1="50" x2="340" y2="110" stroke="white" stroke-width="0.4"/>
+  </svg>
+  <div style="position:relative">
+    <p class="cover-kicker">技術解説書 — 情報処理安全確保支援士対応</p>
+    <h1>ファイアウォール・IDS/IPS<br><em>UTM・WAF</em></h1>
+    <p class="cover-desc">ネットワーク境界防御の全景。パケットフィルタリング（静的・動的・ステートフル）、ゲートウェイ型（サーキット・アプリケーション）、パーソナルFW、L7ファイアウォール、WAF、そしてIDS/IPS・UTM まで。「どこの何を・どう守るか」をたとえ話と対応図で体系的に整理した、練習問題・動的シミュレーション付きの完全版解説書です。</p>
+    <div class="cover-tags">
+      <span class="ctag">Packet Filtering</span><span class="ctag">Stateful Inspection</span><span class="ctag">Circuit / Application Gateway</span><span class="ctag">Personal FW</span><span class="ctag">L7 FW</span><span class="ctag">WAF</span><span class="ctag">IDS / IPS</span><span class="ctag">UTM</span><span class="ctag">iptables ルール例</span>
+    </div>
+  </div>
+</div>
+
+<div class="layout">
+<aside class="sidebar">
+  <p class="sidebar-title">目次</p>
+  <nav>
+    <a href="#s1"><span class="nav-num">01</span>全体像と位置づけ</a>
+    <a href="#s2"><span class="nav-num">02</span>ファイアウォールの分類</a>
+    <a href="#s3"><span class="nav-num">03</span>パケットフィルタリング型</a>
+    <a href="#s4"><span class="nav-num">04</span>ゲートウェイ型FW</a>
+    <a href="#s5"><span class="nav-num">05</span>パーソナルFW</a>
+    <a href="#s6"><span class="nav-num">06</span>L7ファイアウォール</a>
+    <a href="#s7"><span class="nav-num">07</span>WAF</a>
+    <a href="#s8"><span class="nav-num">08</span>パケットフィルタのルール</a>
+    <a href="#s9"><span class="nav-num">09</span>FWで防げない攻撃</a>
+    <a href="#s10"><span class="nav-num">10</span>IDS / IPS</a>
+    <a href="#s11"><span class="nav-num">11</span>UTM</a>
+    <a href="#s12"><span class="nav-num">12</span>技術の目的整理</a>
+    <a href="#s13"><span class="nav-num">13</span>練習問題</a>
+    <a href="#s14"><span class="nav-num">14</span>重要用語まとめ</a>
+  </nav>
+</aside>
+<main class="main">
+
+<!-- ============================================================
+     S01 全体像
+     ============================================================ -->
+<section class="section" id="s1">
+<div class="section-header"><span class="s-num">01</span><h2>全体像と位置づけ</h2></div>
+<p>ファイアウォール・IDS/IPS・UTM・WAFは、シラバス <strong>3-5「ネットワーク及び機器のセキュリティ管理」</strong> の中核技術群です。周辺領域として <strong>3-4「セキュリティ監視並びにログの取得及び分析」</strong>（IDS/IPS・UTMのログ活用）、<strong>3-2「マルウェア対策」</strong>（UTMに含まれるアンチウイルス機能）、<strong>2-7「運用・保守」</strong>（ルールの継続的メンテナンス）と緊密に連携します。</p>
+
+<!-- 城のたとえ図 -->
+<div style="background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:0 0 20px;">
+  <div style="background:var(--ink2);color:#fff;padding:10px 18px;font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;display:flex;align-items:center;gap:8px;">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M3 7v14M21 7v14M6 21V10l3-3h6l3 3v11M9 21v-4h6v4M10 10h4v3h-4z"/></svg>
+    たとえ話：ネットワーク境界防御 ＝ お城と関所
+  </div>
+  <div style="padding:24px 24px 20px;overflow-x:auto;">
+  <div style="min-width:880px;">
+
+    <!-- ゾーンラベル -->
+    <div style="display:flex;margin-bottom:6px;padding:0 2px;">
+      <div style="flex:0 0 200px;font-size:10px;font-weight:700;color:#7a1818;letter-spacing:.07em;text-align:center;">外敵地（インターネット）</div>
+      <div style="flex:0 0 20px"></div>
+      <div style="flex:0 0 340px;font-size:10px;font-weight:700;color:#7a4208;letter-spacing:.07em;text-align:center;">城壁・門・関所・見張り（境界防御）</div>
+      <div style="flex:0 0 20px"></div>
+      <div style="flex:1;font-size:10px;font-weight:700;color:var(--success);letter-spacing:.07em;text-align:center;">城内（内部ネットワーク）</div>
+    </div>
+
+    <!-- メインノード行 -->
+    <div style="display:flex;gap:10px;align-items:stretch;">
+
+      <!-- 外敵ゾーン -->
+      <div style="flex:0 0 200px;background:#fde0e0;border:1.5px dashed #d08080;border-radius:12px;padding:20px 10px 16px;display:flex;align-items:center;justify-content:center;gap:12px;">
+
+        <!-- 攻撃者 -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:5px;">
+          <div style="width:58px;height:58px;background:#7a1818;border-radius:10px;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(122,24,24,.3);">
+            <svg width="34" height="34" viewBox="0 0 32 32" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <!-- hooded attacker -->
+              <path d="M16 5 L9 10 V16 H23 V10 z" fill="rgba(255,255,255,.25)" stroke="white" stroke-width="1.4"/>
+              <path d="M11 12 C11 14 14 16 16 16 C18 16 21 14 21 12" stroke="white" stroke-width="1.2" fill="rgba(0,0,0,.4)"/>
+              <circle cx="13" cy="13" r="1" fill="white"/>
+              <circle cx="19" cy="13" r="1" fill="white"/>
+              <path d="M9 16 Q6 22 9 28 L23 28 Q26 22 23 16" fill="rgba(255,255,255,.15)" stroke="white" stroke-width="1.3"/>
+              <!-- sword -->
+              <line x1="24" y1="8" x2="28" y2="4" stroke="white" stroke-width="2"/>
+              <line x1="27" y1="5" x2="29" y2="3" stroke="white" stroke-width="1.3"/>
+            </svg>
+          </div>
+          <span style="font-size:9px;font-weight:700;color:#7a1818;text-align:center;line-height:1.3;">攻撃者<br>ハッカー</span>
+        </div>
+        <!-- 悪パケット -->
+        <div style="display:flex;flex-direction:column;gap:3px;">
+          <div style="width:38px;height:28px;background:#fff;border:1.5px solid #7a1818;border-radius:4px;padding:3px;display:flex;flex-direction:column;gap:1px;">
+            <div style="height:3px;background:#7a1818;border-radius:1px;"></div>
+            <div style="height:2px;background:#e08080;border-radius:1px;"></div>
+            <div style="height:2px;background:#e08080;border-radius:1px;"></div>
+          </div>
+          <div style="width:38px;height:28px;background:#fff;border:1.5px solid #7a1818;border-radius:4px;padding:3px;display:flex;flex-direction:column;gap:1px;">
+            <div style="height:3px;background:#7a1818;border-radius:1px;"></div>
+            <div style="height:2px;background:#e08080;border-radius:1px;"></div>
+            <div style="height:2px;background:#e08080;border-radius:1px;"></div>
+          </div>
+          <span style="font-size:8px;color:#7a1818;font-weight:700;text-align:center;">悪パケット</span>
+        </div>
+
+      </div>
+
+      <!-- 矢印1 -->
+      <div style="flex:0 0 20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;">
+        <div style="width:100%;height:2px;background:#7a1818;position:relative;"><div style="position:absolute;right:-5px;top:-4px;width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:7px solid #7a1818;"></div></div>
+      </div>
+
+      <!-- 城壁・関所ゾーン -->
+      <div style="flex:0 0 340px;background:#fdf5e6;border:1.5px dashed #e8c97a;border-radius:12px;padding:20px 10px 16px;display:flex;align-items:stretch;gap:6px;">
+
+        <!-- 城壁＝Firewall -->
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;justify-content:space-between;">
+          <div style="width:64px;height:68px;background:#fff;border:2px solid var(--danger);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;box-shadow:0 2px 8px rgba(122,24,24,.15);padding:4px;">
+            <svg width="36" height="36" viewBox="0 0 48 48" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <!-- flame -->
+              <path d="M24 6 Q20 12 22 16 Q17 14 18 9 Q21 6 24 2 Q27 6 30 9 Q31 14 26 16 Q28 12 24 6z" fill="#ff9068" stroke="var(--danger)" stroke-width="1.3"/>
+              <!-- bricks -->
+              <rect x="4" y="19" width="11" height="7" rx="1" fill="#fde0d0" stroke="var(--danger)" stroke-width="1.1"/>
+              <rect x="16" y="19" width="10" height="7" rx="1" fill="#fde0d0" stroke="var(--danger)" stroke-width="1.1"/>
+              <rect x="27" y="19" width="10" height="7" rx="1" fill="#fde0d0" stroke="var(--danger)" stroke-width="1.1"/>
+              <rect x="38" y="19" width="6" height="7" rx="1" fill="#fde0d0" stroke="var(--danger)" stroke-width="1.1"/>
+              <rect x="4" y="27" width="6" height="7" rx="1" fill="#fde0d0" stroke="var(--danger)" stroke-width="1.1"/>
+              <rect x="11" y="27" width="10" height="7" rx="1" fill="#fde0d0" stroke="var(--danger)" stroke-width="1.1"/>
+              <rect x="22" y="27" width="10" height="7" rx="1" fill="#fde0d0" stroke="var(--danger)" stroke-width="1.1"/>
+              <rect x="33" y="27" width="11" height="7" rx="1" fill="#fde0d0" stroke="var(--danger)" stroke-width="1.1"/>
+              <rect x="4" y="35" width="11" height="7" rx="1" fill="#fde0d0" stroke="var(--danger)" stroke-width="1.1"/>
+              <rect x="16" y="35" width="10" height="7" rx="1" fill="#fde0d0" stroke="var(--danger)" stroke-width="1.1"/>
+              <rect x="27" y="35" width="10" height="7" rx="1" fill="#fde0d0" stroke="var(--danger)" stroke-width="1.1"/>
+              <rect x="38" y="35" width="6" height="7" rx="1" fill="#fde0d0" stroke="var(--danger)" stroke-width="1.1"/>
+            </svg>
+          </div>
+          <span style="font-size:9px;font-weight:700;color:var(--danger);text-align:center;line-height:1.3;">城壁＋門番<br><b style="font-family:var(--mono);font-size:10px">Firewall</b></span>
+        </div>
+
+        <!-- IDS = 物見櫓 -->
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;justify-content:space-between;">
+          <div style="width:64px;height:68px;background:#fff;border:2px solid var(--success);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;box-shadow:0 2px 8px rgba(21,95,68,.15);padding:4px;">
+            <svg width="36" height="36" viewBox="0 0 48 48" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="6" y="14" width="26" height="16" rx="2.5" fill="#d0f0e0" stroke="var(--success)" stroke-width="1.4"/>
+              <circle cx="19" cy="22" r="6" fill="#fff" stroke="var(--success)" stroke-width="1.3"/>
+              <circle cx="19" cy="22" r="3" fill="#80c8a0" stroke="var(--success)" stroke-width="1.1"/>
+              <path d="M32 19 L40 15 L40 29 L32 25z" fill="#d0f0e0" stroke="var(--success)" stroke-width="1.3"/>
+              <line x1="19" y1="30" x2="19" y2="38" stroke="var(--success)" stroke-width="1.4"/>
+              <line x1="13" y1="42" x2="25" y2="42" stroke="var(--success)" stroke-width="1.7"/>
+              <circle cx="12" cy="17.5" r="1.5" fill="var(--danger)"/>
+            </svg>
+          </div>
+          <span style="font-size:9px;font-weight:700;color:var(--success);text-align:center;line-height:1.3;">物見櫓＋監視員<br><b style="font-family:var(--mono);font-size:10px">IDS</b></span>
+        </div>
+
+        <!-- IPS = 警備兵 -->
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;justify-content:space-between;">
+          <div style="width:64px;height:68px;background:#fff;border:2px solid var(--warn);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;box-shadow:0 2px 8px rgba(181,130,30,.15);padding:4px;">
+            <svg width="36" height="36" viewBox="0 0 48 48" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M24 4 L8 10 v12 c0 10 7 18 16 20 c9-2 16-10 16-20 V10 z" fill="#fff3d0" stroke="var(--warn)" stroke-width="1.4"/>
+              <rect x="17" y="17" width="14" height="16" rx="2" fill="#ffe0a0" stroke="var(--warn)" stroke-width="1.3"/>
+              <line x1="20" y1="17" x2="20" y2="15" stroke="var(--warn)" stroke-width="1.3"/>
+              <line x1="24" y1="17" x2="24" y2="14" stroke="var(--warn)" stroke-width="1.3"/>
+              <line x1="28" y1="17" x2="28" y2="15" stroke="var(--warn)" stroke-width="1.3"/>
+              <circle cx="24" cy="25" r="2.5" fill="var(--warn)" opacity=".7"/>
+            </svg>
+          </div>
+          <span style="font-size:9px;font-weight:700;color:var(--warn);text-align:center;line-height:1.3;">警備兵（遮断）<br><b style="font-family:var(--mono);font-size:10px">IPS</b></span>
+        </div>
+
+        <!-- WAF = Web専用門 -->
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;justify-content:space-between;">
+          <div style="width:64px;height:68px;background:#fff;border:2px solid var(--accent2);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;box-shadow:0 2px 8px rgba(21,112,184,.15);padding:4px;">
+            <svg width="36" height="36" viewBox="0 0 48 48" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="24" cy="22" r="14" fill="#daeeff" stroke="var(--accent)" stroke-width="1.4"/>
+              <line x1="10" y1="22" x2="38" y2="22" stroke="var(--accent2)" stroke-width="1.2"/>
+              <path d="M24 8 Q32 22 24 36 Q16 22 24 8z" fill="none" stroke="var(--accent2)" stroke-width="1.1"/>
+              <ellipse cx="24" cy="22" rx="14" ry="7" fill="none" stroke="var(--accent2)" stroke-width="1"/>
+              <path d="M34 28 L26 31 v6 c0 3 3 5 8 6 c5-1 8-3 8-6 v-6 z" fill="#fff3d0" stroke="var(--warn)" stroke-width="1.3"/>
+              <path d="M31 36 L33.5 38 L37.5 34" stroke="var(--success)" stroke-width="1.7" fill="none"/>
+            </svg>
+          </div>
+          <span style="font-size:9px;font-weight:700;color:var(--accent2);text-align:center;line-height:1.3;">Web専用警備員<br><b style="font-family:var(--mono);font-size:10px">WAF</b></span>
+        </div>
+
+        <!-- UTM = スイスアーミーナイフ -->
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;justify-content:space-between;">
+          <div style="width:64px;height:68px;background:#fff;border:2px solid var(--purple);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;box-shadow:0 2px 8px rgba(90,26,158,.15);padding:4px;">
+            <svg width="36" height="36" viewBox="0 0 48 48" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="6" y="16" width="36" height="24" rx="2.5" fill="#ede8ff" stroke="var(--purple)" stroke-width="1.4"/>
+              <path d="M16 16 V12 a3 3 0 0 1 3-3 h10 a3 3 0 0 1 3 3 v4" stroke="var(--purple)" stroke-width="1.3" fill="none"/>
+              <line x1="6" y1="25" x2="42" y2="25" stroke="var(--purple)" stroke-width="1.1" stroke-dasharray="2 2"/>
+              <path d="M13 29 L11 30 V33 c0 1.5 1 2.5 2 3 c1-.5 2-1.5 2-3 V30 z" fill="#c0a8f5" stroke="var(--purple)" stroke-width="1"/>
+              <path d="M22 29 L20 30 V33 c0 1.5 1 2.5 2 3 c1-.5 2-1.5 2-3 V30 z" fill="#c0a8f5" stroke="var(--purple)" stroke-width="1"/>
+              <path d="M31 29 L29 30 V33 c0 1.5 1 2.5 2 3 c1-.5 2-1.5 2-3 V30 z" fill="#c0a8f5" stroke="var(--purple)" stroke-width="1"/>
+              <path d="M40 29 L38 30 V33 c0 1.5 1 2.5 2 3 c1-.5 2-1.5 2-3 V30 z" fill="#c0a8f5" stroke="var(--purple)" stroke-width="1"/>
+              <rect x="18" y="19" width="12" height="3" rx=".5" fill="var(--purple)" opacity=".6"/>
+            </svg>
+          </div>
+          <span style="font-size:9px;font-weight:700;color:var(--purple);text-align:center;line-height:1.3;">全機能統合<br><b style="font-family:var(--mono);font-size:10px">UTM</b></span>
+        </div>
+
+      </div>
+
+      <!-- 矢印2 -->
+      <div style="flex:0 0 20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;">
+        <div style="width:100%;height:2px;background:var(--success);position:relative;"><div style="position:absolute;right:-5px;top:-4px;width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:7px solid var(--success);"></div></div>
+      </div>
+
+      <!-- 城内ゾーン -->
+      <div style="flex:1;background:#eaf7f1;border:1.5px dashed #70c898;border-radius:12px;padding:20px 10px 16px;display:flex;align-items:center;justify-content:center;gap:10px;">
+
+        <!-- 住居＋パーソナルFW -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:5px;">
+          <div style="width:58px;height:58px;background:#fff;border:2px solid var(--orange);border-radius:10px;display:flex;align-items:center;justify-content:center;">
+            <svg width="34" height="34" viewBox="0 0 32 32" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <!-- house -->
+              <path d="M4 14 L16 5 L28 14 V26 a1 1 0 0 1 -1 1 H5 a1 1 0 0 1 -1 -1 z" fill="#fde0c0" stroke="var(--orange)" stroke-width="1.4"/>
+              <rect x="12" y="17" width="8" height="10" rx="0.5" fill="#fff5e8" stroke="var(--orange)" stroke-width="1.2"/>
+              <!-- mini shield at door -->
+              <path d="M8 18 L7 18.5 V20.5 c0 .8 .5 1.3 1 1.5 c.5-.2 1-.7 1-1.5 V18.5 z" fill="var(--danger)" stroke="white" stroke-width="0.6"/>
+            </svg>
+          </div>
+          <span style="font-size:9px;font-weight:700;color:var(--orange);text-align:center;line-height:1.3;">各戸＋番犬<br><b style="font-family:var(--mono);font-size:10px">Personal FW</b></span>
+        </div>
+
+        <!-- 天守閣＝サーバ -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:5px;">
+          <div style="width:58px;height:58px;background:#fff;border:2px solid var(--accent);border-radius:10px;display:flex;align-items:center;justify-content:center;">
+            <svg width="34" height="34" viewBox="0 0 32 32" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="5" y="4" width="22" height="8" rx="1.5" fill="#daeeff" stroke="var(--accent)" stroke-width="1.4"/>
+              <rect x="5" y="14" width="22" height="8" rx="1.5" fill="#daeeff" stroke="var(--accent)" stroke-width="1.4"/>
+              <rect x="5" y="24" width="22" height="6" rx="1.5" fill="#daeeff" stroke="var(--accent)" stroke-width="1.4"/>
+              <circle cx="8" cy="8" r="1.2" fill="var(--accent2)"/>
+              <circle cx="8" cy="18" r="1.2" fill="var(--accent2)"/>
+              <circle cx="8" cy="27" r="1.2" fill="var(--success)"/>
+              <line x1="12" y1="8" x2="24" y2="8" stroke="var(--accent)" stroke-width="1"/>
+              <line x1="12" y1="18" x2="24" y2="18" stroke="var(--accent)" stroke-width="1"/>
+            </svg>
+          </div>
+          <span style="font-size:9px;font-weight:700;color:var(--accent);text-align:center;line-height:1.3;">天守（サーバ）<br><b style="font-family:var(--mono);font-size:10px">Host</b></span>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- 対応表 -->
+    <div style="margin-top:18px;background:#f8f9ff;border:1px solid #d0d8f0;border-radius:8px;padding:12px 14px;">
+      <div style="font-size:9.5px;font-weight:700;color:var(--ink2);margin-bottom:10px;letter-spacing:.06em;text-transform:uppercase;">たとえ話と技術の対応</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
+        <div style="background:#fdf0f0;border:1px solid #e8a8a8;border-radius:6px;padding:8px 10px;"><div style="font-size:9.5px;font-weight:700;color:var(--danger);margin-bottom:2px;">城壁＋正門番（誰を通すか）</div><div style="font-size:9.5px;color:#5a0000;line-height:1.5;">＝ ファイアウォール（FW）— 許可/拒否のルールで通信制御</div></div>
+        <div style="background:#eaf7f1;border:1px solid #80c8a0;border-radius:6px;padding:8px 10px;"><div style="font-size:9.5px;font-weight:700;color:var(--success);margin-bottom:2px;">物見櫓の監視員（見るだけ）</div><div style="font-size:9.5px;color:#0d3d28;line-height:1.5;">＝ IDS — 不審を検知・通報だが遮断しない</div></div>
+        <div style="background:#fdf5e6;border:1px solid #e0c070;border-radius:6px;padding:8px 10px;"><div style="font-size:9.5px;font-weight:700;color:var(--warn);margin-bottom:2px;">警備兵（見て止める）</div><div style="font-size:9.5px;color:#5a3200;line-height:1.5;">＝ IPS — 検知と同時に遮断する</div></div>
+        <div style="background:#eaf3ff;border:1px solid #a8c8f5;border-radius:6px;padding:8px 10px;"><div style="font-size:9.5px;font-weight:700;color:var(--accent);margin-bottom:2px;">Web専用警備員（通訳可）</div><div style="font-size:9.5px;color:#0b3a6a;line-height:1.5;">＝ WAF — HTTPの中身を見てSQLi等を防ぐ</div></div>
+        <div style="background:#f5f0ff;border:1px solid #b090e0;border-radius:6px;padding:8px 10px;"><div style="font-size:9.5px;font-weight:700;color:var(--purple);margin-bottom:2px;">スイスアーミーナイフ（統合）</div><div style="font-size:9.5px;color:#3a006e;line-height:1.5;">＝ UTM — FW+IDS/IPS+AV+VPN等を1台に統合</div></div>
+        <div style="background:#fde8d8;border:1px solid #e0a070;border-radius:6px;padding:8px 10px;"><div style="font-size:9.5px;font-weight:700;color:var(--orange);margin-bottom:2px;">各戸の番犬（内側個別）</div><div style="font-size:9.5px;color:#5a2a08;line-height:1.5;">＝ Personal FW — エンドポイント（PC）個別の防御</div></div>
+      </div>
+    </div>
+
+  </div>
+  </div>
+</div>
+
+<div class="note info">
+<div class="note-i"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1570b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16" stroke-width="2.5"/></svg></div>
+<p><strong>位置づけの要点：</strong>FW・IDS/IPS・UTM・WAFは<strong>すべて境界防御の道具</strong>ですが、<strong>見る層（レイヤー）</strong>と<strong>アクション（検知/遮断）</strong>が異なります。FWは主にL3/L4（IPとポート）、WAFはL7（HTTP中身）、IDS/IPSは幅広く、UTMは複数機能の統合。次のセクションでこの階層関係を整理します。</p>
+</div>
+</section>
+
+<!-- ============================================================
+     S02 ファイアウォールの分類
+     ============================================================ -->
+<section class="section" id="s2">
+<div class="section-header"><span class="s-num">02</span><h2>ファイアウォールの分類</h2></div>
+<p>ファイアウォールは「<strong>どのレイヤー（OSI参照モデルの第何層）を見るか</strong>」で分類されます。低い層（L3/L4）だけを見るのが<strong>パケットフィルタリング型</strong>、上位層（L5以上）を中継するのが<strong>ゲートウェイ型</strong>、最上位のHTTP内容まで見るのが<strong>アプリケーションゲートウェイ/L7FW/WAF</strong>です。「深く見るほど精密だが、遅く・高価に」なります。</p>
+
+<!-- OSI階層マップ -->
+<div class="iwidget">
+  <div class="iwidget-head">
+    <div class="iwidget-head-l">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
+      OSI参照モデルと各ファイアウォールの動作層
+    </div>
+    <span style="font-size:10px;color:rgba(255,255,255,.5);font-family:var(--mono);">CLICK A LAYER ↓</span>
+  </div>
+  <div class="iwidget-body">
+    <div style="overflow-x:auto;">
+    <div style="min-width:720px;display:grid;grid-template-columns:60px 110px 1fr 1fr 1fr 1fr 1fr;gap:6px;align-items:stretch;">
+
+      <!-- ヘッダ行 -->
+      <div style="font-size:9.5px;font-weight:700;color:var(--ink2);text-align:center;padding:8px 4px;border-bottom:2px solid var(--line);">層</div>
+      <div style="font-size:9.5px;font-weight:700;color:var(--ink2);text-align:center;padding:8px 4px;border-bottom:2px solid var(--line);">名称<br>代表プロトコル</div>
+      <div style="font-size:9.5px;font-weight:700;color:var(--danger);text-align:center;padding:8px 4px;border-bottom:2px solid var(--line);">静的<br>パケットフィルタ</div>
+      <div style="font-size:9.5px;font-weight:700;color:var(--danger);text-align:center;padding:8px 4px;border-bottom:2px solid var(--line);">ステートフル<br>インスペクション</div>
+      <div style="font-size:9.5px;font-weight:700;color:var(--warn);text-align:center;padding:8px 4px;border-bottom:2px solid var(--line);">サーキットレベル<br>ゲートウェイ</div>
+      <div style="font-size:9.5px;font-weight:700;color:var(--warn);text-align:center;padding:8px 4px;border-bottom:2px solid var(--line);">アプリケーション<br>ゲートウェイ / L7FW</div>
+      <div style="font-size:9.5px;font-weight:700;color:var(--accent2);text-align:center;padding:8px 4px;border-bottom:2px solid var(--line);">WAF</div>
+
+      <!-- L7 行 -->
+      <div onclick="highlightLayer(7)" data-osi="7" style="background:#ede8ff;border:1.5px solid var(--purple);border-radius:6px;padding:8px 4px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:800;color:var(--purple);cursor:pointer;">L7</div>
+      <div data-osi="7" style="background:#ede8ff;border-radius:6px;padding:8px 8px;font-size:11px;color:var(--purple);line-height:1.45;"><strong>アプリケーション層</strong><br><span style="font-family:var(--mono);font-size:10px">HTTP・HTTPS・SMTP・DNS・FTP</span></div>
+      <div data-osi="7" style="padding:8px 4px;text-align:center;font-size:20px;color:#bbb;">—</div>
+      <div data-osi="7" style="padding:8px 4px;text-align:center;font-size:20px;color:#bbb;">—</div>
+      <div data-osi="7" style="padding:8px 4px;text-align:center;font-size:20px;color:#bbb;">—</div>
+      <div data-osi="7" style="background:#eaf7f1;border-radius:6px;padding:8px 6px;text-align:center;font-size:14px;color:var(--success);font-weight:800;">●</div>
+      <div data-osi="7" style="background:#eaf7f1;border-radius:6px;padding:8px 6px;text-align:center;font-size:14px;color:var(--success);font-weight:800;">●</div>
+
+      <!-- L6 行 -->
+      <div onclick="highlightLayer(6)" data-osi="6" style="background:#ede8ff;border:1.5px solid var(--purple);border-radius:6px;padding:8px 4px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:800;color:var(--purple);cursor:pointer;">L6</div>
+      <div data-osi="6" style="background:#ede8ff;border-radius:6px;padding:8px 8px;font-size:11px;color:var(--purple);line-height:1.45;"><strong>プレゼンテーション層</strong><br><span style="font-family:var(--mono);font-size:10px">SSL/TLS・JPEG・ASCII</span></div>
+      <div data-osi="6" style="padding:8px 4px;text-align:center;font-size:20px;color:#bbb;">—</div>
+      <div data-osi="6" style="padding:8px 4px;text-align:center;font-size:20px;color:#bbb;">—</div>
+      <div data-osi="6" style="padding:8px 4px;text-align:center;font-size:20px;color:#bbb;">—</div>
+      <div data-osi="6" style="background:#fffaf0;border-radius:6px;padding:8px 6px;text-align:center;font-size:13px;color:var(--warn);font-weight:800;">◐</div>
+      <div data-osi="6" style="padding:8px 4px;text-align:center;font-size:20px;color:#bbb;">—</div>
+
+      <!-- L5 行 -->
+      <div onclick="highlightLayer(5)" data-osi="5" style="background:#ede8ff;border:1.5px solid var(--purple);border-radius:6px;padding:8px 4px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:800;color:var(--purple);cursor:pointer;">L5</div>
+      <div data-osi="5" style="background:#ede8ff;border-radius:6px;padding:8px 8px;font-size:11px;color:var(--purple);line-height:1.45;"><strong>セッション層</strong><br><span style="font-family:var(--mono);font-size:10px">RPC・NetBIOS</span></div>
+      <div data-osi="5" style="padding:8px 4px;text-align:center;font-size:20px;color:#bbb;">—</div>
+      <div data-osi="5" style="padding:8px 4px;text-align:center;font-size:20px;color:#bbb;">—</div>
+      <div data-osi="5" style="background:#fffaf0;border-radius:6px;padding:8px 6px;text-align:center;font-size:14px;color:var(--warn);font-weight:800;">●</div>
+      <div data-osi="5" style="background:#fffaf0;border-radius:6px;padding:8px 6px;text-align:center;font-size:14px;color:var(--warn);font-weight:800;">●</div>
+      <div data-osi="5" style="padding:8px 4px;text-align:center;font-size:20px;color:#bbb;">—</div>
+
+      <!-- L4 行 -->
+      <div onclick="highlightLayer(4)" data-osi="4" style="background:#fdf5e6;border:1.5px solid var(--gold);border-radius:6px;padding:8px 4px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:800;color:var(--warn);cursor:pointer;">L4</div>
+      <div data-osi="4" style="background:#fdf5e6;border-radius:6px;padding:8px 8px;font-size:11px;color:var(--warn);line-height:1.45;"><strong>トランスポート層</strong><br><span style="font-family:var(--mono);font-size:10px">TCP・UDP（ポート番号）</span></div>
+      <div data-osi="4" style="background:#fdf0f0;border-radius:6px;padding:8px 6px;text-align:center;font-size:14px;color:var(--danger);font-weight:800;">●</div>
+      <div data-osi="4" style="background:#fdf0f0;border-radius:6px;padding:8px 6px;text-align:center;font-size:14px;color:var(--danger);font-weight:800;">●</div>
+      <div data-osi="4" style="background:#fffaf0;border-radius:6px;padding:8px 6px;text-align:center;font-size:14px;color:var(--warn);font-weight:800;">●</div>
+      <div data-osi="4" style="padding:8px 4px;text-align:center;font-size:20px;color:#bbb;">—</div>
+      <div data-osi="4" style="padding:8px 4px;text-align:center;font-size:20px;color:#bbb;">—</div>
+
+      <!-- L3 行 -->
+      <div onclick="highlightLayer(3)" data-osi="3" style="background:#fdf0f0;border:1.5px solid var(--danger);border-radius:6px;padding:8px 4px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:800;color:var(--danger);cursor:pointer;">L3</div>
+      <div data-osi="3" style="background:#fdf0f0;border-radius:6px;padding:8px 8px;font-size:11px;color:var(--danger);line-height:1.45;"><strong>ネットワーク層</strong><br><span style="font-family:var(--mono);font-size:10px">IP・ICMP（IPアドレス）</span></div>
+      <div data-osi="3" style="background:#fdf0f0;border-radius:6px;padding:8px 6px;text-align:center;font-size:14px;color:var(--danger);font-weight:800;">●</div>
+      <div data-osi="3" style="background:#fdf0f0;border-radius:6px;padding:8px 6px;text-align:center;font-size:14px;color:var(--danger);font-weight:800;">●</div>
+      <div data-osi="3" style="padding:8px 4px;text-align:center;font-size:20px;color:#bbb;">—</div>
+      <div data-osi="3" style="padding:8px 4px;text-align:center;font-size:20px;color:#bbb;">—</div>
+      <div data-osi="3" style="padding:8px 4px;text-align:center;font-size:20px;color:#bbb;">—</div>
+
+      <!-- L1-2 行 -->
+      <div onclick="highlightLayer(2)" data-osi="2" style="background:#eaf3ff;border:1.5px solid var(--accent2);border-radius:6px;padding:8px 4px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:800;color:var(--accent);cursor:pointer;">L1-2</div>
+      <div data-osi="2" style="background:#eaf3ff;border-radius:6px;padding:8px 8px;font-size:11px;color:var(--accent);line-height:1.45;"><strong>物理・データリンク層</strong><br><span style="font-family:var(--mono);font-size:10px">Ethernet・MAC</span></div>
+      <div data-osi="2" style="padding:8px 4px;text-align:center;font-size:20px;color:#bbb;">—</div>
+      <div data-osi="2" style="padding:8px 4px;text-align:center;font-size:20px;color:#bbb;">—</div>
+      <div data-osi="2" style="padding:8px 4px;text-align:center;font-size:20px;color:#bbb;">—</div>
+      <div data-osi="2" style="padding:8px 4px;text-align:center;font-size:20px;color:#bbb;">—</div>
+      <div data-osi="2" style="padding:8px 4px;text-align:center;font-size:20px;color:#bbb;">—</div>
+
+    </div>
+    </div>
+    <div style="margin-top:14px;display:flex;gap:16px;flex-wrap:wrap;font-size:11px;color:#3a3d52;">
+      <span><span style="color:var(--success);font-weight:800;">●</span> 検査対象（主）</span>
+      <span><span style="color:var(--warn);font-weight:800;">●</span> 検査対象（中継）</span>
+      <span><span style="color:var(--warn);font-weight:800;">◐</span> 一部対応（TLSターミネーション等）</span>
+      <span style="color:#888;">— 検査しない</span>
+    </div>
+    <div id="layer-info" style="margin-top:12px;background:var(--surface);border-left:3px solid var(--accent2);border-radius:0 6px 6px 0;padding:10px 14px;font-size:12px;color:var(--ink2);line-height:1.7;">
+      👆 表の左端（L7〜L1-2）をクリックすると、その層を見るFWが強調されます。
+    </div>
+  </div>
+</div>
+
+<h3>ファイアウォールの分類ツリー</h3>
+<div style="background:#fff;border:1px solid var(--line);border-radius:10px;padding:24px 20px;margin:16px 0;overflow-x:auto;">
+<div style="min-width:740px;">
+
+  <!-- ルート -->
+  <div style="display:flex;justify-content:center;margin-bottom:8px;">
+    <div style="background:var(--ink2);color:white;padding:10px 22px;border-radius:8px;font-weight:700;font-size:13px;letter-spacing:.03em;display:flex;align-items:center;gap:8px;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      ファイアウォール (Firewall)
+    </div>
+  </div>
+
+  <!-- レベル1 枝線 -->
+  <div style="position:relative;height:22px;margin-bottom:0;">
+    <div style="position:absolute;left:50%;top:0;width:2px;height:10px;background:var(--ink2);"></div>
+    <div style="position:absolute;left:16.67%;right:16.67%;top:10px;height:2px;background:var(--ink2);"></div>
+    <div style="position:absolute;left:16.67%;top:10px;width:2px;height:10px;background:var(--ink2);"></div>
+    <div style="position:absolute;left:50%;top:10px;width:2px;height:10px;background:var(--ink2);"></div>
+    <div style="position:absolute;left:83.33%;top:10px;width:2px;height:10px;background:var(--ink2);"></div>
+  </div>
+
+  <!-- レベル1: 3分類 -->
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:6px;">
+    <div style="background:var(--danger);color:white;padding:10px 14px;border-radius:8px;text-align:center;font-weight:700;font-size:12.5px;">パケットフィルタリング型<br><span style="font-size:10px;opacity:.8;font-family:var(--mono);font-weight:500;">Packet Filtering</span></div>
+    <div style="background:var(--warn);color:white;padding:10px 14px;border-radius:8px;text-align:center;font-weight:700;font-size:12.5px;">ゲートウェイ型<br><span style="font-size:10px;opacity:.8;font-family:var(--mono);font-weight:500;">Gateway (Proxy)</span></div>
+    <div style="background:var(--accent);color:white;padding:10px 14px;border-radius:8px;text-align:center;font-weight:700;font-size:12.5px;">特殊・上位型<br><span style="font-size:10px;opacity:.8;font-family:var(--mono);font-weight:500;">Specialized / L7</span></div>
+  </div>
+
+  <!-- レベル2 枝線 -->
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;position:relative;">
+    <!-- 左: 3分岐 -->
+    <div style="position:relative;height:22px;">
+      <div style="position:absolute;left:50%;top:0;width:2px;height:10px;background:var(--danger);"></div>
+      <div style="position:absolute;left:16.67%;right:16.67%;top:10px;height:2px;background:var(--danger);"></div>
+      <div style="position:absolute;left:16.67%;top:10px;width:2px;height:10px;background:var(--danger);"></div>
+      <div style="position:absolute;left:50%;top:10px;width:2px;height:10px;background:var(--danger);"></div>
+      <div style="position:absolute;left:83.33%;top:10px;width:2px;height:10px;background:var(--danger);"></div>
+    </div>
+    <!-- 中央: 2分岐 -->
+    <div style="position:relative;height:22px;">
+      <div style="position:absolute;left:50%;top:0;width:2px;height:10px;background:var(--warn);"></div>
+      <div style="position:absolute;left:25%;right:25%;top:10px;height:2px;background:var(--warn);"></div>
+      <div style="position:absolute;left:25%;top:10px;width:2px;height:10px;background:var(--warn);"></div>
+      <div style="position:absolute;right:25%;top:10px;width:2px;height:10px;background:var(--warn);"></div>
+    </div>
+    <!-- 右: 3分岐 -->
+    <div style="position:relative;height:22px;">
+      <div style="position:absolute;left:50%;top:0;width:2px;height:10px;background:var(--accent);"></div>
+      <div style="position:absolute;left:16.67%;right:16.67%;top:10px;height:2px;background:var(--accent);"></div>
+      <div style="position:absolute;left:16.67%;top:10px;width:2px;height:10px;background:var(--accent);"></div>
+      <div style="position:absolute;left:50%;top:10px;width:2px;height:10px;background:var(--accent);"></div>
+      <div style="position:absolute;left:83.33%;top:10px;width:2px;height:10px;background:var(--accent);"></div>
+    </div>
+  </div>
+
+  <!-- レベル2: 子ノード -->
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+
+    <!-- パケットフィルタリング 3種 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">
+      <a href="#s3" style="text-decoration:none;background:#fff;border:1.5px solid var(--danger);border-radius:7px;padding:8px 4px;text-align:center;font-size:10px;font-weight:700;color:var(--danger);line-height:1.35;">スタティック<br><span style="font-weight:500;color:#3a3d52;font-size:9px;">静的</span></a>
+      <a href="#s3" style="text-decoration:none;background:#fff;border:1.5px solid var(--danger);border-radius:7px;padding:8px 4px;text-align:center;font-size:10px;font-weight:700;color:var(--danger);line-height:1.35;">ダイナミック<br><span style="font-weight:500;color:#3a3d52;font-size:9px;">動的</span></a>
+      <a href="#s3" style="text-decoration:none;background:#fdf0f0;border:1.5px solid var(--danger);border-radius:7px;padding:8px 4px;text-align:center;font-size:10px;font-weight:800;color:var(--danger);line-height:1.35;">ステートフル<br><span style="font-weight:500;color:#3a3d52;font-size:9px;">現在主流</span></a>
+    </div>
+
+    <!-- ゲートウェイ 2種 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+      <a href="#s4" style="text-decoration:none;background:#fff;border:1.5px solid var(--warn);border-radius:7px;padding:8px 4px;text-align:center;font-size:10px;font-weight:700;color:var(--warn);line-height:1.35;">サーキットレベル<br><span style="font-weight:500;color:#3a3d52;font-size:9px;">L5 中継</span></a>
+      <a href="#s4" style="text-decoration:none;background:#fff;border:1.5px solid var(--warn);border-radius:7px;padding:8px 4px;text-align:center;font-size:10px;font-weight:700;color:var(--warn);line-height:1.35;">アプリケーション<br><span style="font-weight:500;color:#3a3d52;font-size:9px;">L7 プロキシ</span></a>
+    </div>
+
+    <!-- 特殊 3種 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">
+      <a href="#s5" style="text-decoration:none;background:#fff;border:1.5px solid var(--orange);border-radius:7px;padding:8px 4px;text-align:center;font-size:10px;font-weight:700;color:var(--orange);line-height:1.35;">Personal FW<br><span style="font-weight:500;color:#3a3d52;font-size:9px;">端末内蔵</span></a>
+      <a href="#s6" style="text-decoration:none;background:#fff;border:1.5px solid var(--purple);border-radius:7px;padding:8px 4px;text-align:center;font-size:10px;font-weight:700;color:var(--purple);line-height:1.35;">L7 FW<br><span style="font-weight:500;color:#3a3d52;font-size:9px;">次世代NGFW</span></a>
+      <a href="#s7" style="text-decoration:none;background:#fff;border:1.5px solid var(--accent2);border-radius:7px;padding:8px 4px;text-align:center;font-size:10px;font-weight:700;color:var(--accent2);line-height:1.35;">WAF<br><span style="font-weight:500;color:#3a3d52;font-size:9px;">Web特化</span></a>
+    </div>
+
+  </div>
+
+</div>
+</div>
+
+<div class="note warn">
+<div class="note-i"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#b5821e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+<p><strong>混同注意：「L7FW」と「WAF」は別物</strong><br>どちらもL7（HTTP等）を見ますが、L7FWは<strong>あらゆるアプリ（HTTP/DB/SSH/業務プロトコル）</strong>を識別して通信制御するのに対し、WAFは<strong>Webアプリケーション専用</strong>でSQLインジェクション・XSS等の<strong>攻撃パターン</strong>を検出するのが主目的です。後のセクションで詳述します。</p>
+</div>
+</section>
+
+<!-- ============================================================
+     S03 パケットフィルタリング型
+     ============================================================ -->
+<section class="section" id="s3">
+<div class="section-header"><span class="s-num red-bg">03</span><h2>パケットフィルタリング型（静的・動的・ステートフル）</h2></div>
+<p>パケットフィルタリング型FWは、<strong>パケットの「宛名票」だけを見て通す／止めるを判定する門番</strong>です。郵便物の「差出人・宛先・ポスト番号」を見て受け付けるかを決める郵便局員のようなもの。中身（ペイロード）は読みません。3つの世代（静的→動的→ステートフル）で門番の賢さが進化しました。</p>
+
+<!-- 3世代並列比較 -->
+<div style="background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:22px 0;">
+<div style="background:var(--ink2);color:#fff;padding:10px 18px;font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;display:flex;align-items:center;gap:8px;">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+3世代の進化：静的 → 動的 → ステートフル
+</div>
+<div style="padding:24px;overflow-x:auto;">
+<div style="min-width:820px;display:grid;grid-template-columns:1fr 40px 1fr 40px 1fr;gap:0;align-items:stretch;">
+
+  <!-- スタティック -->
+  <div style="border:2px solid var(--danger);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;">
+    <div style="background:var(--danger);padding:10px 12px;display:flex;align-items:center;gap:8px;">
+      <span style="background:rgba(255,255,255,.2);color:white;font-family:var(--mono);font-size:9px;padding:2px 7px;border-radius:3px;">世代①</span>
+      <span style="color:white;font-weight:800;font-size:13px;">スタティック</span>
+    </div>
+    <div style="padding:14px 14px 12px;background:#fff5f5;flex:1;display:flex;flex-direction:column;gap:10px;">
+      <div style="display:flex;justify-content:center;">
+        <div style="width:88px;height:88px;background:#fff;border:2px solid var(--danger);border-radius:10px;display:flex;align-items:center;justify-content:center;position:relative;">
+          <svg width="56" height="56" viewBox="0 0 64 64" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="24" cy="20" r="7" fill="#fde0d0" stroke="var(--danger)" stroke-width="1.5"/>
+            <path d="M15 45 V30 Q24 26 33 30 V45 z" fill="#fde0d0" stroke="var(--danger)" stroke-width="1.5"/>
+            <path d="M17 15 Q24 10 31 15 L31 20 H17 z" fill="var(--danger)"/>
+            <rect x="38" y="22" width="20" height="28" rx="1" fill="white" stroke="var(--danger)" stroke-width="1.4"/>
+            <line x1="41" y1="27" x2="55" y2="27" stroke="var(--danger)" stroke-width="1"/>
+            <line x1="41" y1="31" x2="55" y2="31" stroke="var(--danger)" stroke-width="1"/>
+            <line x1="41" y1="35" x2="55" y2="35" stroke="var(--danger)" stroke-width="1"/>
+            <line x1="41" y1="39" x2="55" y2="39" stroke="var(--danger)" stroke-width="1"/>
+            <line x1="41" y1="43" x2="52" y2="43" stroke="var(--danger)" stroke-width="1"/>
+          </svg>
+        </div>
+      </div>
+      <div style="font-size:11px;color:#5a0000;line-height:1.65;"><strong>たとえ：</strong>紙のリストを見て「リストにあれば通す」だけの単純な門番。出入りの<strong>文脈を覚えない</strong>。</div>
+      <div style="background:#fde0d0;border-radius:5px;padding:7px 10px;font-size:10.5px;color:var(--danger);line-height:1.55;"><strong>判断基準：</strong>送信元IP・宛先IP・送信元ポート・宛先ポート・プロトコル(TCP/UDP)の<strong>5タプル</strong>のみ</div>
+      <div style="background:#fff;border:1px solid #e8a8a8;border-radius:5px;padding:7px 10px;font-size:10px;color:#5a0000;line-height:1.55;"><strong>問題点：</strong>戻りパケットのために「逆方向の穴」を手動で開ける必要がある。攻撃者に悪用されやすい。</div>
+    </div>
+  </div>
+
+  <div style="display:flex;align-items:center;justify-content:center;">
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="var(--ink2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+  </div>
+
+  <!-- ダイナミック -->
+  <div style="border:2px solid var(--warn);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;">
+    <div style="background:var(--warn);padding:10px 12px;display:flex;align-items:center;gap:8px;">
+      <span style="background:rgba(255,255,255,.2);color:white;font-family:var(--mono);font-size:9px;padding:2px 7px;border-radius:3px;">世代②</span>
+      <span style="color:white;font-weight:800;font-size:13px;">ダイナミック</span>
+    </div>
+    <div style="padding:14px 14px 12px;background:#fffaf0;flex:1;display:flex;flex-direction:column;gap:10px;">
+      <div style="display:flex;justify-content:center;">
+        <div style="width:88px;height:88px;background:#fff;border:2px solid var(--warn);border-radius:10px;display:flex;align-items:center;justify-content:center;">
+          <svg width="56" height="56" viewBox="0 0 64 64" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="24" cy="20" r="7" fill="#fff0d0" stroke="var(--warn)" stroke-width="1.5"/>
+            <path d="M15 45 V30 Q24 26 33 30 V45 z" fill="#fff0d0" stroke="var(--warn)" stroke-width="1.5"/>
+            <path d="M17 15 Q24 10 31 15 L31 20 H17 z" fill="var(--warn)"/>
+            <rect x="38" y="22" width="20" height="28" rx="1" fill="white" stroke="var(--warn)" stroke-width="1.4"/>
+            <line x1="41" y1="28" x2="55" y2="28" stroke="var(--warn)" stroke-width="1" stroke-dasharray="2 1"/>
+            <line x1="41" y1="33" x2="55" y2="33" stroke="var(--warn)" stroke-width="1" stroke-dasharray="2 1"/>
+            <line x1="52" y1="38" x2="60" y2="46" stroke="var(--danger)" stroke-width="2"/>
+            <circle cx="61" cy="47" r="1.5" fill="var(--danger)"/>
+          </svg>
+        </div>
+      </div>
+      <div style="font-size:11px;color:#5a3200;line-height:1.65;"><strong>たとえ：</strong>「内部から出た人の返事だけは通して良い」と覚えておく門番。戻りの穴を<strong>一時的に開ける</strong>。</div>
+      <div style="background:#fff0c0;border-radius:5px;padding:7px 10px;font-size:10.5px;color:var(--warn);line-height:1.55;"><strong>判断基準：</strong>5タプル＋<strong>出ていった通信の返答</strong>であるかを動的に判定</div>
+      <div style="background:#fff;border:1px solid #e0c070;border-radius:5px;padding:7px 10px;font-size:10px;color:#5a3200;line-height:1.55;"><strong>改善点：</strong>戻り通信のルールを事前に開けておく必要がなくなる。ただし<strong>TCPの接続状態（SYN/ACK等）までは管理しない</strong>。</div>
+    </div>
+  </div>
+
+  <div style="display:flex;align-items:center;justify-content:center;">
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="var(--ink2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+  </div>
+
+  <!-- ステートフル -->
+  <div style="border:2px solid var(--success);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;">
+    <div style="background:var(--success);padding:10px 12px;display:flex;align-items:center;gap:8px;">
+      <span style="background:rgba(255,255,255,.2);color:white;font-family:var(--mono);font-size:9px;padding:2px 7px;border-radius:3px;">世代③</span>
+      <span style="color:white;font-weight:800;font-size:13px;">ステートフル</span>
+      <span style="background:rgba(255,255,255,.35);color:white;font-size:9px;padding:2px 6px;border-radius:3px;margin-left:auto;font-weight:700;">主流</span>
+    </div>
+    <div style="padding:14px 14px 12px;background:#f0fbf5;flex:1;display:flex;flex-direction:column;gap:10px;">
+      <div style="display:flex;justify-content:center;">
+        <div style="width:88px;height:88px;background:#fff;border:2px solid var(--success);border-radius:10px;display:flex;align-items:center;justify-content:center;">
+          <svg width="56" height="56" viewBox="0 0 64 64" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="22" cy="20" r="7" fill="#d0f0e0" stroke="var(--success)" stroke-width="1.5"/>
+            <path d="M13 45 V30 Q22 26 31 30 V45 z" fill="#d0f0e0" stroke="var(--success)" stroke-width="1.5"/>
+            <path d="M15 15 Q22 10 29 15 L29 20 H15 z" fill="var(--success)"/>
+            <rect x="36" y="20" width="24" height="32" rx="1.5" fill="white" stroke="var(--success)" stroke-width="1.4"/>
+            <rect x="36" y="20" width="24" height="5" rx="1.5" fill="var(--success)"/>
+            <line x1="36" y1="30" x2="60" y2="30" stroke="var(--success)" stroke-width="0.8"/>
+            <line x1="36" y1="36" x2="60" y2="36" stroke="var(--success)" stroke-width="0.8"/>
+            <line x1="36" y1="42" x2="60" y2="42" stroke="var(--success)" stroke-width="0.8"/>
+            <line x1="48" y1="25" x2="48" y2="52" stroke="var(--success)" stroke-width="0.8"/>
+            <rect x="38" y="27" width="6" height="1.5" fill="var(--success)" opacity=".5"/>
+            <rect x="50" y="27" width="5" height="1.5" fill="var(--success)" opacity=".5"/>
+            <rect x="38" y="33" width="6" height="1.5" fill="var(--success)" opacity=".5"/>
+            <rect x="50" y="33" width="5" height="1.5" fill="var(--success)" opacity=".5"/>
+            <rect x="38" y="39" width="6" height="1.5" fill="var(--success)" opacity=".5"/>
+            <rect x="50" y="39" width="5" height="1.5" fill="var(--success)" opacity=".5"/>
+          </svg>
+        </div>
+      </div>
+      <div style="font-size:11px;color:#0d3d28;line-height:1.65;"><strong>たとえ：</strong>「会話の流れを全部覚えている」賢い門番。TCPの状態遷移を完全追跡する<strong>状態表（ステートテーブル）</strong>を持つ。</div>
+      <div style="background:#d0f0e0;border-radius:5px;padding:7px 10px;font-size:10.5px;color:var(--success);line-height:1.55;"><strong>判断基準：</strong>5タプル＋<strong>TCP接続状態(SYN/ESTABLISHED/FIN等)</strong>＋シーケンス番号</div>
+      <div style="background:#fff;border:1px solid #80c8a0;border-radius:5px;padding:7px 10px;font-size:10px;color:#0d3d28;line-height:1.55;"><strong>強み：</strong>正規の3ウェイハンドシェイクを踏んでいない不正パケット（シーケンス番号異常等）を検出可能。<strong>SPI (Stateful Packet Inspection)</strong> とも呼ばれる。</div>
+    </div>
+  </div>
+
+</div>
+</div>
+</div>
+
+<!-- インタラクティブ: ステートフル状態表デモ -->
+<div class="iwidget">
+  <div class="iwidget-head">
+    <div class="iwidget-head-l">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      体験：ステートフルFWの状態表を動かしてみよう
+    </div>
+    <span style="font-size:10px;color:rgba(255,255,255,.5);font-family:var(--mono);">TRY IT ↓</span>
+  </div>
+  <div class="iwidget-body">
+    <p style="font-size:12.5px;color:#3a3d52;line-height:1.7;margin-bottom:14px;">内部クライアント <code style="font-family:var(--mono);background:rgba(11,74,130,.08);color:var(--accent);padding:1px 5px;border-radius:3px">192.168.1.10:50001</code> から外部Webサーバ <code style="font-family:var(--mono);background:rgba(11,74,130,.08);color:var(--accent);padding:1px 5px;border-radius:3px">93.184.216.34:80</code> へHTTP通信する例。ボタンを順に押して TCP 3ウェイハンドシェイク→データ通信→切断 の流れで状態表がどう変化するかを観察してください。</p>
+
+    <div style="display:grid;grid-template-columns:minmax(220px,1fr) 2fr;gap:16px;">
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="font-size:10.5px;font-weight:700;color:var(--ink2);letter-spacing:.05em;text-transform:uppercase;">操作</div>
+        <button class="btn" onclick="sfAction('syn')">① 内部→外部 SYN 送信</button>
+        <button class="btn ok" onclick="sfAction('synack')">② 外部→内部 SYN+ACK 受信</button>
+        <button class="btn ok" onclick="sfAction('ack')">③ 内部→外部 ACK 送信</button>
+        <button class="btn wn" onclick="sfAction('data')">④ データ送受信（GET /）</button>
+        <button class="btn ng" onclick="sfAction('fin')">⑤ FIN 交換で切断</button>
+        <hr style="border:none;border-top:1px dashed var(--line);margin:4px 0;">
+        <button class="btn ghost" onclick="sfAction('reset')">リセット</button>
+        <button class="btn" onclick="sfAction('attack')" style="background:var(--danger);">不正: SYNなしACK</button>
+      </div>
+
+      <div>
+        <div style="font-size:10.5px;font-weight:700;color:var(--ink2);letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px;">ステートテーブル（状態表）</div>
+        <div style="background:#0d1117;border-radius:8px;padding:14px;font-family:var(--mono);font-size:11px;color:#e1e4e8;overflow-x:auto;min-height:160px;">
+          <table id="sf-table" style="width:100%;border-collapse:collapse;min-width:540px;">
+            <thead>
+              <tr style="border-bottom:1px solid #30363d;">
+                <th style="text-align:left;padding:5px 8px;color:#79b8ff;font-weight:600;font-size:10.5px;">送信元</th>
+                <th style="text-align:left;padding:5px 8px;color:#79b8ff;font-weight:600;font-size:10.5px;">宛先</th>
+                <th style="text-align:left;padding:5px 8px;color:#79b8ff;font-weight:600;font-size:10.5px;">プロトコル</th>
+                <th style="text-align:left;padding:5px 8px;color:#79b8ff;font-weight:600;font-size:10.5px;">状態</th>
+                <th style="text-align:left;padding:5px 8px;color:#79b8ff;font-weight:600;font-size:10.5px;">TTL</th>
+              </tr>
+            </thead>
+            <tbody id="sf-tbody">
+              <tr><td colspan="5" style="padding:20px 8px;text-align:center;color:#6a737d;">（空）まだコネクションは記録されていません</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div style="font-size:10.5px;font-weight:700;color:var(--ink2);letter-spacing:.05em;text-transform:uppercase;margin:14px 0 6px;">FWの判断ログ</div>
+        <div id="sf-log" style="background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:10px 12px;font-family:var(--mono);font-size:11px;color:#3a3d52;min-height:80px;max-height:140px;overflow-y:auto;line-height:1.75;">
+          <span style="color:#888;">（操作待ち）</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<h3>3世代の詳細比較</h3>
+<table class="cmp-table">
+<thead><tr><th>比較項目</th><th>スタティック<br>(静的)</th><th>ダイナミック<br>(動的)</th><th>ステートフル<br>(SPI)</th></tr></thead>
+<tbody>
+<tr><td>判定対象</td><td>5タプルのみ</td><td>5タプル＋戻りパケット判定</td><td class="cmp-good">5タプル＋TCP状態＋seq/ack</td></tr>
+<tr><td>戻り通信のルール</td><td class="cmp-bad">逆方向ルールを手動で開ける必要</td><td class="cmp-good">自動的に一時許可</td><td class="cmp-good">自動的に一時許可＋状態追跡</td></tr>
+<tr><td>TCP接続の追跡</td><td class="cmp-bad">しない</td><td class="cmp-mid">一部（出入りの対応のみ）</td><td class="cmp-good">する(SYN→SYN+ACK→ACK→…)</td></tr>
+<tr><td>SYN Flood対策</td><td class="cmp-bad">個別パケットしか見ないので弱い</td><td class="cmp-bad">弱い</td><td class="cmp-good">セッション数制限等と併用可</td></tr>
+<tr><td>不正パケット検出</td><td class="cmp-bad">SYNなしのACKも通してしまう</td><td class="cmp-mid">一部検出可能</td><td class="cmp-good">状態不整合を検出可能</td></tr>
+<tr><td>メモリ消費</td><td class="cmp-good">少ない</td><td class="cmp-mid">中程度</td><td class="cmp-bad">多い（状態表保持）</td></tr>
+<tr><td>処理速度</td><td class="cmp-good">高速</td><td class="cmp-mid">中程度</td><td class="cmp-mid">中程度（HW支援で改善）</td></tr>
+<tr><td>代表実装</td><td style="font-family:var(--mono);font-size:11.5px">古いACL, ルータ基本FW</td><td style="font-family:var(--mono);font-size:11.5px">1990s IPフィルタ</td><td style="font-family:var(--mono);font-size:11.5px">iptables, pf, Cisco ASA</td></tr>
+</tbody>
+</table>
+
+<div class="keypoint">
+<p class="kp-label">核心ポイント</p>
+<p>現在「パケットフィルタリング型FW」と言えば<strong>事実上ステートフルを指す</strong>。試験では<strong>「ステートフルパケットインスペクション(SPI) = TCPコネクションの状態を追跡する」</strong>が定番の出題。静的フィルタの「戻り通信のために逆方向の穴を開ける必要」「SYNなしACKを通してしまう」問題もセットで問われる。</p>
+</div>
+</section>
+
+<!-- ============================================================
+     S04 ゲートウェイ型FW
+     ============================================================ -->
+<section class="section" id="s4">
+<div class="section-header"><span class="s-num">04</span><h2>ゲートウェイ型ファイアウォール（プロキシ型）</h2></div>
+<p>ゲートウェイ型FWは、<strong>通信を「直接通さず」いったん自分が受けて、内容を確認してから代わりに中継する</strong>方式です。パケットフィルタリングが「関所の門番」なら、ゲートウェイ型は<strong>郵便物を全部開封して検査してから、改めて自分名義で再送する転送業者</strong>に近い存在。送信元と宛先は直接通信せず、常にゲートウェイ（プロキシ）を挟みます。</p>
+
+<!-- 通信経路のたとえ -->
+<div style="background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:22px 0;">
+  <div style="background:var(--ink2);color:#fff;padding:10px 18px;font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;display:flex;align-items:center;gap:8px;">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    パケットフィルタ vs ゲートウェイ型：通信経路の違い
+  </div>
+  <div style="padding:24px;overflow-x:auto;">
+  <div style="min-width:720px;display:flex;flex-direction:column;gap:22px;">
+
+    <!-- パケットフィルタの図 -->
+    <div style="background:var(--surface);border-radius:10px;padding:16px 18px;">
+      <div style="font-size:11px;font-weight:700;color:var(--danger);margin-bottom:12px;letter-spacing:.05em;">■ パケットフィルタリング型 — 門を通り抜けて直接通信</div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <!-- Client -->
+        <div style="flex:0 0 80px;display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <div style="width:58px;height:58px;background:#fff;border:2px solid var(--accent);border-radius:10px;display:flex;align-items:center;justify-content:center;">
+            <svg width="30" height="30" viewBox="0 0 32 32" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="26" height="18" rx="2.5" fill="#daeeff" stroke="var(--accent)" stroke-width="1.5"/>
+              <rect x="7" y="8" width="18" height="10" rx="1.5" fill="white" stroke="var(--accent)" stroke-width="1.2"/>
+              <line x1="11" y1="28" x2="21" y2="28" stroke="var(--accent)" stroke-width="1.5"/>
+              <line x1="16" y1="22" x2="16" y2="28" stroke="var(--accent)" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <span style="font-size:9px;font-weight:700;color:var(--accent);text-align:center;">クライアント</span>
+        </div>
+
+        <!-- Arrow through FW -->
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;">
+          <div style="display:flex;align-items:center;width:100%;gap:4px;">
+            <div style="flex:1;height:2px;background:var(--danger);position:relative;"></div>
+            <!-- FW hole -->
+            <div style="background:var(--danger);padding:5px 11px;border-radius:5px;color:white;font-family:var(--mono);font-size:9px;font-weight:700;display:flex;align-items:center;gap:6px;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><circle cx="12" cy="16" r="1.5"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              FW（ルール判定のみ）
+            </div>
+            <div style="flex:1;height:2px;background:var(--danger);position:relative;"><div style="position:absolute;right:-5px;top:-4px;width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:7px solid var(--danger);"></div></div>
+          </div>
+          <div style="font-size:9.5px;color:var(--danger);font-weight:700;margin-top:2px;">パケットはFWを通過するが、<b>TCPコネクションは端から端まで直結</b></div>
+        </div>
+
+        <!-- Server -->
+        <div style="flex:0 0 80px;display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <div style="width:58px;height:58px;background:#fff;border:2px solid var(--danger);border-radius:10px;display:flex;align-items:center;justify-content:center;">
+            <svg width="30" height="30" viewBox="0 0 32 32" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="4" width="28" height="9" rx="2" fill="#fde8e8" stroke="var(--danger)" stroke-width="1.4"/>
+              <rect x="2" y="18" width="28" height="9" rx="2" fill="#fde8e8" stroke="var(--danger)" stroke-width="1.4"/>
+              <circle cx="5.5" cy="8.5" r="1.5" fill="var(--danger)"/>
+              <circle cx="5.5" cy="22.5" r="1.5" fill="var(--danger)"/>
+            </svg>
+          </div>
+          <span style="font-size:9px;font-weight:700;color:var(--danger);text-align:center;">外部サーバ</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ゲートウェイ型の図 -->
+    <div style="background:#fffaf0;border:1px solid #e0c070;border-radius:10px;padding:16px 18px;">
+      <div style="font-size:11px;font-weight:700;color:var(--warn);margin-bottom:12px;letter-spacing:.05em;">■ ゲートウェイ（プロキシ）型 — ゲートウェイが代理して2つの別コネクションを張る</div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <!-- Client -->
+        <div style="flex:0 0 80px;display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <div style="width:58px;height:58px;background:#fff;border:2px solid var(--accent);border-radius:10px;display:flex;align-items:center;justify-content:center;">
+            <svg width="30" height="30" viewBox="0 0 32 32" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="26" height="18" rx="2.5" fill="#daeeff" stroke="var(--accent)" stroke-width="1.5"/>
+              <rect x="7" y="8" width="18" height="10" rx="1.5" fill="white" stroke="var(--accent)" stroke-width="1.2"/>
+              <line x1="11" y1="28" x2="21" y2="28" stroke="var(--accent)" stroke-width="1.5"/>
+              <line x1="16" y1="22" x2="16" y2="28" stroke="var(--accent)" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <span style="font-size:9px;font-weight:700;color:var(--accent);text-align:center;">クライアント</span>
+        </div>
+
+        <!-- Connection 1 -->
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;">
+          <span style="font-size:9px;color:var(--warn);font-weight:700;white-space:nowrap;">TCPコネクション①</span>
+          <div style="width:100%;height:2px;background:var(--warn);position:relative;"><div style="position:absolute;right:-5px;top:-4px;width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:7px solid var(--warn);"></div></div>
+        </div>
+
+        <!-- Gateway -->
+        <div style="flex:0 0 92px;display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <div style="width:72px;height:58px;background:#fff;border:2.5px solid var(--warn);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:4px;">
+            <svg width="26" height="26" viewBox="0 0 32 32" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <!-- 通訳/翻訳者アイコン -->
+              <circle cx="16" cy="11" r="5" fill="#fff3d0" stroke="var(--warn)" stroke-width="1.5"/>
+              <path d="M8 28 V19 Q16 16 24 19 V28 z" fill="#fff3d0" stroke="var(--warn)" stroke-width="1.5"/>
+              <!-- speech bubbles -->
+              <ellipse cx="6" cy="14" rx="4" ry="3" fill="#fde8e8" stroke="var(--warn)" stroke-width="1"/>
+              <text x="6" y="15.5" text-anchor="middle" font-size="4" fill="var(--warn)" font-weight="700">A</text>
+              <ellipse cx="26" cy="14" rx="4" ry="3" fill="#daeeff" stroke="var(--warn)" stroke-width="1"/>
+              <text x="26" y="15.5" text-anchor="middle" font-size="4" fill="var(--warn)" font-weight="700">B</text>
+            </svg>
+            <span style="font-size:9px;font-weight:800;color:var(--warn);font-family:var(--mono);">Gateway</span>
+          </div>
+          <span style="font-size:9px;font-weight:700;color:var(--warn);text-align:center;">代理通信<br>（プロキシ）</span>
+        </div>
+
+        <!-- Connection 2 -->
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;">
+          <span style="font-size:9px;color:var(--warn);font-weight:700;white-space:nowrap;">TCPコネクション②</span>
+          <div style="width:100%;height:2px;background:var(--warn);position:relative;"><div style="position:absolute;right:-5px;top:-4px;width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:7px solid var(--warn);"></div></div>
+        </div>
+
+        <!-- Server -->
+        <div style="flex:0 0 80px;display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <div style="width:58px;height:58px;background:#fff;border:2px solid var(--danger);border-radius:10px;display:flex;align-items:center;justify-content:center;">
+            <svg width="30" height="30" viewBox="0 0 32 32" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="4" width="28" height="9" rx="2" fill="#fde8e8" stroke="var(--danger)" stroke-width="1.4"/>
+              <rect x="2" y="18" width="28" height="9" rx="2" fill="#fde8e8" stroke="var(--danger)" stroke-width="1.4"/>
+              <circle cx="5.5" cy="8.5" r="1.5" fill="var(--danger)"/>
+              <circle cx="5.5" cy="22.5" r="1.5" fill="var(--danger)"/>
+            </svg>
+          </div>
+          <span style="font-size:9px;font-weight:700;color:var(--danger);text-align:center;">外部サーバ</span>
+        </div>
+      </div>
+      <div style="margin-top:10px;background:#fff;border-radius:5px;padding:7px 12px;font-size:10.5px;color:#5a3200;line-height:1.6;"><strong>要点：</strong>クライアント⇔Gateway、Gateway⇔サーバの<strong>2つの別々のTCPコネクション</strong>が張られる。内部IPも外部に露出しない（NATと類似の効果）。</div>
+    </div>
+
+  </div>
+  </div>
+</div>
+
+<!-- サーキット vs アプリ -->
+<h3>サーキットレベル vs アプリケーションゲートウェイ</h3>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0;">
+
+  <!-- サーキットレベル -->
+  <div style="border:2px solid var(--warn);border-radius:12px;overflow:hidden;">
+    <div style="background:var(--warn);padding:12px 16px;color:white;">
+      <div style="font-size:13px;font-weight:800;letter-spacing:.02em;">サーキットレベルゲートウェイ</div>
+      <div style="font-size:10px;opacity:.8;font-family:var(--mono);margin-top:2px;">Circuit-Level Gateway — 動作層：L5（セッション層）</div>
+    </div>
+    <div style="padding:16px 18px;background:#fffaf0;">
+      <div style="display:flex;justify-content:center;margin-bottom:12px;">
+        <div style="width:110px;height:84px;background:#fff;border:2px solid var(--warn);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;">
+          <svg width="48" height="48" viewBox="0 0 64 64" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <!-- 電話交換手 -->
+            <circle cx="32" cy="18" r="7" fill="#fff3d0" stroke="var(--warn)" stroke-width="1.5"/>
+            <path d="M22 45 V30 Q32 26 42 30 V45 z" fill="#fff3d0" stroke="var(--warn)" stroke-width="1.5"/>
+            <!-- headphones -->
+            <path d="M22 20 Q22 14 32 12 Q42 14 42 20" stroke="var(--warn)" stroke-width="1.8" fill="none"/>
+            <rect x="20" y="20" width="4" height="6" rx="1" fill="var(--warn)"/>
+            <rect x="40" y="20" width="4" height="6" rx="1" fill="var(--warn)"/>
+            <!-- switchboard plugs -->
+            <rect x="8" y="40" width="18" height="12" rx="2" fill="#ffe0a0" stroke="var(--warn)" stroke-width="1.3"/>
+            <rect x="38" y="40" width="18" height="12" rx="2" fill="#ffe0a0" stroke="var(--warn)" stroke-width="1.3"/>
+            <path d="M17 40 Q32 35 47 40" stroke="var(--danger)" stroke-width="1.5" fill="none"/>
+          </svg>
+          <span style="font-size:10px;font-weight:800;color:var(--warn);font-family:var(--mono);">交換手</span>
+        </div>
+      </div>
+      <div style="font-size:12px;color:#5a3200;line-height:1.7;margin-bottom:10px;"><strong>たとえ：</strong>昔の電話交換手。AさんとBさんをつなぐが、<strong>会話の内容は一切聞かない</strong>。セッション確立時だけチェックする。</div>
+      <div style="background:#fff3d0;border-radius:5px;padding:8px 11px;font-size:11px;color:var(--warn);line-height:1.55;margin-bottom:8px;"><strong>検査範囲：</strong>セッション開始時の認証・接続情報のみ。確立後は中身を見ない。</div>
+      <div style="background:#fff;border:1px solid #e0c070;border-radius:5px;padding:8px 11px;font-size:10.5px;color:#5a3200;line-height:1.55;"><strong>代表例：</strong><code style="font-family:var(--mono);font-size:10px;background:rgba(181,130,30,.1);padding:1px 4px;border-radius:3px">SOCKS</code>（RFC1928）。認証後はトランスペアレントに中継。VPNゲートウェイ的な使い方も。</div>
+    </div>
+  </div>
+
+  <!-- アプリケーション -->
+  <div style="border:2px solid var(--danger);border-radius:12px;overflow:hidden;">
+    <div style="background:var(--danger);padding:12px 16px;color:white;">
+      <div style="font-size:13px;font-weight:800;letter-spacing:.02em;">アプリケーションゲートウェイ</div>
+      <div style="font-size:10px;opacity:.8;font-family:var(--mono);margin-top:2px;">Application Gateway (Proxy) — 動作層：L7</div>
+    </div>
+    <div style="padding:16px 18px;background:#fff5f5;">
+      <div style="display:flex;justify-content:center;margin-bottom:12px;">
+        <div style="width:110px;height:84px;background:#fff;border:2px solid var(--danger);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;">
+          <svg width="48" height="48" viewBox="0 0 64 64" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <!-- 通訳 -->
+            <circle cx="32" cy="18" r="7" fill="#fde0d0" stroke="var(--danger)" stroke-width="1.5"/>
+            <path d="M22 45 V30 Q32 26 42 30 V45 z" fill="#fde0d0" stroke="var(--danger)" stroke-width="1.5"/>
+            <!-- Book (インタプリタ) -->
+            <rect x="24" y="31" width="16" height="12" rx="1" fill="white" stroke="var(--danger)" stroke-width="1.3"/>
+            <line x1="32" y1="31" x2="32" y2="43" stroke="var(--danger)" stroke-width="1"/>
+            <line x1="26" y1="35" x2="30" y2="35" stroke="var(--danger)" stroke-width="0.8"/>
+            <line x1="26" y1="38" x2="30" y2="38" stroke="var(--danger)" stroke-width="0.8"/>
+            <line x1="34" y1="35" x2="38" y2="35" stroke="var(--danger)" stroke-width="0.8"/>
+            <line x1="34" y1="38" x2="38" y2="38" stroke="var(--danger)" stroke-width="0.8"/>
+            <!-- translation arrows -->
+            <path d="M4 20 Q14 18 14 24" stroke="var(--danger)" stroke-width="1.5" fill="none"/>
+            <polygon points="12,22 14,24 16,22" fill="var(--danger)"/>
+            <path d="M60 20 Q50 18 50 24" stroke="var(--danger)" stroke-width="1.5" fill="none"/>
+            <polygon points="48,22 50,24 52,22" fill="var(--danger)"/>
+            <text x="6" y="15" font-size="4" fill="var(--danger)" font-weight="700">HTTP</text>
+            <text x="52" y="15" font-size="4" fill="var(--danger)" font-weight="700">HTTP</text>
+          </svg>
+          <span style="font-size:10px;font-weight:800;color:var(--danger);font-family:var(--mono);">通訳</span>
+        </div>
+      </div>
+      <div style="font-size:12px;color:#5a0000;line-height:1.7;margin-bottom:10px;"><strong>たとえ：</strong>通訳。<strong>会話の内容を全部聞いて</strong>怪しい単語・禁止表現を検出し、問題なければ相手に伝える。プロトコル毎に専門知識を持つ。</div>
+      <div style="background:#fde0d0;border-radius:5px;padding:8px 11px;font-size:11px;color:var(--danger);line-height:1.55;margin-bottom:8px;"><strong>検査範囲：</strong>アプリ層の中身（HTTPメソッド、URL、ヘッダ、本文、SMTPコマンド等）を完全に理解して検査</div>
+      <div style="background:#fff;border:1px solid #e8a8a8;border-radius:5px;padding:8px 11px;font-size:10.5px;color:#5a0000;line-height:1.55;"><strong>代表例：</strong>HTTPプロキシ(Squid)、SMTPゲートウェイ。プロトコル毎に専用プロキシが必要なため対応プロトコルが限定される。処理は重い。</div>
+    </div>
+  </div>
+
+</div>
+
+<table class="cmp-table">
+<thead><tr><th>比較項目</th><th>サーキットレベル</th><th>アプリケーションG/W</th></tr></thead>
+<tbody>
+<tr><td>動作層</td><td>L5（セッション）</td><td class="cmp-good">L7（アプリケーション）</td></tr>
+<tr><td>中身の検査</td><td class="cmp-bad">しない（接続情報のみ）</td><td class="cmp-good">する（HTTP/SMTP等の中身まで）</td></tr>
+<tr><td>プロトコル依存</td><td class="cmp-good">低い（汎用）</td><td class="cmp-bad">高い（プロトコル毎に実装必要）</td></tr>
+<tr><td>処理速度</td><td class="cmp-good">速い</td><td class="cmp-bad">遅い（深く解析）</td></tr>
+<tr><td>防御力</td><td class="cmp-mid">パケットフィルタよりは高い</td><td class="cmp-good">最も高い（内容ベース検査可能）</td></tr>
+<tr><td>代表実装</td><td style="font-family:var(--mono);font-size:11.5px">SOCKS</td><td style="font-family:var(--mono);font-size:11.5px">Squid, DeleGate, mod_proxy</td></tr>
+<tr><td>共通特徴</td><td colspan="2" class="cmp-good">クライアント⇔GW、GW⇔サーバの2つのコネクションに分離 / 内部IPの隠蔽 / 詳細ログ</td></tr>
+</tbody>
+</table>
+
+<div class="note info">
+<div class="note-i"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1570b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16" stroke-width="2.5"/></svg></div>
+<p><strong>試験頻出：</strong>「アプリケーションゲートウェイ＝プロキシ」の別名で呼ばれることを押さえる。HTTPプロキシ（Squid等）は典型例。<strong>2つのコネクションに分離される</strong>点は「エンドツーエンドの接続が直接張られない」と表現されることもある。</p>
+</div>
+</section>
+
+<!-- ============================================================
+     S05 パーソナルFW
+     ============================================================ -->
+<section class="section" id="s5">
+<div class="section-header"><span class="s-num">05</span><h2>パーソナルファイアウォール</h2></div>
+<p>これまで説明してきたFWは<strong>ネットワーク境界に設置される専用機器</strong>でしたが、<strong>パーソナルファイアウォール</strong>は<strong>PCやスマートフォンにソフトウェアとして組み込まれる</strong>FWです。「城の外壁」ではなく「<strong>各家の玄関ドアに付ける番犬</strong>」のようなもの。Windows DefenderファイアウォールやmacOSのアプリケーションファイアウォールが代表例です。</p>
+
+<div style="background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:22px 0;">
+  <div style="background:var(--ink2);color:#fff;padding:10px 18px;font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;display:flex;align-items:center;gap:8px;">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18" stroke-width="2.5"/></svg>
+    境界FWとパーソナルFWの多層防御
+  </div>
+  <div style="padding:24px;overflow-x:auto;">
+  <div style="min-width:720px;display:flex;align-items:center;gap:10px;">
+
+    <!-- Internet -->
+    <div style="flex:0 0 84px;display:flex;flex-direction:column;align-items:center;gap:4px;">
+      <div style="width:64px;height:64px;background:#fde0e0;border:2px dashed var(--danger);border-radius:50%;display:flex;align-items:center;justify-content:center;">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      </div>
+      <span style="font-size:9.5px;font-weight:700;color:var(--danger);text-align:center;">インターネット</span>
+    </div>
+
+    <!-- Arrow -->
+    <div style="flex:0 0 30px;display:flex;flex-direction:column;align-items:center;gap:2px;">
+      <div style="width:100%;height:2px;background:var(--danger);position:relative;"><div style="position:absolute;right:-5px;top:-4px;width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:7px solid var(--danger);"></div></div>
+    </div>
+
+    <!-- 境界FW -->
+    <div style="flex:0 0 92px;display:flex;flex-direction:column;align-items:center;gap:4px;">
+      <div style="width:76px;height:76px;background:#fff;border:2.5px solid var(--danger);border-radius:11px;display:flex;align-items:center;justify-content:center;">
+        <svg width="44" height="44" viewBox="0 0 48 48" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M24 6 Q20 12 22 16 Q17 14 18 9 Q21 6 24 2 Q27 6 30 9 Q31 14 26 16 Q28 12 24 6z" fill="#ff9068" stroke="var(--danger)" stroke-width="1.3"/>
+          <rect x="4" y="19" width="11" height="7" rx="1" fill="#fde0d0" stroke="var(--danger)" stroke-width="1.1"/>
+          <rect x="16" y="19" width="10" height="7" rx="1" fill="#fde0d0" stroke="var(--danger)" stroke-width="1.1"/>
+          <rect x="27" y="19" width="10" height="7" rx="1" fill="#fde0d0" stroke="var(--danger)" stroke-width="1.1"/>
+          <rect x="38" y="19" width="6" height="7" rx="1" fill="#fde0d0" stroke="var(--danger)" stroke-width="1.1"/>
+          <rect x="4" y="27" width="6" height="7" rx="1" fill="#fde0d0" stroke="var(--danger)" stroke-width="1.1"/>
+          <rect x="11" y="27" width="10" height="7" rx="1" fill="#fde0d0" stroke="var(--danger)" stroke-width="1.1"/>
+          <rect x="22" y="27" width="10" height="7" rx="1" fill="#fde0d0" stroke="var(--danger)" stroke-width="1.1"/>
+          <rect x="33" y="27" width="11" height="7" rx="1" fill="#fde0d0" stroke="var(--danger)" stroke-width="1.1"/>
+          <rect x="4" y="35" width="11" height="7" rx="1" fill="#fde0d0" stroke="var(--danger)" stroke-width="1.1"/>
+          <rect x="16" y="35" width="10" height="7" rx="1" fill="#fde0d0" stroke="var(--danger)" stroke-width="1.1"/>
+          <rect x="27" y="35" width="10" height="7" rx="1" fill="#fde0d0" stroke="var(--danger)" stroke-width="1.1"/>
+          <rect x="38" y="35" width="6" height="7" rx="1" fill="#fde0d0" stroke="var(--danger)" stroke-width="1.1"/>
+        </svg>
+      </div>
+      <span style="font-size:9.5px;font-weight:700;color:var(--danger);text-align:center;line-height:1.3;">境界FW<br><small style="font-weight:500">（城壁）</small></span>
+    </div>
+
+    <!-- 社内LAN zone -->
+    <div style="flex:1;background:#eaf7f1;border:1.5px dashed #70c898;border-radius:12px;padding:16px 12px;display:flex;align-items:center;gap:10px;">
+
+      <!-- PC1 with PFW -->
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
+        <div style="width:72px;height:72px;background:#fff;border:2px solid var(--orange);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;position:relative;">
+          <svg width="34" height="34" viewBox="0 0 32 32" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="26" height="18" rx="2.5" fill="#fde0c0" stroke="var(--orange)" stroke-width="1.5"/>
+            <rect x="7" y="8" width="18" height="10" rx="1.5" fill="white" stroke="var(--orange)" stroke-width="1.2"/>
+            <line x1="11" y1="28" x2="21" y2="28" stroke="var(--orange)" stroke-width="1.5"/>
+            <line x1="16" y1="22" x2="16" y2="28" stroke="var(--orange)" stroke-width="1.5"/>
+          </svg>
+          <!-- dog guard icon -->
+          <div style="position:absolute;top:-8px;right:-8px;background:var(--orange);color:white;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid white;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+        </div>
+        <span style="font-size:9.5px;font-weight:700;color:var(--orange);text-align:center;">PC1 + Personal FW</span>
+      </div>
+
+      <!-- PC2 -->
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
+        <div style="width:72px;height:72px;background:#fff;border:2px solid var(--orange);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;position:relative;">
+          <svg width="34" height="34" viewBox="0 0 32 32" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="26" height="18" rx="2.5" fill="#fde0c0" stroke="var(--orange)" stroke-width="1.5"/>
+            <rect x="7" y="8" width="18" height="10" rx="1.5" fill="white" stroke="var(--orange)" stroke-width="1.2"/>
+            <line x1="11" y1="28" x2="21" y2="28" stroke="var(--orange)" stroke-width="1.5"/>
+            <line x1="16" y1="22" x2="16" y2="28" stroke="var(--orange)" stroke-width="1.5"/>
+          </svg>
+          <div style="position:absolute;top:-8px;right:-8px;background:var(--orange);color:white;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid white;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+        </div>
+        <span style="font-size:9.5px;font-weight:700;color:var(--orange);text-align:center;">PC2 + Personal FW</span>
+      </div>
+
+      <!-- Infected PC (内部から他PCへ攻撃) -->
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
+        <div style="width:72px;height:72px;background:#fff;border:2px solid var(--danger);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;position:relative;">
+          <svg width="34" height="34" viewBox="0 0 32 32" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="26" height="18" rx="2.5" fill="#fde8e8" stroke="var(--danger)" stroke-width="1.5"/>
+            <circle cx="16" cy="13" r="5" fill="#ffb0b0" stroke="var(--danger)" stroke-width="1.2"/>
+            <path d="M13 11l6 4M19 11l-6 4" stroke="white" stroke-width="1.3"/>
+            <line x1="11" y1="28" x2="21" y2="28" stroke="var(--danger)" stroke-width="1.5"/>
+            <line x1="16" y1="22" x2="16" y2="28" stroke="var(--danger)" stroke-width="1.5"/>
+          </svg>
+        </div>
+        <span style="font-size:9.5px;font-weight:700;color:var(--danger);text-align:center;">感染PC<br><small>（USB経由等）</small></span>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div style="margin-top:14px;background:var(--surface);border-left:3px solid var(--orange);border-radius:0 6px 6px 0;padding:10px 14px;font-size:12px;color:#5a2a08;line-height:1.7;">
+    <strong>なぜパーソナルFWが必要か：</strong>境界FWは「外からの攻撃」には強いが、<strong>内部に侵入した脅威（USBメモリ感染・マルウェア・内部不正）による横展開(lateral movement)</strong>には無力。各端末のパーソナルFWで「他PC → 自PCへの不要通信」を個別に遮断することで<strong>多層防御(defense in depth)</strong>が成立する。
+  </div>
+  </div>
+</div>
+
+<h3>パーソナルFWの主な機能</h3>
+<div class="steps">
+<div class="step hi"><span class="sn">1</span><div class="sb"><strong>アプリケーション単位の制御：</strong>「どのプログラムが」通信してよいかを判定できる（パケットフィルタにはない特徴）。例：<code>chrome.exe</code> は443番アウトバウンド許可、<code>unknown.exe</code> は全ブロック。</div></div>
+<div class="step hi"><span class="sn">2</span><div class="sb"><strong>インバウンド/アウトバウンド制御：</strong>境界FWは「外から中」が主対象だが、パーソナルFWは<strong>PCから外への通信（アウトバウンド）も制御</strong>できる。マルウェアのC&amp;Cサーバ通信遮断に有効。</div></div>
+<div class="step hi"><span class="sn">3</span><div class="sb"><strong>プロファイル切替：</strong>Windowsでは「ドメイン／プライベート／パブリック」の3プロファイルで、接続先ネットワーク種別に応じて自動で異なるルールセットを適用できる。</div></div>
+<div class="step wn"><span class="sn">4</span><div class="sb"><strong>限界：</strong>PC自身で動作するため、<strong>管理者権限を奪われたマルウェアにはFW設定ごと無効化される</strong>可能性がある。EDRと組み合わせた監視が望ましい。</div></div>
+</div>
+</section>
+
+<!-- ============================================================
+     S06 L7ファイアウォール
+     ============================================================ -->
+<section class="section" id="s6">
+<div class="section-header"><span class="s-num purple-bg">06</span><h2>L7ファイアウォール（次世代ファイアウォール／NGFW）</h2></div>
+<p>従来のパケットフィルタリング型FWは「<strong>ポート443が開いていればすべてHTTPSとして通してしまう</strong>」という限界がありました。<strong>L7ファイアウォール</strong>は、パケットのL7ペイロードまでディープに解析し、「ポート番号ではなく<strong>実際に走っているアプリケーション</strong>」を識別して通信制御します。いわば「<strong>段ボール箱のラベルだけでなく、中身の品名まで見て仕分ける配送業者</strong>」。</p>
+
+<div style="background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:22px 0;">
+  <div style="background:var(--ink2);color:#fff;padding:10px 18px;font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;display:flex;align-items:center;gap:8px;">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>
+    従来FW vs L7FW：「ポート443」の中身は何か？
+  </div>
+  <div style="padding:24px;overflow-x:auto;">
+  <div style="min-width:680px;display:flex;flex-direction:column;gap:18px;">
+
+    <!-- 従来FW -->
+    <div style="background:#fff5f5;border:1.5px dashed #d08080;border-radius:10px;padding:14px 16px;">
+      <div style="font-size:11px;font-weight:700;color:var(--danger);margin-bottom:10px;">■ 従来のパケットフィルタリング（ポート443 = 許可）</div>
+      <div style="display:flex;align-items:center;gap:6px;">
+        <div style="flex:0 0 90px;background:#fff;border:1.5px solid var(--accent);border-radius:8px;padding:6px 8px;text-align:center;font-size:10px;font-family:var(--mono);color:var(--accent);">Client</div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:3px;">
+          <div style="background:#fff;border:1px solid #a8cef5;border-radius:4px;padding:5px 9px;font-size:10px;display:flex;justify-content:space-between;align-items:center;"><span style="font-family:var(--mono);color:#0b3a6a;">→ 443 (HTTPS)</span><span style="color:var(--success);font-weight:700;">✓ 正規Web</span></div>
+          <div style="background:#fff;border:1px solid #a8cef5;border-radius:4px;padding:5px 9px;font-size:10px;display:flex;justify-content:space-between;align-items:center;"><span style="font-family:var(--mono);color:#0b3a6a;">→ 443 (TLS)</span><span style="color:var(--warn);font-weight:700;">⚠ SSL-VPNトンネル</span></div>
+          <div style="background:#fff;border:1px solid #e8a8a8;border-radius:4px;padding:5px 9px;font-size:10px;display:flex;justify-content:space-between;align-items:center;"><span style="font-family:var(--mono);color:var(--danger);">→ 443 (TLS)</span><span style="color:var(--danger);font-weight:700;">✗ マルウェアC&amp;C</span></div>
+        </div>
+        <div style="flex:0 0 68px;background:var(--danger);color:white;border-radius:8px;padding:6px 4px;text-align:center;font-size:10px;font-weight:700;line-height:1.3;">FW<br><small style="font-family:var(--mono);font-size:8.5px;">443許可</small></div>
+        <svg width="20" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        <div style="flex:0 0 90px;background:#fff;border:1.5px solid var(--danger);border-radius:8px;padding:6px 8px;text-align:center;font-size:10px;font-family:var(--mono);color:var(--danger);line-height:1.5;">全部通過<br><small style="color:var(--danger);font-weight:700;">⚠</small></div>
+      </div>
+      <div style="margin-top:9px;font-size:10.5px;color:#5a0000;line-height:1.6;"><strong>問題：</strong>ポート番号だけでは「中身が何のアプリか」わからない。マルウェア通信が正規HTTPSに紛れ込んでも見抜けない。</div>
+    </div>
+
+    <!-- L7 FW -->
+    <div style="background:#ede8ff;border:1.5px dashed var(--purple);border-radius:10px;padding:14px 16px;">
+      <div style="font-size:11px;font-weight:700;color:var(--purple);margin-bottom:10px;">■ L7FW（NGFW）— アプリ識別＋ユーザ識別＋脅威検査</div>
+      <div style="display:flex;align-items:center;gap:6px;">
+        <div style="flex:0 0 90px;background:#fff;border:1.5px solid var(--accent);border-radius:8px;padding:6px 8px;text-align:center;font-size:10px;font-family:var(--mono);color:var(--accent);">Client</div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:3px;">
+          <div style="background:#fff;border:1px solid #b090e0;border-radius:4px;padding:5px 9px;font-size:10px;display:flex;justify-content:space-between;align-items:center;"><span style="font-family:var(--mono);color:#3a006e;">→ 正規Web (App-ID: web-browsing)</span><span style="color:var(--success);font-weight:700;">✓</span></div>
+          <div style="background:#fff;border:1px solid #b090e0;border-radius:4px;padding:5px 9px;font-size:10px;display:flex;justify-content:space-between;align-items:center;"><span style="font-family:var(--mono);color:#3a006e;">→ SSL-VPN (App-ID: ssl-vpn)</span><span style="color:var(--warn);font-weight:700;">⚠ 部門別判定</span></div>
+          <div style="background:#fff;border:1px solid #b090e0;border-radius:4px;padding:5px 9px;font-size:10px;display:flex;justify-content:space-between;align-items:center;"><span style="font-family:var(--mono);color:var(--danger);">→ C&amp;C (App-ID: unknown/malicious)</span><span style="color:var(--danger);font-weight:700;">✗ 遮断</span></div>
+        </div>
+        <div style="flex:0 0 68px;background:var(--purple);color:white;border-radius:8px;padding:6px 4px;text-align:center;font-size:10px;font-weight:700;line-height:1.3;">L7FW<br><small style="font-family:var(--mono);font-size:8.5px;">App-ID</small></div>
+        <svg width="20" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        <div style="flex:0 0 90px;background:#fff;border:1.5px solid var(--success);border-radius:8px;padding:6px 8px;text-align:center;font-size:10px;font-family:var(--mono);color:var(--success);line-height:1.5;">選別通過<br><small style="color:var(--success);font-weight:700;">✓</small></div>
+      </div>
+      <div style="margin-top:9px;font-size:10.5px;color:#3a006e;line-height:1.6;"><strong>L7FWの武器：</strong>アプリ識別 (App-ID)／ユーザ識別 (User-ID)／<strong>SSL/TLS復号検査</strong>／IPS機能／URLフィルタリング／マルウェア検査——これらを単一機器で実施。</div>
+    </div>
+
+  </div>
+  </div>
+</div>
+
+<h3>NGFW（次世代ファイアウォール）の主要機能</h3>
+<table class="req-table">
+<thead><tr><th style="width:160px;">機能</th><th>概要</th><th style="width:200px;">代表製品／技術</th></tr></thead>
+<tbody>
+<tr><td>アプリケーション識別</td><td>ポート番号ではなくパターンマッチやヒューリスティックで実際に走るアプリを特定。SSHの中のSFTP、HTTPSの中のZoom等を識別。</td><td style="font-family:var(--mono);font-size:11.5px">App-ID (Palo Alto) / AppControl (Fortinet)</td></tr>
+<tr><td>ユーザ識別</td><td>Active Directory連携でIPではなく「誰が通信したか」でポリシー適用。人事異動でIP変わっても追従可。</td><td style="font-family:var(--mono);font-size:11.5px">User-ID / Identity Firewall</td></tr>
+<tr><td>SSL/TLS復号</td><td>HTTPS通信を一度復号して中身検査し、再暗号化して転送。MITMの要領。プライバシーと法令遵守に配慮が必要。</td><td style="font-family:var(--mono);font-size:11.5px">SSL Forward Proxy</td></tr>
+<tr><td>IPS統合</td><td>シグネチャベースの侵入防止機能を内蔵。別筐体のIPSを建てなくてよい。</td><td style="font-family:var(--mono);font-size:11.5px">Threat Prevention</td></tr>
+<tr><td>URLフィルタリング</td><td>カテゴリ（ギャンブル・SNS・求人）単位でWebアクセス制御。</td><td style="font-family:var(--mono);font-size:11.5px">URL Filtering DB</td></tr>
+<tr><td>サンドボックス連携</td><td>不審ファイルを仮想環境で実行して挙動を確認（0-day検出）。</td><td style="font-family:var(--mono);font-size:11.5px">WildFire / FortiSandbox</td></tr>
+</tbody>
+</table>
+
+<div class="note warn">
+<div class="note-i"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#b5821e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+<p><strong>SSL復号検査の落とし穴：</strong>暗号化通信の中身を見るために一旦復号するが、これは<strong>中間者攻撃(MITM)と構造的には同じ</strong>。証明書ピンニングしているアプリは接続できなくなる／個人情報が含まれる通信（健康・金融・HR）は復号対象から除外する等のポリシー設計が必須。</p>
+</div>
+</section>
+
+<!-- ============================================================
+     S07 WAF
+     ============================================================ -->
+<section class="section" id="s7">
+<div class="section-header"><span class="s-num">07</span><h2>WAF（Web Application Firewall）</h2></div>
+<p>WAFは「<strong>Webアプリケーション専用の警備員</strong>」です。従来のFW・L7FWが「誰と誰が通信するか」を制御するのに対し、WAFは「<strong>HTTPリクエストの中身（GETパラメータ、POSTボディ、ヘッダ、Cookie）に攻撃パターンが含まれているか</strong>」を検査します。SQLインジェクション・XSS（クロスサイトスクリプティング）・CSRF・OSコマンドインジェクション等のWebアプリに特有の攻撃を防ぐのが役割です。</p>
+
+<div style="background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:22px 0;">
+  <div style="background:var(--ink2);color:#fff;padding:10px 18px;font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;display:flex;align-items:center;gap:8px;">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+    WAFの位置と役割：FW・IPSが見逃すHTTP攻撃を食い止める
+  </div>
+  <div style="padding:24px;overflow-x:auto;">
+  <div style="min-width:720px;">
+
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
+      <!-- 攻撃者 -->
+      <div style="flex:0 0 70px;display:flex;flex-direction:column;align-items:center;gap:4px;">
+        <div style="width:54px;height:54px;background:var(--danger);border-radius:10px;display:flex;align-items:center;justify-content:center;">
+          <svg width="30" height="30" viewBox="0 0 32 32" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 5 L9 10 V16 H23 V10 z" fill="rgba(255,255,255,.25)" stroke="white" stroke-width="1.4"/>
+            <path d="M9 16 Q6 22 9 28 L23 28 Q26 22 23 16" fill="rgba(255,255,255,.15)" stroke="white" stroke-width="1.3"/>
+            <circle cx="13" cy="13" r="1" fill="white"/>
+            <circle cx="19" cy="13" r="1" fill="white"/>
+          </svg>
+        </div>
+        <span style="font-size:9px;font-weight:700;color:var(--danger);">攻撃者</span>
+      </div>
+
+      <!-- 悪いリクエスト -->
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;">
+        <div style="background:#fde0e0;border:1.5px solid var(--danger);border-radius:5px;padding:5px 9px;font-family:var(--mono);font-size:10px;color:var(--danger);width:100%;text-align:center;">POST /login?user=admin' OR 1=1 --</div>
+        <div style="font-size:9.5px;color:var(--danger);font-weight:700;">SQLインジェクション</div>
+        <svg width="100%" height="12" viewBox="0 0 100 12" preserveAspectRatio="none"><path d="M0 6 L98 6" stroke="var(--danger)" stroke-width="1.5"/><polygon points="94,3 98,6 94,9" fill="var(--danger)"/></svg>
+      </div>
+
+      <!-- FW: 通過 -->
+      <div style="flex:0 0 68px;background:var(--success);color:white;border-radius:8px;padding:6px 4px;text-align:center;font-size:9.5px;font-weight:700;line-height:1.3;">FW<br><small style="font-family:var(--mono);font-size:8.5px;">80/443許可</small><br>→ 通過</div>
+      <svg width="16" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+
+      <!-- WAF: 遮断 -->
+      <div style="flex:0 0 88px;background:var(--accent2);color:white;border-radius:10px;padding:8px 6px;text-align:center;font-size:10px;font-weight:700;line-height:1.3;position:relative;border:2px solid #082d5a;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:2px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+        <div>WAF</div>
+        <small style="font-family:var(--mono);font-size:8.5px;color:rgba(255,255,255,.8);">Pattern<br>Detection</small>
+        <div style="position:absolute;top:-4px;right:-4px;background:var(--danger);color:white;font-size:12px;font-weight:900;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid white;">✕</div>
+      </div>
+      <svg width="16" height="14" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:.5;"><polyline points="9 18 15 12 9 6"/></svg>
+
+      <!-- Webサーバ -->
+      <div style="flex:0 0 70px;display:flex;flex-direction:column;align-items:center;gap:4px;">
+        <div style="width:54px;height:54px;background:#fff;border:2px solid var(--accent);border-radius:10px;display:flex;align-items:center;justify-content:center;">
+          <svg width="30" height="30" viewBox="0 0 32 32" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="16" cy="16" r="12" fill="#daeeff" stroke="var(--accent)" stroke-width="1.5"/>
+            <line x1="4" y1="16" x2="28" y2="16" stroke="var(--accent)" stroke-width="1.2"/>
+            <path d="M16 4 Q22 16 16 28 Q10 16 16 4z" stroke="var(--accent)" stroke-width="1.1" fill="none"/>
+            <ellipse cx="16" cy="16" rx="12" ry="6" fill="none" stroke="var(--accent)" stroke-width="1"/>
+          </svg>
+        </div>
+        <span style="font-size:9px;font-weight:700;color:var(--accent);">Webサーバ<br><small>（守られる）</small></span>
+      </div>
+    </div>
+
+    <div style="background:var(--surface);border-radius:8px;padding:12px 16px;font-size:11.5px;color:#3a3d52;line-height:1.75;">
+      <strong style="color:var(--ink2);">なぜFW・IPSではなくWAFが必要か：</strong>FWは「80/443ポートは許可」としか見ておらず、中身のクエリパラメータは素通り。IPSも<strong>汎用</strong>シグネチャでは個別のWebアプリ特有の脆弱性（独自のSQL構文、アプリ固有の認可ロジック）を守りきれない。WAFは<strong>HTTPリクエストのパラメータ・Cookie・ヘッダ単位で</strong>検査しアプリ個別に防御する。
+    </div>
+  </div>
+  </div>
+</div>
+
+<h3>WAFの検出方式：ブラックリスト型 vs ホワイトリスト型</h3>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0;">
+
+  <div style="border:2px solid var(--danger);border-radius:12px;overflow:hidden;">
+    <div style="background:var(--danger);padding:10px 14px;color:white;font-weight:800;font-size:13px;display:flex;align-items:center;gap:8px;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+      ブラックリスト型（拒否リスト方式）
+    </div>
+    <div style="padding:14px 16px;background:#fff5f5;">
+      <p style="font-size:12px;color:#5a0000;line-height:1.7;margin-bottom:10px;"><strong>仕組み：</strong>「危険なパターン」をシグネチャDBに登録し、マッチしたら遮断。<code style="font-family:var(--mono);font-size:11px;background:rgba(122,24,24,.1);color:var(--danger);padding:1px 4px;border-radius:3px">UNION SELECT</code> や <code style="font-family:var(--mono);font-size:11px;background:rgba(122,24,24,.1);color:var(--danger);padding:1px 4px;border-radius:3px">&lt;script&gt;</code> が典型。</p>
+      <div style="background:#fff;border-radius:5px;padding:8px 11px;font-size:10.5px;color:#5a0000;line-height:1.55;margin-bottom:6px;"><strong style="color:var(--success);">○ 長所：</strong>導入しやすい（既知の攻撃を即時遮断）</div>
+      <div style="background:#fff;border-radius:5px;padding:8px 11px;font-size:10.5px;color:#5a0000;line-height:1.55;"><strong style="color:var(--danger);">✕ 短所：</strong>シグネチャにない未知攻撃（ゼロデイ）には無力／パターン回避(エンコーディング等)で迂回される</div>
+    </div>
+  </div>
+
+  <div style="border:2px solid var(--success);border-radius:12px;overflow:hidden;">
+    <div style="background:var(--success);padding:10px 14px;color:white;font-weight:800;font-size:13px;display:flex;align-items:center;gap:8px;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      ホワイトリスト型（許可リスト方式）
+    </div>
+    <div style="padding:14px 16px;background:#f0fbf5;">
+      <p style="font-size:12px;color:#0d3d28;line-height:1.7;margin-bottom:10px;"><strong>仕組み：</strong>「正当なパターン」だけを許可。例：<code style="font-family:var(--mono);font-size:11px;background:rgba(21,95,68,.1);color:var(--success);padding:1px 4px;border-radius:3px">user</code>パラメータは英数8文字以内、<code style="font-family:var(--mono);font-size:11px;background:rgba(21,95,68,.1);color:var(--success);padding:1px 4px;border-radius:3px">age</code>は整数のみ、等。</p>
+      <div style="background:#fff;border-radius:5px;padding:8px 11px;font-size:10.5px;color:#0d3d28;line-height:1.55;margin-bottom:6px;"><strong style="color:var(--success);">○ 長所：</strong>未知の攻撃も防げる（仕様から外れれば全部遮断）／最も堅牢</div>
+      <div style="background:#fff;border-radius:5px;padding:8px 11px;font-size:10.5px;color:#0d3d28;line-height:1.55;"><strong style="color:var(--danger);">✕ 短所：</strong>アプリ仕様を詳細に把握・維持する必要があり運用負荷大／仕様変更時にルール改訂が必要</div>
+    </div>
+  </div>
+
+</div>
+
+<h3>WAFで防げる主な攻撃</h3>
+<table class="atk-table">
+<thead><tr><th style="width:200px;">攻撃</th><th>内容</th><th style="width:150px;">WAFでの対応</th></tr></thead>
+<tbody>
+<tr><td>SQLインジェクション</td><td>入力値にSQL文の断片を混入させ、想定外のクエリを実行させる。例: <code style="font-family:var(--mono);font-size:11px;">' OR '1'='1</code></td><td>SQL構文パターン検出／シングルクォート等のエスケープチェック</td></tr>
+<tr><td>クロスサイトスクリプティング (XSS)</td><td>入力値にJavaScriptを混入させ、他ユーザのブラウザ上で実行させる。例: <code style="font-family:var(--mono);font-size:11px;">&lt;script&gt;…&lt;/script&gt;</code></td><td><code>&lt;script&gt;</code>タグや<code>javascript:</code>スキーム検出</td></tr>
+<tr><td>OSコマンドインジェクション</td><td>入力値にOSコマンドを混入。例: <code style="font-family:var(--mono);font-size:11px;">; cat /etc/passwd</code></td><td>コマンド区切り文字（; | &amp;）の検出</td></tr>
+<tr><td>ディレクトリトラバーサル</td><td>パスに<code>../</code>を含めて想定外のファイルにアクセス</td><td><code>../</code>等のパターン検出／正規化後チェック</td></tr>
+<tr><td>CSRF（一部）</td><td>被害者のブラウザから意図しないリクエストを送らせる</td><td>リファラチェック／トークン検証の補助（根本対策はアプリ側）</td></tr>
+<tr><td>ブルートフォース攻撃</td><td>ログイン等に対する総当たり</td><td>同一IPからのリクエストレート制限</td></tr>
+</tbody>
+</table>
+
+<div class="keypoint">
+<p class="kp-label">核心ポイント — 試験頻出の混同整理</p>
+<p><strong>FW vs IDS/IPS vs WAF</strong>は支援士試験の定番。FWは「通信の許可/拒否」、IDS/IPSは「汎用的な侵入検知/防止」、<strong>WAFは「Webアプリ専用の攻撃検知/防止」</strong>。SQLインジェクションのような<strong>アプリ層攻撃はFWやIPSでは防げない</strong>（FWは80/443ポートを許可するだけ、IPSは汎用シグネチャで精度が限定的）。この区別は繰り返し問われる。</p>
+</div>
+</section>
+
+<!-- ============================================================
+     S08 パケットフィルタのルール設定
+     ============================================================ -->
+<section class="section" id="s8">
+<div class="section-header"><span class="s-num">08</span><h2>パケットフィルタのルール設定</h2></div>
+<p>パケットフィルタリング型FWの実運用は「<strong>ルールリスト</strong>の設計」に尽きます。ルールは<strong>上から順に評価</strong>され、最初にマッチしたルールが適用されます（<strong>First Match</strong>方式）。最後に「<strong>すべて拒否（deny all）</strong>」を置き、<strong>明示的に許可したものだけ通す</strong>ホワイトリスト運用が原則です。</p>
+
+<h3>典型的なルール表（DMZのWebサーバを公開する例）</h3>
+<p>社内LAN（<code>192.168.1.0/24</code>）、DMZ（<code>10.0.0.0/24</code>）、DMZ内のWebサーバ（<code>10.0.0.10</code>）という構成を想定します。</p>
+
+<div class="header-block">
+<span class="hba"># ================================================</span>
+<span class="hba"># ファイアウォールルール例（疑似iptables風記法）</span>
+<span class="hba"># ================================================</span>
+
+<span class="hbv">No</span> <span class="hbv">方向</span>   <span class="hbv">送信元IP</span>          <span class="hbv">宛先IP</span>           <span class="hbv">プロトコル</span>  <span class="hbv">宛先ポート</span>  <span class="hbv">アクション</span>
+<span class="hbok">─────────────────────────────────────────────────────────────────────────</span>
+<span class="hbw">#1</span>  <span class="hbok">IN</span>     <span class="hbv">ANY</span>               <span class="hbv">10.0.0.10</span>        <span class="hbv">TCP</span>         <span class="hbv">80</span>           <span class="hbok">ALLOW</span>
+<span class="hbw">#2</span>  <span class="hbok">IN</span>     <span class="hbv">ANY</span>               <span class="hbv">10.0.0.10</span>        <span class="hbv">TCP</span>         <span class="hbv">443</span>          <span class="hbok">ALLOW</span>
+<span class="hbw">#3</span>  <span class="hbok">OUT</span>    <span class="hbv">192.168.1.0/24</span>    <span class="hbv">ANY</span>              <span class="hbv">TCP</span>         <span class="hbv">80,443</span>       <span class="hbok">ALLOW</span>
+<span class="hbw">#4</span>  <span class="hbok">OUT</span>    <span class="hbv">192.168.1.0/24</span>    <span class="hbv">ANY</span>              <span class="hbv">UDP</span>         <span class="hbv">53 (DNS)</span>     <span class="hbok">ALLOW</span>
+<span class="hbw">#5</span>  <span class="hbok">IN</span>     <span class="hbv">ANY</span>               <span class="hbv">10.0.0.10</span>        <span class="hbv">TCP</span>         <span class="hbv">22 (SSH)</span>     <span class="hbng">DENY</span>   <span class="hba"># 明示拒否</span>
+<span class="hbw">#6</span>  <span class="hbok">IN</span>     <span class="hbv">192.168.1.50</span>      <span class="hbv">10.0.0.10</span>        <span class="hbv">TCP</span>         <span class="hbv">22 (SSH)</span>     <span class="hbok">ALLOW</span>  <span class="hba"># 管理者のみ</span>
+<span class="hbw">#7</span>  <span class="hbok">*</span>      <span class="hbv">ANY</span>               <span class="hbv">ANY</span>              <span class="hbv">ANY</span>         <span class="hbv">ANY</span>          <span class="hbng">DENY</span>   <span class="hba"># ★デフォルト拒否</span>
+</div>
+
+<div class="note danger">
+<div class="note-i"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7a1818" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+<p><strong>ルール順序の罠：</strong>#5（SSH全拒否）と#6（192.168.1.50のみSSH許可）は順序が逆だと意図通りに動きません。#6を先に、#5を後に書けば「#6でマッチ=許可」、そうでなければ#5でマッチして拒否…と正しく流れる。<strong>より狭い条件を上、より広い条件を下</strong>が原則。</p>
+</div>
+
+<!-- インタラクティブ: ルールテスター -->
+<div class="iwidget">
+  <div class="iwidget-head">
+    <div class="iwidget-head-l">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      体験：パケットフィルタルールをテストしてみよう
+    </div>
+    <span style="font-size:10px;color:rgba(255,255,255,.5);font-family:var(--mono);">TRY IT ↓</span>
+  </div>
+  <div class="iwidget-body">
+    <p style="font-size:12.5px;color:#3a3d52;line-height:1.7;margin-bottom:14px;">上のルール表にパケットを送り込んで、どのルールでマッチして「許可」か「拒否」かを確認できます。条件を選んで「パケット送信」を押してください。</p>
+
+    <div style="display:grid;grid-template-columns:1fr 1.4fr;gap:16px;">
+
+      <!-- 入力 -->
+      <div style="background:var(--surface);border-radius:8px;padding:14px 16px;">
+        <div style="font-size:10.5px;font-weight:700;color:var(--ink2);letter-spacing:.05em;text-transform:uppercase;margin-bottom:10px;">パケット情報</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div><label style="font-size:11px;font-weight:700;color:var(--ink2);display:block;margin-bottom:3px;">方向</label>
+            <select class="sel" id="pf-dir" style="width:100%;">
+              <option value="IN">IN（外→内方向）</option>
+              <option value="OUT">OUT（内→外方向）</option>
+            </select>
+          </div>
+          <div><label style="font-size:11px;font-weight:700;color:var(--ink2);display:block;margin-bottom:3px;">送信元IP</label>
+            <select class="sel" id="pf-src" style="width:100%;">
+              <option value="外部">外部任意IP (203.0.113.5)</option>
+              <option value="管理端末">社内 管理者端末 (192.168.1.50)</option>
+              <option value="一般端末">社内 一般端末 (192.168.1.20)</option>
+              <option value="悪意">悪意ある外部IP (1.2.3.4)</option>
+            </select>
+          </div>
+          <div><label style="font-size:11px;font-weight:700;color:var(--ink2);display:block;margin-bottom:3px;">宛先IP</label>
+            <select class="sel" id="pf-dst" style="width:100%;">
+              <option value="Web">DMZ Webサーバ (10.0.0.10)</option>
+              <option value="外部Web">外部Webサーバ (93.184.216.34)</option>
+              <option value="内部DB">社内DB (192.168.1.100)</option>
+            </select>
+          </div>
+          <div><label style="font-size:11px;font-weight:700;color:var(--ink2);display:block;margin-bottom:3px;">プロトコル / 宛先ポート</label>
+            <select class="sel" id="pf-port" style="width:100%;">
+              <option value="TCP:80">TCP 80 (HTTP)</option>
+              <option value="TCP:443">TCP 443 (HTTPS)</option>
+              <option value="TCP:22">TCP 22 (SSH)</option>
+              <option value="UDP:53">UDP 53 (DNS)</option>
+              <option value="TCP:3389">TCP 3389 (RDP)</option>
+            </select>
+          </div>
+          <button class="btn" onclick="testPacketFilter()" style="margin-top:6px;">パケットを送信 →</button>
+        </div>
+      </div>
+
+      <!-- 結果 -->
+      <div>
+        <div style="font-size:10.5px;font-weight:700;color:var(--ink2);letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px;">ルール評価（上から順に）</div>
+        <div id="pf-rules" style="background:#0d1117;border-radius:8px;padding:12px 14px;font-family:var(--mono);font-size:10.5px;color:#e1e4e8;line-height:1.85;">
+          <span style="color:#888;">（「パケットを送信」を押してください）</span>
+        </div>
+        <div id="pf-verdict" style="margin-top:10px;padding:12px 14px;border-radius:8px;background:var(--surface);font-weight:700;font-size:13px;color:var(--ink2);text-align:center;display:none;"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<h3>ポート番号一覧（試験頻出）</h3>
+<table class="req-table">
+<thead><tr><th style="width:90px;">プロトコル</th><th style="width:90px;">ポート</th><th>用途／押さえるポイント</th></tr></thead>
+<tbody>
+<tr><td>TCP</td><td style="font-family:var(--mono);font-weight:700;">20, 21</td><td>FTP（20=データ、21=制御）。ステートフルFWでPASVモードの動的ポートを追跡できるのが強み。</td></tr>
+<tr><td>TCP</td><td style="font-family:var(--mono);font-weight:700;">22</td><td>SSH（セキュアシェル）。管理者以外は通常遮断対象。</td></tr>
+<tr><td>TCP</td><td style="font-family:var(--mono);font-weight:700;">23</td><td>Telnet — 平文なので実運用では遮断。</td></tr>
+<tr><td>TCP</td><td style="font-family:var(--mono);font-weight:700;">25</td><td>SMTP（メール送信）。外向きは許可、外からの直接受信はメールサーバのみ。</td></tr>
+<tr><td>UDP/TCP</td><td style="font-family:var(--mono);font-weight:700;">53</td><td>DNS。UDPが基本、大きな応答や転送はTCP。</td></tr>
+<tr><td>TCP</td><td style="font-family:var(--mono);font-weight:700;">80</td><td>HTTP（平文Web）。</td></tr>
+<tr><td>TCP</td><td style="font-family:var(--mono);font-weight:700;">110</td><td>POP3（メール受信、平文）。</td></tr>
+<tr><td>TCP</td><td style="font-family:var(--mono);font-weight:700;">143</td><td>IMAP（メール受信、平文）。</td></tr>
+<tr><td>TCP</td><td style="font-family:var(--mono);font-weight:700;">443</td><td>HTTPS。</td></tr>
+<tr><td>TCP</td><td style="font-family:var(--mono);font-weight:700;">3389</td><td>RDP（リモートデスクトップ）。外からのアクセスは原則VPN経由に限定。</td></tr>
+<tr><td>TCP</td><td style="font-family:var(--mono);font-weight:700;">465 / 587</td><td>SMTPS / SUBMISSION（SMTP暗号化・認証付き送信）。</td></tr>
+<tr><td>TCP</td><td style="font-family:var(--mono);font-weight:700;">993 / 995</td><td>IMAPS / POP3S（暗号化版）。</td></tr>
+</tbody>
+</table>
+
+<div class="note info">
+<div class="note-i"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1570b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16" stroke-width="2.5"/></svg></div>
+<p><strong>設計原則まとめ：</strong>(1) <strong>ホワイトリスト方式</strong>（明示許可＋最後にDeny all）(2) <strong>必要最小限の開放</strong>（業務に必要なポートだけ）(3) <strong>順序は「狭い→広い」</strong>で例外を先に書く (4) <strong>入方向・出方向を分けて考える</strong>（マルウェアのアウトバウンド通信防止）(5) <strong>定期的な見直し</strong>（退職者・終了プロジェクトの穴を閉じる）。</p>
+</div>
+</section>
+
+<!-- ============================================================
+     S09 FWで防げない攻撃
+     ============================================================ -->
+<section class="section" id="s9">
+<div class="section-header"><span class="s-num red-bg">09</span><h2>パケットフィルタリングFWで防げない攻撃</h2></div>
+<p>パケットフィルタリング型FWは<strong>L3/L4（IP・ポート）の情報しか見ない</strong>ため、以下のような攻撃は<strong>構造的に防げません</strong>。試験でも「この攻撃をFWで防げるか？」は定番出題です。それぞれの攻撃に対してどの技術が対処するかをセットで覚えておくことが重要です。</p>
+
+<div style="background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:22px 0;">
+  <div style="background:var(--danger);color:#fff;padding:10px 18px;font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;display:flex;align-items:center;gap:8px;">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    FWのブラインドスポット（盲点）
+  </div>
+  <div style="padding:22px;">
+  <table class="atk-table">
+  <thead><tr><th style="width:170px;">攻撃・脅威</th><th>FWで防げない理由</th><th style="width:180px;">対処すべき技術</th></tr></thead>
+  <tbody>
+  <tr><td>SQLインジェクション</td><td>HTTPS(TCP443)を許可した時点で、URLクエリの中身（<code style="font-family:var(--mono);font-size:11px">?id=1' OR 1=1</code>）は検査対象外</td><td><strong style="color:var(--accent2);">WAF</strong> / セキュアコーディング（プリペアドステートメント）</td></tr>
+  <tr><td>クロスサイトスクリプティング (XSS)</td><td>同上。HTTP本文内の <code>&lt;script&gt;</code> はFWの検査対象外</td><td><strong style="color:var(--accent2);">WAF</strong> / 出力エスケープ / CSP</td></tr>
+  <tr><td>OSコマンドインジェクション</td><td>同上。アプリ層のパラメータ内容は未検査</td><td><strong style="color:var(--accent2);">WAF</strong> / 入力検証</td></tr>
+  <tr><td>マルウェア感染ファイルのダウンロード</td><td>HTTPS経由のダウンロードはFWにとっては単なる許可通信</td><td><strong style="color:var(--purple);">UTM</strong> / アンチウイルス / サンドボックス / EDR</td></tr>
+  <tr><td>標的型攻撃メール（添付マルウェア）</td><td>SMTP/POP通信は許可されているので素通り</td><td>メールセキュリティゲートウェイ / サンドボックス / <strong style="color:var(--purple);">UTM</strong></td></tr>
+  <tr><td>DDoS攻撃（大量の正規通信）</td><td>各パケットは正規なため、個別には拒否理由がない。FWのセッション数枯渇でサービス停止に至る</td><td>DDoS対策専用アプライアンス / CDN / レートリミット</td></tr>
+  <tr><td>内部不正 / 持ち出し</td><td>境界FWは「外→中」が主守備範囲。内部からの不正持ち出しは見えない</td><td>DLP / EDR / プロキシログ分析 / SIEM</td></tr>
+  <tr><td>暗号化通信内の攻撃（HTTPS内SQLi等）</td><td>暗号化されているので中身を読めない</td><td>SSL復号 + <strong style="color:var(--accent2);">WAF</strong>/<strong style="color:var(--gold);">IPS</strong> の組合せ</td></tr>
+  <tr><td>ゼロデイ攻撃</td><td>シグネチャ未登録のため検知不能（パケットフィルタの範疇外）</td><td>サンドボックス / 振る舞い検知 / 脆弱性パッチ管理</td></tr>
+  <tr><td>正規のポート上で動く悪性アプリ</td><td>ポート80で動けばHTTPだとしか判別できない。実態がマルウェア通信でも区別不可</td><td><strong style="color:var(--purple);">L7FW (NGFW)</strong> / アプリ識別</td></tr>
+  <tr><td>ソーシャルエンジニアリング / フィッシング</td><td>そもそも通信経路の問題ではない</td><td>利用者教育 / メールフィルタ / URL評価</td></tr>
+  </tbody>
+  </table>
+  </div>
+</div>
+
+<h3>攻撃と防御技術の対応マトリクス（クリックで対応関係を確認）</h3>
+<div class="iwidget">
+  <div class="iwidget-head">
+    <div class="iwidget-head-l">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      体験：攻撃タイプから対応技術を確認
+    </div>
+    <span style="font-size:10px;color:rgba(255,255,255,.5);font-family:var(--mono);">CLICK AN ATTACK ↓</span>
+  </div>
+  <div class="iwidget-body">
+    <p style="font-size:12px;color:#3a3d52;margin-bottom:14px;">攻撃ボタンをクリックすると、その攻撃に対して有効な防御技術が緑で点灯します。</p>
+
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;">
+      <button class="btn small" style="background:#ccc;color:#444;" onclick="showAttack('sqli')" id="atk-sqli">SQLインジェクション</button>
+      <button class="btn small" style="background:#ccc;color:#444;" onclick="showAttack('xss')" id="atk-xss">XSS</button>
+      <button class="btn small" style="background:#ccc;color:#444;" onclick="showAttack('malware')" id="atk-malware">マルウェア感染</button>
+      <button class="btn small" style="background:#ccc;color:#444;" onclick="showAttack('ddos')" id="atk-ddos">DDoS</button>
+      <button class="btn small" style="background:#ccc;color:#444;" onclick="showAttack('zeroday')" id="atk-zeroday">ゼロデイ</button>
+      <button class="btn small" style="background:#ccc;color:#444;" onclick="showAttack('portscan')" id="atk-portscan">ポートスキャン</button>
+      <button class="btn small" style="background:#ccc;color:#444;" onclick="showAttack('internal')" id="atk-internal">内部不正持ち出し</button>
+      <button class="btn small" style="background:#ccc;color:#444;" onclick="showAttack('phishing')" id="atk-phishing">フィッシング</button>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;">
+      <div id="def-pfw" class="def-card" style="background:#f5f5f5;border:2px solid #ddd;border-radius:8px;padding:12px 8px;text-align:center;font-size:11px;font-weight:700;color:#888;transition:all .3s;">
+        <svg width="24" height="24" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:4px;">
+          <rect x="4" y="18" width="11" height="7" rx="1"/>
+          <rect x="16" y="18" width="10" height="7" rx="1"/>
+          <rect x="27" y="18" width="10" height="7" rx="1"/>
+          <rect x="4" y="26" width="6" height="7" rx="1"/>
+          <rect x="11" y="26" width="10" height="7" rx="1"/>
+          <rect x="22" y="26" width="10" height="7" rx="1"/>
+        </svg>
+        <div>パケットフィルタFW</div>
+      </div>
+      <div id="def-l7fw" class="def-card" style="background:#f5f5f5;border:2px solid #ddd;border-radius:8px;padding:12px 8px;text-align:center;font-size:11px;font-weight:700;color:#888;transition:all .3s;">
+        <svg width="24" height="24" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:4px;"><circle cx="24" cy="24" r="14"/><circle cx="24" cy="24" r="6"/><path d="M24 10v4M24 34v4M10 24h4M34 24h4"/></svg>
+        <div>L7FW / NGFW</div>
+      </div>
+      <div id="def-waf" class="def-card" style="background:#f5f5f5;border:2px solid #ddd;border-radius:8px;padding:12px 8px;text-align:center;font-size:11px;font-weight:700;color:#888;transition:all .3s;">
+        <svg width="24" height="24" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:4px;"><circle cx="24" cy="22" r="14"/><line x1="10" y1="22" x2="38" y2="22"/><path d="M24 8 Q32 22 24 36 Q16 22 24 8z"/></svg>
+        <div>WAF</div>
+      </div>
+      <div id="def-ids" class="def-card" style="background:#f5f5f5;border:2px solid #ddd;border-radius:8px;padding:12px 8px;text-align:center;font-size:11px;font-weight:700;color:#888;transition:all .3s;">
+        <svg width="24" height="24" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:4px;"><rect x="6" y="14" width="26" height="16" rx="2"/><circle cx="19" cy="22" r="6"/><path d="M32 19 L40 15 L40 29 L32 25z"/></svg>
+        <div>IDS</div>
+      </div>
+      <div id="def-ips" class="def-card" style="background:#f5f5f5;border:2px solid #ddd;border-radius:8px;padding:12px 8px;text-align:center;font-size:11px;font-weight:700;color:#888;transition:all .3s;">
+        <svg width="24" height="24" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:4px;"><path d="M24 4 L8 10 v12 c0 10 7 18 16 20 c9-2 16-10 16-20 V10 z"/><rect x="17" y="17" width="14" height="16" rx="2"/></svg>
+        <div>IPS</div>
+      </div>
+      <div id="def-utm" class="def-card" style="background:#f5f5f5;border:2px solid #ddd;border-radius:8px;padding:12px 8px;text-align:center;font-size:11px;font-weight:700;color:#888;transition:all .3s;">
+        <svg width="24" height="24" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:4px;"><rect x="6" y="16" width="36" height="24" rx="2"/><path d="M16 16 V12 a3 3 0 0 1 3-3 h10 a3 3 0 0 1 3 3 v4"/></svg>
+        <div>UTM</div>
+      </div>
+      <div id="def-av" class="def-card" style="background:#f5f5f5;border:2px solid #ddd;border-radius:8px;padding:12px 8px;text-align:center;font-size:11px;font-weight:700;color:#888;transition:all .3s;">
+        <svg width="24" height="24" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:4px;"><circle cx="24" cy="24" r="10"/><path d="M24 18v6l4 2"/></svg>
+        <div>アンチウイルス / EDR</div>
+      </div>
+      <div id="def-edu" class="def-card" style="background:#f5f5f5;border:2px solid #ddd;border-radius:8px;padding:12px 8px;text-align:center;font-size:11px;font-weight:700;color:#888;transition:all .3s;">
+        <svg width="24" height="24" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:4px;"><path d="M24 8 L6 16 L24 24 L42 16 L24 8z"/><path d="M14 20v10c4 4 16 4 20 0V20"/></svg>
+        <div>利用者教育</div>
+      </div>
+    </div>
+
+    <div id="atk-detail" style="margin-top:18px;padding:14px 16px;background:var(--surface);border-left:3px solid var(--accent2);border-radius:0 6px 6px 0;font-size:12px;color:var(--ink2);line-height:1.7;display:none;"></div>
+  </div>
+</div>
+</section>
+
+<!-- ============================================================
+     S10 IDS / IPS
+     ============================================================ -->
+<section class="section" id="s10">
+<div class="section-header"><span class="s-num gold-bg">10</span><h2>IDS／IPS（侵入検知／侵入防御システム）</h2></div>
+<p>IDS（Intrusion Detection System）と IPS（Intrusion Prevention System）は、ネットワーク上を流れるパケットを<strong>継続的に監視して、攻撃の兆候を検出する</strong>仕組みです。FWが「許可/拒否のルール」で動くのに対し、IDS/IPSは「<strong>シグネチャ</strong>」や「<strong>正常との差分</strong>」で攻撃を判定します。</p>
+
+<!-- IDS vs IPS 比較 -->
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:22px 0;">
+
+  <div style="border:2px solid var(--success);border-radius:12px;overflow:hidden;">
+    <div style="background:var(--success);padding:12px 16px;color:white;">
+      <div style="font-size:13px;font-weight:800;">IDS（侵入検知）</div>
+      <div style="font-size:10px;opacity:.85;font-family:var(--mono);margin-top:2px;">Intrusion Detection System — 見るだけ</div>
+    </div>
+    <div style="padding:16px;background:#f0fbf5;">
+      <div style="display:flex;justify-content:center;margin-bottom:12px;">
+        <div style="width:120px;height:92px;background:#fff;border:2px solid var(--success);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:6px;">
+          <svg width="56" height="56" viewBox="0 0 64 64" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="8" y="18" width="34" height="22" rx="3" fill="#d0f0e0" stroke="var(--success)" stroke-width="1.6"/>
+            <circle cx="25" cy="29" r="8" fill="#fff" stroke="var(--success)" stroke-width="1.5"/>
+            <circle cx="25" cy="29" r="4" fill="#80c8a0" stroke="var(--success)" stroke-width="1.2"/>
+            <path d="M42 25 L52 19 L52 39 L42 33z" fill="#d0f0e0" stroke="var(--success)" stroke-width="1.5"/>
+            <line x1="25" y1="40" x2="25" y2="50" stroke="var(--success)" stroke-width="1.5"/>
+            <line x1="16" y1="55" x2="34" y2="55" stroke="var(--success)" stroke-width="2"/>
+            <circle cx="14" cy="22" r="2" fill="var(--danger)"/>
+          </svg>
+          <span style="font-size:11px;font-weight:800;color:var(--success);font-family:var(--mono);">IDS</span>
+        </div>
+      </div>
+      <div style="font-size:12px;color:#0d3d28;line-height:1.7;margin-bottom:8px;"><strong>たとえ：</strong>監視カメラ。<strong>見つけるが、止めない</strong>。通知だけする。</div>
+      <div style="background:#fff;border:1px solid #80c8a0;border-radius:5px;padding:8px 11px;font-size:11px;color:#0d3d28;line-height:1.6;"><strong>動作：</strong>パケットをコピー／ミラーリングして解析。攻撃を検知したら管理者に<strong>アラート通知</strong>するのみ。通信自体は通過する。</div>
+    </div>
+  </div>
+
+  <div style="border:2px solid var(--warn);border-radius:12px;overflow:hidden;">
+    <div style="background:var(--warn);padding:12px 16px;color:white;">
+      <div style="font-size:13px;font-weight:800;">IPS（侵入防御）</div>
+      <div style="font-size:10px;opacity:.85;font-family:var(--mono);margin-top:2px;">Intrusion Prevention System — 見て止める</div>
+    </div>
+    <div style="padding:16px;background:#fffaf0;">
+      <div style="display:flex;justify-content:center;margin-bottom:12px;">
+        <div style="width:120px;height:92px;background:#fff;border:2px solid var(--warn);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:6px;">
+          <svg width="56" height="56" viewBox="0 0 64 64" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <!-- shield -->
+            <path d="M32 6 L12 12 v14 c0 12 9 22 20 24 c11-2 20-12 20-24 V12 z" fill="#fff3d0" stroke="var(--warn)" stroke-width="1.6"/>
+            <!-- hand -->
+            <path d="M26 22 V40 h12 V26 c0-2-2-3-3-3 h-6 c-2 0-3 1-3 3 z" fill="#ffe0a0" stroke="var(--warn)" stroke-width="1.3"/>
+            <line x1="29" y1="22" x2="29" y2="16" stroke="var(--warn)" stroke-width="1.3"/>
+            <line x1="32" y1="22" x2="32" y2="14" stroke="var(--warn)" stroke-width="1.3"/>
+            <line x1="35" y1="22" x2="35" y2="16" stroke="var(--warn)" stroke-width="1.3"/>
+          </svg>
+          <span style="font-size:11px;font-weight:800;color:var(--warn);font-family:var(--mono);">IPS</span>
+        </div>
+      </div>
+      <div style="font-size:12px;color:#5a3200;line-height:1.7;margin-bottom:8px;"><strong>たとえ：</strong>警備兵。<strong>見つけたら即座に止める</strong>。</div>
+      <div style="background:#fff;border:1px solid #e0c070;border-radius:5px;padding:8px 11px;font-size:11px;color:#5a3200;line-height:1.6;"><strong>動作：</strong>パケットが<strong>インラインで通る経路に設置</strong>され、攻撃検知時はそのパケットを<strong>即時遮断</strong>（ドロップ）。</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- 設置位置の違い図 -->
+<div style="background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:22px 0;">
+<div style="background:var(--ink2);color:#fff;padding:10px 18px;font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;display:flex;align-items:center;gap:8px;">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3z"/><path d="M9 9h6v6H9z"/></svg>
+設置方式の違い — パッシブ(IDS) vs インライン(IPS)
+</div>
+<div style="padding:22px;overflow-x:auto;">
+<div style="min-width:720px;display:flex;flex-direction:column;gap:20px;">
+
+  <!-- IDS passive -->
+  <div>
+    <div style="font-size:11px;font-weight:700;color:var(--success);margin-bottom:10px;letter-spacing:.05em;">■ IDS — パッシブ／ミラー配置（通信はIDSを経由しない）</div>
+    <div style="display:flex;align-items:center;gap:6px;">
+      <div style="flex:0 0 68px;background:#fff;border:1.5px solid var(--danger);border-radius:8px;padding:6px 4px;text-align:center;font-size:10px;font-family:var(--mono);color:var(--danger);">外部</div>
+      <svg width="22" height="16" viewBox="0 0 24 16" preserveAspectRatio="none"><line x1="2" y1="8" x2="22" y2="8" stroke="var(--ink2)" stroke-width="2"/><polygon points="18,4 22,8 18,12" fill="var(--ink2)"/></svg>
+      <div style="flex:0 0 72px;background:var(--ink2);color:white;border-radius:8px;padding:6px 4px;text-align:center;font-size:10px;font-weight:700;">L2スイッチ<br><small style="font-family:var(--mono);font-size:8.5px;color:rgba(255,255,255,.7);">ミラーポート</small></div>
+      <div style="flex:0 0 70px;display:flex;flex-direction:column;align-items:center;">
+        <div style="width:2px;height:30px;background:var(--success);border-style:dashed;"></div>
+        <div style="background:var(--success);color:white;border-radius:8px;padding:6px 10px;font-size:10px;font-weight:700;text-align:center;">IDS</div>
+      </div>
+      <svg width="22" height="16" viewBox="0 0 24 16" preserveAspectRatio="none"><line x1="2" y1="8" x2="22" y2="8" stroke="var(--ink2)" stroke-width="2"/><polygon points="18,4 22,8 18,12" fill="var(--ink2)"/></svg>
+      <div style="flex:0 0 68px;background:#fff;border:1.5px solid var(--accent);border-radius:8px;padding:6px 4px;text-align:center;font-size:10px;font-family:var(--mono);color:var(--accent);">内部<br>LAN</div>
+    </div>
+    <div style="margin-top:8px;font-size:10.5px;color:#3a3d52;line-height:1.6;"><strong>特徴：</strong>通信はスイッチのミラーポート経由でIDSにコピーされる。IDSが故障・過負荷でも本通信に影響なし（<strong>Fail Open</strong>設計）。ただし遮断はできず通知のみ。</div>
+  </div>
+
+  <!-- IPS inline -->
+  <div>
+    <div style="font-size:11px;font-weight:700;color:var(--warn);margin-bottom:10px;letter-spacing:.05em;">■ IPS — インライン配置（通信はIPSを必ず通過する）</div>
+    <div style="display:flex;align-items:center;gap:6px;">
+      <div style="flex:0 0 68px;background:#fff;border:1.5px solid var(--danger);border-radius:8px;padding:6px 4px;text-align:center;font-size:10px;font-family:var(--mono);color:var(--danger);">外部</div>
+      <svg width="22" height="16" viewBox="0 0 24 16" preserveAspectRatio="none"><line x1="2" y1="8" x2="22" y2="8" stroke="var(--warn)" stroke-width="2"/><polygon points="18,4 22,8 18,12" fill="var(--warn)"/></svg>
+      <div style="flex:0 0 86px;background:var(--warn);color:white;border-radius:8px;padding:8px 4px;text-align:center;font-size:11px;font-weight:800;">IPS<br><small style="font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.75);font-weight:500;">直列に配置</small></div>
+      <svg width="22" height="16" viewBox="0 0 24 16" preserveAspectRatio="none"><line x1="2" y1="8" x2="22" y2="8" stroke="var(--warn)" stroke-width="2"/><polygon points="18,4 22,8 18,12" fill="var(--warn)"/></svg>
+      <div style="flex:0 0 68px;background:#fff;border:1.5px solid var(--accent);border-radius:8px;padding:6px 4px;text-align:center;font-size:10px;font-family:var(--mono);color:var(--accent);">内部<br>LAN</div>
+    </div>
+    <div style="margin-top:8px;font-size:10.5px;color:#3a3d52;line-height:1.6;"><strong>特徴：</strong>全ての通信が必ずIPSを通過する。攻撃を即時遮断できる代わりに、<strong>IPSの処理遅延・障害がそのままサービス影響</strong>になる。</div>
+  </div>
+
+</div>
+</div>
+</div>
+
+<!-- IDS/IPS体験デモ -->
+<div class="iwidget">
+  <div class="iwidget-head">
+    <div class="iwidget-head-l">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      体験：IDSモード ↔ IPSモードの動作差を見る
+    </div>
+    <span style="font-size:10px;color:rgba(255,255,255,.5);font-family:var(--mono);">TOGGLE MODE ↓</span>
+  </div>
+  <div class="iwidget-body">
+    <p style="font-size:12.5px;color:#3a3d52;line-height:1.7;margin-bottom:14px;">「攻撃パケットを送信」ボタンで攻撃パケットを流します。IDSモードは通知のみ、IPSモードは遮断まで行う動作差を確認してください。</p>
+
+    <div style="display:flex;gap:10px;margin-bottom:16px;align-items:center;flex-wrap:wrap;">
+      <span style="font-size:11px;font-weight:700;color:var(--ink2);">モード：</span>
+      <button class="btn ok small" id="mode-ids" onclick="setMode('ids')" style="background:var(--success);">IDS（検知のみ）</button>
+      <button class="btn wn small" id="mode-ips" onclick="setMode('ips')" style="background:#ccc;color:#666;">IPS（遮断あり）</button>
+      <span style="flex:1;"></span>
+      <button class="btn ng small" onclick="sendAttackPacket()">▶ 攻撃パケットを送信</button>
+      <button class="btn ghost small" onclick="sendNormalPacket()">▶ 正規パケットを送信</button>
+      <button class="btn ghost small" onclick="clearIdsIps()">クリア</button>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+
+      <!-- 通信経路ビュー -->
+      <div>
+        <div style="font-size:10.5px;font-weight:700;color:var(--ink2);letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px;">通信経路の様子</div>
+        <div style="background:var(--surface);border-radius:8px;padding:18px 14px;min-height:200px;position:relative;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+            <div style="width:44px;height:44px;background:var(--danger);border-radius:8px;display:flex;align-items:center;justify-content:center;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 18L22 12L16 6"/><path d="M8 6L2 12L8 18"/><line x1="19" y1="12" x2="5" y2="12"/></svg>
+            </div>
+            <div id="ii-device" style="width:72px;height:56px;background:var(--success);border-radius:8px;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:13px;font-family:var(--mono);transition:all .3s;">IDS</div>
+            <div style="width:44px;height:44px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            </div>
+          </div>
+          <div id="ii-packets" style="height:28px;display:flex;align-items:center;justify-content:center;gap:4px;flex-wrap:wrap;">
+            <span style="color:#888;font-size:11px;">（パケットを送信してください）</span>
+          </div>
+          <div id="ii-status" style="margin-top:18px;font-size:11px;text-align:center;padding:8px 12px;border-radius:5px;background:#fff;border:1px dashed var(--line);color:#888;">待機中</div>
+        </div>
+      </div>
+
+      <!-- ログ -->
+      <div>
+        <div style="font-size:10.5px;font-weight:700;color:var(--ink2);letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px;">アラートログ</div>
+        <div id="ii-log" style="background:#0d1117;border-radius:8px;padding:12px 14px;font-family:var(--mono);font-size:11px;color:#e1e4e8;min-height:200px;max-height:240px;overflow-y:auto;line-height:1.75;">
+          <span style="color:#888;">（まだアラートはありません）</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<h3>検知方式：シグネチャ型 vs アノマリ型</h3>
+<table class="cmp-table">
+<thead><tr><th>項目</th><th>シグネチャ型<br>(Signature / Misuse Detection)</th><th>アノマリ型<br>(Anomaly Detection)</th></tr></thead>
+<tbody>
+<tr><td>判定方法</td><td>既知攻撃パターンのDBと照合</td><td>平常時の統計モデルと比較</td></tr>
+<tr><td>未知攻撃への対応</td><td class="cmp-bad">検出不可</td><td class="cmp-good">検出可能性あり</td></tr>
+<tr><td>誤検知（False Positive）</td><td class="cmp-good">少ない</td><td class="cmp-bad">多い（学習期間が必要）</td></tr>
+<tr><td>見逃し（False Negative）</td><td class="cmp-mid">シグネチャ未登録で発生</td><td class="cmp-mid">平常データ汚染で発生</td></tr>
+<tr><td>シグネチャ更新</td><td class="cmp-bad">必要（ベンダー提供）</td><td class="cmp-good">不要（学習ベース）</td></tr>
+<tr><td>導入の手間</td><td class="cmp-good">少ない</td><td class="cmp-bad">多い（ベースライン学習）</td></tr>
+<tr><td>代表的用途</td><td>既知マルウェア・エクスプロイト検知</td><td>内部不正・ゼロデイ・振る舞い検知</td></tr>
+</tbody>
+</table>
+
+<h3>設置場所による分類：NIDS／HIDS</h3>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0;">
+  <div style="background:#eaf3ff;border:1.5px solid var(--accent2);border-radius:10px;padding:13px 16px;">
+    <div style="font-weight:800;color:var(--accent);font-size:13px;margin-bottom:6px;">NIDS（ネットワーク型）</div>
+    <div style="font-size:11.5px;color:#0b3a6a;line-height:1.7;">ネットワーク上に設置してセグメントを流れるパケットを監視。<strong>一箇所で広範囲をカバー</strong>できるが、<strong>暗号化通信の中身は見えない</strong>。Snort・Suricata等。</div>
+  </div>
+  <div style="background:#fdf5e6;border:1.5px solid var(--warn);border-radius:10px;padding:13px 16px;">
+    <div style="font-weight:800;color:var(--warn);font-size:13px;margin-bottom:6px;">HIDS（ホスト型）</div>
+    <div style="font-size:11.5px;color:#5a3200;line-height:1.7;">個々のホストに常駐してログ・プロセス・ファイル変更を監視。<strong>復号済みのデータも見られる</strong>が、<strong>全ホストへの導入が必要</strong>で運用負荷が大。OSSEC・Wazuh・Tripwire等。</div>
+  </div>
+</div>
+
+<h3>IDS／IPSの問題点（試験頻出）</h3>
+<div class="steps">
+<div class="step ng"><span class="sn">1</span><div class="sb"><strong>誤検知 (False Positive) と見逃し (False Negative) のトレードオフ：</strong>検知閾値を厳しくすれば誤検知が増え、緩くすれば見逃しが増える。特にIPSでは誤検知＝正規通信の誤遮断となるため、運用初期は「IDSモード（検知のみ）」で閾値チューニングし、安定後にIPSモードへ移行するのが定石。</div></div>
+<div class="step ng"><span class="sn">2</span><div class="sb"><strong>暗号化通信は中身を見られない：</strong>HTTPS・SSHの中の攻撃は原則検出不可。SSL復号プロキシと組み合わせるか、HIDSで復号済みデータを監視する必要がある。</div></div>
+<div class="step ng"><span class="sn">3</span><div class="sb"><strong>高負荷時の性能：</strong>10Gbps・40Gbpsの大容量トラフィックをディープインスペクションすると<strong>ボトルネックになる</strong>。IPSが処理しきれないとパケットロスやレイテンシ増大でサービス品質に直結。</div></div>
+<div class="step ng"><span class="sn">4</span><div class="sb"><strong>シグネチャの更新遅れ：</strong>新しい脆弱性が公表されてからシグネチャが配布されるまでにタイムラグがあり、その間はゼロデイ状態。</div></div>
+<div class="step ng"><span class="sn">5</span><div class="sb"><strong>IDSは遮断できない：</strong>検知のみの設計のため、検出しても人間が気づいて対応するまで攻撃は進行する。検出後の対応プロセス（<strong>SOC</strong>・<strong>SIEM</strong>）とセットで運用する必要がある。</div></div>
+<div class="step ng"><span class="sn">6</span><div class="sb"><strong>IPSの自動遮断リスク：</strong>誤検知でビジネス通信を止めると業務影響大。<strong>重要通信はホワイトリスト</strong>で保護する設計が必要。</div></div>
+<div class="step ng"><span class="sn">7</span><div class="sb"><strong>回避技術：</strong>攻撃者はペイロードの難読化・分割（フラグメンテーション）・遅延送信でシグネチャ検出を回避しうる。</div></div>
+</div>
+
+<div class="keypoint">
+<p class="kp-label">核心ポイント</p>
+<p>IDSとIPSの違いは「検知のみ」vs「検知＋遮断」、設置形態は「パッシブ／ミラー」vs「インライン」。<strong>機能的には包含関係（IPSはIDS+遮断機能）</strong>。近年はNGFWやUTMに統合されることが多い。検知方式は<strong>シグネチャ型（既知攻撃に強い）</strong>と<strong>アノマリ型（未知攻撃に強い）</strong>の使い分け・併用が重要。</p>
+</div>
+</section>
+
+<!-- ============================================================
+     S11 UTM
+     ============================================================ -->
+<section class="section" id="s11">
+<div class="section-header"><span class="s-num purple-bg">11</span><h2>UTM（統合脅威管理）</h2></div>
+<p>UTM（Unified Threat Management）は、<strong>FW・IDS/IPS・アンチウイルス・URLフィルタリング・アンチスパム・VPN</strong>など、複数のセキュリティ機能を<strong>1台の筐体に統合した装置</strong>です。「<strong>スイスアーミーナイフ</strong>」のように1台で複数の防御機能を提供します。中小規模の企業では機器の台数と運用工数を抑えるため広く採用されています。</p>
+
+<!-- UTM構成図 -->
+<div style="background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:22px 0;">
+  <div style="background:var(--purple);color:#fff;padding:10px 18px;font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;display:flex;align-items:center;gap:8px;">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M8 7V5a3 3 0 0 1 3-3h2a3 3 0 0 1 3 3v2"/></svg>
+    UTM — 1台で何役もこなす統合装置
+  </div>
+  <div style="padding:24px;overflow-x:auto;">
+  <div style="min-width:700px;">
+
+    <!-- ２種類のアプローチ対比 -->
+    <div style="display:grid;grid-template-columns:1fr 60px 1fr;gap:8px;align-items:stretch;">
+
+      <!-- 個別配置 -->
+      <div style="background:#fff5f5;border:1.5px dashed #d08080;border-radius:10px;padding:14px 14px;">
+        <div style="font-size:11px;font-weight:800;color:var(--danger);margin-bottom:10px;text-align:center;">個別機器配置（従来）</div>
+        <div style="display:flex;flex-direction:column;gap:5px;align-items:center;">
+          <div style="background:#fff;border:1.5px solid var(--danger);border-radius:6px;padding:6px 11px;font-size:10.5px;font-weight:700;color:var(--danger);width:140px;text-align:center;">FW</div>
+          <svg width="14" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="6 13 12 19 18 13"/></svg>
+          <div style="background:#fff;border:1.5px solid var(--danger);border-radius:6px;padding:6px 11px;font-size:10.5px;font-weight:700;color:var(--danger);width:140px;text-align:center;">IDS/IPS</div>
+          <svg width="14" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="6 13 12 19 18 13"/></svg>
+          <div style="background:#fff;border:1.5px solid var(--danger);border-radius:6px;padding:6px 11px;font-size:10.5px;font-weight:700;color:var(--danger);width:140px;text-align:center;">アンチウイルスG/W</div>
+          <svg width="14" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="6 13 12 19 18 13"/></svg>
+          <div style="background:#fff;border:1.5px solid var(--danger);border-radius:6px;padding:6px 11px;font-size:10.5px;font-weight:700;color:var(--danger);width:140px;text-align:center;">URLフィルタ</div>
+          <svg width="14" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="6 13 12 19 18 13"/></svg>
+          <div style="background:#fff;border:1.5px solid var(--danger);border-radius:6px;padding:6px 11px;font-size:10.5px;font-weight:700;color:var(--danger);width:140px;text-align:center;">VPN装置</div>
+        </div>
+        <div style="margin-top:10px;font-size:10px;color:#5a0000;line-height:1.5;background:#fff;border-radius:5px;padding:7px 9px;">⚠ 各機器毎にライセンス・メンテ・管理UIが別。管理工数が大きい。</div>
+      </div>
+
+      <div style="display:flex;align-items:center;justify-content:center;">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+
+      <!-- UTM統合 -->
+      <div style="background:#ede8ff;border:1.5px dashed var(--purple);border-radius:10px;padding:14px 14px;">
+        <div style="font-size:11px;font-weight:800;color:var(--purple);margin-bottom:10px;text-align:center;">UTM（統合）</div>
+        <div style="background:#fff;border:2.5px solid var(--purple);border-radius:10px;padding:12px;">
+          <div style="display:flex;justify-content:center;margin-bottom:10px;">
+            <svg width="64" height="64" viewBox="0 0 48 48" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="6" y="16" width="36" height="24" rx="2.5" fill="#ede8ff" stroke="var(--purple)" stroke-width="1.6"/>
+              <path d="M16 16 V12 a3 3 0 0 1 3-3 h10 a3 3 0 0 1 3 3 v4" stroke="var(--purple)" stroke-width="1.5" fill="none"/>
+              <line x1="6" y1="25" x2="42" y2="25" stroke="var(--purple)" stroke-width="1.2" stroke-dasharray="2 2"/>
+              <rect x="18" y="19" width="12" height="3" rx=".5" fill="var(--purple)" opacity=".6"/>
+            </svg>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;">
+            <div style="background:#ede8ff;border-radius:4px;padding:4px 7px;font-size:9.5px;font-weight:700;color:var(--purple);text-align:center;">FW</div>
+            <div style="background:#ede8ff;border-radius:4px;padding:4px 7px;font-size:9.5px;font-weight:700;color:var(--purple);text-align:center;">IDS/IPS</div>
+            <div style="background:#ede8ff;border-radius:4px;padding:4px 7px;font-size:9.5px;font-weight:700;color:var(--purple);text-align:center;">AV</div>
+            <div style="background:#ede8ff;border-radius:4px;padding:4px 7px;font-size:9.5px;font-weight:700;color:var(--purple);text-align:center;">URLフィルタ</div>
+            <div style="background:#ede8ff;border-radius:4px;padding:4px 7px;font-size:9.5px;font-weight:700;color:var(--purple);text-align:center;">Anti-Spam</div>
+            <div style="background:#ede8ff;border-radius:4px;padding:4px 7px;font-size:9.5px;font-weight:700;color:var(--purple);text-align:center;">VPN</div>
+            <div style="background:#ede8ff;border-radius:4px;padding:4px 7px;font-size:9.5px;font-weight:700;color:var(--purple);text-align:center;">WAF*</div>
+            <div style="background:#ede8ff;border-radius:4px;padding:4px 7px;font-size:9.5px;font-weight:700;color:var(--purple);text-align:center;">DLP*</div>
+          </div>
+          <div style="margin-top:8px;font-size:9px;color:#5a1a9e;text-align:center;">（*機種・ライセンスにより差）</div>
+        </div>
+        <div style="margin-top:10px;font-size:10px;color:#3a006e;line-height:1.5;background:#fff;border-radius:5px;padding:7px 9px;">✓ 統一管理画面・統一ログ・統一ライセンス。中小企業向けに最適。</div>
+      </div>
+
+    </div>
+
+  </div>
+  </div>
+</div>
+
+<h3>UTMのメリット・デメリット</h3>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0;">
+  <div style="background:#eaf7f1;border:1.5px solid var(--success);border-radius:10px;padding:14px 16px;">
+    <div style="font-weight:800;color:var(--success);font-size:13px;margin-bottom:8px;display:flex;align-items:center;gap:6px;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      メリット
+    </div>
+    <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:6px;font-size:11.5px;color:#0d3d28;line-height:1.7;">
+      <li>・機器台数・ラックスペース・消費電力が削減できる</li>
+      <li>・<strong>管理画面・ログ・認証が一元化</strong>され運用工数が減る</li>
+      <li>・ベンダーサポートが一本化（責任分界が明確）</li>
+      <li>・ライセンスコストが個別購入より安価な場合が多い</li>
+      <li>・中小企業・拠点で専門家がいなくても導入しやすい</li>
+    </ul>
+  </div>
+  <div style="background:#fdf0f0;border:1.5px solid var(--danger);border-radius:10px;padding:14px 16px;">
+    <div style="font-weight:800;color:var(--danger);font-size:13px;margin-bottom:8px;display:flex;align-items:center;gap:6px;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+      デメリット
+    </div>
+    <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:6px;font-size:11.5px;color:#5a0000;line-height:1.7;">
+      <li>・<strong>単一障害点(SPOF)</strong>になりやすい — UTM停止で全機能停止</li>
+      <li>・<strong>全機能有効時の性能低下</strong>（スループット低下・レイテンシ増大）</li>
+      <li>・各機能の専門性は専用機に劣ることがある</li>
+      <li>・大規模トラフィック環境には不向き（スケールしない）</li>
+      <li>・ベンダー依存（特定ベンダーに縛られる）</li>
+    </ul>
+  </div>
+</div>
+
+<div class="note warn">
+<div class="note-i"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#b5821e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+<p><strong>設計の使い分け：</strong>中小規模拠点・支店では<strong>UTMで統合</strong>、本社・DC等の大規模環境では<strong>個別の専用機（専用FW＋専用IPS＋専用WAF…）</strong>で冗長化・性能確保、という使い分けが一般的です。UTMの冗長化（HA構成）も可能ですが、単機で全機能を背負うためキャパシティ設計が重要です。</p>
+</div>
+</section>
+
+<!-- ============================================================
+     S12 技術の目的整理
+     ============================================================ -->
+<section class="section" id="s12">
+<div class="section-header"><span class="s-num">12</span><h2>各技術の目的整理（横断サマリ）</h2></div>
+<p>これまで見てきた技術を<strong>「何を目的に／何を見て／どう動くか」</strong>の3軸で一覧化します。試験ではこの対比で問われることが多いので、完全に使い分けできるよう整理しておきましょう。</p>
+
+<table class="cmp-table">
+<thead><tr><th>技術</th><th>目的</th><th>見る層</th><th>動作</th><th>向き不向き</th></tr></thead>
+<tbody>
+<tr><td>パケットフィルタFW<br>(ステートフル)</td><td>IP/ポートベースの通信制御</td><td>L3・L4</td><td>遮断</td><td>◎ 基本的な境界防御<br>✕ アプリ層攻撃</td></tr>
+<tr><td>サーキットG/W</td><td>セッション認証／内部IP隠蔽</td><td>L5</td><td>中継</td><td>◎ プロトコル汎用のProxy<br>✕ 中身の検査</td></tr>
+<tr><td>アプリケーションG/W<br>(Proxy)</td><td>アプリ内容の深い検査</td><td>L7</td><td>中継＋遮断</td><td>◎ 精密な内容検査<br>✕ 処理速度・対応プロトコル限定</td></tr>
+<tr><td>L7FW (NGFW)</td><td>アプリ識別／ユーザ識別</td><td>L7</td><td>遮断</td><td>◎ 近代的な境界防御の主役<br>✕ 高価</td></tr>
+<tr><td>WAF</td><td>Webアプリ攻撃の防御</td><td>L7 (HTTP特化)</td><td>遮断</td><td>◎ SQLi／XSS等<br>✕ Web以外の攻撃</td></tr>
+<tr><td>IDS</td><td>攻撃の検知・通知</td><td>L3〜L7</td><td>検知のみ</td><td>◎ 可視化・フォレンジック用途<br>✕ リアルタイム防御</td></tr>
+<tr><td>IPS</td><td>攻撃の検知＋遮断</td><td>L3〜L7</td><td>検知＋遮断</td><td>◎ インライン防御<br>✕ 誤遮断で業務影響</td></tr>
+<tr><td>UTM</td><td>複数機能の統合管理</td><td>L3〜L7</td><td>検知＋遮断</td><td>◎ 中小企業・拠点<br>✕ 大規模／SPOF懸念</td></tr>
+<tr><td>Personal FW</td><td>エンドポイント個別防御</td><td>L3〜L4 + App</td><td>遮断</td><td>◎ 端末レベル／内部横展開防止<br>✕ マルウェアに無効化されうる</td></tr>
+</tbody>
+</table>
+
+<h3>防御対象別のまとめ</h3>
+<div class="steps">
+<div class="step hi"><span class="sn">A</span><div class="sb"><strong>ネットワーク境界での通信制御が目的なら</strong> → パケットフィルタリングFW（ステートフル）／L7FW（NGFW）／UTM</div></div>
+<div class="step hi"><span class="sn">B</span><div class="sb"><strong>Webアプリの攻撃から守るなら</strong> → WAF（独立機器 / CDN統合 / UTMの一機能）</div></div>
+<div class="step hi"><span class="sn">C</span><div class="sb"><strong>侵入検知・アラートが目的なら</strong> → IDS（監視）／SIEMと連携</div></div>
+<div class="step hi"><span class="sn">D</span><div class="sb"><strong>攻撃をリアルタイムで止めるなら</strong> → IPS（インライン遮断）／L7FW統合型</div></div>
+<div class="step hi"><span class="sn">E</span><div class="sb"><strong>小規模拠点で低コスト運用なら</strong> → UTM（多機能統合）</div></div>
+<div class="step hi"><span class="sn">F</span><div class="sb"><strong>端末レベルの個別防御なら</strong> → Personal FW＋EDR（Endpoint Detection &amp; Response）</div></div>
+</div>
+</section>
+
+<!-- ============================================================
+     S13 練習問題
+     ============================================================ -->
+<section class="section" id="s13">
+<div class="section-header"><span class="s-num gold-bg">13</span><h2>練習問題</h2></div>
+<p>支援士試験で問われやすいポイントを中心に、8問を用意しました。選択肢をクリックすると正誤と解説が表示されます。</p>
+
+<div class="quiz-wrap">
+
+<!-- Q1 -->
+<div class="quiz">
+<div class="quiz-q"><span class="quiz-qn">Q1</span><span>ステートフルパケットインスペクションの特徴として、最も適切なものはどれか。</span></div>
+<div class="quiz-opts">
+<button class="quiz-opt" data-correct="false" data-q="q1">ア アプリケーション層のデータ内容を検査して、SQLインジェクション攻撃を検知する。</button>
+<button class="quiz-opt" data-correct="true" data-q="q1">イ TCPコネクションの状態（セッション）を監視し、状態に矛盾するパケットを遮断する。</button>
+<button class="quiz-opt" data-correct="false" data-q="q1">ウ 内部ネットワークから外部への通信を代理で行い、内部IPアドレスを隠蔽する。</button>
+<button class="quiz-opt" data-correct="false" data-q="q1">エ 通信のシグネチャをDBと照合し、既知の攻撃パターンを検出する。</button>
+</div>
+<div class="quiz-exp" data-q="q1"><strong>正解：イ</strong>　ステートフルインスペクション（SPI）はTCPコネクションの状態（SYN/ESTABLISHED/FIN等）を状態表に記録し、状態に合わない不正パケット（例：SYNを経ずにACKだけ来る等）を検出できる。アはWAF、ウはアプリケーションゲートウェイ／NAT、エはIDS/IPS（シグネチャ型）の説明。</div>
+</div>
+
+<!-- Q2 -->
+<div class="quiz">
+<div class="quiz-q"><span class="quiz-qn">Q2</span><span>WAFが主として防御対象とする攻撃はどれか。</span></div>
+<div class="quiz-opts">
+<button class="quiz-opt" data-correct="false" data-q="q2">ア ARPスプーフィング</button>
+<button class="quiz-opt" data-correct="false" data-q="q2">イ SYN Flood攻撃</button>
+<button class="quiz-opt" data-correct="true" data-q="q2">ウ クロスサイトスクリプティング（XSS）</button>
+<button class="quiz-opt" data-correct="false" data-q="q2">エ 不正な送信元IPからのポートスキャン</button>
+</div>
+<div class="quiz-exp" data-q="q2"><strong>正解：ウ</strong>　WAFはWebアプリ層（HTTP）への攻撃—XSS・SQLインジェクション・OSコマンドインジェクション・ディレクトリトラバーサル等を検知・遮断する。アはL2、イはL4の攻撃、エはFW/IDSの範疇。WAFの守備範囲は「Webアプリ固有の攻撃」と覚える。</div>
+</div>
+
+<!-- Q3 -->
+<div class="quiz">
+<div class="quiz-q"><span class="quiz-qn">Q3</span><span>IDSとIPSの機能の違いとして、最も適切な記述はどれか。</span></div>
+<div class="quiz-opts">
+<button class="quiz-opt" data-correct="false" data-q="q3">ア IDSはシグネチャ型、IPSはアノマリ型でのみ動作する。</button>
+<button class="quiz-opt" data-correct="false" data-q="q3">イ IDSは内部通信を監視し、IPSは外部通信を監視する。</button>
+<button class="quiz-opt" data-correct="true" data-q="q3">ウ IDSは攻撃を検知して通知するのみだが、IPSは検知した攻撃通信を遮断できる。</button>
+<button class="quiz-opt" data-correct="false" data-q="q3">エ IDSはインライン配置、IPSはミラー配置が必須である。</button>
+</div>
+<div class="quiz-exp" data-q="q3"><strong>正解：ウ</strong>　IDSは検知のみで遮断はしない（パッシブ／ミラー配置が基本）。IPSは検知＋遮断（インライン配置が基本）。どちらもシグネチャ型・アノマリ型いずれも採用可能。配置の違いも典型出題。</div>
+</div>
+
+<!-- Q4 -->
+<div class="quiz">
+<div class="quiz-q"><span class="quiz-qn">Q4</span><span>パケットフィルタリング型FWだけでは防げない攻撃の組合せとして、最も適切なものはどれか。</span></div>
+<div class="quiz-opts">
+<button class="quiz-opt" data-correct="false" data-q="q4">ア 許可されていないポートへのスキャン、SMTP(25)での外部送信</button>
+<button class="quiz-opt" data-correct="true" data-q="q4">イ HTTPS経由のSQLインジェクション、許可されたポートを使うマルウェア通信</button>
+<button class="quiz-opt" data-correct="false" data-q="q4">ウ 不正な送信元IPからのパケット、特定のプロトコルの遮断</button>
+<button class="quiz-opt" data-correct="false" data-q="q4">エ 不要な管理ポートの外部からのアクセス、特定国からの通信</button>
+</div>
+<div class="quiz-exp" data-q="q4"><strong>正解：イ</strong>　パケットフィルタはIP/ポートしか見ないため、許可ポート（80/443）の中身に含まれる攻撃は素通りする。SQLインジェクションはWAFで、マルウェアのC&amp;C通信はL7FW/IDS/IPS/UTMで対処する。</div>
+</div>
+
+<!-- Q5 -->
+<div class="quiz">
+<div class="quiz-q"><span class="quiz-qn">Q5</span><span>アプリケーションゲートウェイ型FW（HTTPプロキシ）の特徴として、最も適切なものはどれか。</span></div>
+<div class="quiz-opts">
+<button class="quiz-opt" data-correct="false" data-q="q5">ア クライアントとサーバの間でエンドツーエンドのTCPコネクションを維持する。</button>
+<button class="quiz-opt" data-correct="true" data-q="q5">イ クライアント⇔G/W、G/W⇔サーバの2つの独立したコネクションが確立される。</button>
+<button class="quiz-opt" data-correct="false" data-q="q5">ウ TCP/IPヘッダのみを検査し、アプリケーション層データは検査しない。</button>
+<button class="quiz-opt" data-correct="false" data-q="q5">エ L2スイッチのミラーポートで受動的に通信を監視する。</button>
+</div>
+<div class="quiz-exp" data-q="q5"><strong>正解：イ</strong>　アプリケーションゲートウェイは通信を「代理で中継」する。クライアントはG/Wと接続し、G/Wが改めてサーバと接続する2段構え。内部IPアドレスの隠蔽やL7コンテンツ検査が可能。アは逆（エンドツーエンドにならない）、ウはパケットフィルタ、エはIDS（NIDS）の特徴。</div>
+</div>
+
+<!-- Q6 -->
+<div class="quiz">
+<div class="quiz-q"><span class="quiz-qn">Q6</span><span>次のファイアウォールルール表（上から順に評価）で、「送信元 192.168.1.50 から宛先 10.0.0.10:22 へのTCP」パケットの結果はどうなるか。
+<br><br>#1 192.168.1.0/24 → 10.0.0.10 TCP:80 ALLOW<br>#2 ANY → 10.0.0.10 TCP:22 DENY<br>#3 192.168.1.50 → 10.0.0.10 TCP:22 ALLOW<br>#4 ANY → ANY ANY DENY</span></div>
+<div class="quiz-opts">
+<button class="quiz-opt" data-correct="true" data-q="q6">ア #2 でマッチして DENY（拒否）される。</button>
+<button class="quiz-opt" data-correct="false" data-q="q6">イ #3 でマッチして ALLOW（許可）される。</button>
+<button class="quiz-opt" data-correct="false" data-q="q6">ウ #1 でマッチして ALLOW（許可）される。</button>
+<button class="quiz-opt" data-correct="false" data-q="q6">エ #4 でマッチして DENY（拒否）される。</button>
+</div>
+<div class="quiz-exp" data-q="q6"><strong>正解：ア</strong>　ルールは上から順に評価されFirst Matchで確定する。#1は宛先ポートがTCP:80のためマッチせず、#2は「ANY→10.0.0.10 TCP:22」で管理者アクセスも含めてマッチしてDENYになる。#3のALLOWは到達できない（デッドルール）。<strong>特殊な許可ルールは一般的な拒否ルールより上に書く</strong>のが鉄則。</div>
+</div>
+
+<!-- Q7 -->
+<div class="quiz">
+<div class="quiz-q"><span class="quiz-qn">Q7</span><span>UTM（統合脅威管理）装置の利点と欠点についての記述として、最も適切なものはどれか。</span></div>
+<div class="quiz-opts">
+<button class="quiz-opt" data-correct="false" data-q="q7">ア 利点：大規模トラフィックでも性能劣化なく処理できる。／欠点：ライセンスが個別FWより高価。</button>
+<button class="quiz-opt" data-correct="true" data-q="q7">イ 利点：複数機能を1台で運用でき管理が簡潔。／欠点：全機能が1台に集約され単一障害点になりうる。</button>
+<button class="quiz-opt" data-correct="false" data-q="q7">ウ 利点：各機能が専用機と同等の性能。／欠点：導入までの期間が長い。</button>
+<button class="quiz-opt" data-correct="false" data-q="q7">エ 利点：WAF機能は必ず含まれる。／欠点：ベンダー選定肢が少ない。</button>
+</div>
+<div class="quiz-exp" data-q="q7"><strong>正解：イ</strong>　UTMの典型的利点は「統合管理による運用工数削減」、典型的欠点は「SPOF化／全機能有効時の性能低下」。各機能の専門性は専用機に劣ることが多い点、WAFは機種／ライセンスによる点も押さえておきたい。</div>
+</div>
+
+<!-- Q8 -->
+<div class="quiz">
+<div class="quiz-q"><span class="quiz-qn">Q8</span><span>アノマリ型IDSの特徴として、最も適切なものはどれか。</span></div>
+<div class="quiz-opts">
+<button class="quiz-opt" data-correct="false" data-q="q8">ア 既知攻撃のシグネチャDBと照合して検知する。誤検知は少ない。</button>
+<button class="quiz-opt" data-correct="true" data-q="q8">イ 平常時の通信パターンを学習し、そこから外れる振る舞いを異常と判定する。未知攻撃に対応可能な反面、誤検知が発生しやすい。</button>
+<button class="quiz-opt" data-correct="false" data-q="q8">ウ 通信を必ずインラインで経由させ、攻撃を検知した瞬間に遮断する。</button>
+<button class="quiz-opt" data-correct="false" data-q="q8">エ HTTPリクエストの内容を検査し、SQLインジェクション等Webアプリ攻撃を検知する。</button>
+</div>
+<div class="quiz-exp" data-q="q8"><strong>正解：イ</strong>　アノマリ型は「<strong>平常と違う = 異常</strong>」と判定するため、未知攻撃（ゼロデイ）や内部不正の検出に強い。ただし平常の学習が不十分だと誤検知が多発する。アはシグネチャ型、ウはIPS、エはWAFの説明。</div>
+</div>
+
+</div>
+</section>
+
+<!-- ============================================================
+     S14 重要用語まとめ
+     ============================================================ -->
+<section class="section" id="s14">
+<div class="section-header"><span class="s-num">14</span><h2>重要用語まとめ</h2></div>
+
+<h3>ファイアウォール関連</h3>
+<table class="term-table">
+<tbody>
+<tr><td>パケットフィルタリング</td><td>パケットの送信元/宛先IP・ポートなどヘッダ情報で通過を判断するFWの方式。L3/L4で動作。</td></tr>
+<tr><td>スタティック（静的）パケットフィルタ</td><td>固定ルールのみで動作する最も単純なフィルタ。戻り通信用の穴を手動で開ける必要がある。</td></tr>
+<tr><td>ダイナミック（動的）パケットフィルタ</td><td>出ていった通信の戻りを一時的に許可する機能を持つフィルタ。</td></tr>
+<tr><td>ステートフルパケットインスペクション (SPI)</td><td>TCPコネクション状態を追跡する最も賢いパケットフィルタ。現在の主流。</td></tr>
+<tr><td>5タプル</td><td>送信元IP・宛先IP・送信元ポート・宛先ポート・プロトコルの5組。フィルタ判定の基本。</td></tr>
+<tr><td>ステートテーブル（状態表）</td><td>ステートフルFWがTCPコネクションの状態を記録するテーブル。</td></tr>
+<tr><td>サーキットレベルゲートウェイ</td><td>L5で動作。セッション確立時のみ認証し、以降は中身を見ずに中継。SOCKSが代表。</td></tr>
+<tr><td>アプリケーションゲートウェイ（プロキシ）</td><td>L7で動作。HTTPやSMTPなどプロトコル毎に内容を解析して中継。</td></tr>
+<tr><td>パーソナルファイアウォール</td><td>PCなど端末にインストールされるFWソフトウェア。アプリ単位で制御可能。</td></tr>
+<tr><td>L7ファイアウォール / NGFW</td><td>アプリケーション識別・ユーザ識別・SSL復号・IPS等を統合した次世代FW。</td></tr>
+<tr><td>App-ID / User-ID</td><td>NGFWにおけるアプリ識別機能・ユーザ識別機能の呼称（Palo Alto由来）。</td></tr>
+<tr><td>デフォルト拒否 (deny all)</td><td>ルールリスト最後に置く「全拒否」ルール。ホワイトリスト運用の前提。</td></tr>
+<tr><td>First Match</td><td>上から順に評価して最初にマッチしたルールを適用する方式。</td></tr>
+<tr><td>DMZ</td><td>Demilitarized Zone。内部LANとインターネットの間に置く中間領域。公開サーバを配置。</td></tr>
+</tbody>
+</table>
+
+<h3>IDS／IPS関連</h3>
+<table class="term-table">
+<tbody>
+<tr><td>IDS (Intrusion Detection System)</td><td>侵入検知システム。攻撃を検知し通知するのみ。パッシブ／ミラー配置。</td></tr>
+<tr><td>IPS (Intrusion Prevention System)</td><td>侵入防御システム。検知した攻撃通信をリアルタイムで遮断。インライン配置。</td></tr>
+<tr><td>NIDS (Network-based IDS)</td><td>ネットワーク上に設置し広範囲のトラフィックを監視するIDS。Snort等。</td></tr>
+<tr><td>HIDS (Host-based IDS)</td><td>個々のホストに常駐してログ・プロセス・ファイル変更を監視するIDS。OSSEC等。</td></tr>
+<tr><td>シグネチャ型 / Misuse Detection</td><td>既知攻撃パターンDBとの照合で検知。誤検知少・未知攻撃不可。</td></tr>
+<tr><td>アノマリ型 / Anomaly Detection</td><td>平常時との差分で検知。未知攻撃可・誤検知多。</td></tr>
+<tr><td>False Positive（誤検知）</td><td>正常な通信を攻撃と判定してしまう誤り。</td></tr>
+<tr><td>False Negative（見逃し）</td><td>攻撃を正常と判定してしまう誤り。</td></tr>
+<tr><td>インライン配置</td><td>通信経路上に直列に配置する方式。IPSの標準構成。</td></tr>
+<tr><td>ミラーリング／パッシブ配置</td><td>L2スイッチのミラーポートで通信のコピーを受けて監視する方式。IDSの標準構成。</td></tr>
+<tr><td>Fail Open / Fail Close</td><td>障害時に通信を通過させるか遮断するかの設計。IPSでは明確なポリシー選択が必要。</td></tr>
+</tbody>
+</table>
+
+<h3>WAF／UTM／その他</h3>
+<table class="term-table">
+<tbody>
+<tr><td>WAF (Web Application Firewall)</td><td>Webアプリ層の攻撃（SQLi、XSS等）を検知・遮断する専用FW。</td></tr>
+<tr><td>ブラックリスト方式</td><td>拒否すべきパターンを列挙する方式。既知攻撃に強く、未知攻撃に弱い。</td></tr>
+<tr><td>ホワイトリスト方式</td><td>許可すべきパターンのみ列挙する方式。未知攻撃に強いが、運用コスト大。</td></tr>
+<tr><td>UTM (Unified Threat Management)</td><td>FW・IDS/IPS・AV・URLフィルタ・VPN等を1台に統合した装置。</td></tr>
+<tr><td>SSL/TLS復号検査</td><td>暗号化通信を一度復号して中身検査し、再暗号化する。中間者プロキシ構成。</td></tr>
+<tr><td>SPOF (Single Point of Failure)</td><td>単一障害点。1箇所の故障でシステム全体が止まる設計弱点。UTMでは要注意。</td></tr>
+<tr><td>SIEM</td><td>Security Information and Event Management。各種セキュリティログを集約・分析する基盤。</td></tr>
+<tr><td>SOC</td><td>Security Operation Center。アラート監視・対応を担う組織。</td></tr>
+<tr><td>EDR (Endpoint Detection and Response)</td><td>端末上で振る舞いを監視し、侵害を検知・対応する仕組み。Personal FWの進化形。</td></tr>
+<tr><td>多層防御 (Defense in Depth)</td><td>複数の防御層を組み合わせる考え方。境界FW＋Personal FW＋EDR等。</td></tr>
+</tbody>
+</table>
+
+<div class="keypoint" style="margin-top:32px;">
+<p class="kp-label">学習完了チェック</p>
+<p>このドキュメントを通して学んだ要点：<strong>(1)</strong> FW・IDS/IPS・UTM・WAFはそれぞれ見る層・動作が異なる、<strong>(2)</strong> パケットフィルタはステートフルが主流（TCP状態追跡）、<strong>(3)</strong> ゲートウェイ型は2コネクションに分離して内容検査、<strong>(4)</strong> WAFはWebアプリ攻撃に特化、<strong>(5)</strong> IDSは検知のみ・IPSは遮断付き、<strong>(6)</strong> UTMは統合装置で中小向き・SPOF注意、<strong>(7)</strong> 一技術で全てをカバーできないため<strong>多層防御</strong>が原則。これらを押さえれば支援士試験のFW分野はほぼ完全に対応可能です。</p>
+</div>
+
+</section>
+
+</main>
+</div>
+
+<footer>
+  <div>&copy; 2025 情報処理安全確保支援士 技術解説書シリーズ — FIREWALL / IDS / IPS / UTM / WAF</div>
+</footer>
+
+<script>
+/* ============================================================
+   1) OSI階層ハイライト
+   ============================================================ */
+function highlightLayer(osi) {
+  document.querySelectorAll('[data-osi]').forEach(el => {
+    el.style.opacity = '0.28';
+    el.style.transition = 'all .25s';
+  });
+  document.querySelectorAll('[data-osi="' + osi + '"]').forEach(el => {
+    el.style.opacity = '1';
+    el.style.boxShadow = '0 0 0 2px #0b4a82';
+  });
+  setTimeout(() => {
+    document.querySelectorAll('[data-osi]').forEach(el => {
+      el.style.opacity = '';
+      el.style.boxShadow = '';
+    });
+  }, 2400);
+  const info = document.getElementById('layer-info');
+  const msgs = {
+    7: '<strong>L7（アプリケーション層）</strong>：HTTP・SMTP・DNS・FTP等のデータ内容を扱う。アプリケーションG/W・L7FW・WAFが動作。',
+    6: '<strong>L6（プレゼンテーション層）</strong>：SSL/TLS・データ形式変換を扱う。アプリケーションG/Wの一部がTLSターミネーションを担う。',
+    5: '<strong>L5（セッション層）</strong>：通信セッションの確立・維持。サーキットレベルG/W・アプリケーションG/Wが動作。',
+    4: '<strong>L4（トランスポート層）</strong>：TCP/UDPとポート番号の階層。パケットフィルタリングFW（静的・ステートフル）、サーキットレベルG/Wの主要検査対象。',
+    3: '<strong>L3（ネットワーク層）</strong>：IPアドレスとルーティング。パケットフィルタリングFWが基本的に見る階層。',
+    2: '<strong>L1-L2（物理・データリンク層）</strong>：Ethernet・MAC・電気信号。通常のFWはここを見ない（L2SWやNACの領域）。'
+  };
+  info.innerHTML = msgs[osi] || info.innerHTML;
+}
+
+/* ============================================================
+   2) ステートフル状態表 シミュレーション
+   ============================================================ */
+let sfState = null; // null | 'SYN_SENT' | 'ESTABLISHED' | 'FIN_WAIT' | 'CLOSED'
+let sfLogCount = 0;
+
+function sfRender() {
+  const tbody = document.getElementById('sf-tbody');
+  if (!sfState) {
+    tbody.innerHTML = '<tr><td colspan="5" style="padding:20px 8px;text-align:center;color:#6a737d;">（空）まだコネクションは記録されていません</td></tr>';
+    return;
+  }
+  const stateColors = { 'SYN_SENT': '#f9c74f', 'ESTABLISHED': '#56d364', 'FIN_WAIT': '#ff7b72', 'CLOSED': '#6a737d' };
+  const ttl = { 'SYN_SENT': '30s', 'ESTABLISHED': '3600s', 'FIN_WAIT': '120s', 'CLOSED': '—' }[sfState];
+  tbody.innerHTML = '<tr style="border-bottom:1px solid #30363d;">' +
+    '<td style="padding:8px;color:#e1e4e8;">192.168.1.10:50001</td>' +
+    '<td style="padding:8px;color:#e1e4e8;">93.184.216.34:80</td>' +
+    '<td style="padding:8px;color:#79b8ff;">TCP</td>' +
+    '<td style="padding:8px;color:' + stateColors[sfState] + ';font-weight:700;">' + sfState + '</td>' +
+    '<td style="padding:8px;color:#e1e4e8;">' + ttl + '</td>' +
+    '</tr>';
+}
+
+function sfLog(msg, type) {
+  const log = document.getElementById('sf-log');
+  if (sfLogCount === 0) log.innerHTML = '';
+  sfLogCount++;
+  const colors = { info: '#3a3d52', ok: '#155f44', warn: '#b5821e', err: '#7a1818' };
+  const icons = { info: '▸', ok: '✓', warn: '⚠', err: '✕' };
+  const now = new Date().toLocaleTimeString('ja-JP', { hour12: false });
+  const line = '<div style="color:' + colors[type] + ';"><span style="opacity:.5;">[' + now + ']</span> ' + icons[type] + ' ' + msg + '</div>';
+  log.innerHTML = line + log.innerHTML;
+}
+
+function sfAction(action) {
+  switch(action) {
+    case 'syn':
+      if (sfState && sfState !== 'CLOSED') { sfLog('既にコネクションが存在します。リセットしてください。', 'warn'); return; }
+      sfState = 'SYN_SENT';
+      sfLog('内部→外部: SYN送信 → 状態表に新規エントリ (SYN_SENT) 追加', 'ok');
+      break;
+    case 'synack':
+      if (sfState !== 'SYN_SENT') { sfLog('先にSYNを送信してください (現在: ' + (sfState||'なし') + ')', 'err'); return; }
+      sfLog('外部→内部: SYN+ACK受信 → 状態表と照合…一致 → 通過許可', 'ok');
+      break;
+    case 'ack':
+      if (sfState !== 'SYN_SENT') { sfLog('先にSYN+ACKを受信してください', 'err'); return; }
+      sfState = 'ESTABLISHED';
+      sfLog('内部→外部: ACK送信 → 3ウェイハンドシェイク完了 → 状態を ESTABLISHED に更新', 'ok');
+      break;
+    case 'data':
+      if (sfState !== 'ESTABLISHED') { sfLog('コネクションが確立されていません', 'err'); return; }
+      sfLog('データ送受信 (GET /) → 状態表に一致するセッション内通信 → 双方向許可', 'ok');
+      break;
+    case 'fin':
+      if (sfState !== 'ESTABLISHED') { sfLog('確立されていないコネクションはFINできません', 'err'); return; }
+      sfState = 'FIN_WAIT';
+      sfLog('FIN交換 → 状態を FIN_WAIT に → しばらく後に状態表から削除', 'warn');
+      setTimeout(() => {
+        sfState = null;
+        sfRender();
+        sfLog('FIN_WAIT の TTL 満了 → 状態表から削除', 'info');
+      }, 2000);
+      break;
+    case 'reset':
+      sfState = null;
+      sfLogCount = 0;
+      document.getElementById('sf-log').innerHTML = '<span style="color:#888;">（リセットしました）</span>';
+      break;
+    case 'attack':
+      if (sfState === 'ESTABLISHED') {
+        sfLog('不正: SYNなしACKパケット受信 → しかし既存コネクションがあるためチェック対象外扱い', 'warn');
+      } else {
+        sfLog('不正: SYNなしACKパケット受信 → 状態表に該当エントリなし → <b>遮断 (DROP)</b>', 'err');
+      }
+      break;
+  }
+  sfRender();
+}
+
+/* ============================================================
+   3) パケットフィルタ ルールテスター
+   ============================================================ */
+const pfRules = [
+  { no: '#1', dir: 'IN',  src: '*',            dst: 'Web',     proto: 'TCP:80',   action: 'ALLOW', label: 'ANY → 10.0.0.10 TCP:80' },
+  { no: '#2', dir: 'IN',  src: '*',            dst: 'Web',     proto: 'TCP:443',  action: 'ALLOW', label: 'ANY → 10.0.0.10 TCP:443' },
+  { no: '#3', dir: 'OUT', src: '社内',         dst: '*',       proto: 'TCP:80',   action: 'ALLOW', label: '192.168.1.0/24 → ANY TCP:80/443' },
+  { no: '#3', dir: 'OUT', src: '社内',         dst: '*',       proto: 'TCP:443',  action: 'ALLOW', label: '192.168.1.0/24 → ANY TCP:80/443' },
+  { no: '#4', dir: 'OUT', src: '社内',         dst: '*',       proto: 'UDP:53',   action: 'ALLOW', label: '192.168.1.0/24 → ANY UDP:53' },
+  { no: '#5', dir: 'IN',  src: '*',            dst: 'Web',     proto: 'TCP:22',   action: 'DENY',  label: 'ANY → 10.0.0.10 TCP:22' },
+  { no: '#6', dir: 'IN',  src: '管理端末',     dst: 'Web',     proto: 'TCP:22',   action: 'ALLOW', label: '192.168.1.50 → 10.0.0.10 TCP:22' },
+  { no: '#7', dir: '*',   src: '*',            dst: '*',       proto: '*',       action: 'DENY',  label: 'ANY → ANY （デフォルト拒否）' }
+];
+
+function matchRule(rule, pkt) {
+  if (rule.dir !== '*' && rule.dir !== pkt.dir) return false;
+  if (rule.src !== '*') {
+    if (rule.src === '社内' && !['管理端末','一般端末'].includes(pkt.src)) return false;
+    if (rule.src === '管理端末' && pkt.src !== '管理端末') return false;
+  }
+  if (rule.dst !== '*' && rule.dst !== pkt.dst) return false;
+  if (rule.proto !== '*' && rule.proto !== pkt.port) return false;
+  return true;
+}
+
+function testPacketFilter() {
+  const pkt = {
+    dir: document.getElementById('pf-dir').value,
+    src: document.getElementById('pf-src').value,
+    dst: document.getElementById('pf-dst').value,
+    port: document.getElementById('pf-port').value
+  };
+  const rulesDiv = document.getElementById('pf-rules');
+  const verdictDiv = document.getElementById('pf-verdict');
+  let html = '';
+  let matched = null;
+  let stopAt = -1;
+
+  pfRules.forEach((rule, idx) => {
+    const isMatch = matchRule(rule, pkt);
+    let status, color;
+    if (matched !== null) {
+      status = '· SKIP';
+      color = '#6a737d';
+    } else if (isMatch) {
+      matched = rule;
+      stopAt = idx;
+      status = rule.action === 'ALLOW' ? '✓ MATCH → 許可' : '✕ MATCH → 拒否';
+      color = rule.action === 'ALLOW' ? '#56d364' : '#ff7b72';
+    } else {
+      status = '  skip (不一致)';
+      color = '#888';
+    }
+    html += '<div style="color:' + color + ';">' + rule.no.padEnd(4) + ' ' + rule.label.padEnd(38) + ' → ' + rule.action.padEnd(6) + ' <span style="font-weight:700;">' + status + '</span></div>';
+  });
+
+  rulesDiv.innerHTML = html;
+
+  if (matched) {
+    verdictDiv.style.display = 'block';
+    if (matched.action === 'ALLOW') {
+      verdictDiv.style.background = '#eaf7f1';
+      verdictDiv.style.color = '#155f44';
+      verdictDiv.style.border = '2px solid #155f44';
+      verdictDiv.innerHTML = '✓ 結果：許可 (ALLOW) — ルール ' + matched.no + ' でマッチ';
+    } else {
+      verdictDiv.style.background = '#fdf0f0';
+      verdictDiv.style.color = '#7a1818';
+      verdictDiv.style.border = '2px solid #7a1818';
+      verdictDiv.innerHTML = '✕ 結果：拒否 (DENY) — ルール ' + matched.no + ' でマッチ';
+    }
+  }
+}
+
+/* ============================================================
+   4) 攻撃 × 防御技術マトリクス
+   ============================================================ */
+const attackMap = {
+  sqli:     { name: 'SQLインジェクション',      desc: 'Webアプリの入力欄にSQL文を混入させる攻撃。WAFが本丸。L7FW/IPSはシグネチャで一部検出可。パケットFWはHTTPSポート開放時点で無力。', defs: ['waf','l7fw','ips'] },
+  xss:      { name: 'クロスサイトスクリプティング(XSS)', desc: 'Webアプリ経由で他ユーザのブラウザ上でスクリプトを実行させる攻撃。WAFが主力。アプリ側の出力エスケープが根本対策。', defs: ['waf','l7fw','ips'] },
+  malware:  { name: 'マルウェア感染',            desc: 'ダウンロードファイルやメール添付に潜むマルウェア。UTM・AV・EDRが対処。パケットFW単独では防げない。', defs: ['utm','av','ips','l7fw'] },
+  ddos:     { name: 'DDoS攻撃',                  desc: '大量の正規通信による過負荷攻撃。専用DDoS対策機器・CDN・レートリミットが必要。FWは役に立たない（むしろFWが先に枯渇する）。', defs: ['ips','utm'] },
+  zeroday:  { name: 'ゼロデイ攻撃',              desc: 'シグネチャ未登録の新種攻撃。アノマリ型IDS・サンドボックス・EDRの振る舞い検知が頼り。', defs: ['ids','ips','av','utm'] },
+  portscan: { name: 'ポートスキャン',            desc: '開いているポートを探索する偵察行為。FW・IDSで検出・遮断可能。', defs: ['pfw','l7fw','ids','ips','utm'] },
+  internal: { name: '内部不正・情報持ち出し',    desc: '内部からの不正データ送信。境界FWは見えない。出方向ルール・DLP・プロキシログ分析・EDRで検出。', defs: ['av'] },
+  phishing: { name: 'フィッシング',              desc: '偽サイトへ誘導する詐欺。技術対策だけでなく利用者教育が本質。メールフィルタ・URLカテゴリで補助。', defs: ['utm','edu'] }
+};
+
+function showAttack(type) {
+  document.querySelectorAll('[id^="atk-"]').forEach(b => {
+    if (b.tagName === 'BUTTON') { b.style.background = '#ccc'; b.style.color = '#444'; }
+  });
+  const activeBtn = document.getElementById('atk-' + type);
+  if (activeBtn) { activeBtn.style.background = '#7a1818'; activeBtn.style.color = 'white'; }
+
+  const defs = ['pfw','l7fw','waf','ids','ips','utm','av','edu'];
+  defs.forEach(d => {
+    const card = document.getElementById('def-' + d);
+    if (!card) return;
+    if (attackMap[type].defs.includes(d)) {
+      card.style.background = '#eaf7f1';
+      card.style.borderColor = '#155f44';
+      card.style.color = '#155f44';
+    } else {
+      card.style.background = '#fdf0f0';
+      card.style.borderColor = '#e8a8a8';
+      card.style.color = '#c08080';
+      card.style.opacity = '0.6';
+    }
+  });
+
+  const detail = document.getElementById('atk-detail');
+  detail.style.display = 'block';
+  detail.innerHTML = '<strong>' + attackMap[type].name + '：</strong>' + attackMap[type].desc;
+}
+
+/* ============================================================
+   5) IDS ↔ IPS モード切替デモ
+   ============================================================ */
+let iiMode = 'ids';
+let iiLogCount = 0;
+
+function setMode(mode) {
+  iiMode = mode;
+  const device = document.getElementById('ii-device');
+  if (mode === 'ids') {
+    device.textContent = 'IDS';
+    device.style.background = 'var(--success)';
+    document.getElementById('mode-ids').style.background = 'var(--success)';
+    document.getElementById('mode-ids').style.color = 'white';
+    document.getElementById('mode-ips').style.background = '#ccc';
+    document.getElementById('mode-ips').style.color = '#666';
+  } else {
+    device.textContent = 'IPS';
+    device.style.background = 'var(--warn)';
+    document.getElementById('mode-ips').style.background = 'var(--warn)';
+    document.getElementById('mode-ips').style.color = 'white';
+    document.getElementById('mode-ids').style.background = '#ccc';
+    document.getElementById('mode-ids').style.color = '#666';
+  }
+}
+
+function iiLog(msg, type) {
+  const log = document.getElementById('ii-log');
+  if (iiLogCount === 0) log.innerHTML = '';
+  iiLogCount++;
+  const colors = { info: '#e1e4e8', ok: '#56d364', warn: '#f9c74f', err: '#ff7b72' };
+  const now = new Date().toLocaleTimeString('ja-JP', { hour12: false });
+  log.innerHTML = '<div style="color:' + colors[type] + ';"><span style="opacity:.5;">[' + now + ']</span> ' + msg + '</div>' + log.innerHTML;
+}
+
+function showPacket(isAttack, blocked) {
+  const container = document.getElementById('ii-packets');
+  const pkt = document.createElement('div');
+  pkt.style.cssText = 'width:32px;height:20px;background:' + (isAttack ? '#7a1818' : '#1570b8') + ';border-radius:3px;display:flex;align-items:center;justify-content:center;color:white;font-size:8px;font-weight:700;position:absolute;left:20%;top:50%;transform:translateY(-50%);transition:all 1.2s linear;';
+  pkt.textContent = isAttack ? '攻撃' : '正規';
+  container.innerHTML = '';
+  container.style.position = 'relative';
+  container.appendChild(pkt);
+  setTimeout(() => { pkt.style.left = blocked ? '48%' : '80%'; }, 50);
+  setTimeout(() => {
+    if (blocked) {
+      pkt.style.background = '#333';
+      pkt.textContent = '✕';
+      pkt.style.opacity = '0.3';
+    }
+  }, blocked ? 700 : 1000);
+  setTimeout(() => {
+    container.innerHTML = '<span style="color:#888;font-size:11px;">（次のパケットを送信できます）</span>';
+  }, 1700);
+}
+
+function sendAttackPacket() {
+  const status = document.getElementById('ii-status');
+  if (iiMode === 'ids') {
+    iiLog('<b>[ALERT]</b> 攻撃パケットを検知しました (シグネチャID: SQLi-001)。管理者に通知。通信自体は<u>通過</u>しました。', 'warn');
+    status.innerHTML = '<span style="color:var(--warn);">⚠ 攻撃検知 → 通知のみ、通信は通過</span>';
+    status.style.background = '#fff0c0';
+    status.style.border = '1px solid var(--warn)';
+    showPacket(true, false);
+  } else {
+    iiLog('<b>[BLOCK]</b> 攻撃パケットを検知・<u>即時遮断</u>しました (シグネチャID: SQLi-001)。送信元:203.0.113.5 → 宛先:Webサーバ', 'err');
+    status.innerHTML = '<span style="color:var(--danger);">✕ 攻撃検知 → 遮断完了（パケット破棄）</span>';
+    status.style.background = '#fde0e0';
+    status.style.border = '1px solid var(--danger)';
+    showPacket(true, true);
+  }
+}
+
+function sendNormalPacket() {
+  const status = document.getElementById('ii-status');
+  iiLog('正規パケット（GET /index.html）を通過させました', 'info');
+  status.innerHTML = '<span style="color:var(--success);">✓ 正規パケット → 通過</span>';
+  status.style.background = '#eaf7f1';
+  status.style.border = '1px solid var(--success)';
+  showPacket(false, false);
+}
+
+function clearIdsIps() {
+  iiLogCount = 0;
+  document.getElementById('ii-log').innerHTML = '<span style="color:#888;">（クリアしました）</span>';
+  const status = document.getElementById('ii-status');
+  status.innerHTML = '待機中';
+  status.style.background = '#fff';
+  status.style.border = '1px dashed var(--line)';
+  document.getElementById('ii-packets').innerHTML = '<span style="color:#888;font-size:11px;">（パケットを送信してください）</span>';
+}
+
+/* ============================================================
+   6) クイズの正誤判定
+   ============================================================ */
+document.querySelectorAll('.quiz-opt').forEach(btn => {
+  btn.addEventListener('click', function() {
+    const qId = this.getAttribute('data-q');
+    const isCorrect = this.getAttribute('data-correct') === 'true';
+    const sameQ = document.querySelectorAll('.quiz-opt[data-q="' + qId + '"]');
+    sameQ.forEach(o => {
+      o.style.pointerEvents = 'none';
+      if (o.getAttribute('data-correct') === 'true') o.classList.add('correct');
+      else o.classList.add('reveal');
+    });
+    if (!isCorrect) this.classList.remove('reveal'), this.classList.add('wrong');
+    const exp = document.querySelector('.quiz-exp[data-q="' + qId + '"]');
+    if (exp) exp.classList.add('show');
+  });
+});
+
+/* ============================================================
+   7) サイドバー アクティブ状態
+   ============================================================ */
+const sections = document.querySelectorAll('.section');
+const navLinks = document.querySelectorAll('.sidebar nav a');
+window.addEventListener('scroll', () => {
+  let currentSection = '';
+  sections.forEach(sec => {
+    const rect = sec.getBoundingClientRect();
+    if (rect.top <= 120 && rect.bottom > 120) currentSection = sec.id;
+  });
+  navLinks.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + currentSection));
+}, { passive: true });
+</script>
+
+</body>
+</html>

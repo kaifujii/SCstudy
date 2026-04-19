@@ -898,22 +898,26 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 
   <!-- A / AAAA -->
   <div style="background:#fff;border:2px solid var(--danger);border-radius:10px;overflow:hidden">
-    <div style="background:#fde8e8;padding:14px 14px 10px;display:flex;gap:10px;align-items:flex-start">
-      <svg width="52" height="52" viewBox="0 0 52 52" fill="none" style="flex-shrink:0">
-        <rect x="4" y="4" width="44" height="44" rx="8" fill="#fff0f0" stroke="#c84040" stroke-width="1.5"/>
-        <!-- モニターアイコン -->
-        <rect x="10" y="12" width="32" height="20" rx="3" fill="#fde8e8" stroke="#c84040" stroke-width="1.4"/>
-        <rect x="13" y="15" width="26" height="14" rx="1.5" fill="white"/>
-        <!-- IPアドレス表示 -->
-        <text x="26" y="24" text-anchor="middle" font-size="7" font-family="monospace" fill="#c84040" font-weight="700">192.0.2.1</text>
-        <!-- 矢印 -->
-        <line x1="16" y1="35" x2="36" y2="35" stroke="#c84040" stroke-width="1.5" stroke-linecap="round"/>
-        <line x1="16" y1="38" x2="28" y2="38" stroke="#c84040" stroke-width="1" stroke-linecap="round" opacity=".5"/>
-        <circle cx="42" cy="43" r="5" fill="#c84040"/>
-        <text x="42" y="46" text-anchor="middle" font-size="6" fill="white" font-weight="700">→IP</text>
+    <div style="background:#fde8e8;padding:14px 14px 10px;display:flex;gap:12px;align-items:flex-start">
+      <svg width="72" height="72" viewBox="0 0 72 72" fill="none" style="flex-shrink:0">
+        <rect x="4" y="4" width="64" height="64" rx="8" fill="#fff0f0" stroke="#c84040" stroke-width="1.5"/>
+        <!-- モニター -->
+        <rect x="14" y="14" width="44" height="26" rx="3" fill="#fff" stroke="#7a1818" stroke-width="1.5"/>
+        <rect x="17" y="17" width="38" height="20" rx="1.5" fill="#fde8e8"/>
+        <!-- IP表示 -->
+        <text x="36" y="27" text-anchor="middle" font-size="8" font-family="JetBrains Mono,monospace" font-weight="700" fill="#7a1818">192.0.2.1</text>
+        <text x="36" y="34" text-anchor="middle" font-size="5" font-family="JetBrains Mono,monospace" fill="#c84040" opacity=".8">2001:db8::1</text>
+        <!-- スタンド -->
+        <line x1="26" y1="40" x2="46" y2="40" stroke="#7a1818" stroke-width="2"/>
+        <rect x="32" y="40" width="8" height="6" fill="#7a1818"/>
+        <!-- 矢印→IPラベル -->
+        <path d="M 14 52 L 58 52" stroke="#c84040" stroke-width="1.5"/>
+        <polygon points="54,49 60,52 54,55" fill="#c84040"/>
+        <rect x="20" y="56" width="32" height="10" rx="2" fill="#c84040"/>
+        <text x="36" y="63" text-anchor="middle" font-size="7" font-family="JetBrains Mono,monospace" font-weight="800" fill="white">→ IP</text>
       </svg>
       <div>
-        <div style="font-size:13px;font-weight:700;color:#7a1818;font-family:monospace">A / AAAA</div>
+        <div style="font-size:14px;font-weight:800;color:#7a1818;font-family:var(--mono);letter-spacing:-.01em">A / AAAA</div>
         <div style="font-size:9.5px;color:#7a1818;margin-top:2px">ドメイン→IPアドレス変換</div>
       </div>
     </div>
@@ -927,22 +931,26 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 
   <!-- NS -->
   <div style="background:#fff;border:2px solid var(--danger);border-radius:10px;overflow:hidden">
-    <div style="background:#fde8e8;padding:14px 14px 10px;display:flex;gap:10px;align-items:flex-start">
-      <svg width="52" height="52" viewBox="0 0 52 52" fill="none" style="flex-shrink:0">
-        <rect x="4" y="4" width="44" height="44" rx="8" fill="#fff0f0" stroke="#c84040" stroke-width="1.5"/>
-        <!-- 権威NSサーバ（ラック型）-->
-        <rect x="10" y="10" width="32" height="10" rx="2.5" fill="#fde8e8" stroke="#c84040" stroke-width="1.3"/>
-        <rect x="10" y="23" width="32" height="10" rx="2.5" fill="#fde8e8" stroke="#c84040" stroke-width="1.3"/>
-        <circle cx="15" cy="15" r="2" fill="#c84040"/>
-        <circle cx="15" cy="28" r="2" fill="#c84040"/>
-        <line x1="20" y1="15" x2="38" y2="15" stroke="#c84040" stroke-width="1" opacity=".5"/>
-        <line x1="20" y1="28" x2="38" y2="28" stroke="#c84040" stroke-width="1" opacity=".5"/>
-        <!-- 「NS」ラベル -->
-        <rect x="12" y="36" width="28" height="11" rx="3" fill="#c84040"/>
-        <text x="26" y="44" text-anchor="middle" font-size="8" fill="white" font-weight="700" font-family="monospace">NS RECORD</text>
+    <div style="background:#fde8e8;padding:14px 14px 10px;display:flex;gap:12px;align-items:flex-start">
+      <svg width="72" height="72" viewBox="0 0 72 72" fill="none" style="flex-shrink:0">
+        <rect x="4" y="4" width="64" height="64" rx="8" fill="#fff0f0" stroke="#c84040" stroke-width="1.5"/>
+        <!-- ラックサーバ (2段) -->
+        <rect x="12" y="12" width="48" height="14" rx="2" fill="#fff" stroke="#7a1818" stroke-width="1.5"/>
+        <circle cx="17" cy="19" r="1.8" fill="#c84040"/>
+        <line x1="22" y1="16" x2="55" y2="16" stroke="#c84040" stroke-width=".8" opacity=".5"/>
+        <line x1="22" y1="19" x2="55" y2="19" stroke="#c84040" stroke-width=".8" opacity=".5"/>
+        <line x1="22" y1="22" x2="45" y2="22" stroke="#c84040" stroke-width=".8" opacity=".5"/>
+        <rect x="12" y="30" width="48" height="14" rx="2" fill="#fff" stroke="#7a1818" stroke-width="1.5"/>
+        <circle cx="17" cy="37" r="1.8" fill="#c84040"/>
+        <line x1="22" y1="34" x2="55" y2="34" stroke="#c84040" stroke-width=".8" opacity=".5"/>
+        <line x1="22" y1="37" x2="55" y2="37" stroke="#c84040" stroke-width=".8" opacity=".5"/>
+        <line x1="22" y1="40" x2="50" y2="40" stroke="#c84040" stroke-width=".8" opacity=".5"/>
+        <!-- NS RECORD ラベル -->
+        <rect x="14" y="50" width="44" height="14" rx="2" fill="#c84040"/>
+        <text x="36" y="60" text-anchor="middle" font-size="9" font-family="JetBrains Mono,monospace" font-weight="800" fill="white">NS RECORD</text>
       </svg>
       <div>
-        <div style="font-size:13px;font-weight:700;color:#7a1818;font-family:monospace">NS</div>
+        <div style="font-size:14px;font-weight:800;color:#7a1818;font-family:var(--mono);letter-spacing:-.01em">NS</div>
         <div style="font-size:9.5px;color:#7a1818;margin-top:2px">権威DNSサーバを指定</div>
       </div>
     </div>
@@ -955,23 +963,28 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
   </div>
 
   <!-- MX -->
-  <div style="background:#fff;border:2px solid #e08050;border-radius:10px;overflow:hidden">
-    <div style="background:#fff3ec;padding:14px 14px 10px;display:flex;gap:10px;align-items:flex-start">
-      <svg width="52" height="52" viewBox="0 0 52 52" fill="none" style="flex-shrink:0">
-        <rect x="4" y="4" width="44" height="44" rx="8" fill="#fff5f0" stroke="#e08050" stroke-width="1.5"/>
+  <div style="background:#fff;border:2px solid #c06030;border-radius:10px;overflow:hidden">
+    <div style="background:#fff0e4;padding:14px 14px 10px;display:flex;gap:12px;align-items:flex-start">
+      <svg width="72" height="72" viewBox="0 0 72 72" fill="none" style="flex-shrink:0">
+        <rect x="4" y="4" width="64" height="64" rx="8" fill="#fff5e8" stroke="#c06030" stroke-width="1.5"/>
         <!-- 封筒 -->
-        <rect x="8" y="14" width="36" height="24" rx="3" fill="#fff3ec" stroke="#e08050" stroke-width="1.4"/>
-        <polyline points="8,15 26,27 44,15" stroke="#e08050" stroke-width="1.3" fill="none"/>
-        <!-- メール転送矢印 -->
-        <line x1="26" y1="38" x2="26" y2="44" stroke="#e08050" stroke-width="1.5" stroke-linecap="round"/>
-        <polygon points="22,42 26,47 30,42" fill="#e08050"/>
-        <!-- 赤×マーク（偽装の意） -->
-        <circle cx="40" cy="12" r="6" fill="#c84040"/>
-        <line x1="37" y1="9" x2="43" y2="15" stroke="white" stroke-width="1.5"/>
-        <line x1="43" y1="9" x2="37" y2="15" stroke="white" stroke-width="1.5"/>
+        <rect x="10" y="20" width="52" height="34" rx="3" fill="#fff2e0" stroke="#7a3010" stroke-width="1.6"/>
+        <polyline points="10,21 36,41 62,21" stroke="#7a3010" stroke-width="1.5" fill="none"/>
+        <line x1="10" y1="54" x2="36" y2="38" stroke="#7a3010" stroke-width=".7" opacity=".4"/>
+        <line x1="62" y1="54" x2="36" y2="38" stroke="#7a3010" stroke-width=".7" opacity=".4"/>
+        <!-- 優先度ラベル -->
+        <rect x="24" y="26" width="24" height="8" rx="1.5" fill="#c06030"/>
+        <text x="36" y="32" text-anchor="middle" font-size="5" font-family="JetBrains Mono,monospace" font-weight="700" fill="white">prio:10</text>
+        <!-- 偽装マーク -->
+        <circle cx="56" cy="14" r="8" fill="#a32d2d"/>
+        <line x1="52" y1="10" x2="60" y2="18" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        <line x1="60" y1="10" x2="52" y2="18" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        <!-- 矢印 -->
+        <path d="M 36 58 L 36 64" stroke="#7a3010" stroke-width="2" stroke-linecap="round"/>
+        <polygon points="32,62 36,68 40,62" fill="#7a3010"/>
       </svg>
       <div>
-        <div style="font-size:13px;font-weight:700;color:#7a3010;font-family:monospace">MX</div>
+        <div style="font-size:14px;font-weight:800;color:#7a3010;font-family:var(--mono);letter-spacing:-.01em">MX</div>
         <div style="font-size:9.5px;color:#7a3010;margin-top:2px">メール受信サーバを指定</div>
       </div>
     </div>
@@ -985,22 +998,26 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 
   <!-- TXT -->
   <div style="background:#fff;border:2px solid var(--warn);border-radius:10px;overflow:hidden">
-    <div style="background:#fdf5e6;padding:14px 14px 10px;display:flex;gap:10px;align-items:flex-start">
-      <svg width="52" height="52" viewBox="0 0 52 52" fill="none" style="flex-shrink:0">
-        <rect x="4" y="4" width="44" height="44" rx="8" fill="#fffaf0" stroke="#b5821e" stroke-width="1.5"/>
-        <!-- テキスト文書 -->
-        <rect x="12" y="9" width="28" height="34" rx="3" fill="#fff8e6" stroke="#b5821e" stroke-width="1.3"/>
-        <line x1="16" y1="16" x2="36" y2="16" stroke="#b5821e" stroke-width="1" opacity=".6"/>
-        <line x1="16" y1="20" x2="36" y2="20" stroke="#b5821e" stroke-width="1" opacity=".6"/>
-        <line x1="16" y1="24" x2="30" y2="24" stroke="#b5821e" stroke-width="1" opacity=".6"/>
-        <!-- SPF/DKIM ラベル -->
-        <rect x="14" y="29" width="10" height="7" rx="1.5" fill="#b5821e" opacity=".8"/>
-        <text x="19" y="34.5" text-anchor="middle" font-size="5" fill="white" font-weight="700">SPF</text>
-        <rect x="26" y="29" width="12" height="7" rx="1.5" fill="#7a4208" opacity=".8"/>
-        <text x="32" y="34.5" text-anchor="middle" font-size="5" fill="white" font-weight="700">DKIM</text>
+    <div style="background:#fdf5e6;padding:14px 14px 10px;display:flex;gap:12px;align-items:flex-start">
+      <svg width="72" height="72" viewBox="0 0 72 72" fill="none" style="flex-shrink:0">
+        <rect x="4" y="4" width="64" height="64" rx="8" fill="#fff8e6" stroke="#b5821e" stroke-width="1.5"/>
+        <!-- 文書 -->
+        <rect x="14" y="10" width="44" height="52" rx="3" fill="#fff" stroke="#7a4208" stroke-width="1.5"/>
+        <path d="M 48 10 L 48 20 L 58 20" fill="none" stroke="#7a4208" stroke-width="1.3"/>
+        <line x1="19" y1="18" x2="42" y2="18" stroke="#b5821e" stroke-width="1" opacity=".5"/>
+        <line x1="19" y1="23" x2="53" y2="23" stroke="#b5821e" stroke-width="1" opacity=".5"/>
+        <line x1="19" y1="28" x2="45" y2="28" stroke="#b5821e" stroke-width="1" opacity=".5"/>
+        <!-- SPF / DKIM / DMARC ラベル -->
+        <rect x="18" y="34" width="16" height="9" rx="1.5" fill="#b5821e"/>
+        <text x="26" y="41" text-anchor="middle" font-size="6" font-family="JetBrains Mono,monospace" font-weight="700" fill="white">SPF</text>
+        <rect x="36" y="34" width="18" height="9" rx="1.5" fill="#7a4208"/>
+        <text x="45" y="41" text-anchor="middle" font-size="6" font-family="JetBrains Mono,monospace" font-weight="700" fill="white">DKIM</text>
+        <rect x="18" y="46" width="24" height="9" rx="1.5" fill="#8a5f0e"/>
+        <text x="30" y="53" text-anchor="middle" font-size="6" font-family="JetBrains Mono,monospace" font-weight="700" fill="white">DMARC</text>
+        <text x="36" y="60" text-anchor="middle" font-size="5" font-family="JetBrains Mono,monospace" fill="#7a4208" opacity=".8">v=spf1...</text>
       </svg>
       <div>
-        <div style="font-size:13px;font-weight:700;color:#7a4208;font-family:monospace">TXT</div>
+        <div style="font-size:14px;font-weight:800;color:#7a4208;font-family:var(--mono);letter-spacing:-.01em">TXT</div>
         <div style="font-size:9.5px;color:#7a4208;margin-top:2px">任意テキスト情報</div>
       </div>
     </div>
@@ -1014,22 +1031,31 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 
   <!-- DNSKEY -->
   <div style="background:#fff;border:2px solid var(--success);border-radius:10px;overflow:hidden">
-    <div style="background:#d0f0e0;padding:14px 14px 10px;display:flex;gap:10px;align-items:flex-start">
-      <svg width="52" height="52" viewBox="0 0 52 52" fill="none" style="flex-shrink:0">
-        <rect x="4" y="4" width="44" height="44" rx="8" fill="#e8fff4" stroke="#155f44" stroke-width="1.5"/>
-        <!-- 鍵アイコン（KSK=金、ZSK=銀） -->
-        <circle cx="17" cy="26" r="7" fill="none" stroke="#b5821e" stroke-width="2"/>
-        <line x1="24" y1="26" x2="38" y2="26" stroke="#b5821e" stroke-width="2" stroke-linecap="round"/>
-        <line x1="35" y1="23" x2="35" y2="26" stroke="#b5821e" stroke-width="2" stroke-linecap="round"/>
-        <line x1="31" y1="23" x2="31" y2="26" stroke="#b5821e" stroke-width="2" stroke-linecap="round"/>
-        <circle cx="17" cy="26" r="3" fill="#b5821e" opacity=".5"/>
-        <!-- KSK / ZSK ラベル -->
-        <text x="10" y="44" font-size="7" fill="#155f44" font-weight="700" font-family="monospace">KSK</text>
-        <text x="30" y="44" font-size="7" fill="#155f44" font-weight="700" font-family="monospace">ZSK</text>
-        <line x1="22" y1="41" x2="22" y2="36" stroke="#155f44" stroke-width="1" opacity=".4"/>
+    <div style="background:#d8f0e2;padding:14px 14px 10px;display:flex;gap:12px;align-items:flex-start">
+      <svg width="72" height="72" viewBox="0 0 72 72" fill="none" style="flex-shrink:0">
+        <rect x="4" y="4" width="64" height="64" rx="8" fill="#e8fff0" stroke="#155f44" stroke-width="1.5"/>
+        <!-- KSK (金・大) -->
+        <circle cx="19" cy="22" r="9" fill="none" stroke="#7a4208" stroke-width="2"/>
+        <circle cx="19" cy="22" r="4" fill="#7a4208"/>
+        <line x1="27" y1="22" x2="44" y2="22" stroke="#7a4208" stroke-width="2" stroke-linecap="round"/>
+        <line x1="41" y1="22" x2="41" y2="26" stroke="#7a4208" stroke-width="2" stroke-linecap="round"/>
+        <line x1="37" y1="22" x2="37" y2="26" stroke="#7a4208" stroke-width="2" stroke-linecap="round"/>
+        <text x="54" y="25" font-size="7" font-family="JetBrains Mono,monospace" font-weight="800" fill="#7a4208">KSK</text>
+        <!-- ZSK (青・小) -->
+        <circle cx="19" cy="48" r="7" fill="none" stroke="#0b4a82" stroke-width="1.8"/>
+        <circle cx="19" cy="48" r="3" fill="#0b4a82"/>
+        <line x1="25" y1="48" x2="40" y2="48" stroke="#0b4a82" stroke-width="1.8" stroke-linecap="round"/>
+        <line x1="37" y1="48" x2="37" y2="51" stroke="#0b4a82" stroke-width="1.8" stroke-linecap="round"/>
+        <text x="54" y="51" font-size="7" font-family="JetBrains Mono,monospace" font-weight="800" fill="#0b4a82">ZSK</text>
+        <!-- 署名関係矢印 -->
+        <path d="M 44 30 Q 50 37 44 44" stroke="#155f44" stroke-width="1.3" fill="none" stroke-dasharray="2 2"/>
+        <polygon points="42,43 47,45 45,40" fill="#155f44"/>
+        <!-- 下部ラベル -->
+        <rect x="10" y="59" width="52" height="8" rx="1.5" fill="#155f44"/>
+        <text x="36" y="65" text-anchor="middle" font-size="6" font-family="JetBrains Mono,monospace" font-weight="800" fill="white">Public Key (DNSSEC)</text>
       </svg>
       <div>
-        <div style="font-size:13px;font-weight:700;color:#155f44;font-family:monospace">DNSKEY</div>
+        <div style="font-size:14px;font-weight:800;color:#155f44;font-family:var(--mono);letter-spacing:-.01em">DNSKEY</div>
         <div style="font-size:9.5px;color:#155f44;margin-top:2px">DNSSEC公開鍵（KSK / ZSK）</div>
       </div>
     </div>
@@ -1043,24 +1069,30 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 
   <!-- RRSIG -->
   <div style="background:#fff;border:2px solid var(--success);border-radius:10px;overflow:hidden">
-    <div style="background:#d0f0e0;padding:14px 14px 10px;display:flex;gap:10px;align-items:flex-start">
-      <svg width="52" height="52" viewBox="0 0 52 52" fill="none" style="flex-shrink:0">
-        <rect x="4" y="4" width="44" height="44" rx="8" fill="#e8fff4" stroke="#155f44" stroke-width="1.5"/>
+    <div style="background:#d8f0e2;padding:14px 14px 10px;display:flex;gap:12px;align-items:flex-start">
+      <svg width="72" height="72" viewBox="0 0 72 72" fill="none" style="flex-shrink:0">
+        <rect x="4" y="4" width="64" height="64" rx="8" fill="#e8fff0" stroke="#155f44" stroke-width="1.5"/>
         <!-- 文書 -->
-        <rect x="8" y="8" width="26" height="32" rx="3" fill="#eafaf2" stroke="#155f44" stroke-width="1.3"/>
-        <line x1="12" y1="15" x2="30" y2="15" stroke="#155f44" stroke-width="1" opacity=".5"/>
-        <line x1="12" y1="19" x2="30" y2="19" stroke="#155f44" stroke-width="1" opacity=".5"/>
-        <line x1="12" y1="23" x2="24" y2="23" stroke="#155f44" stroke-width="1" opacity=".5"/>
+        <rect x="10" y="10" width="36" height="44" rx="3" fill="#fff" stroke="#155f44" stroke-width="1.5"/>
+        <line x1="14" y1="18" x2="42" y2="18" stroke="#155f44" stroke-width="1" opacity=".5"/>
+        <line x1="14" y1="23" x2="42" y2="23" stroke="#155f44" stroke-width="1" opacity=".5"/>
+        <line x1="14" y1="28" x2="36" y2="28" stroke="#155f44" stroke-width="1" opacity=".5"/>
+        <line x1="14" y1="33" x2="42" y2="33" stroke="#155f44" stroke-width="1" opacity=".5"/>
+        <line x1="14" y1="38" x2="32" y2="38" stroke="#155f44" stroke-width="1" opacity=".5"/>
         <!-- 署名ペン -->
-        <path d="M30 28 L42 16 L46 20 L34 32 Z" fill="#155f44" opacity=".8"/>
-        <line x1="42" y1="16" x2="44" y2="12" stroke="#155f44" stroke-width="1.5" stroke-linecap="round"/>
-        <path d="M30 32 Q33 33 34 32" stroke="#155f44" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-        <!-- チェック -->
-        <circle cx="18" cy="33" r="5" fill="#155f44"/>
-        <polyline points="15,33 17,35 21,31" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <path d="M 44 40 L 60 22 L 64 26 L 48 44 Z" fill="#155f44"/>
+        <line x1="60" y1="22" x2="63" y2="18" stroke="#155f44" stroke-width="1.8" stroke-linecap="round"/>
+        <line x1="48" y1="44" x2="46" y2="50" stroke="#155f44" stroke-width="1.2"/>
+        <!-- 署名ライン -->
+        <path d="M 40 48 Q 44 46 48 49 T 56 48" stroke="#155f44" stroke-width="1.3" fill="none"/>
+        <!-- チェックマーク -->
+        <circle cx="18" cy="58" r="7" fill="#155f44"/>
+        <polyline points="14,58 17,61 22,55" stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+        <!-- ハッシュ -->
+        <text x="44" y="62" font-size="6" font-family="JetBrains Mono,monospace" font-weight="700" fill="#155f44">a3f8...</text>
       </svg>
       <div>
-        <div style="font-size:13px;font-weight:700;color:#155f44;font-family:monospace">RRSIG</div>
+        <div style="font-size:14px;font-weight:800;color:#155f44;font-family:var(--mono);letter-spacing:-.01em">RRSIG</div>
         <div style="font-size:9.5px;color:#155f44;margin-top:2px">RRsetへの電子署名</div>
       </div>
     </div>
@@ -1074,25 +1106,31 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 
   <!-- DS -->
   <div style="background:#fff;border:2px solid var(--success);border-radius:10px;overflow:hidden">
-    <div style="background:#d0f0e0;padding:14px 14px 10px;display:flex;gap:10px;align-items:flex-start">
-      <svg width="52" height="52" viewBox="0 0 52 52" fill="none" style="flex-shrink:0">
-        <rect x="4" y="4" width="44" height="44" rx="8" fill="#e8fff4" stroke="#155f44" stroke-width="1.5"/>
+    <div style="background:#d8f0e2;padding:14px 14px 10px;display:flex;gap:12px;align-items:flex-start">
+      <svg width="72" height="72" viewBox="0 0 72 72" fill="none" style="flex-shrink:0">
+        <rect x="4" y="4" width="64" height="64" rx="8" fill="#e8fff0" stroke="#155f44" stroke-width="1.5"/>
         <!-- 親ゾーン -->
-        <rect x="7" y="8" width="16" height="12" rx="2.5" fill="#d0f0e0" stroke="#155f44" stroke-width="1.3"/>
-        <text x="15" y="16" text-anchor="middle" font-size="6" fill="#155f44" font-weight="700" font-family="monospace">ROOT</text>
-        <!-- 子ゾーン -->
-        <rect x="29" y="8" width="16" height="12" rx="2.5" fill="#d0f0e0" stroke="#155f44" stroke-width="1.3"/>
-        <text x="37" y="16" text-anchor="middle" font-size="6" fill="#155f44" font-weight="700" font-family="monospace">.JP</text>
+        <rect x="8" y="10" width="24" height="16" rx="2.5" fill="#d0f0e0" stroke="#155f44" stroke-width="1.5"/>
+        <text x="20" y="21" text-anchor="middle" font-size="7" font-family="JetBrains Mono,monospace" font-weight="800" fill="#155f44">ROOT</text>
         <!-- チェーン矢印 -->
-        <line x1="23" y1="14" x2="29" y2="14" stroke="#b5821e" stroke-width="2" stroke-linecap="round"/>
-        <polygon points="27,11 32,14 27,17" fill="#b5821e"/>
-        <!-- ハッシュ記号 -->
-        <rect x="16" y="26" width="20" height="18" rx="3" fill="#b5821e"/>
-        <text x="26" y="37" text-anchor="middle" font-size="8" fill="white" font-weight="700" font-family="monospace"># Hash</text>
-        <text x="26" y="42" text-anchor="middle" font-size="6" fill="rgba(255,255,255,.8)">KSK digest</text>
+        <line x1="33" y1="18" x2="39" y2="18" stroke="#b5821e" stroke-width="2" stroke-linecap="round"/>
+        <polygon points="37,15 42,18 37,21" fill="#b5821e"/>
+        <!-- 子ゾーン -->
+        <rect x="40" y="10" width="24" height="16" rx="2.5" fill="#d0f0e0" stroke="#155f44" stroke-width="1.5"/>
+        <text x="52" y="21" text-anchor="middle" font-size="7" font-family="JetBrains Mono,monospace" font-weight="800" fill="#155f44">.JP</text>
+        <!-- リンクチェーン -->
+        <g transform="translate(26,30)">
+          <path d="M 5 8 A 4 4 0 0 1 9 4 L 11 2 A 5.5 5.5 0 0 0 5 8Z" fill="#b5821e"/>
+          <path d="M 11 8 A 4 4 0 0 0 7 12 L 5 14 A 5.5 5.5 0 0 1 11 8Z" fill="#b5821e"/>
+          <rect x="4" y="6" width="8" height="4" fill="#b5821e"/>
+        </g>
+        <!-- ハッシュブロック -->
+        <rect x="12" y="44" width="48" height="16" rx="3" fill="#b5821e"/>
+        <text x="36" y="54" text-anchor="middle" font-size="7" font-family="JetBrains Mono,monospace" font-weight="800" fill="white"># KSK Hash</text>
+        <text x="36" y="65" text-anchor="middle" font-size="6" font-family="JetBrains Mono,monospace" fill="#155f44" opacity=".8">a3f9c2e8...</text>
       </svg>
       <div>
-        <div style="font-size:13px;font-weight:700;color:#155f44;font-family:monospace">DS</div>
+        <div style="font-size:14px;font-weight:800;color:#155f44;font-family:var(--mono);letter-spacing:-.01em">DS</div>
         <div style="font-size:9.5px;color:#155f44;margin-top:2px">子ゾーンKSKハッシュ</div>
       </div>
     </div>
@@ -1106,19 +1144,22 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 
   <!-- NSEC / NSEC3 -->
   <div style="background:#fff;border:2px solid var(--accent2);border-radius:10px;overflow:hidden">
-    <div style="background:#daeeff;padding:14px 14px 10px;display:flex;gap:10px;align-items:flex-start">
-      <svg width="52" height="52" viewBox="0 0 52 52" fill="none" style="flex-shrink:0">
-        <rect x="4" y="4" width="44" height="44" rx="8" fill="#eef6ff" stroke="#1570b8" stroke-width="1.5"/>
+    <div style="background:#daeeff;padding:14px 14px 10px;display:flex;gap:12px;align-items:flex-start">
+      <svg width="72" height="72" viewBox="0 0 72 72" fill="none" style="flex-shrink:0">
+        <rect x="4" y="4" width="64" height="64" rx="8" fill="#daeeff" stroke="#1570b8" stroke-width="1.5"/>
         <!-- 禁止マーク -->
-        <circle cx="26" cy="22" r="9" fill="none" stroke="#1570b8" stroke-width="2"/>
-        <line x1="19.5" y1="15.5" x2="32.5" y2="28.5" stroke="#1570b8" stroke-width="2"/>
-        <text x="26" y="20" text-anchor="middle" font-size="6" fill="#1570b8" font-weight="700">DOMAIN</text>
-        <!-- 「存在しない」矢印とハッシュ -->
-        <rect x="10" y="35" width="32" height="11" rx="3" fill="#1570b8"/>
-        <text x="26" y="43" text-anchor="middle" font-size="6.5" fill="white" font-weight="700" font-family="monospace">NXDOMAIN Proof</text>
+        <circle cx="36" cy="24" r="12" fill="none" stroke="#0b4a82" stroke-width="2.2"/>
+        <line x1="27" y1="15" x2="45" y2="33" stroke="#0b4a82" stroke-width="2.2"/>
+        <text x="36" y="22" text-anchor="middle" font-size="5" font-family="JetBrains Mono,monospace" font-weight="700" fill="#0b4a82">DOMAIN</text>
+        <text x="36" y="28" text-anchor="middle" font-size="4.5" font-family="Noto Sans JP,sans-serif" fill="#0b4a82" opacity=".7">存在しない</text>
+        <!-- NXDOMAIN Proof -->
+        <rect x="6" y="43" width="60" height="12" rx="3" fill="#0b4a82"/>
+        <text x="36" y="51" text-anchor="middle" font-size="7" font-family="JetBrains Mono,monospace" font-weight="800" fill="white">NXDOMAIN Proof</text>
+        <!-- ハッシュ -->
+        <text x="36" y="62" text-anchor="middle" font-size="5" font-family="JetBrains Mono,monospace" fill="#0b4a82">NSEC3: h1...→h2...</text>
       </svg>
       <div>
-        <div style="font-size:13px;font-weight:700;color:#0b4a82;font-family:monospace">NSEC / NSEC3</div>
+        <div style="font-size:14px;font-weight:800;color:#0b4a82;font-family:var(--mono);letter-spacing:-.01em">NSEC / NSEC3</div>
         <div style="font-size:9.5px;color:#0b4a82;margin-top:2px">否定応答の証明</div>
       </div>
     </div>
@@ -1155,13 +1196,27 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
         <!-- キャッシュポイズニング -->
         <th style="padding:10px 12px;text-align:center;border-left:1px solid var(--line);border-bottom:3px solid var(--purple)">
           <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
-            <svg width="28" height="28" viewBox="0 0 52 52" fill="none">
-              <circle cx="26" cy="26" r="24" fill="#ede8ff" stroke="#3a1870" stroke-width="1.5"/>
-              <rect x="12" y="18" width="8" height="6" rx="1.5" fill="#ede8ff" stroke="#3a1870" stroke-width="1.2"/>
-              <path d="M20 21H27" stroke="#3a1870" stroke-width="1.2"/>
-              <rect x="27" y="15" width="12" height="12" rx="2" fill="#d8d0f8" stroke="#3a1870" stroke-width="1.4"/>
-              <path d="M37 21H44L44 26C44 34 26 40 26 40C26 40 26 28 37 26V21Z" fill="#ede8ff" stroke="#3a1870" stroke-width="1"/>
-              <path d="M30 21L35 21M30 24L35 24" stroke="#3a1870" stroke-width="1" opacity=".6"/>
+            <svg width="56" height="42" viewBox="0 0 80 60" fill="none">
+              <!-- Attacker -->
+              <circle cx="12" cy="20" r="8" fill="#fff" stroke="#3a1870" stroke-width="1.2"/>
+              <circle cx="12" cy="20" r="3" fill="#3a1870" opacity=".5"/>
+              <line x1="5" y1="20" x2="8" y2="20" stroke="#3a1870" stroke-width="1"/>
+              <line x1="16" y1="20" x2="19" y2="20" stroke="#3a1870" stroke-width="1"/>
+              <line x1="12" y1="13" x2="12" y2="16" stroke="#3a1870" stroke-width="1"/>
+              <line x1="12" y1="24" x2="12" y2="27" stroke="#3a1870" stroke-width="1"/>
+              <!-- Syringe -->
+              <line x1="22" y1="20" x2="36" y2="20" stroke="#7a2878" stroke-width="1.8" stroke-linecap="round"/>
+              <rect x="34" y="17" width="6" height="6" fill="#7a2878" rx="1"/>
+              <polygon points="42,17 46,20 42,23" fill="#7a2878"/>
+              <!-- Cache DB -->
+              <ellipse cx="60" cy="14" rx="14" ry="3" fill="#ede8ff" stroke="#3a1870" stroke-width="1.3"/>
+              <path d="M46 14 V 44 C 46 48 54 50 60 50 C 66 50 74 48 74 44 V 14" fill="#f8f4ff" stroke="#3a1870" stroke-width="1.3"/>
+              <ellipse cx="60" cy="14" rx="14" ry="3" fill="#ede8ff" stroke="#3a1870" stroke-width="1.3"/>
+              <!-- Fake entry -->
+              <rect x="50" y="22" width="20" height="6" rx="1" fill="#fde8e8" stroke="#a32d2d" stroke-width=".8"/>
+              <text x="60" y="26" text-anchor="middle" font-size="3.5" font-family="JetBrains Mono,monospace" fill="#a32d2d" font-weight="700">FAKE IP</text>
+              <text x="60" y="35" text-anchor="middle" font-size="3.5" font-family="JetBrains Mono,monospace" fill="#888" opacity=".6">real→×</text>
+              <text x="60" y="43" text-anchor="middle" font-size="3.5" font-family="JetBrains Mono,monospace" fill="#3a1870" font-weight="700">TTL:3600</text>
             </svg>
             <span style="font-size:11.5px;font-weight:700;color:#3a1870">キャッシュ<br>ポイズニング</span>
           </div>
@@ -1169,17 +1224,33 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
         <!-- リフレクション -->
         <th style="padding:10px 12px;text-align:center;border-left:1px solid var(--line);border-bottom:3px solid #3a6a1e">
           <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
-            <svg width="28" height="28" viewBox="0 0 52 52" fill="none">
-              <circle cx="26" cy="26" r="24" fill="#e8f5e0" stroke="#3a6a1e" stroke-width="1.5"/>
-              <!-- 攻撃者→DNS→被害者の折り返し矢印 -->
-              <circle cx="12" cy="20" r="5" fill="#3a6a1e" opacity=".8"/>
-              <rect x="20" y="17" width="12" height="9" rx="2" fill="#e8f5e0" stroke="#3a6a1e" stroke-width="1.3"/>
-              <circle cx="40" cy="20" r="5" fill="#c84040" opacity=".8"/>
-              <line x1="17" y1="20" x2="20" y2="20" stroke="#3a6a1e" stroke-width="1.5"/>
-              <line x1="32" y1="20" x2="35" y2="20" stroke="#c84040" stroke-width="2.5"/>
-              <path d="M35 20 Q38 20 38 26 Q38 32 32 32 Q14 32 14 32" stroke="#c84040" stroke-width="2" fill="none"/>
-              <line x1="12" y1="29" x2="14" y2="32" stroke="#c84040" stroke-width="2"/>
-              <line x1="14" y1="35" x2="14" y2="32" stroke="#c84040" stroke-width="2"/>
+            <svg width="56" height="42" viewBox="0 0 80 60" fill="none">
+              <!-- Attacker -->
+              <circle cx="10" cy="22" r="7" fill="#fff" stroke="#3a6a1e" stroke-width="1.2"/>
+              <circle cx="10" cy="22" r="2.5" fill="#3a6a1e"/>
+              <line x1="3" y1="22" x2="6" y2="22" stroke="#3a6a1e" stroke-width="1"/>
+              <line x1="14" y1="22" x2="17" y2="22" stroke="#3a6a1e" stroke-width="1"/>
+              <line x1="10" y1="15" x2="10" y2="18" stroke="#3a6a1e" stroke-width="1"/>
+              <line x1="10" y1="26" x2="10" y2="29" stroke="#3a6a1e" stroke-width="1"/>
+              <!-- DNS server -->
+              <rect x="30" y="14" width="24" height="7" rx="1" fill="#fff" stroke="#3a6a1e" stroke-width="1"/>
+              <circle cx="33" cy="17.5" r=".8" fill="#3a6a1e"/>
+              <rect x="30" y="23" width="24" height="7" rx="1" fill="#fff" stroke="#3a6a1e" stroke-width="1"/>
+              <circle cx="33" cy="26.5" r=".8" fill="#3a6a1e"/>
+              <text x="42" y="39" text-anchor="middle" font-size="4" font-family="JetBrains Mono,monospace" fill="#3a6a1e" font-weight="700">OPEN RESOLVER</text>
+              <!-- Victim -->
+              <circle cx="70" cy="22" r="7" fill="#fff4e0" stroke="#c06030" stroke-width="1.2"/>
+              <circle cx="70" cy="22" r="4" fill="none" stroke="#c06030" stroke-width=".8"/>
+              <circle cx="70" cy="22" r="1.5" fill="#c06030"/>
+              <!-- Arrow 1: spoofed src -->
+              <path d="M 18 22 L 28 20" stroke="#3a6a1e" stroke-width="1.2"/>
+              <polygon points="26,18 30,20 26,22" fill="#3a6a1e"/>
+              <!-- Arrow 2: reflected response -->
+              <path d="M 54 22 L 64 22" stroke="#c06030" stroke-width="2.2"/>
+              <polygon points="62,19 66,22 62,25" fill="#c06030"/>
+              <!-- src IP spoof label -->
+              <rect x="18" y="48" width="44" height="8" rx="2" fill="#fde8e8" stroke="#a32d2d" stroke-width=".6"/>
+              <text x="40" y="54" text-anchor="middle" font-size="4.5" font-family="JetBrains Mono,monospace" fill="#a32d2d" font-weight="700">src IP: VICTIM</text>
             </svg>
             <span style="font-size:11.5px;font-weight:700;color:#3a6a1e">リフレクション<br>攻撃</span>
           </div>
@@ -1187,18 +1258,35 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
         <!-- アンプ攻撃 -->
         <th style="padding:10px 12px;text-align:center;border-left:1px solid var(--line);border-bottom:3px solid var(--warn)">
           <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
-            <svg width="28" height="28" viewBox="0 0 52 52" fill="none">
-              <circle cx="26" cy="26" r="24" fill="#fdf5e6" stroke="#7a4208" stroke-width="1.5"/>
-              <!-- 小矢印→大矢印 -->
-              <line x1="8" y1="26" x2="18" y2="26" stroke="#7a4208" stroke-width="2"/>
-              <polygon points="16,23 21,26 16,29" fill="#7a4208"/>
-              <!-- DNS箱 -->
-              <rect x="21" y="20" width="10" height="12" rx="2" fill="#fdf5e6" stroke="#7a4208" stroke-width="1.3"/>
-              <!-- 太い大矢印 -->
-              <line x1="31" y1="26" x2="42" y2="26" stroke="#c84040" stroke-width="5"/>
-              <polygon points="39,21 46,26 39,31" fill="#c84040"/>
-              <!-- ×100 ラベル -->
-              <text x="26" y="42" text-anchor="middle" font-size="8" fill="#7a4208" font-weight="800" font-family="monospace">×100</text>
+            <svg width="56" height="42" viewBox="0 0 80 60" fill="none">
+              <defs>
+                <linearGradient id="ampHdr" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#e0a040" stop-opacity="1"/>
+                  <stop offset="100%" stop-color="#a32d2d" stop-opacity="1"/>
+                </linearGradient>
+              </defs>
+              <!-- Tiny query -->
+              <rect x="2" y="22" width="14" height="8" rx="1.5" fill="#fdf5e6" stroke="#7a4208" stroke-width="1"/>
+              <text x="9" y="27.5" text-anchor="middle" font-size="4" font-family="JetBrains Mono,monospace" font-weight="700" fill="#7a4208">ANY?</text>
+              <text x="9" y="34" text-anchor="middle" font-size="3.5" font-family="JetBrains Mono,monospace" fill="#7a4208">40B</text>
+              <!-- Small arrow -->
+              <line x1="18" y1="26" x2="26" y2="26" stroke="#7a4208" stroke-width="1"/>
+              <polygon points="25,24 28,26 25,28" fill="#7a4208"/>
+              <!-- DNS server -->
+              <rect x="30" y="16" width="22" height="7" rx="1" fill="#fff8ec" stroke="#7a4208" stroke-width="1"/>
+              <circle cx="33" cy="19.5" r=".8" fill="#7a4208"/>
+              <rect x="30" y="25" width="22" height="7" rx="1" fill="#fff8ec" stroke="#7a4208" stroke-width="1"/>
+              <circle cx="33" cy="28.5" r=".8" fill="#7a4208"/>
+              <text x="41" y="40" text-anchor="middle" font-size="4" font-family="JetBrains Mono,monospace" fill="#7a4208" font-weight="700">AUTH NS</text>
+              <!-- Big amplified arrow -->
+              <path d="M 54 22 Q 60 22 62 26 L 76 26 L 76 34 L 62 34 Q 60 38 54 38 Z" fill="url(#ampHdr)" stroke="#7a2020" stroke-width=".6"/>
+              <text x="66" y="31.5" text-anchor="middle" font-size="4" font-family="JetBrains Mono,monospace" font-weight="800" fill="white">4KB+</text>
+              <!-- ×100 badge -->
+              <rect x="56" y="6" width="22" height="10" rx="5" fill="#a32d2d"/>
+              <text x="67" y="13" text-anchor="middle" font-size="5.5" font-family="JetBrains Mono,monospace" font-weight="800" fill="white">×100</text>
+              <line x1="65" y1="16" x2="64" y2="21" stroke="#a32d2d" stroke-width=".8" stroke-dasharray="1 1"/>
+              <!-- Bottom label -->
+              <text x="40" y="54" text-anchor="middle" font-size="4" font-family="Noto Sans JP,sans-serif" fill="#7a4208" font-weight="700">応答を100倍に増幅</text>
             </svg>
             <span style="font-size:11.5px;font-weight:700;color:#7a4208">アンプ攻撃<br>（増幅型）</span>
           </div>
@@ -1206,14 +1294,43 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
         <!-- 水攻め -->
         <th style="padding:10px 12px;text-align:center;border-left:1px solid var(--line);border-bottom:3px solid var(--danger)">
           <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
-            <svg width="28" height="28" viewBox="0 0 52 52" fill="none">
-              <circle cx="26" cy="26" r="24" fill="#fde8e8" stroke="#7a1818" stroke-width="1.5"/>
-              <!-- 波線（大量クエリ） -->
-              <path d="M8 22C10 20 12 18 14 20C16 22 18 24 20 22C22 20 24 18 26 20C28 22 30 24 32 22C34 20 36 18 38 20C40 22 42 24 44 22" stroke="#7a1818" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-              <path d="M8 28C10 26 12 24 14 26C16 28 18 30 20 28C22 26 24 24 26 26C28 28 30 30 32 28C34 26 36 24 38 26C40 28 42 30 44 28" stroke="#7a1818" stroke-width="2" fill="none" stroke-linecap="round"/>
-              <!-- 権威NSが溺れる感じ -->
-              <rect x="19" y="32" width="14" height="11" rx="2" fill="#c84040" opacity=".8"/>
-              <text x="26" y="40" text-anchor="middle" font-size="6" fill="white" font-weight="700">AUTH NS</text>
+            <svg width="56" height="42" viewBox="0 0 80 60" fill="none">
+              <!-- Botnet (small) -->
+              <rect x="2" y="10" width="7" height="5" rx="1" fill="#fff" stroke="#7a1818" stroke-width=".8"/>
+              <circle cx="5.5" cy="12.5" r=".6" fill="#7a1818"/>
+              <rect x="2" y="17" width="7" height="5" rx="1" fill="#fff" stroke="#7a1818" stroke-width=".8"/>
+              <circle cx="5.5" cy="19.5" r=".6" fill="#7a1818"/>
+              <rect x="2" y="24" width="7" height="5" rx="1" fill="#fff" stroke="#7a1818" stroke-width=".8"/>
+              <circle cx="5.5" cy="26.5" r=".6" fill="#7a1818"/>
+              <rect x="2" y="31" width="7" height="5" rx="1" fill="#fff" stroke="#7a1818" stroke-width=".8"/>
+              <circle cx="5.5" cy="33.5" r=".6" fill="#7a1818"/>
+              <text x="5.5" y="42" text-anchor="middle" font-size="3.5" font-family="JetBrains Mono,monospace" fill="#7a1818" font-weight="700">BOT</text>
+              <!-- Random queries -->
+              <rect x="14" y="9" width="30" height="5" rx="1" fill="#fde8e8" stroke="#7a1818" stroke-width=".6"/>
+              <text x="29" y="13" text-anchor="middle" font-size="3.5" font-family="JetBrains Mono,monospace" fill="#7a1818">a1b2.bank.jp?</text>
+              <rect x="14" y="16" width="30" height="5" rx="1" fill="#fde8e8" stroke="#7a1818" stroke-width=".6"/>
+              <text x="29" y="20" text-anchor="middle" font-size="3.5" font-family="JetBrains Mono,monospace" fill="#7a1818">x7f3.bank.jp?</text>
+              <rect x="14" y="23" width="30" height="5" rx="1" fill="#fde8e8" stroke="#7a1818" stroke-width=".6"/>
+              <text x="29" y="27" text-anchor="middle" font-size="3.5" font-family="JetBrains Mono,monospace" fill="#7a1818">m9q.bank.jp?</text>
+              <rect x="14" y="30" width="30" height="5" rx="1" fill="#fde8e8" stroke="#7a1818" stroke-width=".6"/>
+              <text x="29" y="34" text-anchor="middle" font-size="3.5" font-family="JetBrains Mono,monospace" fill="#7a1818">z0k.bank.jp?</text>
+              <!-- Arrows -->
+              <g stroke="#7a1818" stroke-width=".8" opacity=".5">
+                <line x1="45" y1="12" x2="55" y2="18"/>
+                <line x1="45" y1="19" x2="55" y2="22"/>
+                <line x1="45" y1="26" x2="55" y2="26"/>
+                <line x1="45" y1="33" x2="55" y2="30"/>
+              </g>
+              <!-- Auth NS being drowned -->
+              <rect x="56" y="15" width="22" height="7" rx="1" fill="#fff" stroke="#7a1818" stroke-width="1"/>
+              <circle cx="59" cy="18.5" r=".7" fill="#7a1818"/>
+              <rect x="56" y="24" width="22" height="7" rx="1" fill="#fff" stroke="#7a1818" stroke-width="1"/>
+              <circle cx="59" cy="27.5" r=".7" fill="#7a1818"/>
+              <!-- Water waves -->
+              <path d="M 54 33 Q 58 31 62 33 T 70 33 T 78 33" stroke="#4a90c8" stroke-width=".9" fill="none"/>
+              <path d="M 54 37 Q 58 35 62 37 T 70 37 T 78 37" stroke="#4a90c8" stroke-width="1.1" fill="none"/>
+              <text x="67" y="45" text-anchor="middle" font-size="4" font-family="JetBrains Mono,monospace" fill="#7a1818" font-weight="700">AUTH NS</text>
+              <text x="67" y="52" text-anchor="middle" font-size="3.5" font-family="Noto Sans JP,sans-serif" fill="#7a1818">(枯渇)</text>
             </svg>
             <span style="font-size:11.5px;font-weight:700;color:#7a1818">水攻め<br>攻撃</span>
           </div>
@@ -1479,6 +1596,374 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 </tr>
 </tbody>
 </table>
+</div>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     ★ NEW: DNS通信フロー攻撃対応図 ★
+     DNS全体フローの中で、各攻撃がどこの通信・処理を狙うのかを可視化
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<h3>DNS通信フローの中で「どこを狙う攻撃か」— ホットスポット対応図</h3>
+<p>DNSの名前解決は「クライアント → リゾルバ → ルート → TLD → 権威NS → 応答」と多段で進行します。4大攻撃はそれぞれ<strong>フロー内の異なるポイント</strong>を標的にします。下図で攻撃の「入口」「経路」「終点」を色分けで確認してください。</p>
+
+<div style="background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:20px 0">
+  <div style="background:var(--ink2);color:#fff;padding:10px 18px;font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;display:flex;align-items:center;gap:8px">
+    <svg width="14" height="14"><use href="#ic-crosshair" color="white"/></svg>
+    図3 — DNS 通信フロー × 4大攻撃の標的ホットスポット
+  </div>
+  <div style="padding:24px;overflow-x:auto">
+  <div style="min-width:900px">
+
+    <!-- 凡例 -->
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;padding:10px 14px;background:var(--surface);border-radius:8px">
+      <div style="font-size:10px;font-weight:800;color:var(--ink2);letter-spacing:.08em;text-transform:uppercase;margin-right:6px;align-self:center">攻撃ホットスポット凡例：</div>
+      <div style="display:flex;align-items:center;gap:5px;background:#ede8ff;border:1px solid var(--purple);border-radius:4px;padding:3px 9px">
+        <div style="width:16px;height:16px;background:var(--purple);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#fff;font-family:var(--mono)">①</div>
+        <span style="font-size:10.5px;font-weight:700;color:var(--purple)">キャッシュポイズニング</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:5px;background:#e8f5e0;border:1px solid #3a6a1e;border-radius:4px;padding:3px 9px">
+        <div style="width:16px;height:16px;background:#3a6a1e;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#fff;font-family:var(--mono)">②</div>
+        <span style="font-size:10.5px;font-weight:700;color:#3a6a1e">リフレクション</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:5px;background:#fdf5e6;border:1px solid var(--gold);border-radius:4px;padding:3px 9px">
+        <div style="width:16px;height:16px;background:var(--warn);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#fff;font-family:var(--mono)">③</div>
+        <span style="font-size:10.5px;font-weight:700;color:var(--warn)">アンプ攻撃</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:5px;background:#fde8e8;border:1px solid var(--danger);border-radius:4px;padding:3px 9px">
+        <div style="width:16px;height:16px;background:var(--danger);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#fff;font-family:var(--mono)">④</div>
+        <span style="font-size:10.5px;font-weight:700;color:var(--danger)">水攻め</span>
+      </div>
+    </div>
+
+    <!-- ═══ 正規のDNSフロー ═══ -->
+    <div style="background:#f8f9ff;border:1.5px dashed #a8c8e8;border-radius:10px;padding:24px 20px 18px;position:relative">
+      <div style="position:absolute;top:-10px;left:20px;background:#fff;padding:0 10px;font-size:10px;font-weight:700;color:var(--accent);letter-spacing:.08em">正規のDNS通信フロー</div>
+
+      <!-- 行1: Stub → Full Resolver -->
+      <div style="display:flex;align-items:center;gap:0;margin-bottom:24px">
+        <!-- Stub Resolver (Client) -->
+        <div style="flex:0 0 140px;background:#fff;border:2px solid var(--ink2);border-radius:10px;padding:12px 10px;display:flex;flex-direction:column;align-items:center;gap:6px;position:relative">
+          <div style="width:36px;height:36px;background:var(--ink2);border-radius:7px;display:flex;align-items:center;justify-content:center">
+            <svg width="20" height="20"><use href="#ic-monitor" color="white"/></svg>
+          </div>
+          <div style="font-size:10.5px;font-weight:800;color:var(--ink2);font-family:var(--mono);text-align:center">CLIENT</div>
+          <div style="font-size:9px;color:#666;text-align:center;line-height:1.3">スタブリゾルバ<br>(OS内蔵)</div>
+        </div>
+
+        <!-- Arrow -->
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;padding:0 10px;position:relative;min-width:120px">
+          <div style="font-size:9.5px;font-weight:700;color:var(--ink2);margin-bottom:3px">① 再帰問合せ「www.bank.jp は？」</div>
+          <div style="width:100%;height:2px;background:var(--ink2);position:relative">
+            <div style="position:absolute;right:-1px;top:-4px;width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:7px solid var(--ink2)"></div>
+          </div>
+          <div style="font-size:8.5px;color:#888;margin-top:3px">UDP/TCP 53</div>
+        </div>
+
+        <!-- Full Service Resolver + Cache -->
+        <div style="flex:0 0 180px;background:#fff;border:2.5px solid var(--purple);border-radius:10px;padding:10px 10px;display:flex;flex-direction:column;align-items:center;gap:5px;position:relative;box-shadow:0 0 0 3px rgba(58,24,112,.08)">
+          <!-- Attack markers (top-right) -->
+          <div style="position:absolute;top:-11px;right:-11px;display:flex;gap:3px">
+            <div style="width:22px;height:22px;background:var(--purple);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;font-family:var(--mono);border:2px solid #fff;box-shadow:0 2px 5px rgba(0,0,0,.2)">①</div>
+            <div style="width:22px;height:22px;background:var(--danger);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;font-family:var(--mono);border:2px solid #fff;box-shadow:0 2px 5px rgba(0,0,0,.2)">④</div>
+          </div>
+          <div style="width:36px;height:36px;background:var(--purple);border-radius:7px;display:flex;align-items:center;justify-content:center">
+            <svg width="20" height="20"><use href="#ic-database" color="white"/></svg>
+          </div>
+          <div style="font-size:10.5px;font-weight:800;color:var(--purple);font-family:var(--mono);text-align:center">FULL RESOLVER</div>
+          <div style="font-size:9px;color:#666;text-align:center;line-height:1.3">キャッシュ保持<br>反復問合せ担当</div>
+          <div style="background:#ede8ff;border:1px solid var(--purple);border-radius:3px;padding:2px 7px;font-size:8.5px;font-family:var(--mono);color:var(--purple);font-weight:700">CACHE</div>
+        </div>
+
+        <!-- Arrow -->
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;padding:0 10px;position:relative;min-width:120px">
+          <div style="font-size:9.5px;font-weight:700;color:var(--ink2);margin-bottom:3px">② 反復問合せ「.jp のNS？」</div>
+          <div style="width:100%;height:2px;background:var(--accent);position:relative">
+            <div style="position:absolute;right:-1px;top:-4px;width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:7px solid var(--accent)"></div>
+          </div>
+          <div style="font-size:8.5px;color:#888;margin-top:3px">UDP 53 + TXID</div>
+        </div>
+
+        <!-- Root NS -->
+        <div style="flex:0 0 140px;background:#fff;border:2px solid var(--accent);border-radius:10px;padding:12px 10px;display:flex;flex-direction:column;align-items:center;gap:6px">
+          <div style="width:36px;height:36px;background:var(--accent);border-radius:7px;display:flex;align-items:center;justify-content:center">
+            <svg width="20" height="20"><use href="#ic-globe" color="white"/></svg>
+          </div>
+          <div style="font-size:10.5px;font-weight:800;color:var(--accent);font-family:var(--mono);text-align:center">ROOT NS</div>
+          <div style="font-size:9px;color:#666;text-align:center;line-height:1.3">"." ルートゾーン<br>13組</div>
+        </div>
+      </div>
+
+      <!-- 行2: Cache → Root → TLD → Auth NS (右→左流れ、委任の鎖) -->
+      <div style="display:flex;align-items:center;gap:0;margin-bottom:24px">
+        <!-- 被害者サーバ (for reflection/amp) -->
+        <div style="flex:0 0 140px;background:#fff;border:2.5px solid #c06030;border-radius:10px;padding:12px 10px;display:flex;flex-direction:column;align-items:center;gap:6px;position:relative;box-shadow:0 0 0 3px rgba(192,96,48,.08)">
+          <!-- Attack markers -->
+          <div style="position:absolute;top:-11px;right:-11px;display:flex;gap:3px">
+            <div style="width:22px;height:22px;background:#3a6a1e;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;font-family:var(--mono);border:2px solid #fff;box-shadow:0 2px 5px rgba(0,0,0,.2)">②</div>
+            <div style="width:22px;height:22px;background:var(--warn);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;font-family:var(--mono);border:2px solid #fff;box-shadow:0 2px 5px rgba(0,0,0,.2)">③</div>
+          </div>
+          <div style="width:36px;height:36px;background:#c06030;border-radius:7px;display:flex;align-items:center;justify-content:center">
+            <svg width="20" height="20"><use href="#ic-target" color="white"/></svg>
+          </div>
+          <div style="font-size:10.5px;font-weight:800;color:#c06030;font-family:var(--mono);text-align:center">VICTIM</div>
+          <div style="font-size:9px;color:#666;text-align:center;line-height:1.3">被害者サーバ<br>帯域飽和の標的</div>
+        </div>
+
+        <!-- Arrow ← -->
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;padding:0 10px;position:relative;min-width:120px">
+          <div style="font-size:9.5px;font-weight:700;color:#c06030;margin-bottom:3px">⑦ 大量のDNS応答が集中</div>
+          <div style="width:100%;height:2px;background:#c06030;position:relative">
+            <div style="position:absolute;left:-1px;top:-4px;width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:7px solid #c06030"></div>
+          </div>
+          <div style="font-size:8.5px;color:#888;margin-top:3px">大容量応答 ×N</div>
+        </div>
+
+        <!-- Open Resolver (踏み台) -->
+        <div style="flex:0 0 180px;background:#fff;border:2px solid var(--accent2);border-radius:10px;padding:10px 10px;display:flex;flex-direction:column;align-items:center;gap:5px">
+          <div style="width:36px;height:36px;background:var(--accent2);border-radius:7px;display:flex;align-items:center;justify-content:center">
+            <svg width="20" height="20"><use href="#ic-database" color="white"/></svg>
+          </div>
+          <div style="font-size:10.5px;font-weight:800;color:var(--accent2);font-family:var(--mono);text-align:center">OPEN RESOLVER</div>
+          <div style="font-size:9px;color:#666;text-align:center;line-height:1.3">外部からも使える<br>リゾルバ（踏み台）</div>
+          <div style="background:#fde8e8;border:1px solid var(--danger);border-radius:3px;padding:2px 7px;font-size:8.5px;font-family:var(--mono);color:var(--danger);font-weight:700">踏み台化</div>
+        </div>
+
+        <!-- Arrow ← (from Attacker to Open Resolver, src IP spoof) -->
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;padding:0 10px;position:relative;min-width:120px">
+          <div style="font-size:9.5px;font-weight:700;color:#3a6a1e;margin-bottom:3px">⑥ src IP偽装クエリ</div>
+          <div style="width:100%;height:2px;background:#3a6a1e;position:relative">
+            <div style="position:absolute;left:-1px;top:-4px;width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:7px solid #3a6a1e"></div>
+          </div>
+          <div style="font-size:8.5px;color:#888;margin-top:3px">ANY/DNSSECクエリ</div>
+        </div>
+
+        <!-- 攻撃者 -->
+        <div style="flex:0 0 140px;background:#fff;border:2.5px solid var(--danger);border-radius:10px;padding:12px 10px;display:flex;flex-direction:column;align-items:center;gap:6px;position:relative;box-shadow:0 0 0 3px rgba(122,24,24,.08)">
+          <!-- Attack markers -->
+          <div style="position:absolute;top:-11px;right:-11px;display:flex;gap:3px">
+            <div style="width:22px;height:22px;background:#3a6a1e;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;font-family:var(--mono);border:2px solid #fff;box-shadow:0 2px 5px rgba(0,0,0,.2)">②</div>
+            <div style="width:22px;height:22px;background:var(--warn);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;font-family:var(--mono);border:2px solid #fff;box-shadow:0 2px 5px rgba(0,0,0,.2)">③</div>
+            <div style="width:22px;height:22px;background:var(--purple);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;font-family:var(--mono);border:2px solid #fff;box-shadow:0 2px 5px rgba(0,0,0,.2)">①</div>
+            <div style="width:22px;height:22px;background:var(--danger);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;font-family:var(--mono);border:2px solid #fff;box-shadow:0 2px 5px rgba(0,0,0,.2)">④</div>
+          </div>
+          <div style="width:36px;height:36px;background:var(--danger);border-radius:7px;display:flex;align-items:center;justify-content:center">
+            <svg width="20" height="20"><use href="#ic-crosshair" color="white"/></svg>
+          </div>
+          <div style="font-size:10.5px;font-weight:800;color:var(--danger);font-family:var(--mono);text-align:center">ATTACKER</div>
+          <div style="font-size:9px;color:#666;text-align:center;line-height:1.3">攻撃者<br>(全攻撃の起点)</div>
+        </div>
+      </div>
+
+      <!-- 行3: TLD ─ Auth NS -->
+      <div style="display:flex;align-items:center;gap:0">
+        <!-- Full Resolver ← 逆矢印  -->
+        <div style="flex:0 0 140px;display:flex;flex-direction:column;align-items:center;gap:6px">
+          <div style="font-size:8.5px;color:#888;text-align:center;line-height:1.4">↑ キャッシュに<br>結果を保存</div>
+        </div>
+
+        <!-- Arrow Up → Full Resolver -->
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;padding:0 10px;position:relative;min-width:120px">
+          <div style="font-size:9.5px;font-weight:700;color:var(--success);margin-bottom:3px">⑤ 応答 A=192.0.2.1 + RRSIG</div>
+          <div style="width:100%;height:2px;background:var(--success);position:relative">
+            <div style="position:absolute;left:-1px;top:-4px;width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:7px solid var(--success)"></div>
+          </div>
+          <div style="font-size:8.5px;color:#888;margin-top:3px">DNS応答パケット</div>
+        </div>
+
+        <!-- Auth NS -->
+        <div style="flex:0 0 180px;background:#fff;border:2.5px solid var(--gold);border-radius:10px;padding:10px 10px;display:flex;flex-direction:column;align-items:center;gap:5px;position:relative;box-shadow:0 0 0 3px rgba(181,130,30,.1)">
+          <!-- Attack markers -->
+          <div style="position:absolute;top:-11px;right:-11px;display:flex;gap:3px">
+            <div style="width:22px;height:22px;background:var(--danger);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;font-family:var(--mono);border:2px solid #fff;box-shadow:0 2px 5px rgba(0,0,0,.2)">④</div>
+            <div style="width:22px;height:22px;background:var(--purple);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;font-family:var(--mono);border:2px solid #fff;box-shadow:0 2px 5px rgba(0,0,0,.2)">①</div>
+          </div>
+          <div style="width:36px;height:36px;background:var(--gold);border-radius:7px;display:flex;align-items:center;justify-content:center">
+            <svg width="20" height="20"><use href="#ic-server" color="white"/></svg>
+          </div>
+          <div style="font-size:10.5px;font-weight:800;color:var(--warn);font-family:var(--mono);text-align:center">AUTH NS</div>
+          <div style="font-size:9px;color:#666;text-align:center;line-height:1.3">bank.jp の権威<br>ゾーンファイル保持</div>
+        </div>
+
+        <!-- Arrow ← from TLD  -->
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;padding:0 10px;position:relative;min-width:120px">
+          <div style="font-size:9.5px;font-weight:700;color:var(--ink2);margin-bottom:3px">④ 権威NSへ問合せ</div>
+          <div style="width:100%;height:2px;background:var(--accent);position:relative">
+            <div style="position:absolute;left:-1px;top:-4px;width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:7px solid var(--accent)"></div>
+          </div>
+          <div style="font-size:8.5px;color:#888;margin-top:3px">反復問合せ</div>
+        </div>
+
+        <!-- TLD NS -->
+        <div style="flex:0 0 140px;background:#fff;border:2px solid var(--success);border-radius:10px;padding:12px 10px;display:flex;flex-direction:column;align-items:center;gap:6px">
+          <div style="width:36px;height:36px;background:var(--success);border-radius:7px;display:flex;align-items:center;justify-content:center">
+            <svg width="20" height="20"><use href="#ic-layers" color="white"/></svg>
+          </div>
+          <div style="font-size:10.5px;font-weight:800;color:var(--success);font-family:var(--mono);text-align:center">TLD NS</div>
+          <div style="font-size:9px;color:#666;text-align:center;line-height:1.3">.jp / .com<br>権威NS委任</div>
+        </div>
+      </div>
+
+    </div>
+    <!-- ═══ /DNSフロー ═══ -->
+
+    <!-- 攻撃ルート注釈 -->
+    <div style="margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:10px">
+
+      <!-- ① ポイズニング -->
+      <div style="background:#f8f4ff;border:1.5px solid var(--purple);border-radius:8px;padding:10px 14px;display:flex;gap:10px;align-items:flex-start">
+        <div style="width:24px;height:24px;background:var(--purple);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;font-family:var(--mono);flex-shrink:0">①</div>
+        <div>
+          <div style="font-size:11.5px;font-weight:700;color:var(--purple);margin-bottom:3px">キャッシュポイズニング — 攻撃者→FULL RESOLVER / AUTH NS経路</div>
+          <div style="font-size:10.5px;color:#2a005a;line-height:1.55">リゾルバが権威NSへ反復問合せする<strong>②〜④の経路</strong>で、TXIDを推測して偽応答を先回り注入。<strong>FULL RESOLVERのキャッシュ</strong>に偽データが書き込まれる。</div>
+        </div>
+      </div>
+
+      <!-- ② リフレクション -->
+      <div style="background:#f4faef;border:1.5px solid #3a6a1e;border-radius:8px;padding:10px 14px;display:flex;gap:10px;align-items:flex-start">
+        <div style="width:24px;height:24px;background:#3a6a1e;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;font-family:var(--mono);flex-shrink:0">②</div>
+        <div>
+          <div style="font-size:11.5px;font-weight:700;color:#3a6a1e;margin-bottom:3px">リフレクション — 攻撃者→OPEN RESOLVER→VICTIM経路</div>
+          <div style="font-size:10.5px;color:#2a4a10;line-height:1.55">攻撃者がsrc IPを被害者に偽装して<strong>⑥のクエリ</strong>送信→応答は<strong>⑦の経路</strong>で被害者へ集中。正規のフローとは別の「横道」を作る攻撃。</div>
+        </div>
+      </div>
+
+      <!-- ③ アンプ -->
+      <div style="background:#fff9f0;border:1.5px solid var(--gold);border-radius:8px;padding:10px 14px;display:flex;gap:10px;align-items:flex-start">
+        <div style="width:24px;height:24px;background:var(--warn);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;font-family:var(--mono);flex-shrink:0">③</div>
+        <div>
+          <div style="font-size:11.5px;font-weight:700;color:var(--warn);margin-bottom:3px">アンプ攻撃 — ②と同経路＋応答サイズ増幅</div>
+          <div style="font-size:10.5px;color:#5a3200;line-height:1.55">リフレクションの経路に<strong>ANYクエリ＋DNSSEC有効ゾーン</strong>の組合せを足すことで、<strong>⑦の応答サイズが100倍以上</strong>に膨張。少ない攻撃帯域で大規模DDoS可能。</div>
+        </div>
+      </div>
+
+      <!-- ④ 水攻め -->
+      <div style="background:#fff4f4;border:1.5px solid var(--danger);border-radius:8px;padding:10px 14px;display:flex;gap:10px;align-items:flex-start">
+        <div style="width:24px;height:24px;background:var(--danger);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;font-family:var(--mono);flex-shrink:0">④</div>
+        <div>
+          <div style="font-size:11.5px;font-weight:700;color:var(--danger);margin-bottom:3px">水攻め — 攻撃者→FULL RESOLVER→AUTH NS経路</div>
+          <div style="font-size:10.5px;color:#5a0000;line-height:1.55">ランダムサブドメインで<strong>キャッシュを毎回ミス</strong>させ、<strong>③〜④の経路で権威NSへ連続転送</strong>。リゾルバと権威NSが二重消耗。<strong>IP詐称不要のため⑥⑦の経路を使わない</strong>＝BCP38無効。</div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+  </div>
+</div>
+
+<!-- ═══ 攻撃 × 狙う通信・処理 完全対応表 ═══ -->
+<h3>攻撃 × 狙う通信・処理の対応表</h3>
+<div style="overflow-x:auto;margin:16px 0">
+<table style="width:100%;border-collapse:collapse;font-size:12px;min-width:840px">
+<thead>
+<tr>
+  <th style="background:var(--ink2);color:#fff;padding:10px 10px;text-align:left;font-size:11px;font-weight:700;letter-spacing:.04em;border-right:1px solid #fff;min-width:130px">攻撃</th>
+  <th style="background:var(--ink2);color:#fff;padding:10px 10px;text-align:left;font-size:11px;font-weight:700;letter-spacing:.04em;border-right:1px solid #fff">狙う通信経路</th>
+  <th style="background:var(--ink2);color:#fff;padding:10px 10px;text-align:left;font-size:11px;font-weight:700;letter-spacing:.04em;border-right:1px solid #fff">狙う処理・仕組み</th>
+  <th style="background:var(--ink2);color:#fff;padding:10px 10px;text-align:left;font-size:11px;font-weight:700;letter-spacing:.04em;border-right:1px solid #fff">最終影響</th>
+  <th style="background:var(--ink2);color:#fff;padding:10px 10px;text-align:left;font-size:11px;font-weight:700;letter-spacing:.04em">標的コンポーネント</th>
+</tr>
+</thead>
+<tbody>
+
+<!-- ① ポイズニング -->
+<tr style="border-bottom:1px solid var(--line)">
+  <td style="padding:11px 10px;vertical-align:top;background:#f8f4ff;border-left:4px solid var(--purple)">
+    <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">
+      <div style="width:22px;height:22px;background:var(--purple);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;font-family:var(--mono);flex-shrink:0">①</div>
+      <strong style="font-size:11.5px;color:var(--purple)">キャッシュ<br>ポイズニング</strong>
+    </div>
+  </td>
+  <td style="padding:11px 10px;vertical-align:top">
+    <div style="font-weight:600;color:var(--ink2)">リゾルバ ⇔ 権威NS間 (②〜⑤)</div>
+    <div style="font-size:10.5px;color:#666;margin-top:3px">反復問合せの応答を偽装パケットで横取り</div>
+  </td>
+  <td style="padding:11px 10px;vertical-align:top">
+    <div style="font-size:11px;line-height:1.55">・<strong>UDP 53の問合せ応答対応付け</strong>（TXID 16ビット）<br>・<strong>ソースポート固定</strong>の場合は総当たり容易<br>・カミンスキーはランダムサブドメインで<strong>連続試行</strong></div>
+  </td>
+  <td style="padding:11px 10px;vertical-align:top">
+    <div style="background:#ede8ff;border-radius:4px;padding:4px 8px;font-size:10.5px;color:var(--purple);font-weight:600;line-height:1.5">キャッシュに偽Aレコードが格納→<strong>TTL期間中、全ユーザが偽サイトへ誘導</strong></div>
+  </td>
+  <td style="padding:11px 10px;vertical-align:top;text-align:center">
+    <div style="display:inline-block;background:var(--purple);color:#fff;font-family:var(--mono);font-size:10px;padding:3px 8px;border-radius:4px;font-weight:700">FULL RESOLVER<br>CACHE</div>
+  </td>
+</tr>
+
+<!-- ② リフレクション -->
+<tr style="border-bottom:1px solid var(--line)">
+  <td style="padding:11px 10px;vertical-align:top;background:#f4faef;border-left:4px solid #3a6a1e">
+    <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">
+      <div style="width:22px;height:22px;background:#3a6a1e;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;font-family:var(--mono);flex-shrink:0">②</div>
+      <strong style="font-size:11.5px;color:#3a6a1e">リフレクション<br>攻撃</strong>
+    </div>
+  </td>
+  <td style="padding:11px 10px;vertical-align:top">
+    <div style="font-weight:600;color:var(--ink2)">攻撃者 → オープンリゾルバ → 被害者 (⑥⑦)</div>
+    <div style="font-size:10.5px;color:#666;margin-top:3px">正規経路とは別に攻撃者が開く「横道」</div>
+  </td>
+  <td style="padding:11px 10px;vertical-align:top">
+    <div style="font-size:11px;line-height:1.55">・<strong>UDPのコネクションレス特性</strong>（src IP検証なし）<br>・<strong>オープンリゾルバの誰でもクエリ可能</strong>な設定<br>・応答は自動的にsrc IP宛に戻る仕組み</div>
+  </td>
+  <td style="padding:11px 10px;vertical-align:top">
+    <div style="background:#e8f5e0;border-radius:4px;padding:4px 8px;font-size:10.5px;color:#3a6a1e;font-weight:600;line-height:1.5">被害者サーバに応答パケットが集中→<strong>回線帯域飽和（DDoS）</strong></div>
+  </td>
+  <td style="padding:11px 10px;vertical-align:top;text-align:center">
+    <div style="display:inline-block;background:#3a6a1e;color:#fff;font-family:var(--mono);font-size:10px;padding:3px 8px;border-radius:4px;font-weight:700">VICTIM<br>(帯域)</div>
+  </td>
+</tr>
+
+<!-- ③ アンプ -->
+<tr style="border-bottom:1px solid var(--line)">
+  <td style="padding:11px 10px;vertical-align:top;background:#fff9f0;border-left:4px solid var(--gold)">
+    <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">
+      <div style="width:22px;height:22px;background:var(--warn);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;font-family:var(--mono);flex-shrink:0">③</div>
+      <strong style="font-size:11.5px;color:var(--warn)">アンプ攻撃<br>（増幅型）</strong>
+    </div>
+  </td>
+  <td style="padding:11px 10px;vertical-align:top">
+    <div style="font-weight:600;color:var(--ink2)">②と同じ経路 + 応答増大 (⑥⑦)</div>
+    <div style="font-size:10.5px;color:#666;margin-top:3px">リフレクションの上位版</div>
+  </td>
+  <td style="padding:11px 10px;vertical-align:top">
+    <div style="font-size:11px;line-height:1.55">・<strong>ANYクエリで全RR種別を一括要求</strong>（40B→数KB）<br>・<strong>DNSSEC有効ゾーンのRRSIG</strong>で応答さらに増大<br>・EDNS0でUDPが4096Bまで送信可能</div>
+  </td>
+  <td style="padding:11px 10px;vertical-align:top">
+    <div style="background:#fdf5e6;border-radius:4px;padding:4px 8px;font-size:10.5px;color:var(--warn);font-weight:600;line-height:1.5">BAF 100倍超→<strong>少ない攻撃帯域で大規模DDoS</strong>が成立</div>
+  </td>
+  <td style="padding:11px 10px;vertical-align:top;text-align:center">
+    <div style="display:inline-block;background:var(--warn);color:#fff;font-family:var(--mono);font-size:10px;padding:3px 8px;border-radius:4px;font-weight:700">VICTIM<br>(帯域)</div>
+  </td>
+</tr>
+
+<!-- ④ 水攻め -->
+<tr>
+  <td style="padding:11px 10px;vertical-align:top;background:#fff4f4;border-left:4px solid var(--danger)">
+    <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">
+      <div style="width:22px;height:22px;background:var(--danger);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;font-family:var(--mono);flex-shrink:0">④</div>
+      <strong style="font-size:11.5px;color:var(--danger)">水攻め攻撃</strong>
+    </div>
+  </td>
+  <td style="padding:11px 10px;vertical-align:top">
+    <div style="font-weight:600;color:var(--ink2)">クライアント → リゾルバ → 権威NS (①〜④)</div>
+    <div style="font-size:10.5px;color:#666;margin-top:3px"><strong>正規経路を大量利用する</strong>攻撃</div>
+  </td>
+  <td style="padding:11px 10px;vertical-align:top">
+    <div style="font-size:11px;line-height:1.55">・<strong>ランダムサブドメイン</strong>でキャッシュを毎回ミス<br>・<strong>反復問合せの仕組み</strong>そのものを悪用<br>・IP詐称<strong>不要</strong>（⑥⑦経路を使わない）</div>
+  </td>
+  <td style="padding:11px 10px;vertical-align:top">
+    <div style="background:#fde8e8;border-radius:4px;padding:4px 8px;font-size:10.5px;color:var(--danger);font-weight:600;line-height:1.5">権威NSとリゾルバの<strong>両方がリソース枯渇</strong>→DNS解決自体が不能</div>
+  </td>
+  <td style="padding:11px 10px;vertical-align:top;text-align:center">
+    <div style="display:inline-block;background:var(--danger);color:#fff;font-family:var(--mono);font-size:10px;padding:3px 8px;border-radius:4px;font-weight:700">AUTH NS +<br>RESOLVER</div>
+  </td>
+</tr>
+
+</tbody>
+</table>
+</div>
+
+<div class="note info" style="margin-top:10px">
+  <div class="note-i"><svg width="16" height="16"><use href="#ic-info" color="#1570b8"/></svg></div>
+  <p><strong>覚え方のコツ：</strong>4つの攻撃は<strong>「どの経路を悪用するか」「どのコンポーネントを傷つけるか」</strong>の2つで整理すると混乱しません。①は<strong>反復問合せ経路＋キャッシュ</strong>、②③は<strong>別に開いた横道＋被害者帯域</strong>、④は<strong>正規経路そのまま＋権威NS</strong>。この違いがBCP38やDNSSECの効き具合の違いにもそのまま直結します。</p>
 </div>
 
 <div class="keypoint">
@@ -2105,6 +2590,180 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
   </div>
 </div>
 
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     ★ NEW: KSK/ZSK 精密キー詳細イラスト ★
+     鍵の視覚的な違いを強調し、署名関係を視覚化
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<h3>KSK / ZSK の視覚的な違いと署名関係</h3>
+<p>KSKとZSKは<strong>同じ「鍵ペアの概念」ですが、役割と重要度が異なります</strong>。下の精密キー図で「大きさ・装飾・歯形の複雑さ」の違いとして直感的に把握してください。</p>
+
+<div style="background:#fff;border:2px solid var(--gold);border-radius:12px;overflow:hidden;margin:18px 0">
+  <div style="background:linear-gradient(90deg,var(--gold) 0%,#8a5f0e 100%);padding:10px 18px;color:#fff;display:flex;align-items:center;gap:10px;font-size:11px;font-weight:700;letter-spacing:.08em">
+    <svg width="16" height="16"><use href="#ic-key" color="white"/></svg>
+    <span>DNSSEC 鍵ペア：KSK（鍵署名鍵）⇔ ZSK（ゾーン署名鍵）</span>
+  </div>
+  <div style="padding:24px 24px 18px;background:linear-gradient(135deg,#fff9ec,#fff);overflow-x:auto">
+  <div style="min-width:720px;display:flex;align-items:center;justify-content:space-around;gap:16px">
+
+    <!-- ━━━ KSK（大・金・装飾付き）━━━ -->
+    <svg width="240" height="140" viewBox="0 0 240 140" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0">
+      <defs>
+        <radialGradient id="kskHead2" cx="50%" cy="40%" r="60%">
+          <stop offset="0%" stop-color="#fce6a0"/>
+          <stop offset="70%" stop-color="#d4a03c"/>
+          <stop offset="100%" stop-color="#8a5f0e"/>
+        </radialGradient>
+        <linearGradient id="kskShaft2" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#e0b860"/>
+          <stop offset="100%" stop-color="#a07820"/>
+        </linearGradient>
+      </defs>
+      <!-- タイトルラベル -->
+      <rect x="30" y="6" width="180" height="20" rx="10" fill="#7a4208"/>
+      <text x="120" y="20" text-anchor="middle" font-size="11" font-family="JetBrains Mono,monospace" font-weight="800" fill="white">KSK (Key Signing Key)</text>
+
+      <!-- 大きな装飾付き鍵頭 -->
+      <circle cx="58" cy="74" r="28" fill="url(#kskHead2)" stroke="#6a4608" stroke-width="2"/>
+      <circle cx="58" cy="74" r="22" fill="none" stroke="#6a4608" stroke-width="1.2" opacity=".7"/>
+      <circle cx="58" cy="74" r="10" fill="#8a5f0e"/>
+      <circle cx="58" cy="74" r="5" fill="#fce6a0"/>
+      <!-- 8方向の装飾 -->
+      <g stroke="#6a4608" stroke-width="1.2" fill="none">
+        <line x1="58" y1="54" x2="58" y2="61"/>
+        <line x1="58" y1="87" x2="58" y2="94"/>
+        <line x1="38" y1="74" x2="45" y2="74"/>
+        <line x1="71" y1="74" x2="78" y2="74"/>
+        <line x1="43" y1="59" x2="48" y2="64"/>
+        <line x1="68" y1="84" x2="73" y2="89"/>
+        <line x1="73" y1="59" x2="68" y2="64"/>
+        <line x1="48" y1="84" x2="43" y2="89"/>
+      </g>
+
+      <!-- シャフト（二重ライン） -->
+      <rect x="86" y="69" width="108" height="10" fill="url(#kskShaft2)" stroke="#6a4608" stroke-width="1"/>
+      <line x1="86" y1="73" x2="194" y2="73" stroke="#6a4608" stroke-width=".6" opacity=".6"/>
+      <line x1="86" y1="75" x2="194" y2="75" stroke="#6a4608" stroke-width=".6" opacity=".6"/>
+
+      <!-- 複雑な歯形 -->
+      <path d="M 180 79 L 180 96 L 188 96 L 188 88 L 196 88 L 196 100 L 204 100 L 204 84 L 214 84 L 214 79 Z" fill="url(#kskShaft2)" stroke="#6a4608" stroke-width="1"/>
+      <path d="M 168 79 L 168 89 L 176 89 L 176 79" fill="url(#kskShaft2)" stroke="#6a4608" stroke-width="1"/>
+
+      <!-- アルゴリズムバッジ -->
+      <rect x="100" y="110" width="74" height="16" rx="8" fill="#7a4208"/>
+      <text x="137" y="121" text-anchor="middle" font-size="9" font-family="JetBrains Mono,monospace" font-weight="700" fill="white">RSA-2048 / ECDSA</text>
+
+      <!-- 説明 -->
+      <text x="120" y="136" text-anchor="middle" font-size="9" font-family="Noto Sans JP,sans-serif" fill="#6a4608" font-weight="700">信頼アンカー・長期管理</text>
+    </svg>
+
+    <!-- ━━━ 署名関係 ━━━ -->
+    <svg width="100" height="140" viewBox="0 0 100 140" fill="none" style="flex-shrink:0">
+      <!-- 上向き: signs → -->
+      <rect x="14" y="12" width="72" height="18" rx="9" fill="#b5821e"/>
+      <text x="50" y="24" text-anchor="middle" font-size="10" font-family="JetBrains Mono,monospace" font-weight="800" fill="white">signs →</text>
+      <line x1="10" y1="46" x2="90" y2="46" stroke="#b5821e" stroke-width="2.5"/>
+      <polygon points="86,41 93,46 86,51" fill="#b5821e"/>
+
+      <!-- 中央: RRSIG ボックス -->
+      <g transform="translate(24,58)">
+        <rect x="0" y="0" width="52" height="26" rx="3" fill="#fff" stroke="#155f44" stroke-width="1.5"/>
+        <line x1="5" y1="8" x2="47" y2="8" stroke="#155f44" stroke-width=".8" opacity=".5"/>
+        <line x1="5" y1="13" x2="47" y2="13" stroke="#155f44" stroke-width=".8" opacity=".5"/>
+        <line x1="5" y1="18" x2="36" y2="18" stroke="#155f44" stroke-width=".8" opacity=".5"/>
+        <text x="26" y="35" text-anchor="middle" font-size="8" font-family="JetBrains Mono,monospace" font-weight="700" fill="#155f44">RRSIG</text>
+      </g>
+
+      <!-- 下向き: ← used by -->
+      <polygon points="14,102 6,97 14,92" fill="#b5821e"/>
+      <line x1="90" y1="97" x2="10" y2="97" stroke="#b5821e" stroke-width="2.5"/>
+      <rect x="14" y="114" width="72" height="18" rx="9" fill="#b5821e"/>
+      <text x="50" y="126" text-anchor="middle" font-size="10" font-family="JetBrains Mono,monospace" font-weight="800" fill="white">← used by</text>
+    </svg>
+
+    <!-- ━━━ ZSK（小・青・簡素）━━━ -->
+    <svg width="240" height="140" viewBox="0 0 240 140" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0">
+      <defs>
+        <radialGradient id="zskHead2" cx="50%" cy="40%" r="60%">
+          <stop offset="0%" stop-color="#c8e0f8"/>
+          <stop offset="70%" stop-color="#6a9ed0"/>
+          <stop offset="100%" stop-color="#2a5a90"/>
+        </radialGradient>
+        <linearGradient id="zskShaft2" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#8cb0d8"/>
+          <stop offset="100%" stop-color="#3a6a9e"/>
+        </linearGradient>
+      </defs>
+      <!-- タイトルラベル -->
+      <rect x="30" y="6" width="180" height="20" rx="10" fill="#0b4a82"/>
+      <text x="120" y="20" text-anchor="middle" font-size="11" font-family="JetBrains Mono,monospace" font-weight="800" fill="white">ZSK (Zone Signing Key)</text>
+
+      <!-- 小さなシンプル鍵頭 -->
+      <circle cx="62" cy="74" r="22" fill="url(#zskHead2)" stroke="#0b3a6a" stroke-width="2"/>
+      <circle cx="62" cy="74" r="10" fill="#0b3a6a"/>
+      <circle cx="62" cy="74" r="4" fill="#c8e0f8"/>
+
+      <!-- シンプルシャフト -->
+      <rect x="84" y="71" width="102" height="6" fill="url(#zskShaft2)" stroke="#0b3a6a" stroke-width="1"/>
+      <line x1="84" y1="74" x2="186" y2="74" stroke="#0b3a6a" stroke-width=".4" opacity=".5"/>
+
+      <!-- シンプル歯形 -->
+      <path d="M 176 77 L 176 90 L 184 90 L 184 82 L 192 82 L 192 90 L 202 90 L 202 77 Z" fill="url(#zskShaft2)" stroke="#0b3a6a" stroke-width="1"/>
+
+      <!-- アルゴリズムバッジ -->
+      <rect x="100" y="110" width="74" height="16" rx="8" fill="#0b4a82"/>
+      <text x="137" y="121" text-anchor="middle" font-size="9" font-family="JetBrains Mono,monospace" font-weight="700" fill="white">RSA-1024 / ECDSA</text>
+
+      <!-- 説明 -->
+      <text x="120" y="136" text-anchor="middle" font-size="9" font-family="Noto Sans JP,sans-serif" fill="#0b3a6a" font-weight="700">各RRsetを日常的に署名</text>
+    </svg>
+
+  </div>
+
+  <!-- 比較表 -->
+  <div style="margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:12px">
+
+    <div style="background:#fff8e0;border:1.5px solid var(--gold);border-radius:8px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start">
+      <div style="width:32px;height:32px;background:var(--gold);border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        <svg width="18" height="18"><use href="#ic-key" color="white"/></svg>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:800;color:var(--warn);margin-bottom:4px;letter-spacing:.02em">KSK（大・金・装飾あり）</div>
+        <div style="font-size:10.5px;color:#5a3200;line-height:1.6">
+          ・鍵長 <strong>2048bit</strong> 以上<br>
+          ・署名対象 <strong>DNSKEYレコードのみ</strong>（ZSKを署名）<br>
+          ・変更頻度 <strong>低（年1回程度）</strong><br>
+          ・親ゾーンに <strong>DSレコード</strong> として登録
+        </div>
+      </div>
+    </div>
+
+    <div style="background:#e8f3fd;border:1.5px solid var(--accent2);border-radius:8px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start">
+      <div style="width:32px;height:32px;background:var(--accent);border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        <svg width="18" height="18"><use href="#ic-key2" color="white"/></svg>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:800;color:var(--accent);margin-bottom:4px;letter-spacing:.02em">ZSK（小・青・簡素）</div>
+        <div style="font-size:10.5px;color:#0b3a6a;line-height:1.6">
+          ・鍵長 <strong>1024bit</strong> 程度で可<br>
+          ・署名対象 <strong>ゾーン内の全RRset</strong>（A・NS・MX等全て）<br>
+          ・変更頻度 <strong>高（月1回程度）</strong><br>
+          ・KSKで署名された DNSKEY として公開
+        </div>
+      </div>
+    </div>
+
+  </div>
+  </div>
+</div>
+
+<div class="analogy">
+  <div class="analogy-icon"><svg width="22" height="22"><use href="#ic-info" color="#5a3a9a"/></svg></div>
+  <div class="analogy-body">
+    <div class="analogy-label">たとえ話：会社の印鑑システム</div>
+    <p class="analogy-text"><strong>KSK = 会社の「実印」</strong>（金庫保管・社長しか触れない・年1回の更新で十分）。<strong>ZSK = 部長の「認め印」</strong>（日常的に書類に押す・漏洩リスクを抑えるため定期交換）。実印が認め印を<strong>「この認め印は本物である」と認証</strong>し、認め印が個別の書類に署名していく——この2段構えで、万が一ZSKが漏れてもKSKが守られる限り被害を局所化できます。</p>
+  </div>
+</div>
+
 <!-- DNSSECレコード一覧 -->
 <h3>DNSSECで追加されるリソースレコード</h3>
 <table class="req-table">
@@ -2191,65 +2850,6 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
       <p style="margin:0;font-size:13px;color:#1a3a1a;line-height:1.75">差出人住所を「被害者の住所」に偽って、各家庭（オープンリゾルバ）にアンケートはがきを大量送付します。各家庭が<strong>返信を出すと全部「被害者」のポストに届き</strong>、ポストが溢れて正常な郵便が受け取れなくなります。</p>
       <div style="background:rgba(58,106,30,.08);border-radius:5px;padding:6px 10px;font-size:11.5px;color:#1a3a1a;font-weight:600">技術的には → src IP偽装UDPクエリ → オープンリゾルバが標的IPへ応答を返送 → 帯域飽和</div>
     </div>
-  </div>
-</div>
-
-<!-- リフレクション攻撃フロー図（SVGで完全座標制御） -->
-<div class="diag-wrap">
-  <p class="diag-cap"><svg width="12" height="12" style="margin-right:4px"><use href="#ic-repeat" color="#0b4a82"/></svg>図6 — DNS リフレクション攻撃のフロー</p>
-  <div style="overflow-x:auto">
-  <svg width="100%" viewBox="0 0 680 340" fill="none" style="display:block;min-width:600px">
-    <defs><marker id="arr6" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
-    <rect x="10"  y="10" width="130" height="230" rx="8" fill="#FCEBEB" stroke="#F09595" stroke-width="0.5" stroke-dasharray="4 3"/>
-    <text x="75"  y="26" text-anchor="middle" font-size="10" fill="#791F1F" font-family="sans-serif" font-weight="700">攻撃者側</text>
-    <rect x="200" y="10" width="220" height="230" rx="8" fill="#EEEDFE" stroke="#AFA9EC" stroke-width="0.5" stroke-dasharray="4 3"/>
-    <text x="310" y="26" text-anchor="middle" font-size="10" fill="#3C3489" font-family="sans-serif" font-weight="700">踏み台（オープンリゾルバ群）</text>
-    <rect x="490" y="10" width="180" height="230" rx="8" fill="#F1EFE8" stroke="#B4B2A9" stroke-width="0.5" stroke-dasharray="4 3"/>
-    <text x="580" y="26" text-anchor="middle" font-size="10" fill="#5F5E5A" font-family="sans-serif" font-weight="700">被害者側</text>
-    <rect x="25" y="70" width="100" height="80" rx="8" fill="#A32D2D"/>
-    <circle cx="75" cy="96" r="16" fill="#F09595" stroke="white" stroke-width="1"/>
-    <text x="75" y="101" text-anchor="middle" font-size="13" fill="white" font-family="sans-serif" font-weight="700">悪</text>
-    <text x="75" y="126" text-anchor="middle" font-size="11" fill="white" font-family="sans-serif" font-weight="700">攻撃者</text>
-    <text x="75" y="142" text-anchor="middle" font-size="9"  fill="rgba(255,255,255,0.7)" font-family="sans-serif">ATTACKER</text>
-    <rect x="220" y="48" width="180" height="58" rx="8" fill="#534AB7"/>
-    <text x="310" y="73"  text-anchor="middle" font-size="11" fill="white" font-family="sans-serif" font-weight="700">オープンリゾルバ 1</text>
-    <text x="310" y="88"  text-anchor="middle" font-size="9"  fill="rgba(255,255,255,0.7)" font-family="sans-serif">OPEN RESOLVER</text>
-    <text x="310" y="100" text-anchor="middle" font-size="9"  fill="rgba(255,255,255,0.7)" font-family="sans-serif">UDP/53</text>
-    <rect x="220" y="138" width="180" height="58" rx="8" fill="#534AB7" opacity="0.85"/>
-    <text x="310" y="163" text-anchor="middle" font-size="11" fill="white" font-family="sans-serif" font-weight="700">オープンリゾルバ 2</text>
-    <text x="310" y="178" text-anchor="middle" font-size="9"  fill="rgba(255,255,255,0.7)" font-family="sans-serif">OPEN RESOLVER</text>
-    <text x="310" y="190" text-anchor="middle" font-size="9"  fill="rgba(255,255,255,0.7)" font-family="sans-serif">UDP/53</text>
-    <text x="310" y="218" text-anchor="middle" font-size="11" fill="#3C3489" font-family="sans-serif">… × N 台</text>
-    <rect x="510" y="70" width="140" height="110" rx="8" fill="#444441"/>
-    <text x="580" y="106" text-anchor="middle" font-size="12" fill="white" font-family="sans-serif" font-weight="700">標的サーバ</text>
-    <text x="580" y="122" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.7)" font-family="sans-serif">VICTIM</text>
-    <rect x="526" y="132" width="108" height="34" rx="4" fill="#A32D2D"/>
-    <text x="580" y="147" text-anchor="middle" font-size="11" fill="white" font-family="sans-serif" font-weight="700">帯域飽和</text>
-    <text x="580" y="160" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.85)" font-family="sans-serif">サービス停止</text>
-    <line x1="125" y1="90" x2="218" y2="77" stroke="#A32D2D" stroke-width="2" marker-end="url(#arr6)"/>
-    <line x1="125" y1="120" x2="218" y2="167" stroke="#A32D2D" stroke-width="2" marker-end="url(#arr6)"/>
-    <line x1="400" y1="77" x2="508" y2="110" stroke="#A32D2D" stroke-width="2.5" stroke-dasharray="7 3" marker-end="url(#arr6)"/>
-    <line x1="400" y1="167" x2="508" y2="150" stroke="#A32D2D" stroke-width="2.5" stroke-dasharray="7 3" marker-end="url(#arr6)"/>
-    <circle cx="75"  cy="52" r="11" fill="#A32D2D"/>
-    <text x="75"  y="57" text-anchor="middle" font-size="12" fill="white" font-family="sans-serif" font-weight="700">①</text>
-    <circle cx="310" cy="28" r="11" fill="#A32D2D"/>
-    <text x="310" y="33" text-anchor="middle" font-size="12" fill="white" font-family="sans-serif" font-weight="700">②</text>
-    <circle cx="580" cy="52" r="11" fill="#A32D2D"/>
-    <text x="580" y="57" text-anchor="middle" font-size="12" fill="white" font-family="sans-serif" font-weight="700">③</text>
-    <rect x="14"  y="258" width="122" height="36" rx="5" fill="#FCEBEB" stroke="#A32D2D" stroke-width="1"/>
-    <text x="75"  y="271" text-anchor="middle" font-size="10" fill="#791F1F" font-family="sans-serif" font-weight="700">UDPクエリ送信</text>
-    <text x="75"  y="286" text-anchor="middle" font-size="9"  fill="#A32D2D" font-family="sans-serif">src IP = 標的IPに偽装</text>
-    <rect x="204" y="258" width="212" height="36" rx="5" fill="#EEEDFE" stroke="#534AB7" stroke-width="1"/>
-    <text x="310" y="271" text-anchor="middle" font-size="10" fill="#26215C" font-family="sans-serif" font-weight="700">DNS応答を返す</text>
-    <text x="310" y="286" text-anchor="middle" font-size="9"  fill="#3C3489" font-family="sans-serif">差出人（標的IP）に応答が集中</text>
-    <rect x="494" y="258" width="172" height="36" rx="5" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="1"/>
-    <text x="580" y="271" text-anchor="middle" font-size="10" fill="#2C2C2A" font-family="sans-serif" font-weight="700">帯域飽和・停止</text>
-    <text x="580" y="286" text-anchor="middle" font-size="9"  fill="#5F5E5A" font-family="sans-serif">正常なサービス不能に</text>
-    <rect x="10"  y="306" width="320" height="26" rx="5" fill="#EAF3DE" stroke="#3B6D11" stroke-width="1"/>
-    <text x="170" y="323" text-anchor="middle" font-size="10" fill="#27500A" font-family="sans-serif" font-weight="700">根本対策：BCP38 — ISP境界でsrc IPを検証しIPスプーフィングを遮断</text>
-    <rect x="340" y="306" width="330" height="26" rx="5" fill="#FAEEDA" stroke="#854F0B" stroke-width="1"/>
-    <text x="505" y="323" text-anchor="middle" font-size="10" fill="#633806" font-family="sans-serif" font-weight="700">踏み台対策：オープンリゾルバ廃止 — 外部再帰問い合わせをACLで拒否</text>
-  </svg>
   </div>
 </div>
 

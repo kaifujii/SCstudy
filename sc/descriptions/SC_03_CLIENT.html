@@ -1210,16 +1210,250 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
   </div>
 </div>
 
-<h3>メインモード vs アグレッシブモード（フェーズ1）</h3>
+<h3>メインモード vs アグレッシブモード — 横並びシーケンス比較</h3>
+<p>同じ「IKEフェーズ1」でも、メッセージ数・ID保護・速度が大きく異なります。差分を色で強調して横並びに示します。</p>
+
+<!-- 横並びシーケンス比較図 -->
+<div style="background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:22px 0 8px;">
+  <div style="background:var(--ink2);color:#fff;padding:10px 20px;font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;display:flex;align-items:center;gap:10px;">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    IKEv1 フェーズ1 — メインモード（6msg）vs アグレッシブモード（3msg）横並び比較
+  </div>
+  <div style="overflow-x:auto;">
+  <div style="min-width:860px;display:grid;grid-template-columns:1fr 1px 1fr;gap:0;">
+
+    <!-- ─── 左：メインモード ─── -->
+    <div style="padding:20px 24px 24px;">
+      <!-- ヘッダバッジ -->
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;">
+        <div style="background:#185FA5;color:white;font-family:var(--mono);font-size:11px;font-weight:800;padding:5px 14px;border-radius:6px;">Main Mode</div>
+        <div style="background:#E6F1FB;color:#185FA5;font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;">6 メッセージ（3往復）</div>
+        <div style="background:#EAF3DE;color:#3B6D11;font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;">ID保護あり</div>
+      </div>
+
+      <!-- アクターヘッダ -->
+      <div style="display:grid;grid-template-columns:90px 1fr 90px;margin-bottom:4px;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:5px;">
+          <div style="width:52px;height:52px;background:#185FA5;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;">
+            <svg width="26" height="26" viewBox="0 0 32 32" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="4" y="8" width="24" height="16" rx="2" fill="#B5D4F4" stroke="white" stroke-width="1.4"/>
+              <rect x="8" y="11" width="16" height="10" rx="1" fill="white" opacity=".3"/>
+              <line x1="4" y1="13" x2="28" y2="13" stroke="white" stroke-width="1"/>
+              <line x1="10" y1="26" x2="22" y2="26" stroke="white" stroke-width="1.4"/>
+              <line x1="16" y1="24" x2="16" y2="26" stroke="white" stroke-width="1.4"/>
+            </svg>
+            <span style="font-size:7.5px;font-weight:800;color:white;font-family:var(--mono);">開始側</span>
+          </div>
+          <span style="font-size:8.5px;color:#185FA5;font-weight:600;text-align:center;line-height:1.3;">Initiator<br>(VPN Client)</span>
+        </div>
+        <div></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:5px;">
+          <div style="width:52px;height:52px;background:#0F6E56;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;">
+            <svg width="26" height="26" viewBox="0 0 32 32" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="4" width="28" height="9" rx="2" fill="#9FE1CB" stroke="white" stroke-width="1.3"/>
+              <rect x="2" y="17" width="28" height="9" rx="2" fill="#9FE1CB" stroke="white" stroke-width="1.3"/>
+              <circle cx="5.5" cy="8.5" r="1.5" fill="white"/><circle cx="5.5" cy="21.5" r="1.5" fill="white"/>
+              <line x1="10" y1="8.5" x2="26" y2="8.5" stroke="white" stroke-width="1"/><line x1="10" y1="21.5" x2="26" y2="21.5" stroke="white" stroke-width="1"/>
+            </svg>
+            <span style="font-size:7.5px;font-weight:800;color:white;font-family:var(--mono);">応答側</span>
+          </div>
+          <span style="font-size:8.5px;color:#0F6E56;font-weight:600;text-align:center;line-height:1.3;">Responder<br>(VPN GW)</span>
+        </div>
+      </div>
+
+      <!-- シーケンスステップ -->
+      <div style="display:flex;flex-direction:column;gap:0;position:relative;">
+        <!-- ライフライン左 -->
+        <div style="position:absolute;left:45px;top:0;bottom:0;width:1px;background:repeating-linear-gradient(180deg,#185FA5 0,#185FA5 5px,transparent 5px,transparent 9px);opacity:.4;"></div>
+        <!-- ライフライン右 -->
+        <div style="position:absolute;right:45px;top:0;bottom:0;width:1px;background:repeating-linear-gradient(180deg,#0F6E56 0,#0F6E56 5px,transparent 5px,transparent 9px);opacity:.4;"></div>
+
+        <!-- M1 → -->
+        <div style="display:flex;align-items:center;min-height:42px;padding:2px 0;">
+          <div style="flex:0 0 46px;text-align:right;padding-right:8px;font-family:var(--mono);font-size:9px;font-weight:700;color:#185FA5;">①</div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:2px;">
+            <div style="font-size:9px;background:#E6F1FB;border:1px solid #B5D4F4;border-radius:4px;padding:3px 8px;color:#0C447C;white-space:nowrap;width:fit-content;">SA提案（暗号・DH群・認証方式）</div>
+            <div style="display:flex;align-items:center;"><div style="flex:1;height:2px;background:#185FA5;"></div><div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:8px solid #185FA5;"></div></div>
+          </div>
+          <div style="flex:0 0 46px;"></div>
+        </div>
+        <!-- M2 ← -->
+        <div style="display:flex;align-items:center;min-height:42px;padding:2px 0;">
+          <div style="flex:0 0 46px;text-align:right;padding-right:8px;font-family:var(--mono);font-size:9px;font-weight:700;color:#0F6E56;">②</div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:2px;align-items:flex-end;">
+            <div style="font-size:9px;background:#E1F5EE;border:1px solid #9FE1CB;border-radius:4px;padding:3px 8px;color:#085041;white-space:nowrap;width:fit-content;">SA応答（合意した暗号スイート）</div>
+            <div style="display:flex;align-items:center;width:100%;"><div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:8px solid #0F6E56;"></div><div style="flex:1;height:2px;background:#0F6E56;"></div></div>
+          </div>
+          <div style="flex:0 0 46px;"></div>
+        </div>
+        <!-- M3 → -->
+        <div style="display:flex;align-items:center;min-height:42px;padding:2px 0;">
+          <div style="flex:0 0 46px;text-align:right;padding-right:8px;font-family:var(--mono);font-size:9px;font-weight:700;color:#185FA5;">③</div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:2px;">
+            <div style="font-size:9px;background:#E6F1FB;border:1px solid #B5D4F4;border-radius:4px;padding:3px 8px;color:#0C447C;white-space:nowrap;width:fit-content;">DH公開値 + Nonce（鍵素材）</div>
+            <div style="display:flex;align-items:center;"><div style="flex:1;height:2px;background:#185FA5;"></div><div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:8px solid #185FA5;"></div></div>
+          </div>
+          <div style="flex:0 0 46px;"></div>
+        </div>
+        <!-- M4 ← -->
+        <div style="display:flex;align-items:center;min-height:42px;padding:2px 0;">
+          <div style="flex:0 0 46px;text-align:right;padding-right:8px;font-family:var(--mono);font-size:9px;font-weight:700;color:#0F6E56;">④</div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:2px;align-items:flex-end;">
+            <div style="font-size:9px;background:#E1F5EE;border:1px solid #9FE1CB;border-radius:4px;padding:3px 8px;color:#085041;white-space:nowrap;width:fit-content;">DH公開値 + Nonce（→共通鍵生成）</div>
+            <div style="display:flex;align-items:center;width:100%;"><div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:8px solid #0F6E56;"></div><div style="flex:1;height:2px;background:#0F6E56;"></div></div>
+          </div>
+          <div style="flex:0 0 46px;"></div>
+        </div>
+
+        <!-- 暗号化ゾーン開始バー -->
+        <div style="background:#EAF3DE;border:1px solid #C0DD97;border-radius:5px;padding:3px 8px;font-size:9px;font-weight:700;color:#3B6D11;text-align:center;margin:4px 0;display:flex;align-items:center;justify-content:center;gap:5px;">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#3B6D11" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          ここから暗号化（IDを保護）
+        </div>
+
+        <!-- M5 → 暗号化 -->
+        <div style="display:flex;align-items:center;min-height:42px;padding:2px 0;">
+          <div style="flex:0 0 46px;text-align:right;padding-right:8px;font-family:var(--mono);font-size:9px;font-weight:700;color:#185FA5;">⑤</div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:2px;">
+            <div style="font-size:9px;background:#3B6D11;border-radius:4px;padding:3px 8px;color:white;white-space:nowrap;width:fit-content;display:flex;align-items:center;gap:4px;"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>【暗号】ID情報 + 認証データ</div>
+            <div style="display:flex;align-items:center;"><div style="flex:1;height:2px;background:#185FA5;"></div><div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:8px solid #185FA5;"></div></div>
+          </div>
+          <div style="flex:0 0 46px;"></div>
+        </div>
+        <!-- M6 ← 暗号化 -->
+        <div style="display:flex;align-items:center;min-height:42px;padding:2px 0;">
+          <div style="flex:0 0 46px;text-align:right;padding-right:8px;font-family:var(--mono);font-size:9px;font-weight:700;color:#0F6E56;">⑥</div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:2px;align-items:flex-end;">
+            <div style="font-size:9px;background:#3B6D11;border-radius:4px;padding:3px 8px;color:white;white-space:nowrap;width:fit-content;display:flex;align-items:center;gap:4px;"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>【暗号】ID情報 + 認証データ</div>
+            <div style="display:flex;align-items:center;width:100%;"><div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:8px solid #0F6E56;"></div><div style="flex:1;height:2px;background:#0F6E56;"></div></div>
+          </div>
+          <div style="flex:0 0 46px;"></div>
+        </div>
+
+        <!-- 完了バナー -->
+        <div style="background:#185FA5;color:white;border-radius:5px;padding:4px 10px;font-size:9.5px;font-weight:700;text-align:center;margin-top:6px;">IKE SA（ISAKMP SA）確立</div>
+      </div>
+
+      <!-- 特徴サマリ -->
+      <div style="margin-top:12px;display:flex;flex-direction:column;gap:4px;">
+        <div style="display:flex;align-items:center;gap:6px;font-size:9.5px;"><div style="width:8px;height:8px;border-radius:50%;background:#3B6D11;flex-shrink:0;"></div><span style="color:#3a3d52;">IDを暗号化後に送信 → <strong>匿名性あり</strong></span></div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:9.5px;"><div style="width:8px;height:8px;border-radius:50%;background:#3B6D11;flex-shrink:0;"></div><span style="color:#3a3d52;">6メッセージで<strong>セキュリティ優先</strong></span></div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:9.5px;"><div style="width:8px;height:8px;border-radius:50%;background:#A32D2D;flex-shrink:0;"></div><span style="color:#3a3d52;">固定IPが必要（ダイナミックIP困難）</span></div>
+      </div>
+    </div>
+
+    <!-- 中央区切り線 -->
+    <div style="background:var(--line);"></div>
+
+    <!-- ─── 右：アグレッシブモード ─── -->
+    <div style="padding:20px 24px 24px;">
+      <!-- ヘッダバッジ -->
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;flex-wrap:wrap;">
+        <div style="background:#854F0B;color:white;font-family:var(--mono);font-size:11px;font-weight:800;padding:5px 14px;border-radius:6px;">Aggressive Mode</div>
+        <div style="background:#FAEEDA;color:#854F0B;font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;">3 メッセージ</div>
+        <div style="background:#FCEBEB;color:#A32D2D;font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;">ID保護なし</div>
+      </div>
+
+      <!-- アクターヘッダ -->
+      <div style="display:grid;grid-template-columns:90px 1fr 90px;margin-bottom:4px;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:5px;">
+          <div style="width:52px;height:52px;background:#854F0B;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;">
+            <svg width="26" height="26" viewBox="0 0 32 32" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="4" y="8" width="24" height="16" rx="2" fill="#FAC775" stroke="white" stroke-width="1.4"/>
+              <rect x="8" y="11" width="16" height="10" rx="1" fill="white" opacity=".3"/>
+              <line x1="4" y1="13" x2="28" y2="13" stroke="white" stroke-width="1"/>
+              <line x1="10" y1="26" x2="22" y2="26" stroke="white" stroke-width="1.4"/>
+              <line x1="16" y1="24" x2="16" y2="26" stroke="white" stroke-width="1.4"/>
+            </svg>
+            <span style="font-size:7.5px;font-weight:800;color:white;font-family:var(--mono);">開始側</span>
+          </div>
+          <span style="font-size:8.5px;color:#854F0B;font-weight:600;text-align:center;line-height:1.3;">Initiator<br>(VPN Client)</span>
+        </div>
+        <div></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:5px;">
+          <div style="width:52px;height:52px;background:#A32D2D;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;">
+            <svg width="26" height="26" viewBox="0 0 32 32" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="4" width="28" height="9" rx="2" fill="#F7C1C1" stroke="white" stroke-width="1.3"/>
+              <rect x="2" y="17" width="28" height="9" rx="2" fill="#F7C1C1" stroke="white" stroke-width="1.3"/>
+              <circle cx="5.5" cy="8.5" r="1.5" fill="white"/><circle cx="5.5" cy="21.5" r="1.5" fill="white"/>
+              <line x1="10" y1="8.5" x2="26" y2="8.5" stroke="white" stroke-width="1"/><line x1="10" y1="21.5" x2="26" y2="21.5" stroke="white" stroke-width="1"/>
+            </svg>
+            <span style="font-size:7.5px;font-weight:800;color:white;font-family:var(--mono);">応答側</span>
+          </div>
+          <span style="font-size:8.5px;color:#A32D2D;font-weight:600;text-align:center;line-height:1.3;">Responder<br>(VPN GW)</span>
+        </div>
+      </div>
+
+      <!-- シーケンスステップ -->
+      <div style="display:flex;flex-direction:column;gap:0;position:relative;">
+        <div style="position:absolute;left:45px;top:0;bottom:0;width:1px;background:repeating-linear-gradient(180deg,#854F0B 0,#854F0B 5px,transparent 5px,transparent 9px);opacity:.4;"></div>
+        <div style="position:absolute;right:45px;top:0;bottom:0;width:1px;background:repeating-linear-gradient(180deg,#A32D2D 0,#A32D2D 5px,transparent 5px,transparent 9px);opacity:.4;"></div>
+
+        <!-- A1 → SA + DH + Nonce + ID（全部まとめて平文） -->
+        <div style="display:flex;align-items:center;min-height:52px;padding:2px 0;">
+          <div style="flex:0 0 46px;text-align:right;padding-right:8px;font-family:var(--mono);font-size:9px;font-weight:700;color:#854F0B;">①</div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:2px;">
+            <div style="font-size:9px;background:#FAEEDA;border:1.5px solid #EF9F27;border-radius:4px;padding:3px 8px;color:#633806;width:fit-content;">SA提案 + DH公開値 + Nonce + <span style="background:#E24B4A;color:white;padding:0 4px;border-radius:3px;font-weight:700;">ID（平文）</span></div>
+            <div style="display:flex;align-items:center;"><div style="flex:1;height:2px;background:#854F0B;"></div><div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:8px solid #854F0B;"></div></div>
+          </div>
+          <div style="flex:0 0 46px;"></div>
+        </div>
+
+        <!-- A2 ← SA + DH + Nonce + ID + 認証データ（平文） -->
+        <div style="display:flex;align-items:center;min-height:52px;padding:2px 0;">
+          <div style="flex:0 0 46px;text-align:right;padding-right:8px;font-family:var(--mono);font-size:9px;font-weight:700;color:#A32D2D;">②</div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:2px;align-items:flex-end;">
+            <div style="font-size:9px;background:#FCEBEB;border:1.5px solid #E24B4A;border-radius:4px;padding:3px 8px;color:#791F1F;width:fit-content;">SA応答 + DH公開値 + Nonce + <span style="background:#E24B4A;color:white;padding:0 4px;border-radius:3px;font-weight:700;">ID（平文）</span> + 認証</div>
+            <div style="display:flex;align-items:center;width:100%;"><div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:8px solid #A32D2D;"></div><div style="flex:1;height:2px;background:#A32D2D;"></div></div>
+          </div>
+          <div style="flex:0 0 46px;"></div>
+        </div>
+
+        <!-- 警告バー -->
+        <div style="background:#FCEBEB;border:1px solid #F7C1C1;border-radius:5px;padding:3px 8px;font-size:9px;font-weight:700;color:#A32D2D;text-align:center;margin:4px 0;display:flex;align-items:center;justify-content:center;gap:5px;">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#A32D2D" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          IDが平文で露出 — 辞書攻撃・なりすましリスク
+        </div>
+
+        <!-- A3 → 認証（ここは暗号化） -->
+        <div style="display:flex;align-items:center;min-height:42px;padding:2px 0;">
+          <div style="flex:0 0 46px;text-align:right;padding-right:8px;font-family:var(--mono);font-size:9px;font-weight:700;color:#854F0B;">③</div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:2px;">
+            <div style="font-size:9px;background:#854F0B;border-radius:4px;padding:3px 8px;color:white;white-space:nowrap;width:fit-content;display:flex;align-items:center;gap:4px;"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>【暗号】Initiator 認証確認</div>
+            <div style="display:flex;align-items:center;"><div style="flex:1;height:2px;background:#854F0B;"></div><div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:8px solid #854F0B;"></div></div>
+          </div>
+          <div style="flex:0 0 46px;"></div>
+        </div>
+
+        <!-- スペーサー（メインモードと高さを揃える） -->
+        <div style="height:42px;"></div>
+        <div style="height:42px;"></div>
+
+        <!-- 完了バナー -->
+        <div style="background:#854F0B;color:white;border-radius:5px;padding:4px 10px;font-size:9.5px;font-weight:700;text-align:center;margin-top:6px;">IKE SA（ISAKMP SA）確立</div>
+      </div>
+
+      <!-- 特徴サマリ -->
+      <div style="margin-top:12px;display:flex;flex-direction:column;gap:4px;">
+        <div style="display:flex;align-items:center;gap:6px;font-size:9.5px;"><div style="width:8px;height:8px;border-radius:50%;background:#3B6D11;flex-shrink:0;"></div><span style="color:#3a3d52;">3メッセージで<strong>高速</strong>（ダイナミックIP対応）</span></div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:9.5px;"><div style="width:8px;height:8px;border-radius:50%;background:#A32D2D;flex-shrink:0;"></div><span style="color:#3a3d52;">IDが<strong>平文で露出</strong> → 辞書攻撃に脆弱</span></div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:9.5px;"><div style="width:8px;height:8px;border-radius:50%;background:#A32D2D;flex-shrink:0;"></div><span style="color:#3a3d52;">セキュリティ強度が低い → <strong>レガシー環境のみ</strong></span></div>
+      </div>
+    </div>
+
+  </div><!-- /grid -->
+  </div><!-- /overflow-x -->
+</div>
+
+<!-- 差分ハイライト表 -->
 <table class="cmp-table">
-<thead><tr><th>比較項目</th><th>メインモード（Main Mode）</th><th>アグレッシブモード（Aggressive Mode）</th></tr></thead>
+<thead><tr><th>比較項目</th><th>メインモード</th><th>アグレッシブモード</th></tr></thead>
 <tbody>
-<tr><td>メッセージ数</td><td class="cmp-good">6メッセージ（3往復）</td><td class="cmp-mid">3メッセージ（往復+1）</td></tr>
-<tr><td>ID情報の保護</td><td class="cmp-good">暗号化されてから送信（匿名性あり）</td><td class="cmp-bad">平文で送信（IDが見える）</td></tr>
-<tr><td>速度</td><td class="cmp-mid">遅い（メッセージが多い）</td><td class="cmp-good">速い（メッセージが少ない）</td></tr>
-<tr><td>ダイナミックIPとの互換性</td><td class="cmp-bad">IPアドレスでID特定が必要（困難）</td><td class="cmp-good">ドメイン名でも識別可能</td></tr>
-<tr><td>セキュリティ強度</td><td class="cmp-good">高い</td><td class="cmp-bad">低い（攻撃リスクあり）</td></tr>
-<tr><td>推奨利用場面</td><td class="cmp-good">拠点間VPN（固定IP間）</td><td class="cmp-mid">レガシー環境・ダイナミックIP環境</td></tr>
+<tr><td>メッセージ数</td><td class="cmp-good">6（3往復）</td><td class="cmp-mid">3（高速）</td></tr>
+<tr><td>ID情報の保護</td><td class="cmp-good">⑤⑥で暗号化して送信</td><td class="cmp-bad">①②で平文送信（露出）</td></tr>
+<tr><td>ダイナミックIP</td><td class="cmp-bad">困難（IP固定が必要）</td><td class="cmp-good">対応可（ドメイン名識別）</td></tr>
+<tr><td>セキュリティ強度</td><td class="cmp-good">高い</td><td class="cmp-bad">低い（辞書攻撃リスク）</td></tr>
+<tr><td>推奨場面</td><td class="cmp-good">拠点間VPN（固定IP間）</td><td class="cmp-mid">レガシー・ダイナミックIP環境</td></tr>
 </tbody>
 </table>
 </section>
@@ -1365,6 +1599,359 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 </div>
 
 <!-- 3方式比較表 -->
+<h3>SSL-VPN 3方式 — パケット遷移と通信フローの比較</h3>
+<p>各方式で「どのアクター間で」「何が」「どう保護されるか」を時系列順のパケット遷移で示します。</p>
+
+<!-- ─── リバースプロキシ方式 パケットフロー ─── -->
+<div style="background:#fff;border:1.5px solid #B5D4F4;border-radius:12px;overflow:hidden;margin:0 0 16px;">
+  <div style="background:#185FA5;padding:10px 18px;display:flex;align-items:center;gap:10px;">
+    <svg width="16" height="16" viewBox="0 0 44 44" fill="none" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2" y="6" width="24" height="18" rx="2.5"/><line x1="2" y1="11" x2="26" y2="11" opacity=".5"/>
+      <circle cx="5.5" cy="8.5" r="1" fill="white"/><circle cx="9" cy="8.5" r="1" fill="white"/>
+      <rect x="16" y="14" width="14" height="10" rx="2"/><text x="23" y="21" text-anchor="middle" font-size="5.5" fill="white" font-weight="700">Proxy</text>
+      <rect x="30" y="10" width="12" height="8" rx="1.5"/><rect x="30" y="22" width="12" height="8" rx="1.5"/>
+    </svg>
+    <span style="font-size:11px;font-weight:800;color:white;">① リバースプロキシ方式 — ブラウザのみ・HTTPアプリ限定</span>
+    <div style="margin-left:auto;display:flex;gap:6px;">
+      <span style="background:#E6F1FB;color:#0C447C;font-size:9px;font-weight:700;padding:2px 8px;border-radius:20px;">クライアントSW不要</span>
+      <span style="background:#FCEBEB;color:#791F1F;font-size:9px;font-weight:700;padding:2px 8px;border-radius:20px;">HTTPのみ</span>
+    </div>
+  </div>
+  <div style="padding:18px 24px;overflow-x:auto;">
+  <div style="min-width:780px;">
+
+    <!-- アクター行 -->
+    <div style="display:grid;grid-template-columns:120px 1fr 140px 1fr 130px 1fr 120px;align-items:end;margin-bottom:6px;">
+      <!-- ブラウザ -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+        <div style="width:48px;height:48px;background:#185FA5;border-radius:9px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;">
+          <svg width="24" height="24" viewBox="0 0 32 32" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="4" width="28" height="20" rx="2.5" fill="#B5D4F4" stroke="white" stroke-width="1.3"/>
+            <line x1="2" y1="10" x2="30" y2="10" stroke="white" stroke-width="1" opacity=".6"/>
+            <circle cx="5.5" cy="7" r="1" fill="white"/><circle cx="9" cy="7" r="1" fill="white"/>
+            <rect x="12" y="6" width="14" height="3" rx="1" fill="white" opacity=".4"/>
+          </svg>
+          <span style="font-size:7px;font-weight:800;color:white;font-family:var(--mono);">Browser</span>
+        </div>
+        <span style="font-size:8.5px;color:#185FA5;font-weight:600;text-align:center;line-height:1.3;">クライアント<br>（ブラウザ）</span>
+      </div>
+      <div></div>
+      <!-- SSL-VPN装置 -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+        <div style="width:48px;height:48px;background:#854F0B;border-radius:9px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;">
+          <svg width="24" height="24" viewBox="0 0 32 32" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="8" width="28" height="16" rx="2" fill="#FAC775" stroke="white" stroke-width="1.3"/>
+            <path d="M16 3L5 9v10c0 6 5 10 11 11 6-1 11-5 11-11V9z" fill="rgba(255,255,255,.2)" stroke="white" stroke-width="1.2"/>
+            <text x="16" y="19" text-anchor="middle" font-size="5.5" fill="white" font-weight="700">Proxy</text>
+          </svg>
+          <span style="font-size:7px;font-weight:800;color:white;font-family:var(--mono);">SSL-VPN</span>
+        </div>
+        <span style="font-size:8.5px;color:#854F0B;font-weight:600;text-align:center;line-height:1.3;">SSL-VPN装置<br>（リバースProxy）</span>
+      </div>
+      <div></div>
+      <!-- 内部Webサーバ -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+        <div style="width:48px;height:48px;background:#0F6E56;border-radius:9px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;">
+          <svg width="24" height="24" viewBox="0 0 32 32" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="4" width="28" height="9" rx="2" fill="#9FE1CB" stroke="white" stroke-width="1.3"/>
+            <rect x="2" y="17" width="28" height="9" rx="2" fill="#9FE1CB" stroke="white" stroke-width="1.3"/>
+            <circle cx="5.5" cy="8.5" r="1.5" fill="white"/><circle cx="5.5" cy="21.5" r="1.5" fill="white"/>
+            <line x1="10" y1="8.5" x2="26" y2="8.5" stroke="white" stroke-width="1"/><line x1="10" y1="21.5" x2="26" y2="21.5" stroke="white" stroke-width="1"/>
+          </svg>
+          <span style="font-size:7px;font-weight:800;color:white;font-family:var(--mono);">Web SV</span>
+        </div>
+        <span style="font-size:8.5px;color:#0F6E56;font-weight:600;text-align:center;line-height:1.3;">内部<br>Webサーバ</span>
+      </div>
+      <div></div>
+      <div></div>
+    </div>
+
+    <!-- フロー -->
+    <div style="display:flex;flex-direction:column;gap:6px;">
+
+      <!-- Step 1 -->
+      <div style="display:grid;grid-template-columns:120px 1fr 140px 1fr 130px 1fr 120px;align-items:center;min-height:36px;">
+        <div style="font-family:var(--mono);font-size:9px;font-weight:700;color:#185FA5;text-align:right;padding-right:8px;">HTTPS<br>GET /page</div>
+        <div style="display:flex;flex-direction:column;gap:1px;">
+          <div style="font-size:8.5px;color:#185FA5;text-align:center;background:#E6F1FB;border-radius:3px;padding:1px 4px;">TLS暗号化</div>
+          <div style="display:flex;align-items:center;"><div style="flex:1;height:2px;background:#185FA5;"></div><div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:7px solid #185FA5;"></div></div>
+        </div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+
+      <!-- SSL-VPN内部処理 -->
+      <div style="margin:0 130px 0 130px;background:#FAEEDA;border:1px solid #EF9F27;border-radius:6px;padding:5px 12px;font-size:9px;color:#633806;display:flex;align-items:center;gap:6px;">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#854F0B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        SSL-VPN装置がTLS終端 → URLを内部パスに変換 → 内部サーバへHTTPで転送（クライアントは内部サーバのIPを知らない）
+      </div>
+
+      <!-- Step 2 -->
+      <div style="display:grid;grid-template-columns:120px 1fr 140px 1fr 130px 1fr 120px;align-items:center;min-height:36px;">
+        <div></div><div></div>
+        <div></div>
+        <div style="display:flex;flex-direction:column;gap:1px;">
+          <div style="font-size:8.5px;color:#0F6E56;text-align:center;background:#E1F5EE;border-radius:3px;padding:1px 4px;">内部HTTP（平文）</div>
+          <div style="display:flex;align-items:center;"><div style="flex:1;height:2px;background:#0F6E56;"></div><div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:7px solid #0F6E56;"></div></div>
+        </div>
+        <div style="font-family:var(--mono);font-size:9px;font-weight:700;color:#0F6E56;padding-left:8px;">HTTP GET<br>/internal</div>
+        <div></div><div></div>
+      </div>
+
+      <!-- Step 3 レスポンス ← -->
+      <div style="display:grid;grid-template-columns:120px 1fr 140px 1fr 130px 1fr 120px;align-items:center;min-height:36px;">
+        <div></div><div></div><div></div>
+        <div style="display:flex;flex-direction:column;gap:1px;">
+          <div style="font-size:8.5px;color:#0F6E56;text-align:center;background:#E1F5EE;border-radius:3px;padding:1px 4px;">200 OK + HTML（平文）</div>
+          <div style="display:flex;align-items:center;"><div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:7px solid #0F6E56;"></div><div style="flex:1;height:2px;background:#0F6E56;"></div></div>
+        </div>
+        <div></div><div></div><div></div>
+      </div>
+
+      <!-- Step 4 クライアントへ返送 -->
+      <div style="display:grid;grid-template-columns:120px 1fr 140px 1fr 130px 1fr 120px;align-items:center;min-height:36px;">
+        <div></div>
+        <div style="display:flex;flex-direction:column;gap:1px;">
+          <div style="font-size:8.5px;color:#185FA5;text-align:center;background:#E6F1FB;border-radius:3px;padding:1px 4px;">HTTPS 200 OK（TLS暗号化して返送）</div>
+          <div style="display:flex;align-items:center;"><div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:7px solid #185FA5;"></div><div style="flex:1;height:2px;background:#185FA5;"></div></div>
+        </div>
+        <div></div><div></div><div></div><div></div><div></div>
+      </div>
+
+    </div>
+
+    <!-- パケット構造 -->
+    <div style="margin-top:12px;display:flex;flex-direction:column;gap:6px;">
+      <div style="font-size:9.5px;font-weight:700;color:var(--ink2);margin-bottom:2px;">インターネット上を流れるパケット構造（クライアント→SSL-VPN装置間）</div>
+      <div style="display:flex;min-height:44px;border-radius:6px;overflow:hidden;border:2px solid #185FA5;">
+        <div style="flex:0 0 100px;background:#d0d8e8;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4px;font-size:8.5px;font-weight:700;color:#3a3d52;text-align:center;line-height:1.4;border-right:1px solid #aaa;">IPヘッダ<br><span style="font-weight:400;opacity:.7;">src→dst 平文</span></div>
+        <div style="flex:0 0 90px;background:#e0e8f0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4px;font-size:8.5px;font-weight:700;color:#3a3d52;text-align:center;line-height:1.4;border-right:1px solid #aaa;">TCPヘッダ<br><span style="font-weight:400;opacity:.7;">:443 平文</span></div>
+        <div style="flex:0 0 72px;background:#E1F5EE;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4px;font-size:8.5px;font-weight:700;color:#0F6E56;text-align:center;line-height:1.4;border-right:1px solid #9FE1CB;">TLS<br>Record</div>
+        <div style="flex:1;background:#185FA5;display:flex;align-items:center;justify-content:center;padding:6px;font-size:8.5px;font-weight:700;color:white;text-align:center;gap:5px;">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          HTTPリクエスト/レスポンス（暗号化）
+        </div>
+      </div>
+      <div style="font-size:9px;color:#185FA5;font-weight:600;text-align:center;">IPアドレス・ポート番号は平文。HTTPの内容のみ暗号化。クライアントは内部サーバのアドレスを知らない。</div>
+    </div>
+
+  </div>
+  </div>
+</div>
+
+<!-- ─── ポートフォワーディング方式 パケットフロー ─── -->
+<div style="background:#fff;border:1.5px solid #9FE1CB;border-radius:12px;overflow:hidden;margin:0 0 16px;">
+  <div style="background:#0F6E56;padding:10px 18px;display:flex;align-items:center;gap:10px;">
+    <svg width="16" height="16" viewBox="0 0 44 44" fill="none" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2" y="10" width="18" height="14" rx="2"/><rect x="6" y="28" width="10" height="5" rx="1"/>
+      <path d="M20 30 Q28 22 30 18" fill="none"/><polygon points="30,14 28,18 32,18" fill="white"/>
+      <rect x="30" y="8" width="12" height="10" rx="1.5"/><rect x="30" y="22" width="12" height="10" rx="1.5"/>
+    </svg>
+    <span style="font-size:11px;font-weight:800;color:white;">② ポートフォワーディング方式 — 特定TCPポートを転送</span>
+    <div style="margin-left:auto;display:flex;gap:6px;">
+      <span style="background:#E1F5EE;color:#085041;font-size:9px;font-weight:700;padding:2px 8px;border-radius:20px;">Java等クライアント必要</span>
+      <span style="background:#FAEEDA;color:#633806;font-size:9px;font-weight:700;padding:2px 8px;border-radius:20px;">TCPアプリのみ</span>
+    </div>
+  </div>
+  <div style="padding:18px 24px;overflow-x:auto;">
+  <div style="min-width:780px;">
+
+    <!-- アクター行 -->
+    <div style="display:grid;grid-template-columns:110px 1fr 140px 1fr 130px 1fr 120px;align-items:end;margin-bottom:6px;">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+        <div style="width:48px;height:48px;background:#185FA5;border-radius:9px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;">
+          <svg width="24" height="24" viewBox="0 0 32 32" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="5" width="28" height="18" rx="2.5" fill="#B5D4F4" stroke="white" stroke-width="1.3"/>
+            <rect x="5" y="8" width="22" height="12" rx="1.5" fill="white" opacity=".3"/>
+            <line x1="2" y1="29" x2="30" y2="29" stroke="white" stroke-width="1.3"/>
+            <rect x="12" y="27" width="8" height="3" rx="1" fill="white"/>
+          </svg>
+          <span style="font-size:7px;font-weight:800;color:white;font-family:var(--mono);">Client</span>
+        </div>
+        <span style="font-size:8px;color:#185FA5;font-weight:600;text-align:center;line-height:1.3;">クライアント<br>App（ローカル<br>:8080待ち）</span>
+      </div>
+      <div></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+        <div style="width:48px;height:48px;background:#854F0B;border-radius:9px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;">
+          <svg width="24" height="24" viewBox="0 0 32 32" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 3L5 9v8c0 6 5 10 11 11 6-1 11-5 11-11V9z" fill="#FAC775" stroke="white" stroke-width="1.3"/>
+            <rect x="11" y="14" width="10" height="8" rx="1" fill="rgba(255,255,255,.4)" stroke="white" stroke-width="1.1"/>
+            <path d="M13 14v-2a3 3 0 0 1 6 0v2" stroke="white" stroke-width="1.3" fill="none"/>
+          </svg>
+          <span style="font-size:7px;font-weight:800;color:white;font-family:var(--mono);">SSL-VPN</span>
+        </div>
+        <span style="font-size:8px;color:#854F0B;font-weight:600;text-align:center;line-height:1.3;">SSL-VPN装置<br>（ポートマッピング）</span>
+      </div>
+      <div></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+        <div style="width:48px;height:48px;background:#0F6E56;border-radius:9px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;">
+          <svg width="24" height="24" viewBox="0 0 32 32" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="4" width="28" height="9" rx="2" fill="#9FE1CB" stroke="white" stroke-width="1.3"/>
+            <rect x="2" y="17" width="28" height="9" rx="2" fill="#9FE1CB" stroke="white" stroke-width="1.3"/>
+            <circle cx="5.5" cy="8.5" r="1.5" fill="white"/><circle cx="5.5" cy="21.5" r="1.5" fill="white"/>
+          </svg>
+          <span style="font-size:7px;font-weight:800;color:white;font-family:var(--mono);">SSH SV</span>
+        </div>
+        <span style="font-size:8px;color:#0F6E56;font-weight:600;text-align:center;line-height:1.3;">内部SSHサーバ<br>（:22）</span>
+      </div>
+      <div></div><div></div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:6px;">
+      <!-- Step 1 ローカル接続 -->
+      <div style="display:grid;grid-template-columns:110px 1fr 140px 1fr 130px 1fr 120px;align-items:center;min-height:36px;">
+        <div style="font-family:var(--mono);font-size:9px;font-weight:700;color:#185FA5;text-align:right;padding-right:8px;">localhost<br>:8080へ接続</div>
+        <div style="display:flex;flex-direction:column;gap:1px;">
+          <div style="font-size:8.5px;color:#185FA5;text-align:center;background:#E6F1FB;border-radius:3px;padding:1px 4px;">TLS暗号化トンネル内</div>
+          <div style="display:flex;align-items:center;"><div style="flex:1;height:2px;background:#185FA5;"></div><div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:7px solid #185FA5;"></div></div>
+        </div>
+        <div></div><div></div><div></div><div></div><div></div>
+      </div>
+      <!-- VPN変換 -->
+      <div style="margin:0 110px 0 110px;background:#E1F5EE;border:1px solid #9FE1CB;border-radius:6px;padding:5px 12px;font-size:9px;color:#085041;display:flex;align-items:center;gap:6px;">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#0F6E56" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        ローカル:8080 → TLSカプセル化 → SSL-VPN装置で復号 → 内部サーバ:22へポートマッピング転送
+      </div>
+      <!-- Step 2 内部転送 -->
+      <div style="display:grid;grid-template-columns:110px 1fr 140px 1fr 130px 1fr 120px;align-items:center;min-height:36px;">
+        <div></div><div></div><div></div>
+        <div style="display:flex;flex-direction:column;gap:1px;">
+          <div style="font-size:8.5px;color:#0F6E56;text-align:center;background:#E1F5EE;border-radius:3px;padding:1px 4px;">TCP :22（内部平文）</div>
+          <div style="display:flex;align-items:center;"><div style="flex:1;height:2px;background:#0F6E56;"></div><div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:7px solid #0F6E56;"></div></div>
+        </div>
+        <div style="font-family:var(--mono);font-size:9px;font-weight:700;color:#0F6E56;padding-left:8px;">SSH<br>接続</div>
+        <div></div><div></div>
+      </div>
+    </div>
+
+    <!-- パケット構造 -->
+    <div style="margin-top:12px;display:flex;flex-direction:column;gap:6px;">
+      <div style="font-size:9.5px;font-weight:700;color:var(--ink2);margin-bottom:2px;">インターネット上を流れるパケット構造（クライアント→SSL-VPN装置間）</div>
+      <div style="display:flex;min-height:44px;border-radius:6px;overflow:hidden;border:2px solid #0F6E56;">
+        <div style="flex:0 0 95px;background:#d0d8e8;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4px;font-size:8.5px;font-weight:700;color:#3a3d52;text-align:center;line-height:1.4;border-right:1px solid #aaa;">IPヘッダ<br><span style="font-weight:400;opacity:.7;">src→dst 平文</span></div>
+        <div style="flex:0 0 80px;background:#e0e8f0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4px;font-size:8.5px;font-weight:700;color:#3a3d52;text-align:center;line-height:1.4;border-right:1px solid #aaa;">TCPヘッダ<br><span style="font-weight:400;opacity:.7;">:443 平文</span></div>
+        <div style="flex:0 0 65px;background:#E1F5EE;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4px;font-size:8.5px;font-weight:700;color:#0F6E56;text-align:center;line-height:1.4;border-right:1px solid #9FE1CB;">TLS<br>Record</div>
+        <div style="flex:1;background:#0F6E56;display:flex;align-items:center;justify-content:center;padding:6px;font-size:8.5px;font-weight:700;color:white;text-align:center;gap:5px;">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          SSHデータ（TLSでさらに暗号化 → 二重暗号化）
+        </div>
+      </div>
+      <div style="font-size:9px;color:#0F6E56;font-weight:600;text-align:center;">TCP通信がTLSトンネル内にカプセル化。SSHはすでに暗号化されているため二重暗号化状態。</div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ─── L2フォワーディング方式 パケットフロー ─── -->
+<div style="background:#fff;border:1.5px solid #CEC BF6;border-radius:12px;overflow:hidden;margin:0 0 20px;" style="border-color:#CECBF6">
+<div style="background:#fff;border:1.5px solid #CECBF6;border-radius:12px;overflow:hidden;margin:0 0 20px;">
+  <div style="background:#534AB7;padding:10px 18px;display:flex;align-items:center;gap:10px;">
+    <svg width="16" height="16" viewBox="0 0 44 44" fill="none" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2" y="8" width="16" height="12" rx="2"/><rect x="2" y="26" width="16" height="5" rx="1"/>
+      <line x1="20" y1="28" x2="30" y2="28"/><polygon points="30,25 34,28 30,31" fill="white"/><polygon points="20,25 16,28 20,31" fill="white"/>
+      <rect x="34" y="16" width="9" height="7" rx="1.5"/><rect x="34" y="26" width="9" height="7" rx="1.5"/>
+    </svg>
+    <span style="font-size:11px;font-weight:800;color:white;">③ L2フォワーディング方式 — 仮想NICで社内LAN相当に接続</span>
+    <div style="margin-left:auto;display:flex;gap:6px;">
+      <span style="background:#EEEDFE;color:#3C3489;font-size:9px;font-weight:700;padding:2px 8px;border-radius:20px;">VPNクライアント必須</span>
+      <span style="background:#EAF3DE;color:#27500A;font-size:9px;font-weight:700;padding:2px 8px;border-radius:20px;">全プロトコル対応</span>
+    </div>
+  </div>
+  <div style="padding:18px 24px;overflow-x:auto;">
+  <div style="min-width:780px;">
+
+    <!-- アクター行 -->
+    <div style="display:grid;grid-template-columns:110px 1fr 140px 1fr 130px 1fr 120px;align-items:end;margin-bottom:6px;">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+        <div style="width:48px;height:48px;background:#185FA5;border-radius:9px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;">
+          <svg width="24" height="24" viewBox="0 0 32 32" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="5" width="28" height="18" rx="2.5" fill="#B5D4F4" stroke="white" stroke-width="1.3"/>
+            <line x1="2" y1="29" x2="30" y2="29" stroke="white" stroke-width="1.3"/>
+            <rect x="12" y="27" width="8" height="3" rx="1" fill="white"/>
+            <!-- 仮想NICバッジ -->
+            <rect x="5" y="21" width="22" height="4" rx="1" fill="#FAC775" opacity=".8"/>
+            <text x="16" y="24.5" text-anchor="middle" font-size="4" fill="#633806" font-weight="700">仮想NIC</text>
+          </svg>
+          <span style="font-size:7px;font-weight:800;color:white;font-family:var(--mono);">Client</span>
+        </div>
+        <span style="font-size:8px;color:#185FA5;font-weight:600;text-align:center;line-height:1.3;">クライアント<br>（仮想NIC作成）<br>192.168.1.x付与</span>
+      </div>
+      <div></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+        <div style="width:48px;height:48px;background:#534AB7;border-radius:9px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;">
+          <svg width="24" height="24" viewBox="0 0 32 32" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 3L5 9v8c0 6 5 10 11 11 6-1 11-5 11-11V9z" fill="#AFA9EC" stroke="white" stroke-width="1.3"/>
+            <rect x="10" y="13" width="12" height="9" rx="1.5" fill="rgba(255,255,255,.4)" stroke="white" stroke-width="1.1"/>
+            <path d="M12 13v-2a4 4 0 0 1 8 0v2" stroke="white" stroke-width="1.3" fill="none"/>
+            <circle cx="16" cy="17.5" r="1.5" fill="white"/>
+          </svg>
+          <span style="font-size:7px;font-weight:800;color:white;font-family:var(--mono);">SSL-VPN</span>
+        </div>
+        <span style="font-size:8px;color:#534AB7;font-weight:600;text-align:center;line-height:1.3;">SSL-VPN装置<br>（L2ゲートウェイ）</span>
+      </div>
+      <div></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+        <div style="width:48px;height:48px;background:#0F6E56;border-radius:9px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;">
+          <svg width="24" height="24" viewBox="0 0 32 32" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="4" width="28" height="9" rx="2" fill="#9FE1CB" stroke="white" stroke-width="1.3"/>
+            <rect x="2" y="17" width="28" height="9" rx="2" fill="#9FE1CB" stroke="white" stroke-width="1.3"/>
+            <circle cx="5.5" cy="8.5" r="1.5" fill="white"/><circle cx="5.5" cy="21.5" r="1.5" fill="white"/>
+          </svg>
+          <span style="font-size:7px;font-weight:800;color:white;font-family:var(--mono);">Any SV</span>
+        </div>
+        <span style="font-size:8px;color:#0F6E56;font-weight:600;text-align:center;line-height:1.3;">任意の内部<br>サーバ・リソース</span>
+      </div>
+      <div></div><div></div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:6px;">
+      <!-- Step 1 -->
+      <div style="display:grid;grid-template-columns:110px 1fr 140px 1fr 130px 1fr 120px;align-items:center;min-height:40px;">
+        <div style="font-family:var(--mono);font-size:8.5px;font-weight:700;color:#185FA5;text-align:right;padding-right:8px;">L2フレーム<br>src:PC→dst:SV</div>
+        <div style="display:flex;flex-direction:column;gap:1px;">
+          <div style="font-size:8.5px;color:#534AB7;text-align:center;background:#EEEDFE;border-radius:3px;padding:1px 4px;">TLSでカプセル化（L2フレームごと）</div>
+          <div style="display:flex;align-items:center;"><div style="flex:1;height:2px;background:#534AB7;"></div><div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:7px solid #534AB7;"></div></div>
+        </div>
+        <div></div><div></div><div></div><div></div><div></div>
+      </div>
+      <!-- VPN変換 -->
+      <div style="margin:0 110px 0 110px;background:#EEEDFE;border:1px solid #CECBF6;border-radius:6px;padding:5px 12px;font-size:9px;color:#3C3489;display:flex;align-items:center;gap:6px;">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#534AB7" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        L2フレームをTLSでラッピング → SSL-VPN装置がL2スイッチとして動作 → 内部LANセグメントへブリッジング
+      </div>
+      <!-- Step 2 -->
+      <div style="display:grid;grid-template-columns:110px 1fr 140px 1fr 130px 1fr 120px;align-items:center;min-height:36px;">
+        <div></div><div></div><div></div>
+        <div style="display:flex;flex-direction:column;gap:1px;">
+          <div style="font-size:8.5px;color:#0F6E56;text-align:center;background:#E1F5EE;border-radius:3px;padding:1px 4px;">L2フレーム（内部LAN上 平文）</div>
+          <div style="display:flex;align-items:center;"><div style="flex:1;height:2px;background:#0F6E56;"></div><div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:7px solid #0F6E56;"></div></div>
+        </div>
+        <div style="font-family:var(--mono);font-size:8.5px;font-weight:700;color:#0F6E56;padding-left:8px;">あらゆる<br>プロトコル<br>で接続可</div>
+        <div></div><div></div>
+      </div>
+    </div>
+
+    <!-- パケット構造 -->
+    <div style="margin-top:12px;display:flex;flex-direction:column;gap:6px;">
+      <div style="font-size:9.5px;font-weight:700;color:var(--ink2);margin-bottom:2px;">インターネット上を流れるパケット構造（クライアント→SSL-VPN装置間）</div>
+      <div style="display:flex;min-height:44px;border-radius:6px;overflow:hidden;border:2px solid #534AB7;">
+        <div style="flex:0 0 95px;background:#d0d8e8;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4px;font-size:8.5px;font-weight:700;color:#3a3d52;text-align:center;line-height:1.4;border-right:1px solid #aaa;">IPヘッダ<br><span style="font-weight:400;opacity:.7;">src→dst 平文</span></div>
+        <div style="flex:0 0 80px;background:#e0e8f0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4px;font-size:8.5px;font-weight:700;color:#3a3d52;text-align:center;line-height:1.4;border-right:1px solid #aaa;">TCPヘッダ<br><span style="font-weight:400;opacity:.7;">:443 平文</span></div>
+        <div style="flex:0 0 65px;background:#EEEDFE;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4px;font-size:8.5px;font-weight:700;color:#534AB7;text-align:center;line-height:1.4;border-right:1px solid #CECBF6;">TLS<br>Record</div>
+        <div style="flex:1;background:#534AB7;display:flex;align-items:center;justify-content:center;padding:6px;font-size:8.5px;font-weight:700;color:white;text-align:center;gap:5px;">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          L2フレーム（MACヘッダ + IPパケット + データ 全て暗号化）
+        </div>
+      </div>
+      <div style="font-size:9px;color:#534AB7;font-weight:600;text-align:center;">L2フレームごとTLS暗号化。MACアドレスも保護。社内LANと同等のあらゆるプロトコルが使用可能。</div>
+    </div>
+  </div>
+  </div>
+</div>
+
 <h3>SSL-VPN 3方式 比較表</h3>
 <table class="cmp-table">
 <thead><tr><th>比較項目</th><th>リバースプロキシ</th><th>ポートフォワーディング</th><th>L2フォワーディング</th></tr></thead>
@@ -1372,8 +1959,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 <tr><td>必要なクライアントソフト</td><td class="cmp-good">不要（ブラウザのみ）</td><td class="cmp-mid">必要（Java/ActiveX等）</td><td class="cmp-bad">必須（専用VPNクライアント）</td></tr>
 <tr><td>対応プロトコル</td><td class="cmp-bad">HTTPのみ</td><td class="cmp-mid">TCPアプリ（指定ポート）</td><td class="cmp-good">全プロトコル（TCP/UDP等）</td></tr>
 <tr><td>接続可能リソース</td><td class="cmp-bad">Webアプリのみ</td><td class="cmp-mid">指定したサーバ・ポート</td><td class="cmp-good">社内全リソース</td></tr>
-<tr><td>設定の手軽さ</td><td class="cmp-good">最も手軽</td><td class="cmp-mid">中程度</td><td class="cmp-bad">複雑</td></tr>
-<tr><td>透過性</td><td class="cmp-bad">URLが変換される</td><td class="cmp-mid">ローカルポートマッピングが必要</td><td class="cmp-good">社内と同じ感覚で使える</td></tr>
+<tr><td>パケット保護範囲</td><td style="font-size:11px">HTTPペイロードのみ</td><td style="font-size:11px">TCPペイロード（指定ポート）</td><td style="font-size:11px">L2フレーム全体（MACも保護）</td></tr>
 <tr><td>動作OSI層</td><td style="font-family:var(--mono)">L7（アプリ）</td><td style="font-family:var(--mono)">L4（トランスポート）</td><td style="font-family:var(--mono)">L2（データリンク）</td></tr>
 </tbody>
 </table>
@@ -1512,7 +2098,356 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 <div class="step hi"><span class="sn" style="font-size:8px;width:52px;border-radius:3px;text-align:center;">リモート<br>PF</span><div class="sb"><strong>リモートポートフォワーディング（-R）：</strong>サーバ側の指定ポートへのアクセスを、SSHトンネル経由でクライアント側の指定ポートに転送する。外部から内部サーバに安全にアクセスさせる逆トンネル用途で使われる。</div></div>
 <div class="step hi"><span class="sn" style="font-size:8px;width:52px;border-radius:3px;text-align:center;">ダイナミック<br>PF</span><div class="sb"><strong>ダイナミックポートフォワーディング（-D）：</strong>クライアント上にSOCKSプロキシを作成し、ブラウザ等の通信を全てSSHトンネル経由にする。実質的にSSHをSSL-VPN的に使う方式。</div></div>
 </div>
-</section>
+
+<h3>SSHメッセージング — 接続確立から認証・通信終了までの完全シーケンス</h3>
+<p>SSH接続は「転送層（鍵交換・サーバ認証）→ 認証層（ユーザ認証）→ 接続層（チャネル多重化）」の3段階で確立されます。公開鍵認証と合わせて全フローを示します。</p>
+
+<div style="background:#fff;border:1.5px solid #CECBF6;border-radius:12px;overflow:hidden;margin:22px 0;">
+  <div style="background:#534AB7;padding:10px 20px;display:flex;align-items:center;gap:10px;">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+    <span style="font-size:11px;font-weight:800;color:white;">SSH 完全メッセージングシーケンス（公開鍵認証）</span>
+    <div style="margin-left:auto;display:flex;gap:6px;">
+      <span style="background:#EEEDFE;color:#3C3489;font-size:9px;font-weight:700;padding:2px 10px;border-radius:20px;">TCP Port 22</span>
+      <span style="background:#E1F5EE;color:#085041;font-size:9px;font-weight:700;padding:2px 10px;border-radius:20px;">ChaCha20 / AES-CTR</span>
+    </div>
+  </div>
+  <div style="padding:20px 28px;overflow-x:auto;">
+  <div style="min-width:740px;">
+
+    <!-- アクターヘッダ -->
+    <div style="display:grid;grid-template-columns:160px 1fr 160px;align-items:end;margin-bottom:4px;">
+
+      <!-- クライアント -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+        <div style="width:56px;height:56px;background:#185FA5;border-radius:11px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;box-shadow:0 3px 8px rgba(24,95,165,.3);">
+          <svg width="28" height="28" viewBox="0 0 32 32" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="5" width="28" height="18" rx="2.5" fill="#B5D4F4" stroke="white" stroke-width="1.4"/>
+            <rect x="5" y="8" width="22" height="12" rx="1.5" fill="white" opacity=".25"/>
+            <line x1="2" y1="27" x2="30" y2="27" stroke="white" stroke-width="1.4"/>
+            <rect x="12" y="25" width="8" height="3" rx="1" fill="white"/>
+            <text x="16" y="16" text-anchor="middle" font-size="7" fill="white" font-family="monospace" font-weight="700">$ ssh</text>
+          </svg>
+          <span style="font-size:7.5px;font-weight:800;color:white;font-family:var(--mono);">Client</span>
+        </div>
+        <span style="font-size:9px;font-weight:600;color:#185FA5;text-align:center;line-height:1.4;">SSHクライアント<br>（秘密鍵保持）</span>
+      </div>
+
+      <div></div>
+
+      <!-- サーバ -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+        <div style="width:56px;height:56px;background:#0F6E56;border-radius:11px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;box-shadow:0 3px 8px rgba(15,110,86,.3);">
+          <svg width="28" height="28" viewBox="0 0 32 32" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="4" width="28" height="10" rx="2" fill="#9FE1CB" stroke="white" stroke-width="1.4"/>
+            <rect x="2" y="18" width="28" height="10" rx="2" fill="#9FE1CB" stroke="white" stroke-width="1.4"/>
+            <circle cx="5.5" cy="9" r="1.8" fill="white"/>
+            <circle cx="5.5" cy="23" r="1.8" fill="white"/>
+            <line x1="10" y1="9" x2="26" y2="9" stroke="white" stroke-width="1.1"/>
+            <line x1="10" y1="23" x2="26" y2="23" stroke="white" stroke-width="1.1"/>
+          </svg>
+          <span style="font-size:7.5px;font-weight:800;color:white;font-family:var(--mono);">Server</span>
+        </div>
+        <span style="font-size:9px;font-weight:600;color:#0F6E56;text-align:center;line-height:1.4;">SSHサーバ<br>（authorized_keys保持）</span>
+      </div>
+    </div>
+
+    <!-- 全シーケンス -->
+    <div style="position:relative;">
+      <!-- ライフライン -->
+      <div style="position:absolute;left:80px;top:0;bottom:0;width:1px;background:repeating-linear-gradient(180deg,#185FA5 0,#185FA5 5px,transparent 5px,transparent 9px);opacity:.35;"></div>
+      <div style="position:absolute;right:80px;top:0;bottom:0;width:1px;background:repeating-linear-gradient(180deg,#0F6E56 0,#0F6E56 5px,transparent 5px,transparent 9px);opacity:.35;"></div>
+
+      <div style="display:flex;flex-direction:column;gap:0;">
+
+        <!-- ─── フェーズ1: TCP接続 ─── -->
+        <div style="background:#F1EFE8;border:1px solid #D3D1C7;border-radius:6px;padding:4px 12px;font-size:9.5px;font-weight:700;color:#5F5E5A;text-align:center;margin:8px 0 4px;display:flex;align-items:center;justify-content:center;gap:6px;">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#5F5E5A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          フェーズ1：TCP接続確立（Port 22）
+        </div>
+
+        <!-- TCP SYN → -->
+        <div style="display:grid;grid-template-columns:160px 1fr 160px;align-items:center;min-height:36px;padding:1px 0;">
+          <div style="font-family:var(--mono);font-size:9px;font-weight:700;color:#888780;text-align:right;padding-right:10px;">TCP SYN</div>
+          <div style="display:flex;flex-direction:column;gap:2px;">
+            <div style="display:flex;align-items:center;"><div style="flex:1;height:1.5px;background:#888780;"></div><div style="width:0;height:0;border-top:4px solid transparent;border-bottom:4px solid transparent;border-left:6px solid #888780;"></div></div>
+          </div>
+          <div></div>
+        </div>
+        <!-- TCP SYN-ACK ← -->
+        <div style="display:grid;grid-template-columns:160px 1fr 160px;align-items:center;min-height:36px;padding:1px 0;">
+          <div></div>
+          <div style="display:flex;flex-direction:column;gap:2px;align-items:flex-end;">
+            <div style="display:flex;align-items:center;width:100%;"><div style="width:0;height:0;border-top:4px solid transparent;border-bottom:4px solid transparent;border-right:6px solid #888780;"></div><div style="flex:1;height:1.5px;background:#888780;"></div></div>
+          </div>
+          <div style="font-family:var(--mono);font-size:9px;font-weight:700;color:#888780;padding-left:10px;">SYN-ACK</div>
+        </div>
+        <!-- TCP ACK → -->
+        <div style="display:grid;grid-template-columns:160px 1fr 160px;align-items:center;min-height:32px;padding:1px 0;">
+          <div style="font-family:var(--mono);font-size:9px;font-weight:700;color:#888780;text-align:right;padding-right:10px;">ACK</div>
+          <div style="display:flex;flex-direction:column;gap:2px;">
+            <div style="display:flex;align-items:center;"><div style="flex:1;height:1.5px;background:#888780;"></div><div style="width:0;height:0;border-top:4px solid transparent;border-bottom:4px solid transparent;border-left:6px solid #888780;"></div></div>
+          </div>
+          <div></div>
+        </div>
+
+        <!-- ─── フェーズ2: バージョン交換 ─── -->
+        <div style="background:#E6F1FB;border:1px solid #B5D4F4;border-radius:6px;padding:4px 12px;font-size:9.5px;font-weight:700;color:#0C447C;text-align:center;margin:8px 0 4px;display:flex;align-items:center;justify-content:center;gap:6px;">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#185FA5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          フェーズ2：バージョン文字列交換（SSH-2.0）
+        </div>
+
+        <!-- SSH-2.0 → -->
+        <div style="display:grid;grid-template-columns:160px 1fr 160px;align-items:center;min-height:38px;padding:2px 0;">
+          <div style="font-size:9px;background:#E6F1FB;border:1px solid #B5D4F4;border-radius:4px;padding:2px 8px;color:#0C447C;text-align:center;font-family:var(--mono);">SSH-2.0-OpenSSH_9.x</div>
+          <div style="display:flex;flex-direction:column;gap:2px;padding:0 4px;">
+            <div style="display:flex;align-items:center;"><div style="flex:1;height:2px;background:#185FA5;"></div><div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:7px solid #185FA5;"></div></div>
+          </div>
+          <div></div>
+        </div>
+        <!-- SSH-2.0 ← -->
+        <div style="display:grid;grid-template-columns:160px 1fr 160px;align-items:center;min-height:38px;padding:2px 0;">
+          <div></div>
+          <div style="display:flex;flex-direction:column;gap:2px;align-items:flex-end;padding:0 4px;">
+            <div style="display:flex;align-items:center;width:100%;"><div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:7px solid #0F6E56;"></div><div style="flex:1;height:2px;background:#0F6E56;"></div></div>
+          </div>
+          <div style="font-size:9px;background:#E1F5EE;border:1px solid #9FE1CB;border-radius:4px;padding:2px 8px;color:#085041;font-family:var(--mono);">SSH-2.0-OpenSSH_9.x</div>
+        </div>
+
+        <!-- ─── フェーズ3: 鍵交換 ─── -->
+        <div style="background:#FAEEDA;border:1px solid #FAC775;border-radius:6px;padding:4px 12px;font-size:9.5px;font-weight:700;color:#633806;text-align:center;margin:8px 0 4px;display:flex;align-items:center;justify-content:center;gap:6px;">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#854F0B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          フェーズ3：鍵交換 &amp; サーバ認証（SSH_MSG_KEXINIT）
+        </div>
+
+        <!-- KEXINIT → -->
+        <div style="display:grid;grid-template-columns:160px 1fr 160px;align-items:center;min-height:38px;padding:2px 0;">
+          <div style="font-size:9px;background:#FAEEDA;border:1px solid #EF9F27;border-radius:4px;padding:2px 8px;color:#633806;text-align:center;">KEXINIT<br><span style="font-size:8px;opacity:.8;">対応アルゴリズムリスト</span></div>
+          <div style="display:flex;flex-direction:column;gap:2px;padding:0 4px;">
+            <div style="display:flex;align-items:center;"><div style="flex:1;height:2px;background:#854F0B;"></div><div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:7px solid #854F0B;"></div></div>
+          </div>
+          <div></div>
+        </div>
+        <!-- KEXINIT ← -->
+        <div style="display:grid;grid-template-columns:160px 1fr 160px;align-items:center;min-height:38px;padding:2px 0;">
+          <div></div>
+          <div style="display:flex;flex-direction:column;gap:2px;align-items:flex-end;padding:0 4px;">
+            <div style="display:flex;align-items:center;width:100%;"><div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:7px solid #854F0B;"></div><div style="flex:1;height:2px;background:#854F0B;"></div></div>
+          </div>
+          <div style="font-size:9px;background:#FAEEDA;border:1px solid #EF9F27;border-radius:4px;padding:2px 8px;color:#633806;text-align:center;">KEXINIT<br><span style="font-size:8px;opacity:.8;">対応アルゴリズムリスト</span></div>
+        </div>
+        <!-- DH Init → -->
+        <div style="display:grid;grid-template-columns:160px 1fr 160px;align-items:center;min-height:38px;padding:2px 0;">
+          <div style="font-size:9px;background:#FAEEDA;border:1px solid #EF9F27;border-radius:4px;padding:2px 8px;color:#633806;text-align:center;">KEX_DH_INIT<br><span style="font-size:8px;opacity:.8;">クライアントDH公開値 e</span></div>
+          <div style="display:flex;flex-direction:column;gap:2px;padding:0 4px;">
+            <div style="display:flex;align-items:center;"><div style="flex:1;height:2px;background:#854F0B;"></div><div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:7px solid #854F0B;"></div></div>
+          </div>
+          <div></div>
+        </div>
+        <!-- DH Reply ← + サーバ認証 -->
+        <div style="display:grid;grid-template-columns:160px 1fr 160px;align-items:center;min-height:48px;padding:2px 0;">
+          <div></div>
+          <div style="display:flex;flex-direction:column;gap:2px;align-items:flex-end;padding:0 4px;">
+            <div style="font-size:8.5px;color:#854F0B;background:#FAEEDA;border-radius:3px;padding:1px 6px;width:fit-content;">DH公開値 f + ホスト公開鍵 + 署名</div>
+            <div style="display:flex;align-items:center;width:100%;"><div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:7px solid #854F0B;"></div><div style="flex:1;height:2px;background:#854F0B;"></div></div>
+          </div>
+          <div style="font-size:9px;background:#FAEEDA;border:1px solid #EF9F27;border-radius:4px;padding:2px 8px;color:#633806;text-align:center;">KEX_DH_REPLY<br><span style="font-size:8px;opacity:.8;">サーバ公開鍵+署名</span></div>
+        </div>
+
+        <!-- クライアント検証ボックス -->
+        <div style="margin:2px 0 2px 0;background:#EEEDFE;border:1.5px solid #CECBF6;border-radius:6px;padding:6px 14px;font-size:9px;color:#3C3489;display:flex;align-items:center;gap:8px;">
+          <div style="width:20px;height:20px;background:#534AB7;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:9px;font-weight:800;color:white;font-family:var(--mono);">C</div>
+          <div><strong>クライアントがサーバ公開鍵を検証</strong> — known_hostsに登録済みか確認。初回接続時はフィンガープリントを表示してユーザに確認を求める（TOFU: Trust On First Use）</div>
+        </div>
+
+        <!-- NEWKEYS → ← -->
+        <div style="display:grid;grid-template-columns:160px 1fr 160px;align-items:center;min-height:34px;padding:1px 0;">
+          <div style="font-size:9px;background:#EAF3DE;border:1px solid #C0DD97;border-radius:4px;padding:2px 8px;color:#27500A;text-align:center;font-family:var(--mono);">SSH_MSG_NEWKEYS</div>
+          <div style="display:flex;flex-direction:column;gap:2px;padding:0 4px;">
+            <div style="display:flex;align-items:center;"><div style="flex:1;height:2px;background:#3B6D11;"></div><div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:7px solid #3B6D11;"></div></div>
+          </div>
+          <div></div>
+        </div>
+        <div style="display:grid;grid-template-columns:160px 1fr 160px;align-items:center;min-height:34px;padding:1px 0;">
+          <div></div>
+          <div style="display:flex;flex-direction:column;gap:2px;align-items:flex-end;padding:0 4px;">
+            <div style="display:flex;align-items:center;width:100%;"><div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:7px solid #3B6D11;"></div><div style="flex:1;height:2px;background:#3B6D11;"></div></div>
+          </div>
+          <div style="font-size:9px;background:#EAF3DE;border:1px solid #C0DD97;border-radius:4px;padding:2px 8px;color:#27500A;text-align:center;font-family:var(--mono);">SSH_MSG_NEWKEYS</div>
+        </div>
+
+        <!-- 暗号化開始バー -->
+        <div style="background:#3B6D11;color:white;border-radius:5px;padding:4px 12px;font-size:9.5px;font-weight:700;text-align:center;margin:6px 0 2px;display:flex;align-items:center;justify-content:center;gap:6px;">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          ここから全通信が暗号化（セッション鍵で対称暗号）
+        </div>
+
+        <!-- ─── フェーズ4: ユーザ認証（公開鍵） ─── -->
+        <div style="background:#EEEDFE;border:1px solid #CECBF6;border-radius:6px;padding:4px 12px;font-size:9.5px;font-weight:700;color:#3C3489;text-align:center;margin:8px 0 4px;display:flex;align-items:center;justify-content:center;gap:6px;">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#534AB7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          フェーズ4：ユーザ認証（公開鍵認証）
+        </div>
+
+        <!-- SERVICE_REQUEST → -->
+        <div style="display:grid;grid-template-columns:160px 1fr 160px;align-items:center;min-height:38px;padding:2px 0;">
+          <div style="font-size:9px;background:#EEEDFE;border:1px solid #CECBF6;border-radius:4px;padding:2px 8px;color:#3C3489;text-align:center;">SERVICE_REQUEST<br><span style="font-size:8px;opacity:.8;">ssh-userauth</span></div>
+          <div style="display:flex;flex-direction:column;gap:2px;padding:0 4px;">
+            <div style="font-size:8.5px;color:#534AB7;text-align:center;background:#EEEDFE;border-radius:3px;padding:1px;">暗号化</div>
+            <div style="display:flex;align-items:center;"><div style="flex:1;height:2px;background:#534AB7;"></div><div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:7px solid #534AB7;"></div></div>
+          </div>
+          <div></div>
+        </div>
+        <!-- SERVICE_ACCEPT ← -->
+        <div style="display:grid;grid-template-columns:160px 1fr 160px;align-items:center;min-height:38px;padding:2px 0;">
+          <div></div>
+          <div style="display:flex;flex-direction:column;gap:2px;align-items:flex-end;padding:0 4px;">
+            <div style="display:flex;align-items:center;width:100%;"><div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:7px solid #534AB7;"></div><div style="flex:1;height:2px;background:#534AB7;"></div></div>
+          </div>
+          <div style="font-size:9px;background:#EEEDFE;border:1px solid #CECBF6;border-radius:4px;padding:2px 8px;color:#3C3489;text-align:center;">SERVICE_ACCEPT</div>
+        </div>
+        <!-- USERAUTH_REQUEST 公開鍵確認 → -->
+        <div style="display:grid;grid-template-columns:160px 1fr 160px;align-items:center;min-height:48px;padding:2px 0;">
+          <div style="font-size:9px;background:#FAEEDA;border:1.5px solid #EF9F27;border-radius:4px;padding:3px 8px;color:#633806;text-align:center;">USERAUTH_REQUEST<br><span style="font-size:8px;font-family:var(--mono);">publickey（問合せ）</span><br><span style="font-size:8px;opacity:.8;">公開鍵アルゴリズム+公開鍵ブロブ</span></div>
+          <div style="display:flex;flex-direction:column;gap:2px;padding:0 4px;">
+            <div style="font-size:8.5px;color:#534AB7;text-align:center;background:#EEEDFE;border-radius:3px;padding:1px;">暗号化</div>
+            <div style="display:flex;align-items:center;"><div style="flex:1;height:2px;background:#534AB7;"></div><div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:7px solid #534AB7;"></div></div>
+          </div>
+          <div></div>
+        </div>
+        <!-- USERAUTH_PK_OK ← -->
+        <div style="display:grid;grid-template-columns:160px 1fr 160px;align-items:center;min-height:38px;padding:2px 0;">
+          <div></div>
+          <div style="display:flex;flex-direction:column;gap:2px;align-items:flex-end;padding:0 4px;">
+            <div style="font-size:8.5px;color:#0F6E56;background:#E1F5EE;border-radius:3px;padding:1px 6px;width:fit-content;">公開鍵の受け入れ確認</div>
+            <div style="display:flex;align-items:center;width:100%;"><div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:7px solid #534AB7;"></div><div style="flex:1;height:2px;background:#534AB7;"></div></div>
+          </div>
+          <div style="font-size:9px;background:#E1F5EE;border:1px solid #9FE1CB;border-radius:4px;padding:2px 8px;color:#085041;text-align:center;">USERAUTH_PK_OK<br><span style="font-size:8px;opacity:.8;">公開鍵OK通知</span></div>
+        </div>
+
+        <!-- クライアント署名ボックス -->
+        <div style="margin:2px 0;background:#FAEEDA;border:1.5px solid #EF9F27;border-radius:6px;padding:6px 14px;font-size:9px;color:#633806;display:flex;align-items:center;gap:8px;">
+          <div style="width:20px;height:20px;background:#854F0B;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:9px;font-weight:800;color:white;font-family:var(--mono);">C</div>
+          <div><strong>クライアントが秘密鍵でセッション識別子に署名</strong> — 秘密鍵はネットワーク上を流れない。署名値だけが送信される。</div>
+        </div>
+
+        <!-- USERAUTH_REQUEST 署名付き → -->
+        <div style="display:grid;grid-template-columns:160px 1fr 160px;align-items:center;min-height:52px;padding:2px 0;">
+          <div style="font-size:9px;background:#854F0B;border-radius:4px;padding:3px 8px;color:white;text-align:center;">USERAUTH_REQUEST<br><span style="font-size:8px;font-family:var(--mono);opacity:.9;">publickey + 署名値</span><br><span style="font-size:8px;opacity:.8;">秘密鍵で署名したブロブ</span></div>
+          <div style="display:flex;flex-direction:column;gap:2px;padding:0 4px;">
+            <div style="font-size:8.5px;color:#534AB7;text-align:center;background:#EEEDFE;border-radius:3px;padding:1px;">暗号化</div>
+            <div style="display:flex;align-items:center;"><div style="flex:1;height:2px;background:#534AB7;"></div><div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:7px solid #534AB7;"></div></div>
+          </div>
+          <div></div>
+        </div>
+
+        <!-- サーバ検証ボックス -->
+        <div style="margin:2px 0;background:#E1F5EE;border:1.5px solid #9FE1CB;border-radius:6px;padding:6px 14px;font-size:9px;color:#085041;display:flex;align-items:center;gap:8px;">
+          <div style="width:20px;height:20px;background:#0F6E56;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:9px;font-weight:800;color:white;font-family:var(--mono);">S</div>
+          <div><strong>サーバが公開鍵で署名を検証</strong> — authorized_keysに登録された公開鍵で署名値を復号して一致確認。一致すれば認証成功。</div>
+        </div>
+
+        <!-- USERAUTH_SUCCESS ← -->
+        <div style="display:grid;grid-template-columns:160px 1fr 160px;align-items:center;min-height:38px;padding:2px 0;">
+          <div></div>
+          <div style="display:flex;flex-direction:column;gap:2px;align-items:flex-end;padding:0 4px;">
+            <div style="font-size:8.5px;color:#3B6D11;background:#EAF3DE;border-radius:3px;padding:1px 6px;width:fit-content;font-weight:700;">認証成功</div>
+            <div style="display:flex;align-items:center;width:100%;"><div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:7px solid #3B6D11;"></div><div style="flex:1;height:2px;background:#3B6D11;"></div></div>
+          </div>
+          <div style="font-size:9px;background:#EAF3DE;border:1.5px solid #C0DD97;border-radius:4px;padding:2px 8px;color:#27500A;font-weight:700;text-align:center;">USERAUTH_SUCCESS</div>
+        </div>
+
+        <!-- ─── フェーズ5: チャネル確立・通信 ─── -->
+        <div style="background:#E1F5EE;border:1px solid #9FE1CB;border-radius:6px;padding:4px 12px;font-size:9.5px;font-weight:700;color:#085041;text-align:center;margin:8px 0 4px;display:flex;align-items:center;justify-content:center;gap:6px;">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#0F6E56" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+          フェーズ5：チャネル確立・通信（SSH Connection Layer）
+        </div>
+
+        <!-- CHANNEL_OPEN → -->
+        <div style="display:grid;grid-template-columns:160px 1fr 160px;align-items:center;min-height:38px;padding:2px 0;">
+          <div style="font-size:9px;background:#E1F5EE;border:1px solid #9FE1CB;border-radius:4px;padding:2px 8px;color:#085041;text-align:center;">CHANNEL_OPEN<br><span style="font-size:8px;font-family:var(--mono);">session</span></div>
+          <div style="display:flex;flex-direction:column;gap:2px;padding:0 4px;">
+            <div style="font-size:8.5px;color:#534AB7;text-align:center;background:#EEEDFE;border-radius:3px;padding:1px;">暗号化</div>
+            <div style="display:flex;align-items:center;"><div style="flex:1;height:2px;background:#0F6E56;"></div><div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:7px solid #0F6E56;"></div></div>
+          </div>
+          <div></div>
+        </div>
+        <!-- CHANNEL_OPEN_CONFIRMATION ← -->
+        <div style="display:grid;grid-template-columns:160px 1fr 160px;align-items:center;min-height:38px;padding:2px 0;">
+          <div></div>
+          <div style="display:flex;flex-direction:column;gap:2px;align-items:flex-end;padding:0 4px;">
+            <div style="display:flex;align-items:center;width:100%;"><div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:7px solid #0F6E56;"></div><div style="flex:1;height:2px;background:#0F6E56;"></div></div>
+          </div>
+          <div style="font-size:9px;background:#E1F5EE;border:1px solid #9FE1CB;border-radius:4px;padding:2px 8px;color:#085041;text-align:center;">CHANNEL_OPEN_CONFIRMATION</div>
+        </div>
+
+        <!-- CHANNEL_DATA（双方向） -->
+        <div style="display:grid;grid-template-columns:160px 1fr 160px;align-items:center;min-height:38px;padding:2px 0;">
+          <div style="font-size:9px;background:#534AB7;border-radius:4px;padding:2px 8px;color:white;text-align:center;font-family:var(--mono);">CHANNEL_DATA<br><span style="font-size:8px;opacity:.9;">$ コマンド入力</span></div>
+          <div style="display:flex;flex-direction:column;gap:2px;padding:0 4px;">
+            <div style="font-size:8.5px;color:#534AB7;text-align:center;background:#EEEDFE;border-radius:3px;padding:1px;">暗号化</div>
+            <div style="display:flex;align-items:center;"><div style="flex:1;height:2px;background:#534AB7;"></div><div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:7px solid #534AB7;"></div></div>
+          </div>
+          <div></div>
+        </div>
+        <div style="display:grid;grid-template-columns:160px 1fr 160px;align-items:center;min-height:38px;padding:2px 0;">
+          <div></div>
+          <div style="display:flex;flex-direction:column;gap:2px;align-items:flex-end;padding:0 4px;">
+            <div style="font-size:8.5px;color:#534AB7;text-align:center;background:#EEEDFE;border-radius:3px;padding:1px;width:100%;">暗号化</div>
+            <div style="display:flex;align-items:center;width:100%;"><div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:7px solid #534AB7;"></div><div style="flex:1;height:2px;background:#534AB7;"></div></div>
+          </div>
+          <div style="font-size:9px;background:#534AB7;border-radius:4px;padding:2px 8px;color:white;text-align:center;font-family:var(--mono);">CHANNEL_DATA<br><span style="font-size:8px;opacity:.9;">出力結果（stdout）</span></div>
+        </div>
+
+        <!-- ─── フェーズ6: 切断 ─── -->
+        <div style="background:#FCEBEB;border:1px solid #F7C1C1;border-radius:6px;padding:4px 12px;font-size:9.5px;font-weight:700;color:#791F1F;text-align:center;margin:8px 0 4px;">
+          フェーズ6：チャネル終了・TCP切断
+        </div>
+        <div style="display:grid;grid-template-columns:160px 1fr 160px;align-items:center;min-height:34px;padding:1px 0;">
+          <div style="font-size:9px;background:#FCEBEB;border:1px solid #F7C1C1;border-radius:4px;padding:2px 8px;color:#791F1F;text-align:center;font-family:var(--mono);">CHANNEL_CLOSE</div>
+          <div style="display:flex;padding:0 4px;"><div style="flex:1;height:1.5px;background:#A32D2D;"></div><div style="width:0;height:0;border-top:4px solid transparent;border-bottom:4px solid transparent;border-left:6px solid #A32D2D;"></div></div>
+          <div></div>
+        </div>
+        <div style="display:grid;grid-template-columns:160px 1fr 160px;align-items:center;min-height:34px;padding:1px 0;">
+          <div></div>
+          <div style="display:flex;align-items:center;padding:0 4px;"><div style="width:0;height:0;border-top:4px solid transparent;border-bottom:4px solid transparent;border-right:6px solid #A32D2D;"></div><div style="flex:1;height:1.5px;background:#A32D2D;"></div></div>
+          <div style="font-size:9px;background:#FCEBEB;border:1px solid #F7C1C1;border-radius:4px;padding:2px 8px;color:#791F1F;text-align:center;font-family:var(--mono);">CHANNEL_CLOSE</div>
+        </div>
+        <div style="display:grid;grid-template-columns:160px 1fr 160px;align-items:center;min-height:34px;padding:1px 0;">
+          <div style="font-size:9px;background:#FCEBEB;border:1px solid #F7C1C1;border-radius:4px;padding:2px 8px;color:#791F1F;text-align:center;font-family:var(--mono);">DISCONNECT</div>
+          <div style="display:flex;padding:0 4px;"><div style="flex:1;height:1.5px;background:#A32D2D;"></div><div style="width:0;height:0;border-top:4px solid transparent;border-bottom:4px solid transparent;border-left:6px solid #A32D2D;"></div></div>
+          <div></div>
+        </div>
+
+        <!-- 完了 -->
+        <div style="background:#0F6E56;color:white;border-radius:5px;padding:4px 12px;font-size:9.5px;font-weight:800;text-align:center;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:6px;">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          SSH セッション正常終了
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 鍵の流れサマリ -->
+    <div style="margin-top:16px;background:#f8f9ff;border:1px solid #d0d8f0;border-radius:8px;padding:12px 16px;">
+      <div style="font-size:10px;font-weight:700;color:var(--ink2);margin-bottom:8px;letter-spacing:.05em;text-transform:uppercase;">鍵の流れ — まとめ</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+        <div style="background:#FAEEDA;border:1px solid #EF9F27;border-radius:6px;padding:8px 10px;">
+          <div style="font-size:9.5px;font-weight:700;color:#633806;margin-bottom:4px;">フェーズ3：セッション鍵</div>
+          <div style="font-size:9px;color:#633806;line-height:1.5;">DH鍵交換 → 双方が同じセッション鍵を生成（鍵自体は流れない）</div>
+        </div>
+        <div style="background:#EEEDFE;border:1px solid #CECBF6;border-radius:6px;padding:8px 10px;">
+          <div style="font-size:9.5px;font-weight:700;color:#3C3489;margin-bottom:4px;">フェーズ4：署名値のみ送信</div>
+          <div style="font-size:9px;color:#3C3489;line-height:1.5;">秘密鍵はクライアントの外に出ない。署名値だけがネットワークを流れる。</div>
+        </div>
+        <div style="background:#EAF3DE;border:1px solid #C0DD97;border-radius:6px;padding:8px 10px;">
+          <div style="font-size:9.5px;font-weight:700;color:#27500A;margin-bottom:4px;">フェーズ5：対称暗号通信</div>
+          <div style="font-size:9px;color:#27500A;line-height:1.5;">全データをセッション鍵で暗号化。ChaCha20-Poly1305 / AES-CTR等。</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  </div>
+</div>
 
 <!-- S09 シンクライアント -->
 <section class="section" id="s9">
@@ -1854,7 +2789,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 </div>
 
 <footer>
-<p>クライアントセキュリティ 技術解説書 Ver.1 — 情報処理安全確保支援士試験 対応版</p>
+<p>クライアントセキュリティ 技術解説書 Ver.2 — 情報処理安全確保支援士試験 対応版</p>
 <p>シラバス Ver.2.1 | 3-5 ネットワーク及び機器のセキュリティ管理 / 3-1 暗号利用及び鍵管理</p>
 </footer>
 
