@@ -3,250 +3,387 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>電子メールのセキュリティ — 技術解説書 Ver.1</title>
+<title>電子メールのセキュリティ — 技術解説書 Ver.2</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600&family=Noto+Sans+JP:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root{--ink:#141824;--ink2:#1e2d4a;--accent:#0b4a82;--accent2:#1570b8;--gold:#b5821e;--soft:#e8edf5;--surface:#f3f6fb;--line:#cdd7e6;--success:#155f44;--warn:#7a4208;--danger:#7a1818;--mono:'JetBrains Mono',monospace;--serif:'Noto Serif JP',serif;--sans:'Noto Sans JP',sans-serif}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{font-family:var(--sans);background:#edf1f8;color:var(--ink);font-size:15px;line-height:1.78}
-.cover{background:var(--ink);color:#fff;padding:72px 60px 56px;position:relative;overflow:hidden}
-.cover-geo{position:absolute;top:0;right:0;width:420px;height:420px;opacity:.06}
-.cover-kicker{font-size:11px;font-weight:700;letter-spacing:.2em;color:rgba(255,255,255,.42);text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:10px}
-.cover-kicker::before{content:'';display:block;width:24px;height:1px;background:var(--gold)}
-.cover h1{font-family:var(--serif);font-size:40px;font-weight:600;line-height:1.22;margin-bottom:18px}
-.cover h1 em{color:#6ab4f5;font-style:normal}
-.cover-desc{font-size:14px;color:rgba(255,255,255,.58);max-width:560px;margin-bottom:36px;line-height:1.8}
-.cover-tags{display:flex;gap:7px;flex-wrap:wrap}
-.ctag{font-size:10.5px;padding:3px 11px;border-radius:3px;border:1px solid rgba(255,255,255,.16);color:rgba(255,255,255,.6);letter-spacing:.04em;font-family:var(--mono)}
-.layout{display:flex;align-items:flex-start}
-.sidebar{position:sticky;top:0;width:220px;flex-shrink:0;height:100vh;overflow-y:auto;background:var(--ink2);padding:28px 0}
-.sidebar-title{font-size:10px;font-weight:700;letter-spacing:.18em;color:rgba(255,255,255,.3);text-transform:uppercase;padding:0 20px 12px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:8px}
-.sidebar nav a{display:block;padding:8px 20px;font-size:12.5px;color:rgba(255,255,255,.55);text-decoration:none;border-left:2px solid transparent;transition:all .15s;line-height:1.45}
-.sidebar nav a:hover{color:#fff;background:rgba(255,255,255,.05)}
-.sidebar nav a.active{color:#6ab4f5;border-left-color:#6ab4f5;background:rgba(100,180,245,.07)}
-.sidebar nav .nav-num{font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.25);display:block;margin-bottom:1px}
-.main{flex:1;min-width:0;padding:52px 52px 100px}
-.section{margin-bottom:80px;scroll-margin-top:24px}
-.section-header{display:flex;align-items:flex-start;gap:14px;margin-bottom:26px;padding-bottom:16px;border-bottom:1px solid var(--line)}
-.s-num{font-family:var(--mono);font-size:10px;font-weight:500;color:#fff;background:var(--accent);padding:3px 8px;border-radius:3px;margin-top:5px;white-space:nowrap;flex-shrink:0}
-.s-num.gold-bg{background:var(--gold)}
-.s-num.red-bg{background:var(--danger)}
-h2{font-family:var(--serif);font-size:24px;font-weight:600;color:var(--ink);line-height:1.3}
-h3{font-size:15px;font-weight:700;color:var(--ink2);margin:32px 0 12px;padding-left:10px;border-left:3px solid var(--accent2)}
-p{color:#3a3d52;margin-bottom:14px}
-.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin:22px 0}
-.icard{background:#fff;border:1px solid var(--line);border-radius:8px;padding:16px 18px;display:flex;flex-direction:column;gap:10px}
-.icard-label{font-size:10.5px;font-weight:700;letter-spacing:.1em;color:var(--accent);text-transform:uppercase}
-.icard-val{font-size:13px;color:var(--ink);line-height:1.55}
-.steps{display:flex;flex-direction:column;gap:8px;margin:16px 0}
-.step{display:flex;gap:12px;align-items:flex-start;padding:11px 15px;border-radius:6px;background:var(--surface);border-left:3px solid var(--line)}
-.step.hi{background:#eaf3ff;border-left-color:var(--accent2)}
-.step.ok{background:#eaf7f1;border-left-color:var(--success)}
-.step.wn{background:#fdf5e6;border-left-color:var(--gold)}
-.step.ng{background:#fdf0f0;border-left-color:var(--danger)}
-.sn{font-family:var(--mono);font-size:10px;font-weight:500;color:#fff;background:var(--accent2);min-width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
-.step.ok .sn{background:var(--success)}
-.step.wn .sn{background:var(--gold)}
-.step.ng .sn{background:var(--danger)}
-.sb{font-size:13.5px;color:var(--ink);line-height:1.65}
-.sb strong{color:var(--ink2)}
-.sb code{font-family:var(--mono);font-size:11.5px;background:rgba(11,74,130,.08);color:var(--accent);padding:1px 5px;border-radius:3px}
-.note{display:flex;gap:11px;border-radius:6px;padding:13px 16px;margin:14px 0;border:1px solid}
-.note-i{flex-shrink:0;margin-top:2px}
-.note p{margin:0;font-size:13px;line-height:1.7}
-.note.info{background:#e8f3fd;border-color:#a8cef5}
-.note.info p{color:#0b3a6a}
-.note.warn{background:#fdf5e6;border-color:#e8c97a}
-.note.warn p{color:#5a3200}
-.note.danger{background:#fdf0f0;border-color:#e8a8a8}
-.note.danger p{color:#5a0000}
-.keypoint{background:var(--ink);color:#fff;border-radius:8px;padding:20px 26px;margin:24px 0}
-.kp-label{font-size:9.5px;font-weight:700;letter-spacing:.2em;color:rgba(181,130,30,.9);text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:8px}
-.kp-label::before{content:'';display:block;width:16px;height:1px;background:var(--gold)}
-.keypoint p{color:rgba(255,255,255,.82);margin:0;font-size:13.5px;line-height:1.8}
-.keypoint strong{color:#6ab4f5}
-.req-table{width:100%;border-collapse:collapse;font-size:13.5px;margin:16px 0}
-.req-table th{background:var(--ink2);color:#fff;padding:9px 13px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em}
-.req-table td{padding:9px 13px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.6}
-.req-table tr:last-child td{border-bottom:none}
-.req-table tr:nth-child(even) td{background:var(--surface)}
-.cmp-table{width:100%;border-collapse:collapse;font-size:13px;margin:16px 0}
-.cmp-table th{background:var(--accent);color:#fff;padding:9px 13px;text-align:center;font-size:11px;font-weight:600;letter-spacing:.06em}
-.cmp-table th:first-child{text-align:left;background:var(--ink2)}
-.cmp-table td{padding:9px 13px;border:1px solid var(--line);text-align:center;font-size:12.5px;vertical-align:middle}
-.cmp-table td:first-child{text-align:left;font-weight:600;color:var(--ink2);background:var(--surface);white-space:nowrap}
-.cmp-good{color:var(--success);font-weight:600}
-.cmp-bad{color:var(--danger)}
-.cmp-mid{color:var(--warn)}
-.atk-table{width:100%;border-collapse:collapse;font-size:13px;margin:16px 0}
-.atk-table th{background:var(--ink);color:#fff;padding:9px 13px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em}
-.atk-table td{padding:9px 13px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.6}
-.atk-table tr:last-child td{border-bottom:none}
-.atk-table tr:nth-child(even) td{background:var(--surface)}
-.atk-table td:first-child{font-weight:600;color:var(--danger);white-space:nowrap}
-.atk-table td:last-child{color:var(--success);font-size:12.5px}
-.threat-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:20px 0}
-.threat-card{background:#fff;border:1px solid var(--line);border-radius:8px;overflow:hidden}
-.tc-head{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--danger);color:#fff}
-.tc-head.warn-head{background:var(--gold)}
-.tc-head.blue-head{background:var(--accent2)}
-.tc-head.ok-head{background:var(--success)}
-.tc-head span{font-size:12.5px;font-weight:700}
-.tc-body{padding:12px 14px}
-.tc-body p{font-size:12.5px;color:#3a3d52;margin:0 0 8px;line-height:1.6}
-.tc-counter{font-size:11.5px;color:var(--success);padding:6px 10px;background:#eaf7f1;border-radius:4px;margin:0;border-left:3px solid var(--success)}
-.term-table{width:100%;border-collapse:collapse;font-size:13px;margin:12px 0}
-.term-table td{padding:8px 11px;border-bottom:1px dashed var(--line);vertical-align:top}
-.term-table td:first-child{font-family:var(--mono);font-size:11px;color:var(--accent2);font-weight:500;white-space:nowrap;min-width:160px}
-.term-table tr:last-child td{border-bottom:none}
-.quiz-wrap{display:flex;flex-direction:column;gap:24px;margin:20px 0}
-.quiz{background:#fff;border:1px solid var(--line);border-radius:8px;overflow:hidden}
-.quiz-q{padding:14px 18px;background:var(--ink2);color:#fff;font-size:13.5px;line-height:1.65;display:flex;gap:12px}
-.quiz-qn{font-family:var(--mono);font-size:10px;background:rgba(255,255,255,.15);padding:2px 8px;border-radius:3px;white-space:nowrap;flex-shrink:0;height:fit-content;margin-top:2px}
-.quiz-opts{padding:14px 18px;display:flex;flex-direction:column;gap:7px}
-.quiz-opt{padding:8px 13px;border:1px solid var(--line);border-radius:5px;font-size:13px;color:var(--ink);cursor:pointer;transition:all .15s;background:#fff;text-align:left}
-.quiz-opt:hover{background:var(--surface);border-color:var(--accent2)}
-.quiz-opt.correct{background:#eaf7f1;border-color:var(--success);color:var(--success)}
-.quiz-opt.wrong{background:#fdf0f0;border-color:var(--danger);color:var(--danger)}
-.quiz-opt.reveal{background:var(--surface);color:#aaa}
-.quiz-exp{display:none;padding:12px 18px;background:#f0f6ff;border-top:1px solid #b8d5f5;font-size:13px;color:#0b3a6a;line-height:1.7}
-.quiz-exp.show{display:block}
-.mail-struct{background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:22px 0}
-.mail-struct-title{background:var(--ink2);color:#fff;padding:9px 16px;font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;display:flex;align-items:center;gap:8px}
-.mail-part{border-bottom:1px solid var(--line);display:flex;align-items:stretch}
-.mail-part:last-child{border-bottom:none}
-.mail-part-label{width:130px;flex-shrink:0;padding:10px 12px;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;display:flex;align-items:center;gap:5px}
-.lbl-envelope{background:#e8edf5;color:var(--accent);border-right:2px solid var(--accent)}
-.lbl-header{background:#eaf7f1;color:var(--success);border-right:2px solid var(--success)}
-.lbl-body{background:#fdf5e6;color:var(--warn);border-right:2px solid var(--gold)}
-.mail-part-content{flex:1;padding:10px 14px;font-size:12px;color:#3a3d52;line-height:1.7;font-family:var(--mono)}
-.mf{display:flex;gap:6px;margin-bottom:3px}
-.mfk{color:var(--accent2);min-width:130px;font-weight:500;flex-shrink:0}
-.mfv{color:var(--ink)}
-.mfn{color:#6a6e8e;font-size:10.5px}
-.header-block{background:#0d1117;border-radius:8px;padding:20px 22px;margin:16px 0;font-family:var(--mono);font-size:11.5px;line-height:1.85;overflow-x:auto}
-.hbf{color:#79b8ff}
-.hbv{color:#e1e4e8}
-.hba{color:#6a737d}
-.hbw{color:#f9c74f}
-.hbok{color:#56d364}
-.hbng{color:#ff7b72}
-.flow-wrap{background:#fff;border:1px solid var(--line);border-radius:10px;padding:28px 24px 20px;margin:24px 0;overflow-x:auto}
-.flow-cap{font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:20px;display:flex;align-items:center;gap:10px}
-.flow-cap::after{content:'';flex:1;height:1px;background:var(--line)}
-.proto-map{background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:20px 0}
-.proto-map-title{background:var(--ink2);color:#fff;padding:10px 16px;font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
-.proto-layers{padding:20px 24px;display:flex;flex-direction:column;gap:10px}
-.proto-layer{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:6px;border-left:3px solid}
-.proto-layer.app-layer{background:#eaf3ff;border-left-color:var(--accent2)}
-.proto-layer.sec-layer{background:#eaf7f1;border-left-color:var(--success)}
-.proto-layer.enc-layer{background:#fdf5e6;border-left-color:var(--gold)}
-.proto-layer-name{font-weight:700;font-size:11px;letter-spacing:.06em;color:var(--ink2);min-width:100px;display:flex;align-items:center;gap:4px}
-.proto-chips{display:flex;flex-wrap:wrap;gap:6px}
-.proto-chip{font-family:var(--mono);font-size:10.5px;padding:3px 10px;border-radius:3px;border:1px solid;font-weight:500}
-.chip-blue{background:#daeeff;border-color:#8ec8f5;color:#0b3a6a}
-.chip-green{background:#d0f0e0;border-color:#8ed5b0;color:#0d3d28}
-.chip-gold{background:#fdf0d0;border-color:#e0c070;color:#5a3200}
-.chip-purple{background:#ede8ff;border-color:#c0a8f5;color:#3a006e}
-.auth-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:20px 0}
-.auth-card{background:#fff;border:1px solid var(--line);border-radius:8px;overflow:hidden}
-.auth-card-head{padding:12px 14px;color:#fff;font-weight:700;font-size:13px;display:flex;align-items:center;gap:8px}
-.auth-card-body{padding:12px 14px;font-size:12.5px;color:#3a3d52;line-height:1.65}
-.auth-card-body strong{color:var(--ink2)}
-.auth-spf .auth-card-head{background:var(--accent2)}
-.auth-dkim .auth-card-head{background:var(--success)}
-.auth-dmarc .auth-card-head{background:var(--warn)}
-.node-box{border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border:2px solid}
-footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;padding:22px;font-size:11.5px;letter-spacing:.05em;line-height:1.8}
-@media(max-width:800px){.sidebar{display:none}.main{padding:28px 20px 60px}.threat-grid{grid-template-columns:1fr}.auth-row{grid-template-columns:1fr}.cover{padding:48px 24px 40px}.cover h1{font-size:28px}}
+  :root{
+    --ink:#111624; --ink2:#1f2a3d; --ink3:#3d4860;
+    --accent:#1c3a5c; --accent2:#3d6998; --accent3:#7a9bc2;
+    --gold:#a47a2a; --gold2:#c9a557;
+    --paper:#fbfbf8; --surface:#f4f2ec; --panel:#ffffff;
+    --line:#d9d5c7; --line2:#e8e5db;
+    --success:#2a5f4a; --warn:#7a4a1a; --danger:#742828;
+    --purple:#4a2e70; --orange:#8a3a00;
+    --mono:'JetBrains Mono',monospace; --serif:'Noto Serif JP',serif; --sans:'Noto Sans JP',sans-serif;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:var(--sans); background:var(--paper); color:var(--ink);
+    font-size:14.5px; line-height:1.85;
+    background-image:radial-gradient(circle at 1px 1px, rgba(31,42,61,.05) 1px, transparent 0);
+    background-size:28px 28px;
+  }
 
-/* ── Icon System ── */
-.ico {display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}
-.ico-badge {
-  position:absolute;top:-10px;left:50%;transform:translateX(-50%);
-  width:22px;height:22px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  font-size:10px;font-weight:800;color:white;font-family:var(--mono);
-  border:2.5px solid #edf1f8;z-index:2;
-  box-shadow:0 2px 6px rgba(0,0,0,.3);
-}
-/* Interactive tabs — display managed entirely via JS inline style, no CSS conflict */
-.tab-group {margin:20px 0;}
-.tab-nav {display:flex;gap:0;border-bottom:2px solid var(--line);margin-bottom:0;}
-.tab-btn {
-  padding:9px 18px;font-size:12.5px;font-weight:600;color:rgba(30,45,74,.6);
-  background:transparent;border:none;border-bottom:3px solid transparent;
-  cursor:pointer;transition:all .15s;font-family:var(--sans);
-  margin-bottom:-2px;display:flex;align-items:center;gap:6px;
-}
-.tab-btn:hover{color:var(--ink2);background:var(--surface);}
-.tab-btn.active{color:var(--accent2);border-bottom-color:var(--accent2);background:#fff;}
-.tab-panel{background:#fff;border:1px solid var(--line);border-top:none;border-radius:0 0 8px 8px;padding:20px;}
-/* Accordion */
-.accord-item{border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-bottom:8px;}
-.accord-head{
-  display:flex;align-items:center;gap:10px;padding:12px 16px;
-  background:var(--surface);cursor:pointer;font-size:13.5px;font-weight:600;
-  color:var(--ink2);transition:background .15s;user-select:none;
-}
-.accord-head:hover{background:#e0e8f5;}
-.accord-head.open{background:var(--ink2);color:#fff;}
-.accord-chevron{margin-left:auto;transition:transform .25s;flex-shrink:0;}
-.accord-head.open .accord-chevron{transform:rotate(180deg);}
-.accord-body{display:none;padding:14px 16px;font-size:13px;color:#3a3d52;line-height:1.7;background:#fff;}
-.accord-body.open{display:block;}
-/* Tooltip */
-[data-tip]{position:relative;cursor:help;}
-[data-tip]:hover::after{
-  content:attr(data-tip);
-  position:absolute;bottom:110%;left:50%;transform:translateX(-50%);
-  background:var(--ink);color:#fff;font-size:11px;padding:5px 9px;
-  border-radius:5px;white-space:nowrap;z-index:100;pointer-events:none;
-  box-shadow:0 3px 10px rgba(0,0,0,.3);
-}
-/* Comparison toggle */
-.toggle-group{display:flex;background:var(--surface);border-radius:8px;padding:3px;gap:3px;width:fit-content;margin:14px 0;}
-.toggle-btn{
-  padding:6px 16px;border-radius:6px;border:none;font-size:12.5px;font-weight:600;
-  cursor:pointer;transition:all .15s;background:transparent;color:rgba(30,45,74,.55);
-  font-family:var(--sans);
-}
-.toggle-btn.active{background:#fff;color:var(--ink2);box-shadow:0 1px 4px rgba(0,0,0,.12);}
-.toggle-panel{display:none;}
-.toggle-panel.active{display:block;}
-/* Highlight flash */
-@keyframes flash{0%{background:rgba(21,112,184,.15);}100%{background:transparent;}}
-.flash{animation:flash 1.2s ease-out;}
+  /* ── Cover ── */
+  .cover{ background:linear-gradient(180deg,#0f1420 0%,#1a2236 100%); color:#fff; padding:80px 64px 68px; position:relative; overflow:hidden; }
+  .cover::before{ content:''; position:absolute; inset:0;
+    background:radial-gradient(ellipse at top right, rgba(201,165,87,.08), transparent 55%),
+               radial-gradient(ellipse at bottom left, rgba(122,155,194,.08), transparent 55%);
+    pointer-events:none; }
+  .cover-geo{ position:absolute; top:-60px; right:-60px; width:540px; height:540px; opacity:.07; animation:rotSlow 60s linear infinite; }
+  @keyframes rotSlow{ to{ transform:rotate(360deg); } }
+  .cover-inner{ position:relative; max-width:1000px; }
+  .cover-kicker{ font-size:10.5px; font-weight:700; letter-spacing:.28em; color:rgba(201,165,87,.8); text-transform:uppercase; margin-bottom:28px; display:flex; align-items:center; gap:14px; }
+  .cover-kicker::before{ content:''; display:block; width:32px; height:1px; background:var(--gold2); }
+  .cover h1{ font-family:var(--serif); font-size:52px; font-weight:600; line-height:1.15; margin-bottom:22px; letter-spacing:.02em; }
+  .cover h1 em{ color:var(--gold2); font-style:normal; font-weight:500; }
+  .cover-desc{ font-size:14px; color:rgba(255,255,255,.62); max-width:600px; margin-bottom:42px; line-height:1.9; }
+  .cover-tags{ display:flex; gap:8px; flex-wrap:wrap; }
+  .ctag{ font-size:10.5px; padding:5px 13px; border-radius:2px; border:1px solid rgba(201,165,87,.3); color:rgba(255,255,255,.7); letter-spacing:.08em; font-family:var(--mono); }
+  .cover-illust{ position:absolute; right:64px; bottom:60px; width:180px; height:180px; opacity:.9; }
+  .cover-illust svg{ width:100%; height:100%; }
+  .ci-ring{ animation:pulse 4s ease-in-out infinite; transform-origin:center; }
+  @keyframes pulse{ 0%,100%{opacity:.3;transform:scale(1)} 50%{opacity:.55;transform:scale(1.04)} }
+  .ci-chk{ stroke-dasharray:20; stroke-dashoffset:20; animation:chkDraw 3s ease-in-out infinite; }
+  @keyframes chkDraw{ 0%,100%{stroke-dashoffset:20} 50%{stroke-dashoffset:0} }
+
+  /* ── Layout ── */
+  .layout{display:flex; align-items:flex-start; background:var(--paper);}
+  .sidebar{ position:sticky; top:0; width:240px; flex-shrink:0; height:100vh; overflow-y:auto; background:linear-gradient(180deg,#1a2236,#0f1420); padding:36px 0; border-right:1px solid rgba(201,165,87,.12); }
+  .sidebar-title{ font-size:9.5px; font-weight:700; letter-spacing:.24em; color:rgba(201,165,87,.7); text-transform:uppercase; padding:0 26px 16px; border-bottom:1px solid rgba(255,255,255,.08); margin-bottom:10px; }
+  .sidebar nav a{ display:block; padding:10px 26px; font-size:12.5px; color:rgba(255,255,255,.58); text-decoration:none; border-left:2px solid transparent; transition:all .2s; line-height:1.5; }
+  .sidebar nav a:hover{ color:#fff; background:rgba(255,255,255,.04); }
+  .sidebar nav a.active{ color:var(--gold2); border-left-color:var(--gold2); background:rgba(201,165,87,.06); }
+  .nav-num{ font-family:var(--mono); font-size:9px; color:rgba(201,165,87,.45); display:block; margin-bottom:2px; letter-spacing:.1em; }
+  .main{ flex:1; min-width:0; padding:64px 64px 120px; max-width:1180px; }
+
+  /* ── Section ── */
+  .section{ margin-bottom:100px; scroll-margin-top:24px; }
+  .section-header{ display:flex; align-items:flex-start; gap:18px; margin-bottom:36px; padding-bottom:22px; border-bottom:1px solid var(--line); position:relative; }
+  .section-header::after{ content:''; position:absolute; left:0; bottom:-1px; width:80px; height:2px; background:var(--gold); }
+  .s-num{ font-family:var(--mono); font-size:10px; font-weight:500; color:#fff; background:var(--ink); padding:4px 10px; border-radius:2px; margin-top:8px; white-space:nowrap; flex-shrink:0; letter-spacing:.1em; align-self:flex-start; height:fit-content; }
+  .s-num.gold-bg{ background:var(--gold); }
+  .s-num.red-bg{ background:var(--danger); }
+  .s-num.purple-bg{ background:var(--purple); }
+  h2{ font-family:var(--serif); font-size:28px; font-weight:600; color:var(--ink); line-height:1.3; letter-spacing:.01em; }
+  h3{ font-size:16px; font-weight:700; color:var(--ink2); margin:40px 0 16px; padding-left:14px; border-left:3px solid var(--gold); font-family:var(--sans); }
+  h4{ font-size:13.5px; font-weight:700; color:var(--ink2); margin:24px 0 10px; font-family:var(--sans); }
+  p{ color:var(--ink3); margin-bottom:16px; text-wrap:pretty; }
+  strong{ color:var(--ink2); font-weight:700; }
+  code{ font-family:var(--mono); font-size:11.5px; background:rgba(28,58,92,.07); color:var(--accent); padding:1px 6px; border-radius:2px; }
+
+  /* ── Illustration panel ── */
+  .illust{ background:var(--panel); border:1px solid var(--line); border-radius:2px; padding:28px; margin:28px 0; position:relative; overflow:hidden; }
+  .illust::before{ content:''; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent, var(--gold),transparent); }
+  .illust-label{ font-family:var(--mono); font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:var(--gold); margin-bottom:16px; display:flex; align-items:center; gap:10px; }
+  .illust-label::after{ content:''; flex:1; height:1px; background:var(--line); }
+
+  /* ── Cards ── */
+  .card-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px; margin:28px 0; }
+  .icard{ background:var(--panel); border:1px solid var(--line); border-radius:2px; padding:22px; display:flex; flex-direction:column; gap:12px; transition:all .3s; position:relative; overflow:hidden; }
+  .icard::before{ content:''; position:absolute; top:0; left:0; width:0; height:2px; background:var(--gold); transition:width .4s ease; }
+  .icard:hover{ border-color:var(--gold); transform:translateY(-2px); }
+  .icard:hover::before{ width:100%; }
+  .icard-icon{ color:var(--accent2); height:40px; width:40px; border-radius:2px; display:flex; align-items:center; justify-content:center; background:var(--surface); }
+  .icard-icon.blue{ background:#eef1f7; color:var(--accent); }
+  .icard-icon.green{ background:#ecf1ed; color:var(--success); }
+  .icard-icon.red{ background:#f3e8e8; color:var(--danger); }
+  .icard-icon.gold{ background:#f5efe0; color:var(--gold); }
+  .icard-icon.purple{ background:#ece6f0; color:var(--purple); }
+  .icard-label{ font-size:10px; font-weight:700; letter-spacing:.14em; color:var(--gold); text-transform:uppercase; }
+  .icard-val{ font-size:13px; color:var(--ink3); line-height:1.7; }
+
+  /* ── Steps ── */
+  .steps{ display:flex; flex-direction:column; gap:10px; margin:22px 0; }
+  .step{ display:flex; gap:14px; align-items:flex-start; padding:14px 18px; border-radius:2px; background:var(--surface); border-left:3px solid var(--line); }
+  .step.hi{ background:#eef1f7; border-left-color:var(--accent2); }
+  .step.ok{ background:#ecf1ed; border-left-color:var(--success); }
+  .step.wn{ background:#f5efe0; border-left-color:var(--gold); }
+  .step.ng{ background:#f3e8e8; border-left-color:var(--danger); }
+  .sn{ font-family:var(--mono); font-size:10px; font-weight:500; color:#fff; background:var(--accent2); min-width:26px; height:24px; border-radius:2px; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; padding:0 6px; white-space:nowrap; letter-spacing:.04em; }
+  .step.ok .sn{ background:var(--success); }
+  .step.wn .sn{ background:var(--gold); }
+  .step.ng .sn{ background:var(--danger); }
+  .sb{ font-size:13.5px; color:var(--ink2); line-height:1.75; }
+  .sb strong{ color:var(--ink2); }
+  .sb code{ font-family:var(--mono); font-size:11.5px; background:rgba(28,58,92,.07); color:var(--accent); padding:1px 5px; border-radius:2px; }
+
+  /* ── Notes ── */
+  .note{ display:flex; gap:12px; border-radius:2px; padding:16px 20px; margin:18px 0; border:1px solid; }
+  .note-i{ flex-shrink:0; margin-top:2px; }
+  .note p{ margin:0; font-size:13px; line-height:1.8; }
+  .note.info{ background:#eef1f7; border-color:#bcc8d9; }
+  .note.info p{ color:#1a2a42; }
+  .note.warn{ background:#f5efe0; border-color:#d9c68a; }
+  .note.warn p{ color:#5c3a10; }
+  .note.danger{ background:#f3e8e8; border-color:#d0aaaa; }
+  .note.danger p{ color:#5a1a1a; }
+  .note.success{ background:#ecf1ed; border-color:#a8c8b4; }
+  .note.success p{ color:#1a3d2a; }
+
+  /* ── Key point ── */
+  .keypoint{ background:linear-gradient(135deg,#1a2236,#0f1420); color:#fff; border-radius:2px; padding:28px 32px; margin:28px 0; position:relative; overflow:hidden; border:1px solid var(--gold); }
+  .keypoint::before{ content:''; position:absolute; top:0; right:0; width:120px; height:120px; background:radial-gradient(circle,rgba(201,165,87,.18),transparent 70%); }
+  .kp-label{ font-size:9.5px; font-weight:700; letter-spacing:.24em; color:var(--gold2); text-transform:uppercase; margin-bottom:12px; display:flex; align-items:center; gap:10px; position:relative; }
+  .kp-label::before{ content:''; display:block; width:20px; height:1px; background:var(--gold2); }
+  .keypoint p{ color:rgba(255,255,255,.86); margin:0; font-size:13.5px; line-height:1.9; position:relative; }
+  .keypoint strong{ color:var(--gold2); }
+
+  /* ── Tables ── */
+  .cmp-table{ width:100%; border-collapse:collapse; font-size:13px; margin:20px 0; background:var(--panel); border:1px solid var(--line); }
+  .cmp-table th{ background:var(--ink); color:#fff; padding:11px 14px; text-align:center; font-size:11px; font-weight:600; letter-spacing:.08em; }
+  .cmp-table th:first-child{ text-align:left; background:var(--ink2); }
+  .cmp-table td{ padding:11px 14px; border-top:1px solid var(--line2); text-align:center; font-size:12.5px; vertical-align:middle; }
+  .cmp-table td:first-child{ text-align:left; font-weight:600; color:var(--ink2); background:var(--surface); white-space:nowrap; }
+  .cmp-good{ color:var(--success); font-weight:600; }
+  .cmp-bad{ color:var(--danger); }
+  .cmp-mid{ color:var(--warn); }
+  .req-table{ width:100%; border-collapse:collapse; font-size:13px; margin:18px 0; background:var(--panel); border:1px solid var(--line); }
+  .req-table th{ background:var(--ink2); color:#fff; padding:10px 14px; text-align:left; font-size:11px; font-weight:600; letter-spacing:.08em; }
+  .req-table td{ padding:10px 14px; border-top:1px solid var(--line2); vertical-align:top; line-height:1.7; }
+  .req-table tr:nth-child(even) td{ background:var(--surface); }
+  .req-table td:first-child{ font-weight:600; color:var(--ink2); white-space:nowrap; }
+  .term-table{ width:100%; border-collapse:collapse; font-size:13px; margin:14px 0; background:var(--panel); border:1px solid var(--line); }
+  .term-table td{ padding:10px 14px; border-bottom:1px solid var(--line2); vertical-align:top; }
+  .term-table td:first-child{ font-family:var(--mono); font-size:11px; color:var(--accent); font-weight:500; white-space:nowrap; min-width:160px; background:var(--surface); }
+  .term-table tr:last-child td{ border-bottom:none; }
+  .atk-table{ width:100%; border-collapse:collapse; font-size:13px; margin:18px 0; background:var(--panel); border:1px solid var(--line); }
+  .atk-table th{ background:var(--ink); color:#fff; padding:10px 14px; text-align:left; font-size:11px; font-weight:600; letter-spacing:.08em; }
+  .atk-table td{ padding:10px 14px; border-top:1px solid var(--line2); vertical-align:top; line-height:1.7; }
+  .atk-table tr:nth-child(even) td{ background:var(--surface); }
+  .atk-table td:first-child{ font-weight:600; color:var(--danger); white-space:nowrap; }
+
+  /* ── Header block (mono code) ── */
+  .header-block{ background:#0d1117; border-radius:2px; padding:18px 20px; margin:16px 0; font-family:var(--mono); font-size:11.5px; line-height:1.85; overflow-x:auto; border:1px solid var(--ink2); }
+  .hbf{ color:#79b8ff; }
+  .hbv{ color:#e1e4e8; }
+  .hba{ color:#6a737d; }
+  .hbw{ color:#f9c74f; }
+  .hbok{ color:#56d364; }
+  .hbng{ color:#ff7b72; }
+
+  /* ── Quiz ── */
+  .quiz-wrap{ display:flex; flex-direction:column; gap:24px; margin:24px 0; }
+  .quiz{ background:var(--panel); border:1px solid var(--line); border-radius:2px; overflow:hidden; }
+  .quiz-q{ padding:16px 20px; background:var(--ink2); color:#fff; font-size:13.5px; line-height:1.7; display:flex; gap:14px; }
+  .quiz-qn{ font-family:var(--mono); font-size:10px; background:var(--gold); color:#fff; padding:3px 10px; border-radius:2px; white-space:nowrap; flex-shrink:0; height:fit-content; margin-top:2px; letter-spacing:.1em; }
+  .quiz-opts{ padding:16px 20px; display:flex; flex-direction:column; gap:8px; }
+  .quiz-opt{ padding:10px 14px; border:1px solid var(--line); border-radius:2px; font-size:13px; color:var(--ink2); cursor:pointer; transition:all .2s; background:var(--panel); text-align:left; font-family:var(--sans); }
+  .quiz-opt:hover{ background:var(--surface); border-color:var(--accent2); }
+  .quiz-opt.correct{ background:#ecf1ed; border-color:var(--success); color:var(--success); }
+  .quiz-opt.wrong{ background:#f3e8e8; border-color:var(--danger); color:var(--danger); }
+  .quiz-opt.reveal{ background:var(--surface); color:#999; }
+  .quiz-exp{ display:none; padding:14px 20px; background:#f5efe0; border-top:1px solid #d9c68a; font-size:13px; color:#5c3a10; line-height:1.85; }
+  .quiz-exp.show{ display:block; animation:fadeIn .4s ease; }
+  @keyframes fadeIn{ from{opacity:0;transform:translateY(-4px)} to{opacity:1;transform:translateY(0)} }
+
+  /* ── Badge ── */
+  .badge{ display:inline-block; font-size:9.5px; font-weight:700; padding:2px 8px; border-radius:2px; font-family:var(--mono); letter-spacing:.06em; }
+  .badge.blue{ background:#eef1f7; color:var(--accent); }
+  .badge.green{ background:#ecf1ed; color:var(--success); }
+  .badge.red{ background:#f3e8e8; color:var(--danger); }
+  .badge.gold{ background:#f5efe0; color:var(--warn); }
+  .badge.purple{ background:#ece6f0; color:var(--purple); }
+  .badge.dark{ background:var(--surface); color:var(--ink2); }
+
+  /* ── Threat cards ── */
+  .threat-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:24px 0; }
+  .threat-card{ background:var(--panel); border:1px solid var(--line); border-radius:2px; overflow:hidden; transition:transform .2s; }
+  .threat-card:hover{ transform:translateY(-2px); border-color:var(--gold); }
+  .tc-head{ display:flex; align-items:center; gap:12px; padding:13px 18px; background:var(--danger); color:#fff; }
+  .tc-head.warn-head{ background:var(--gold); }
+  .tc-head.blue-head{ background:var(--accent); }
+  .tc-head.ok-head{ background:var(--success); }
+  .tc-head.purple-head{ background:var(--purple); }
+  .tc-head span{ font-size:13px; font-weight:700; }
+  .tc-body{ padding:14px 18px; }
+  .tc-body p{ font-size:12.5px; color:var(--ink3); margin:0 0 10px; line-height:1.75; }
+  .tc-counter{ font-size:11.5px; color:var(--success); padding:8px 12px; background:#ecf1ed; border-radius:2px; margin:0; border-left:3px solid var(--success); }
+
+  /* ── Node box ── */
+  .node-box{ border-radius:2px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; border:2px solid; background:var(--panel); }
+
+  /* ── Icon badge ── */
+  .ico{ display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .ico-badge{
+    position:absolute; top:-10px; left:50%; transform:translateX(-50%);
+    width:22px; height:22px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size:10px; font-weight:800; color:white; font-family:var(--mono);
+    border:2.5px solid var(--paper); z-index:2;
+    box-shadow:0 2px 6px rgba(0,0,0,.25);
+  }
+
+  /* ── Footer ── */
+  footer{ background:linear-gradient(180deg,#1a2236,#0f1420); color:rgba(255,255,255,.45); text-align:center; padding:32px; font-size:11.5px; letter-spacing:.08em; line-height:1.9; border-top:1px solid var(--gold); }
+
+  /* ── Responsive ── */
+  @media(max-width:900px){
+    .sidebar{ display:none; }
+    .main{ padding:32px 20px 80px; }
+    .cover{ padding:52px 28px; }
+    .cover h1{ font-size:34px; }
+    .cover-illust{ display:none; }
+    .threat-grid{ grid-template-columns:1fr; }
+  }
+
+  /* ═══════════════════════════════════════════════
+     EMAIL — メール構造・プロトコル・認証カード
+  ═══════════════════════════════════════════════ */
+
+  /* ── Mail structure viewer ── */
+  .mail-struct{ background:var(--panel); border:1px solid var(--line); border-radius:2px; overflow:hidden; margin:22px 0; }
+  .mail-struct-title{ background:var(--ink); color:var(--gold2); padding:11px 18px; font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; display:flex; align-items:center; gap:10px; }
+  .mail-part{ border-bottom:1px solid var(--line); display:flex; align-items:stretch; }
+  .mail-part:last-child{ border-bottom:none; }
+  .mail-part-label{ width:140px; flex-shrink:0; padding:12px 14px; font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; display:flex; align-items:center; gap:6px; }
+  .lbl-envelope{ background:#eef1f7; color:var(--accent); border-right:2px solid var(--accent); }
+  .lbl-header{ background:#ecf1ed; color:var(--success); border-right:2px solid var(--success); }
+  .lbl-body{ background:#f5efe0; color:var(--warn); border-right:2px solid var(--gold); }
+  .mail-part-content{ flex:1; padding:12px 16px; font-size:12px; color:var(--ink3); line-height:1.75; font-family:var(--mono); }
+  .mf{ display:flex; gap:8px; margin-bottom:3px; }
+  .mfk{ color:var(--accent); min-width:130px; font-weight:600; flex-shrink:0; }
+  .mfv{ color:var(--ink2); }
+  .mfn{ color:var(--ink3); font-size:10.5px; }
+
+  /* ── Flow diagram wrapper ── */
+  .flow-wrap{ background:var(--panel); border:1px solid var(--line); border-radius:2px; padding:28px 24px 20px; margin:28px 0; overflow-x:auto; position:relative; }
+  .flow-wrap::before{ content:''; position:absolute; top:0; left:0; width:3px; height:100%; background:linear-gradient(180deg,var(--gold),transparent); }
+  .flow-cap{ font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:var(--gold); margin-bottom:22px; display:flex; align-items:center; gap:12px; }
+  .flow-cap::after{ content:''; flex:1; height:1px; background:var(--line); }
+
+  /* ── Protocol map ── */
+  .proto-map{ background:var(--panel); border:1px solid var(--line); border-radius:2px; overflow:hidden; margin:22px 0; }
+  .proto-map-title{ background:var(--ink); color:var(--gold2); padding:11px 18px; font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; }
+  .proto-layers{ padding:22px 24px; display:flex; flex-direction:column; gap:10px; }
+  .proto-layer{ display:flex; align-items:center; gap:14px; padding:11px 16px; border-radius:2px; border-left:3px solid; }
+  .proto-layer.app-layer{ background:#eef1f7; border-left-color:var(--accent2); }
+  .proto-layer.sec-layer{ background:#ecf1ed; border-left-color:var(--success); }
+  .proto-layer.enc-layer{ background:#f5efe0; border-left-color:var(--gold); }
+  .proto-layer-name{ font-weight:700; font-size:11px; letter-spacing:.08em; color:var(--ink2); min-width:110px; display:flex; align-items:center; gap:6px; font-family:var(--mono); }
+  .proto-chips{ display:flex; flex-wrap:wrap; gap:6px; }
+  .proto-chip{ font-family:var(--mono); font-size:10.5px; padding:3px 10px; border-radius:2px; border:1px solid; font-weight:600; letter-spacing:.04em; }
+  .chip-blue{ background:#eef1f7; border-color:#bcc8d9; color:var(--accent); }
+  .chip-green{ background:#ecf1ed; border-color:#a8c8b4; color:var(--success); }
+  .chip-gold{ background:#f5efe0; border-color:#d9c68a; color:var(--warn); }
+  .chip-purple{ background:#ece6f0; border-color:#c0a8c8; color:var(--purple); }
+
+  /* ── Auth cards (SPF / DKIM / DMARC) ── */
+  .auth-row{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin:24px 0; }
+  .auth-card{ background:var(--panel); border:1px solid var(--line); border-radius:2px; overflow:hidden; transition:all .3s; }
+  .auth-card:hover{ transform:translateY(-2px); border-color:var(--gold); }
+  .auth-card-head{ padding:13px 16px; color:#fff; font-weight:700; font-size:13px; display:flex; align-items:center; gap:10px; letter-spacing:.02em; }
+  .auth-card-body{ padding:14px 16px; font-size:12.5px; color:var(--ink3); line-height:1.75; }
+  .auth-card-body strong{ color:var(--ink2); }
+  .auth-spf .auth-card-head{ background:var(--accent); }
+  .auth-dkim .auth-card-head{ background:var(--success); }
+  .auth-dmarc .auth-card-head{ background:var(--warn); }
+
+  /* ── Tabs ── */
+  .tab-group{ margin:24px 0; }
+  .tab-nav{ display:flex; gap:0; border-bottom:2px solid var(--line); margin-bottom:0; }
+  .tab-btn{
+    padding:10px 20px; font-size:12.5px; font-weight:600; color:var(--ink3);
+    background:transparent; border:none; border-bottom:3px solid transparent;
+    cursor:pointer; transition:all .2s; font-family:var(--sans);
+    margin-bottom:-2px; display:flex; align-items:center; gap:8px; letter-spacing:.02em;
+  }
+  .tab-btn:hover{ color:var(--ink2); background:var(--surface); }
+  .tab-btn.active{ color:var(--gold); border-bottom-color:var(--gold); background:var(--panel); }
+  .tab-panel{ background:var(--panel); border:1px solid var(--line); border-top:none; border-radius:0 0 2px 2px; padding:22px; }
+
+  /* ── Accordion ── */
+  .accord-item{ border:1px solid var(--line); border-radius:2px; overflow:hidden; margin-bottom:8px; background:var(--panel); }
+  .accord-head{
+    display:flex; align-items:center; gap:12px; padding:13px 18px;
+    background:var(--panel); cursor:pointer; font-size:13.5px; font-weight:600;
+    color:var(--ink2); transition:background .2s; user-select:none;
+  }
+  .accord-head:hover{ background:var(--surface); }
+  .accord-head.open{ background:#f5efe0; color:var(--warn); border-bottom:1px solid var(--line); }
+  .accord-chevron{ margin-left:auto; transition:transform .3s; flex-shrink:0; color:var(--gold); }
+  .accord-head.open .accord-chevron{ transform:rotate(180deg); }
+  .accord-body{ display:none; padding:16px 20px; font-size:13px; color:var(--ink3); line-height:1.8; background:#faf6ec; }
+  .accord-body.open{ display:block; animation:slideDown .4s ease; }
+  @keyframes slideDown{ from{opacity:0;max-height:0} to{opacity:1;max-height:2000px} }
+
+  /* ── Tooltip ── */
+  [data-tip]{ position:relative; cursor:help; }
+  [data-tip]:hover::after{
+    content:attr(data-tip);
+    position:absolute; bottom:110%; left:50%; transform:translateX(-50%);
+    background:var(--ink); color:#fff; font-size:11px; padding:6px 11px;
+    border-radius:2px; white-space:nowrap; z-index:100; pointer-events:none;
+    box-shadow:0 3px 10px rgba(0,0,0,.3); border:1px solid var(--gold);
+  }
+
+  /* ── Comparison toggle ── */
+  .toggle-group{ display:flex; background:var(--surface); border:1px solid var(--line); border-radius:2px; padding:3px; gap:3px; width:fit-content; margin:16px 0; }
+  .toggle-btn{
+    padding:7px 18px; border-radius:2px; border:none; font-size:12.5px; font-weight:600;
+    cursor:pointer; transition:all .2s; background:transparent; color:var(--ink3);
+    font-family:var(--sans); letter-spacing:.02em;
+  }
+  .toggle-btn.active{ background:var(--panel); color:var(--gold); border:1px solid var(--gold); }
+  .toggle-panel{ display:none; }
+  .toggle-panel.active{ display:block; }
+
+  /* ── Highlight flash ── */
+  @keyframes flash{ 0%{background:rgba(201,165,87,.18);} 100%{background:transparent;} }
+  .flash{ animation:flash 1.2s ease-out; }
 
 </style>
 </head>
 <body>
 
 <div class="cover">
-  <svg class="cover-geo" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect x="60" y="120" width="280" height="180" rx="12" stroke="white" stroke-width="1"/>
-    <line x1="60" y1="150" x2="200" y2="230" stroke="white" stroke-width="0.8"/>
-    <line x1="340" y1="150" x2="200" y2="230" stroke="white" stroke-width="0.8"/>
-    <circle cx="320" cy="90" r="60" stroke="white" stroke-width="1"/>
-    <circle cx="320" cy="90" r="35" stroke="white" stroke-width="0.5"/>
-    <line x1="280" y1="90" x2="360" y2="90" stroke="white" stroke-width="0.5"/>
-    <line x1="320" y1="50" x2="320" y2="130" stroke="white" stroke-width="0.5"/>
+  <svg class="cover-geo" viewBox="0 0 600 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="300" cy="300" r="260" stroke="#c9a557" stroke-width="1"/>
+    <circle cx="300" cy="300" r="200" stroke="#c9a557" stroke-width="1"/>
+    <circle cx="300" cy="300" r="140" stroke="#c9a557" stroke-width="1"/>
+    <circle cx="300" cy="300" r="80" stroke="#c9a557" stroke-width="1"/>
+    <line x1="300" y1="40" x2="300" y2="560" stroke="#c9a557" stroke-width="0.4"/>
+    <line x1="40" y1="300" x2="560" y2="300" stroke="#c9a557" stroke-width="0.4"/>
+    <line x1="116" y1="116" x2="484" y2="484" stroke="#c9a557" stroke-width="0.4"/>
+    <line x1="484" y1="116" x2="116" y2="484" stroke="#c9a557" stroke-width="0.4"/>
   </svg>
-  <div style="position:relative">
-    <p class="cover-kicker">技術解説書 — 情報処理安全確保支援士対応</p>
+  <div class="cover-inner">
+    <p class="cover-kicker">技術解説書 — 情報処理安全確保支援士 対応</p>
     <h1>電子メールの<br><em>セキュリティ</em></h1>
-    <p class="cover-desc">メール構造・転送経路・各種エージェント（MUA/MTA/MSA/MDA/MRA）から、プロトコル比較、ヘッダ解析、迷惑メール対策（OP25B・IP25B）、送信者認証（SPF・DKIM・DMARC）まで。どの通信経路でどの攻撃に対して何を守るのかを体系的に整理した完全版解説書です。</p>
+    <p class="cover-desc">メール基盤（SMTP/POP/IMAP）の構造から、送信ドメイン認証（SPF・DKIM・DMARC・BIMI）、盗聴・改ざん対策（STARTTLS・S/MIME・PGP）、標的型攻撃・BEC・フィッシングとその対策まで。プロトコル層の役割分担と認証方式の違いを体系的に整理した完全版解説書です。</p>
     <div class="cover-tags">
-      <span class="ctag">SMTP / POP3 / IMAP4</span><span class="ctag">S/MIME / PGP</span><span class="ctag">SPF / DKIM / DMARC</span><span class="ctag">OP25B / IP25B</span><span class="ctag">SMTP-AUTH</span><span class="ctag">メールヘッダ解析</span><span class="ctag">なりすまし・フィッシング対策</span>
+      <span class="ctag">SMTP / POP / IMAP</span>
+      <span class="ctag">SPF / DKIM / DMARC</span>
+      <span class="ctag">BIMI / ARC</span>
+      <span class="ctag">STARTTLS</span>
+      <span class="ctag">S/MIME / PGP</span>
+      <span class="ctag">標的型 / BEC</span>
+      <span class="ctag">フィッシング対策</span>
     </div>
+  </div>
+  <div class="cover-illust">
+    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="100" cy="100" r="90" stroke="#c9a557" stroke-width="1" fill="none" class="ci-ring"/>
+      <circle cx="100" cy="100" r="70" stroke="#c9a557" stroke-width="0.5" fill="none"/>
+      <!-- Envelope -->
+      <rect x="54" y="78" width="92" height="60" rx="3" fill="none" stroke="#c9a557" stroke-width="1.6"/>
+      <path d="M54 82 L100 118 L146 82" fill="none" stroke="#c9a557" stroke-width="1.4"/>
+      <line x1="54" y1="138" x2="86" y2="108" stroke="#c9a557" stroke-width="0.7" opacity="0.5"/>
+      <line x1="146" y1="138" x2="114" y2="108" stroke="#c9a557" stroke-width="0.7" opacity="0.5"/>
+      <!-- Shield on envelope -->
+      <path d="M100 55 L122 62 L122 78 Q122 93 100 102 Q78 93 78 78 L78 62 Z" fill="rgba(15,20,32,0.95)" stroke="#c9a557" stroke-width="1.4"/>
+      <path class="ci-chk" d="M89 78 L97 86 L111 72" stroke="#c9a557" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <!-- @ signifier -->
+      <text x="100" y="162" text-anchor="middle" font-family="JetBrains Mono" font-size="16" font-weight="700" fill="#c9a557" opacity="0.7">@</text>
+    </svg>
   </div>
 </div>
 
 <div class="layout">
 <aside class="sidebar">
-  <p class="sidebar-title">目次</p>
+  <p class="sidebar-title">目次 — CONTENTS</p>
   <nav>
     <a href="#s1" onclick="setActive(this)"><span class="nav-num">01</span>全体像と位置づけ</a>
     <a href="#s2" onclick="setActive(this)"><span class="nav-num">02</span>電子メールの構造</a>
@@ -274,27 +411,27 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 <p>電子メールのセキュリティは、シラバス <strong>3-5「ネットワーク及び機器のセキュリティ管理」</strong> と <strong>3-8「アカウント管理及びアクセス管理」</strong> の双方にまたがります。下の<strong>郵便たとえ図</strong>と<strong>実際の技術図</strong>では、同じ番号・同じ色のバッジが「対応する要素」を示します。</p>
 
 <!-- カラー凡例 -->
-<div style="background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px 20px;margin:0 0 20px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;">
+<div style="background:var(--panel);border:1px solid var(--line);border-radius:2px;padding:14px 20px;margin:0 0 20px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;">
   <span style="font-size:10px;font-weight:700;color:var(--ink2);letter-spacing:.08em;text-transform:uppercase;margin-right:4px;">番号・色の対応：</span>
   <div style="display:flex;align-items:center;gap:5px;background:#e8f0ff;border-radius:20px;padding:4px 10px 4px 5px;border:1.5px solid #8ab4f8;">
     <div style="width:22px;height:22px;background:#1a56cc;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:white;font-family:var(--mono);">1</div>
     <span style="font-size:10.5px;font-weight:700;color:#1a3a8a;" data-tip="ノートPC＋メール画面（案B）">MUA（メーラ）</span>
   </div>
   <div style="display:flex;align-items:center;gap:5px;background:#fff3d0;border-radius:20px;padding:4px 10px 4px 5px;border:1.5px solid #e0a820;">
-    <div style="width:22px;height:22px;background:#b5821e;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:white;font-family:var(--mono);">2</div>
+    <div style="width:22px;height:22px;background:#a47a2a;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:white;font-family:var(--mono);">2</div>
     <span style="font-size:10.5px;font-weight:700;color:#7a4208;" data-tip="窓口カウンター＋スタンプ（案B）">MSA（受付窓口）</span>
   </div>
   <div style="display:flex;align-items:center;gap:5px;background:#ffe8e8;border-radius:20px;padding:4px 10px 4px 5px;border:1.5px solid #e07070;">
     <div style="width:22px;height:22px;background:#7a1818;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:white;font-family:var(--mono);">3</div>
     <span style="font-size:10.5px;font-weight:700;color:#7a1818;" data-tip="サーバ間メール転送（案B）">MTA（配送トラック）</span>
   </div>
-  <div style="display:flex;align-items:center;gap:5px;background:#d0f0e0;border-radius:20px;padding:4px 10px 4px 5px;border:1.5px solid #60b888;">
+  <div style="display:flex;align-items:center;gap:5px;background:#c8dccf;border-radius:20px;padding:4px 10px 4px 5px;border:1.5px solid #60b888;">
     <div style="width:22px;height:22px;background:#155f44;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:white;font-family:var(--mono);">4</div>
     <span style="font-size:10.5px;font-weight:700;color:#155f44;" data-tip="ベルトコンベア仕分け（案B）">MDA（仕分け・格納）</span>
   </div>
-  <div style="display:flex;align-items:center;gap:5px;background:#ede8ff;border-radius:20px;padding:4px 10px 4px 5px;border:1.5px solid #9060d0;">
-    <div style="width:22px;height:22px;background:#5a1a9e;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:white;font-family:var(--mono);">5</div>
-    <span style="font-size:10.5px;font-weight:700;color:#5a1a9e;" data-tip="ロック解除＋デバイスへ（案B）">MRA（手渡し係）</span>
+  <div style="display:flex;align-items:center;gap:5px;background:#ece6f0;border-radius:20px;padding:4px 10px 4px 5px;border:1.5px solid #9060d0;">
+    <div style="width:22px;height:22px;background:#4a2e70;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:white;font-family:var(--mono);">5</div>
+    <span style="font-size:10.5px;font-weight:700;color:#4a2e70;" data-tip="ロック解除＋デバイスへ（案B）">MRA（手渡し係）</span>
   </div>
 </div>
 
@@ -317,7 +454,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 
   <!-- Tab 1: 郵便たとえ -->
   <div class="tab-panel active" id="analogy-postal">
-    <p style="font-size:13px;color:#3a3d52;margin-bottom:16px;">電子メールは<strong>郵便制度</strong>に例えることができます。各要素の番号バッジが技術図と対応しています。</p>
+    <p style="font-size:13px;color:#3d4860;margin-bottom:16px;">電子メールは<strong>郵便制度</strong>に例えることができます。各要素の番号バッジが技術図と対応しています。</p>
     <div style="overflow-x:auto;">
     <div style="min-width:820px;">
       <!-- ゾーンラベル -->
@@ -331,7 +468,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
       <!-- メインノード行 -->
       <div style="display:flex;gap:8px;align-items:stretch;">
         <!-- 送信者ゾーン -->
-        <div style="flex:0 0 280px;background:#eaf1ff;border:1.5px dashed #8ab4e8;border-radius:12px;padding:20px 10px 16px;display:flex;align-items:center;gap:6px;">
+        <div style="flex:0 0 280px;background:#eaf1ff;border:1.5px dashed #8ab4e8;border-radius:2px;padding:20px 10px 16px;display:flex;align-items:center;gap:6px;">
           <!-- 差出人 -->
           <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex:0 0 52px;">
             <div style="width:46px;height:46px;background:#1a56cc;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(26,86,204,.4);">
@@ -350,12 +487,12 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
           <!-- MUA (badge 1) -->
           <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex:0 0 82px;position:relative;">
             <div class="ico-badge" style="background:#1a56cc;">1</div>
-            <div style="width:66px;height:66px;background:#fff;border:2.5px solid #1a56cc;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;box-shadow:0 2px 8px rgba(26,86,204,.2);">
+            <div style="width:66px;height:66px;background:#fff;border:2.5px solid #1a56cc;border-radius:2px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;box-shadow:0 2px 8px rgba(26,86,204,.2);">
               <!-- MUA 案B: ノートPC -->
               <svg width="34" height="34" viewBox="0 0 48 48" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="5" y="7" width="38" height="26" rx="3" fill="#daeeff" stroke="#1a56cc" stroke-width="1.6"/>
+                <rect x="5" y="7" width="38" height="26" rx="3" fill="#eef1f7" stroke="#1a56cc" stroke-width="1.6"/>
                 <rect x="9" y="11" width="30" height="18" rx="1.5" fill="#1a3a8a"/>
-                <polyline points="9,13 24,20 39,13" stroke="#6ab4f5" stroke-width="1.3" fill="none"/>
+                <polyline points="9,13 24,20 39,13" stroke="#c9a557" stroke-width="1.3" fill="none"/>
                 <path d="M3 33 Q3 37 7 37 H41 Q45 37 45 33 Z" fill="#c0d4f0" stroke="#1a56cc" stroke-width="1.4"/>
                 <rect x="18" y="38.5" width="12" height="2" rx="1" fill="#8ab4e0"/>
                 <circle cx="40" cy="12" r="4.5" fill="#ef4444"/>
@@ -373,17 +510,17 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
           </div>
           <!-- MSA (badge 2) -->
           <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex:0 0 82px;position:relative;">
-            <div class="ico-badge" style="background:#b5821e;">2</div>
-            <div style="width:66px;height:66px;background:#fff;border:2.5px solid #b5821e;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;box-shadow:0 2px 8px rgba(181,130,30,.22);">
+            <div class="ico-badge" style="background:#a47a2a;">2</div>
+            <div style="width:66px;height:66px;background:#fff;border:2.5px solid #a47a2a;border-radius:2px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;box-shadow:0 2px 8px rgba(164,122,42,.22);">
               <!-- MSA 案B: 窓口カウンター -->
               <svg width="34" height="34" viewBox="0 0 48 48" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="26" width="42" height="6" rx="2" fill="#ffe0a0" stroke="#b5821e" stroke-width="1.5"/>
-                <rect x="3" y="32" width="42" height="12" rx="2" fill="#fff8e6" stroke="#b5821e" stroke-width="1.4"/>
-                <circle cx="24" cy="18" r="7" fill="#ffd080" stroke="#b5821e" stroke-width="1.5"/>
-                <path d="M14 26c0-6 4.5-10 10-10s10 4 10 10" fill="#fff8e6" stroke="#b5821e" stroke-width="1.3"/>
+                <rect x="3" y="26" width="42" height="6" rx="2" fill="#ffe0a0" stroke="#a47a2a" stroke-width="1.5"/>
+                <rect x="3" y="32" width="42" height="12" rx="2" fill="#f5efe0" stroke="#a47a2a" stroke-width="1.4"/>
+                <circle cx="24" cy="18" r="7" fill="#ffd080" stroke="#a47a2a" stroke-width="1.5"/>
+                <path d="M14 26c0-6 4.5-10 10-10s10 4 10 10" fill="#f5efe0" stroke="#a47a2a" stroke-width="1.3"/>
                 <rect x="30" y="10" width="14" height="10" rx="2" fill="rgba(220,50,50,.8)" stroke="white" stroke-width="1.2"/>
                 <text x="37" y="17" text-anchor="middle" font-size="7.5" fill="white" font-weight="700">OK</text>
-                <line x1="3" y1="26" x2="45" y2="26" stroke="rgba(181,130,30,.4)" stroke-width="1" stroke-dasharray="3 2"/>
+                <line x1="3" y1="26" x2="45" y2="26" stroke="rgba(164,122,42,.4)" stroke-width="1" stroke-dasharray="3 2"/>
               </svg>
               <span style="font-size:9px;font-weight:800;color:#7a4208;font-family:var(--mono);">MSA</span>
             </div>
@@ -399,14 +536,14 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
         </div>
 
         <!-- インターネットゾーン (MTA 案B x2) -->
-        <div style="flex:0 0 300px;background:#f5f0ff;border:1.5px dashed #b090e0;border-radius:12px;padding:20px 10px 16px;display:flex;align-items:center;gap:4px;">
+        <div style="flex:0 0 300px;background:#f5f0ff;border:1.5px dashed #b090e0;border-radius:2px;padding:20px 10px 16px;display:flex;align-items:center;gap:4px;">
           <!-- MTA 送信側 (badge 3) -->
           <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex:0 0 82px;position:relative;">
             <div class="ico-badge" style="background:#7a1818;">3</div>
-            <div style="width:66px;height:66px;background:#fff;border:2.5px solid #7a1818;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;box-shadow:0 2px 8px rgba(122,24,24,.2);">
+            <div style="width:66px;height:66px;background:#fff;border:2.5px solid #7a1818;border-radius:2px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;box-shadow:0 2px 8px rgba(122,24,24,.2);">
               <!-- MTA 案B: サーバ左 -->
               <svg width="34" height="34" viewBox="0 0 48 48" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="6" width="18" height="36" rx="2" fill="#fde8e8" stroke="#7a1818" stroke-width="1.5"/>
+                <rect x="3" y="6" width="18" height="36" rx="2" fill="#f3e8e8" stroke="#7a1818" stroke-width="1.5"/>
                 <rect x="5" y="9" width="14" height="5" rx="1" fill="#ffe0e0" stroke="#7a1818" stroke-width="1"/>
                 <circle cx="7.5" cy="11.5" r="1.5" fill="#ef4444"/>
                 <rect x="5" y="17" width="14" height="5" rx="1" fill="#ffe0e0" stroke="#7a1818" stroke-width="1"/>
@@ -419,7 +556,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
                 <line x1="34" y1="22" x2="40" y2="22" stroke="rgba(122,24,24,.5)" stroke-width="1.3" stroke-dasharray="2 1"/>
                 <polygon points="38,20 41,22 38,24" fill="rgba(122,24,24,.6)"/>
                 <!-- 右サーバ -->
-                <rect x="27" y="6" width="18" height="36" rx="2" fill="#fde8e8" stroke="#7a1818" stroke-width="1.5"/>
+                <rect x="27" y="6" width="18" height="36" rx="2" fill="#f3e8e8" stroke="#7a1818" stroke-width="1.5"/>
                 <rect x="29" y="9" width="14" height="5" rx="1" fill="#ffe0e0" stroke="#7a1818" stroke-width="1"/>
                 <circle cx="31.5" cy="11.5" r="1.5" fill="#4ade80"/>
                 <rect x="29" y="17" width="14" height="5" rx="1" fill="#ffe0e0" stroke="#7a1818" stroke-width="1"/>
@@ -444,11 +581,11 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
           <!-- MTA受信側 (badge 3) -->
           <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex:0 0 82px;position:relative;">
             <div class="ico-badge" style="background:#7a1818;">3</div>
-            <div style="width:66px;height:66px;background:#fff;border:2.5px solid #7a1818;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;box-shadow:0 2px 8px rgba(122,24,24,.2);">
+            <div style="width:66px;height:66px;background:#fff;border:2.5px solid #7a1818;border-radius:2px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;box-shadow:0 2px 8px rgba(122,24,24,.2);">
               <svg width="34" height="34" viewBox="0 0 48 48" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="4" y="6" width="40" height="10" rx="2" fill="#fde8e8" stroke="#7a1818" stroke-width="1.4"/>
-                <rect x="4" y="20" width="40" height="10" rx="2" fill="#fde8e8" stroke="#7a1818" stroke-width="1.4"/>
-                <rect x="4" y="34" width="40" height="10" rx="2" fill="#fde8e8" stroke="#7a1818" stroke-width="1.4"/>
+                <rect x="4" y="6" width="40" height="10" rx="2" fill="#f3e8e8" stroke="#7a1818" stroke-width="1.4"/>
+                <rect x="4" y="20" width="40" height="10" rx="2" fill="#f3e8e8" stroke="#7a1818" stroke-width="1.4"/>
+                <rect x="4" y="34" width="40" height="10" rx="2" fill="#f3e8e8" stroke="#7a1818" stroke-width="1.4"/>
                 <circle cx="8" cy="11" r="2" fill="#ef4444"/>
                 <circle cx="8" cy="25" r="2" fill="#ef4444"/>
                 <circle cx="8" cy="39" r="2" fill="#4ade80"/>
@@ -470,14 +607,14 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
         </div>
 
         <!-- 受信者ゾーン -->
-        <div style="flex:1;background:#eaf7f1;border:1.5px dashed #70c898;border-radius:12px;padding:20px 10px 16px;display:flex;align-items:center;gap:5px;">
+        <div style="flex:1;background:#ecf1ed;border:1.5px dashed #70c898;border-radius:2px;padding:20px 10px 16px;display:flex;align-items:center;gap:5px;">
           <!-- MDA (badge 4) -->
           <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex:0 0 78px;position:relative;">
             <div class="ico-badge" style="background:#155f44;">4</div>
-            <div style="width:66px;height:66px;background:#fff;border:2.5px solid #155f44;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;box-shadow:0 2px 8px rgba(21,95,68,.2);">
+            <div style="width:66px;height:66px;background:#fff;border:2.5px solid #155f44;border-radius:2px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;box-shadow:0 2px 8px rgba(21,95,68,.2);">
               <!-- MDA 案B: ベルトコンベア -->
               <svg width="34" height="34" viewBox="0 0 48 48" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="26" width="42" height="8" rx="4" fill="#d0f0e0" stroke="#155f44" stroke-width="1.5"/>
+                <rect x="3" y="26" width="42" height="8" rx="4" fill="#c8dccf" stroke="#155f44" stroke-width="1.5"/>
                 <line x1="10" y1="26" x2="10" y2="34" stroke="rgba(21,95,68,.3)" stroke-width="1"/>
                 <line x1="20" y1="26" x2="20" y2="34" stroke="rgba(21,95,68,.3)" stroke-width="1"/>
                 <line x1="30" y1="26" x2="30" y2="34" stroke="rgba(21,95,68,.3)" stroke-width="1"/>
@@ -487,13 +624,13 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
                 <!-- 封筒×3 流れる -->
                 <rect x="5" y="18" width="9" height="7" rx="1" fill="rgba(218,238,255,.9)" stroke="#1a56cc" stroke-width=".9"/>
                 <polyline points="5,19 9.5,22 14,19" stroke="#1a56cc" stroke-width=".7" fill="none"/>
-                <rect x="19" y="16" width="9" height="7" rx="1" fill="rgba(255,240,180,.9)" stroke="#b5821e" stroke-width=".9"/>
-                <polyline points="19,17 23.5,20 28,17" stroke="#b5821e" stroke-width=".7" fill="none"/>
+                <rect x="19" y="16" width="9" height="7" rx="1" fill="rgba(255,240,180,.9)" stroke="#a47a2a" stroke-width=".9"/>
+                <polyline points="19,17 23.5,20 28,17" stroke="#a47a2a" stroke-width=".7" fill="none"/>
                 <rect x="33" y="18" width="9" height="7" rx="1" fill="rgba(255,200,200,.9)" stroke="#7a1818" stroke-width=".9"/>
                 <polyline points="33,19 37.5,22 42,19" stroke="#7a1818" stroke-width=".7" fill="none"/>
                 <!-- 振り分け矢印 -->
                 <path d="M9.5 25 L7 38" stroke="#1a56cc" stroke-width="1" stroke-dasharray="2 1"/>
-                <path d="M23.5 23 L23.5 38" stroke="#b5821e" stroke-width="1" stroke-dasharray="2 1"/>
+                <path d="M23.5 23 L23.5 38" stroke="#a47a2a" stroke-width="1" stroke-dasharray="2 1"/>
                 <path d="M37.5 25 L40 38" stroke="#7a1818" stroke-width="1" stroke-dasharray="2 1"/>
               </svg>
               <span style="font-size:9px;font-weight:800;color:#155f44;font-family:var(--mono);">MDA</span>
@@ -502,30 +639,30 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
           </div>
           <!-- 矢印 -->
           <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:0;">
-            <span style="font-size:7.5px;font-family:var(--mono);font-weight:700;color:#5a1a9e;white-space:nowrap;">POP3/IMAP4</span>
-            <div style="width:100%;height:2px;background:#5a1a9e;position:relative;"><div style="position:absolute;right:-5px;top:-4px;width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:7px solid #5a1a9e;"></div></div>
-            <span style="font-size:7px;color:#5a1a9e;font-weight:600;white-space:nowrap;">110/143</span>
+            <span style="font-size:7.5px;font-family:var(--mono);font-weight:700;color:#4a2e70;white-space:nowrap;">POP3/IMAP4</span>
+            <div style="width:100%;height:2px;background:#4a2e70;position:relative;"><div style="position:absolute;right:-5px;top:-4px;width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:7px solid #4a2e70;"></div></div>
+            <span style="font-size:7px;color:#4a2e70;font-weight:600;white-space:nowrap;">110/143</span>
           </div>
           <!-- MRA (badge 5) -->
           <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex:0 0 78px;position:relative;">
-            <div class="ico-badge" style="background:#5a1a9e;">5</div>
-            <div style="width:66px;height:66px;background:#fff;border:2.5px solid #5a1a9e;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;box-shadow:0 2px 8px rgba(90,26,158,.15);">
+            <div class="ico-badge" style="background:#4a2e70;">5</div>
+            <div style="width:66px;height:66px;background:#fff;border:2.5px solid #4a2e70;border-radius:2px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;box-shadow:0 2px 8px rgba(90,26,158,.15);">
               <!-- MRA 案B: ロック解除+デバイス -->
               <svg width="34" height="34" viewBox="0 0 48 48" fill="none" stroke-linecap="round" stroke-linejoin="round">
                 <!-- 南京錠（開） -->
-                <rect x="10" y="22" width="16" height="14" rx="3" fill="#ede8ff" stroke="#5a1a9e" stroke-width="1.5"/>
-                <path d="M14 22 V16 Q14 10 18 10 Q22 10 22 16 V18" stroke="#5a1a9e" stroke-width="1.8" fill="none"/>
-                <circle cx="18" cy="29" r="2.5" fill="none" stroke="#5a1a9e" stroke-width="1.4"/>
+                <rect x="10" y="22" width="16" height="14" rx="3" fill="#ece6f0" stroke="#4a2e70" stroke-width="1.5"/>
+                <path d="M14 22 V16 Q14 10 18 10 Q22 10 22 16 V18" stroke="#4a2e70" stroke-width="1.8" fill="none"/>
+                <circle cx="18" cy="29" r="2.5" fill="none" stroke="#4a2e70" stroke-width="1.4"/>
                 <rect x="17" y="29" width="2" height="4" rx=".6" fill="#8844cc"/>
                 <!-- デバイス（右） -->
-                <rect x="30" y="12" width="14" height="24" rx="2.5" fill="#ede8ff" stroke="#5a1a9e" stroke-width="1.4"/>
+                <rect x="30" y="12" width="14" height="24" rx="2.5" fill="#ece6f0" stroke="#4a2e70" stroke-width="1.4"/>
                 <rect x="32" y="15" width="10" height="14" rx="1" fill="rgba(218,238,255,.6)"/>
                 <circle cx="37" cy="33" r="1.5" fill="#8844cc"/>
                 <!-- 矢印（解錠→デバイスへ） -->
-                <path d="M26 29 L30 27" stroke="#5a1a9e" stroke-width="1.5"/>
-                <polygon points="28,25.5 31,27 28,28.5" fill="#5a1a9e"/>
+                <path d="M26 29 L30 27" stroke="#4a2e70" stroke-width="1.5"/>
+                <polygon points="28,25.5 31,27 28,28.5" fill="#4a2e70"/>
               </svg>
-              <span style="font-size:9px;font-weight:800;color:#5a1a9e;font-family:var(--mono);">MRA</span>
+              <span style="font-size:9px;font-weight:800;color:#4a2e70;font-family:var(--mono);">MRA</span>
             </div>
             <span style="font-size:9px;font-weight:600;color:var(--ink2);text-align:center;line-height:1.3;">取出し<br>提供</span>
           </div>
@@ -557,16 +694,16 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 
   <!-- Tab 2: 技術図 -->
   <div class="tab-panel" id="analogy-tech" style="display:none">
-    <p style="font-size:13px;color:#3a3d52;margin-bottom:16px;">同じ番号バッジがたとえ図と対応しています。矢印上のプロトコル名・ポート番号を確認してください。</p>
+    <p style="font-size:13px;color:#3d4860;margin-bottom:16px;">同じ番号バッジがたとえ図と対応しています。矢印上のプロトコル名・ポート番号を確認してください。</p>
     <div style="overflow-x:auto;"><div style="min-width:760px;padding:8px 0 4px;">
       <div style="display:flex;align-items:center;margin-bottom:6px;">
         <div style="font-size:10px;font-weight:700;color:var(--accent);width:68px;flex-shrink:0;letter-spacing:.05em">送信側</div>
         <div style="display:flex;flex-direction:column;align-items:center;gap:4px;width:84px;flex-shrink:0;">
-          <div style="width:72px;height:56px;background:#e8edf5;border:2px solid var(--accent);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;">
+          <div style="width:72px;height:56px;background:#eef1f7;border:2px solid var(--accent);border-radius:2px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;">
             <svg width="28" height="20" viewBox="0 0 48 34" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="2" width="42" height="22" rx="3" fill="#daeeff" stroke="var(--accent)" stroke-width="1.6"/>
+              <rect x="3" y="2" width="42" height="22" rx="3" fill="#eef1f7" stroke="var(--accent)" stroke-width="1.6"/>
               <rect x="7" y="6" width="34" height="14" rx="1.5" fill="#1a3a8a"/>
-              <polyline points="7,8 24,14 41,8" stroke="#6ab4f5" stroke-width="1.3" fill="none"/>
+              <polyline points="7,8 24,14 41,8" stroke="#c9a557" stroke-width="1.3" fill="none"/>
               <path d="M1 24 Q1 28 5 28 H43 Q47 28 47 24 Z" fill="#c0d4f0" stroke="var(--accent)" stroke-width="1.4"/>
             </svg>
             <span style="font-size:10px;font-weight:700;color:var(--accent);font-family:var(--mono)">MUA</span>
@@ -579,9 +716,9 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
           <span style="font-size:8px;color:#6a6e8e">Port 587 Submission</span>
         </div>
         <div style="display:flex;flex-direction:column;align-items:center;gap:4px;width:84px;flex-shrink:0;">
-          <div style="width:72px;height:56px;background:#fff0d8;border:2px solid var(--gold);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;">
+          <div style="width:72px;height:56px;background:#fff0d8;border:2px solid var(--gold);border-radius:2px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;">
             <svg width="26" height="22" viewBox="0 0 48 42" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M4 42V20L24 5l20 15V42z" fill="#fff8e6" stroke="var(--gold)" stroke-width="1.6"/>
+              <path d="M4 42V20L24 5l20 15V42z" fill="#f5efe0" stroke="var(--gold)" stroke-width="1.6"/>
               <polyline points="2,21 24,6 46,21" stroke="var(--gold)" stroke-width="1.6" fill="none"/>
               <rect x="18" y="28" width="12" height="14" rx="1" fill="#ffe0a0" stroke="var(--gold)" stroke-width="1.2"/>
               <rect x="8" y="24" width="8" height="8" rx="1" fill="#ffecc0" stroke="var(--gold)" stroke-width="1"/>
@@ -597,11 +734,11 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
           <span style="font-size:8px;color:#6a6e8e">Port 25</span>
         </div>
         <div style="display:flex;flex-direction:column;align-items:center;gap:4px;width:84px;flex-shrink:0;">
-          <div style="width:72px;height:56px;background:#ffe8e8;border:2px solid var(--danger);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;">
+          <div style="width:72px;height:56px;background:#ffe8e8;border:2px solid var(--danger);border-radius:2px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;">
             <svg width="28" height="20" viewBox="0 0 48 34" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="2" y="2" width="44" height="10" rx="2" fill="#fde8e8" stroke="var(--danger)" stroke-width="1.4"/>
-              <rect x="2" y="16" width="44" height="10" rx="2" fill="#fde8e8" stroke="var(--danger)" stroke-width="1.4"/>
-              <rect x="2" y="30" width="44" height="10" rx="2" fill="#fde8e8" stroke="var(--danger)" stroke-width="1.4"/>
+              <rect x="2" y="2" width="44" height="10" rx="2" fill="#f3e8e8" stroke="var(--danger)" stroke-width="1.4"/>
+              <rect x="2" y="16" width="44" height="10" rx="2" fill="#f3e8e8" stroke="var(--danger)" stroke-width="1.4"/>
+              <rect x="2" y="30" width="44" height="10" rx="2" fill="#f3e8e8" stroke="var(--danger)" stroke-width="1.4"/>
               <circle cx="6.5" cy="7" r="1.8" fill="#ef4444"/>
               <circle cx="6.5" cy="21" r="1.8" fill="#ef4444"/>
               <circle cx="6.5" cy="35" r="1.8" fill="#4ade80"/>
@@ -615,11 +752,11 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
       <div style="display:flex;align-items:center;margin-top:6px;">
         <div style="font-size:10px;font-weight:700;color:var(--success);width:68px;flex-shrink:0;">受信側</div>
         <div style="display:flex;flex-direction:column;align-items:center;gap:4px;width:84px;flex-shrink:0;">
-          <div style="width:72px;height:56px;background:#ffe8e8;border:2px solid var(--danger);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;">
+          <div style="width:72px;height:56px;background:#ffe8e8;border:2px solid var(--danger);border-radius:2px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;">
             <svg width="28" height="20" viewBox="0 0 48 34" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="2" y="2" width="44" height="10" rx="2" fill="#fde8e8" stroke="var(--danger)" stroke-width="1.4"/>
-              <rect x="2" y="16" width="44" height="10" rx="2" fill="#fde8e8" stroke="var(--danger)" stroke-width="1.4"/>
-              <rect x="2" y="30" width="44" height="10" rx="2" fill="#fde8e8" stroke="var(--danger)" stroke-width="1.4"/>
+              <rect x="2" y="2" width="44" height="10" rx="2" fill="#f3e8e8" stroke="var(--danger)" stroke-width="1.4"/>
+              <rect x="2" y="16" width="44" height="10" rx="2" fill="#f3e8e8" stroke="var(--danger)" stroke-width="1.4"/>
+              <rect x="2" y="30" width="44" height="10" rx="2" fill="#f3e8e8" stroke="var(--danger)" stroke-width="1.4"/>
               <circle cx="6.5" cy="7" r="1.8" fill="#ef4444"/>
               <circle cx="6.5" cy="21" r="1.8" fill="#ef4444"/>
               <circle cx="6.5" cy="35" r="1.8" fill="#4ade80"/>
@@ -633,13 +770,13 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
           <div style="width:100%;height:2px;background:var(--gold);position:relative"><div style="position:absolute;right:-1px;top:-4px;border:5px solid transparent;border-left:7px solid var(--gold)"></div></div>
         </div>
         <div style="display:flex;flex-direction:column;align-items:center;gap:4px;width:84px;flex-shrink:0;">
-          <div style="width:72px;height:56px;background:#d0f0e0;border:2px solid var(--success);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;">
+          <div style="width:72px;height:56px;background:#c8dccf;border:2px solid var(--success);border-radius:2px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;">
             <svg width="28" height="20" viewBox="0 0 48 34" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="2" y="2" width="44" height="8" rx="4" fill="#d0f0e0" stroke="var(--success)" stroke-width="1.5"/>
+              <rect x="2" y="2" width="44" height="8" rx="4" fill="#c8dccf" stroke="var(--success)" stroke-width="1.5"/>
               <circle cx="2" cy="6" r="5" fill="#b8e8d0" stroke="var(--success)" stroke-width="1.2"/>
               <circle cx="46" cy="6" r="5" fill="#b8e8d0" stroke="var(--success)" stroke-width="1.2"/>
               <rect x="6" y="-4" width="8" height="6" rx="1" fill="rgba(218,238,255,.9)" stroke="#1a3a8a" stroke-width=".8"/>
-              <rect x="20" y="-6" width="8" height="6" rx="1" fill="rgba(255,240,180,.9)" stroke="#b5821e" stroke-width=".8"/>
+              <rect x="20" y="-6" width="8" height="6" rx="1" fill="rgba(255,240,180,.9)" stroke="#a47a2a" stroke-width=".8"/>
               <rect x="34" y="-4" width="8" height="6" rx="1" fill="rgba(255,200,200,.9)" stroke="#7a1818" stroke-width=".8"/>
             </svg>
             <span style="font-size:10px;font-weight:700;color:var(--success);font-family:var(--mono)">MDA</span>
@@ -647,21 +784,21 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
           <span style="font-size:9px;font-weight:600;text-align:center;line-height:1.3">配送・格納</span>
         </div>
         <div style="flex:1;display:flex;flex-direction:column;align-items:center;padding:0 3px;gap:1px">
-          <span style="font-size:9px;font-family:var(--mono);font-weight:700;color:#5a1a9e">POP3/IMAP4</span>
-          <div style="width:100%;height:2px;background:#5a1a9e;position:relative"><div style="position:absolute;right:-1px;top:-4px;border:5px solid transparent;border-left:7px solid #5a1a9e"></div></div>
+          <span style="font-size:9px;font-family:var(--mono);font-weight:700;color:#4a2e70">POP3/IMAP4</span>
+          <div style="width:100%;height:2px;background:#4a2e70;position:relative"><div style="position:absolute;right:-1px;top:-4px;border:5px solid transparent;border-left:7px solid #4a2e70"></div></div>
         </div>
         <div style="display:flex;flex-direction:column;align-items:center;gap:4px;width:84px;flex-shrink:0;">
-          <div style="width:72px;height:56px;background:#ede8ff;border:2px solid #5a1a9e;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;">
+          <div style="width:72px;height:56px;background:#ece6f0;border:2px solid #4a2e70;border-radius:2px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;">
             <svg width="28" height="20" viewBox="0 0 48 34" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="8" y="2" width="16" height="12" rx="2.5" fill="#ede8ff" stroke="#5a1a9e" stroke-width="1.4"/>
+              <rect x="8" y="2" width="16" height="12" rx="2.5" fill="#ece6f0" stroke="#4a2e70" stroke-width="1.4"/>
               <path d="M8 2 V14 Q8 18 12 18 Q16 14 24 14 Q28 18 28 14 V2" stroke="#8844cc" stroke-width="1.2" fill="none"/>
-              <rect x="28" y="4" width="16" height="24" rx="2.5" fill="#ede8ff" stroke="#5a1a9e" stroke-width="1.4"/>
+              <rect x="28" y="4" width="16" height="24" rx="2.5" fill="#ece6f0" stroke="#4a2e70" stroke-width="1.4"/>
               <rect x="30" y="7" width="12" height="14" rx="1" fill="rgba(218,238,255,.6)"/>
               <circle cx="36" cy="26" r="1.8" fill="#8844cc"/>
-              <path d="M24 10 L28 12" stroke="#5a1a9e" stroke-width="1.4"/>
-              <polygon points="26,10 29,12 26,14" fill="#5a1a9e"/>
+              <path d="M24 10 L28 12" stroke="#4a2e70" stroke-width="1.4"/>
+              <polygon points="26,10 29,12 26,14" fill="#4a2e70"/>
             </svg>
-            <span style="font-size:10px;font-weight:700;color:#5a1a9e;font-family:var(--mono)">MRA</span>
+            <span style="font-size:10px;font-weight:700;color:#4a2e70;font-family:var(--mono)">MRA</span>
           </div>
           <span style="font-size:9px;font-weight:600;text-align:center;line-height:1.3">受信提供</span>
         </div>
@@ -670,14 +807,14 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
           <div style="width:100%;height:2px;background:var(--accent);position:relative"><div style="position:absolute;right:-1px;top:-4px;border:5px solid transparent;border-left:7px solid var(--accent)"></div></div>
         </div>
         <div style="display:flex;flex-direction:column;align-items:center;gap:4px;width:84px;flex-shrink:0;">
-          <div style="width:72px;height:56px;background:#e8edf5;border:2px solid var(--accent);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;">
+          <div style="width:72px;height:56px;background:#eef1f7;border:2px solid var(--accent);border-radius:2px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;">
             <svg width="20" height="28" viewBox="0 0 34 48" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="4" y="2" width="26" height="42" rx="4" fill="#e8edf5" stroke="var(--accent)" stroke-width="1.6"/>
+              <rect x="4" y="2" width="26" height="42" rx="4" fill="#eef1f7" stroke="var(--accent)" stroke-width="1.6"/>
               <rect x="8" y="8" width="18" height="28" rx="2" fill="rgba(218,238,255,.7)"/>
               <line x1="11" y1="13" x2="23" y2="13" stroke="var(--accent)" stroke-width="1" opacity=".5"/>
               <line x1="11" y1="17" x2="23" y2="17" stroke="var(--accent)" stroke-width="1" opacity=".5"/>
               <line x1="11" y1="21" x2="18" y2="21" stroke="var(--accent)" stroke-width="1" opacity=".5"/>
-              <circle cx="17" cy="38" r="2.5" fill="rgba(11,74,130,.4)"/>
+              <circle cx="17" cy="38" r="2.5" fill="rgba(28,58,92,.4)"/>
             </svg>
             <span style="font-size:10px;font-weight:700;color:var(--accent);font-family:var(--mono)">MUA</span>
           </div>
@@ -689,12 +826,12 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 
   <!-- Tab 3: セキュリティ対応マップ -->
   <div class="tab-panel" id="analogy-security" style="display:none">
-    <p style="font-size:13px;color:#3a3d52;margin-bottom:16px;">各セキュリティ技術がフローのどの区間を守るかを整理しています。アコーディオンで詳細を展開できます。</p>
+    <p style="font-size:13px;color:#3d4860;margin-bottom:16px;">各セキュリティ技術がフローのどの区間を守るかを整理しています。アコーディオンで詳細を展開できます。</p>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
       <div class="accord-item">
-        <div class="accord-head" onclick="toggleAccord(this)" style="border-left:4px solid #b5821e;">
-          <svg width="18" height="18" viewBox="0 0 48 48" fill="none" stroke="#b5821e" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="26" width="42" height="6" rx="2" fill="#ffe0a0" stroke="#b5821e"/><rect x="3" y="32" width="42" height="12" rx="2" fill="#fff8e6" stroke="#b5821e"/><circle cx="24" cy="18" r="7" fill="#ffd080" stroke="#b5821e"/></svg>
-          <span style="display:inline-flex;align-items:center;gap:5px;"><span style="width:18px;height:18px;background:#b5821e;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:white;font-family:var(--mono);">2</span>SMTP-AUTH</span>
+        <div class="accord-head" onclick="toggleAccord(this)" style="border-left:4px solid #a47a2a;">
+          <svg width="18" height="18" viewBox="0 0 48 48" fill="none" stroke="#a47a2a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="26" width="42" height="6" rx="2" fill="#ffe0a0" stroke="#a47a2a"/><rect x="3" y="32" width="42" height="12" rx="2" fill="#f5efe0" stroke="#a47a2a"/><circle cx="24" cy="18" r="7" fill="#ffd080" stroke="#a47a2a"/></svg>
+          <span style="display:inline-flex;align-items:center;gap:5px;"><span style="width:18px;height:18px;background:#a47a2a;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:white;font-family:var(--mono);">2</span>SMTP-AUTH</span>
           <svg class="accord-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
         </div>
         <div class="accord-body"><strong>区間：</strong>MUA → MSA（Port 587）<br><strong>守るもの：</strong>不正な第三者による無断メール送信<br><strong>仕組み：</strong>ユーザID＋パスワードでSASL認証。MUA は窓口カウンター②で本人確認を求められる。</div>
@@ -778,7 +915,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 </div>
 
 <div class="note warn">
-<div class="note-i"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#b5821e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+<div class="note-i"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#a47a2a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
 <p><strong>混同注意：エンベロープ From と ヘッダ From は別物</strong><br>エンベロープの <code>MAIL FROM:</code>（SMTPコマンド）とヘッダの <code>From:</code>（表示差出人）は独立しています。フィッシングメールはヘッダの <code>From:</code> だけを正規ドメインに偽装し、エンベロープの <code>MAIL FROM:</code> は別ドメインにすることがあります。SPFはエンベロープFrom、DMARCはヘッダFromとの整合性をチェックします。</p>
 </div>
 
@@ -805,7 +942,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
     <div style="font-size:10px;font-weight:700;color:var(--accent);width:68px;flex-shrink:0;letter-spacing:.05em">送信側</div>
     <!-- MUA -->
     <div style="display:flex;flex-direction:column;align-items:center;gap:4px;width:84px;flex-shrink:0">
-      <div class="node-box" style="width:72px;height:56px;background:#e8edf5;border-color:var(--accent)">
+      <div class="node-box" style="width:72px;height:56px;background:#eef1f7;border-color:var(--accent)">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
         <span style="font-size:10px;font-weight:700;color:var(--accent);font-family:var(--mono)">MUA</span>
       </div>
@@ -868,7 +1005,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
     </div>
     <!-- MDA -->
     <div style="display:flex;flex-direction:column;align-items:center;gap:4px;width:84px;flex-shrink:0">
-      <div class="node-box" style="width:72px;height:56px;background:#d0f0e0;border-color:var(--success)">
+      <div class="node-box" style="width:72px;height:56px;background:#c8dccf;border-color:var(--success)">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
         <span style="font-size:10px;font-weight:700;color:var(--success);font-family:var(--mono)">MDA</span>
       </div>
@@ -876,15 +1013,15 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
     </div>
     <!-- Arrow MDA→MRA -->
     <div style="flex:1;display:flex;flex-direction:column;align-items:center;padding:0 3px;gap:1px">
-      <span style="font-size:9px;font-family:var(--mono);font-weight:700;color:#5a1a9e">POP3/IMAP4</span>
-      <div style="width:100%;height:2px;background:#5a1a9e;position:relative"><div style="position:absolute;right:-1px;top:-4px;border:5px solid transparent;border-left:7px solid #5a1a9e"></div></div>
+      <span style="font-size:9px;font-family:var(--mono);font-weight:700;color:#4a2e70">POP3/IMAP4</span>
+      <div style="width:100%;height:2px;background:#4a2e70;position:relative"><div style="position:absolute;right:-1px;top:-4px;border:5px solid transparent;border-left:7px solid #4a2e70"></div></div>
       <span style="font-size:8px;color:#6a6e8e">110/995・143/993</span>
     </div>
     <!-- MRA -->
     <div style="display:flex;flex-direction:column;align-items:center;gap:4px;width:84px;flex-shrink:0">
-      <div class="node-box" style="width:72px;height:56px;background:#ede8ff;border-color:#5a1a9e">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5a1a9e" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-        <span style="font-size:10px;font-weight:700;color:#5a1a9e;font-family:var(--mono)">MRA</span>
+      <div class="node-box" style="width:72px;height:56px;background:#ece6f0;border-color:#4a2e70">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4a2e70" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <span style="font-size:10px;font-weight:700;color:#4a2e70;font-family:var(--mono)">MRA</span>
       </div>
       <span style="font-size:9px;font-weight:600;text-align:center;line-height:1.3">受信提供<br>エージェント</span>
     </div>
@@ -895,7 +1032,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
     </div>
     <!-- MUA 受信側 -->
     <div style="display:flex;flex-direction:column;align-items:center;gap:4px;width:84px;flex-shrink:0">
-      <div class="node-box" style="width:72px;height:56px;background:#e8edf5;border-color:var(--accent)">
+      <div class="node-box" style="width:72px;height:56px;background:#eef1f7;border-color:var(--accent)">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18" stroke-width="2.5"/></svg>
         <span style="font-size:10px;font-weight:700;color:var(--accent);font-family:var(--mono)">MUA</span>
       </div>
@@ -909,9 +1046,9 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 <!-- S04 エージェント -->
 <section class="section" id="s4">
 <div class="section-header"><span class="s-num">04</span><h2>電子メールエージェント MUA / MSA / MTA / MDA / MRA</h2></div>
-<p>各カードの番号バッジ（<span style="display:inline-flex;align-items:center;gap:3px;vertical-align:middle;"><span style="width:18px;height:18px;background:#1a56cc;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:white;font-family:var(--mono);">1</span></span>〜<span style="display:inline-flex;align-items:center;gap:3px;vertical-align:middle;"><span style="width:18px;height:18px;background:#5a1a9e;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:white;font-family:var(--mono);">5</span></span>）は Section 01 の郵便たとえ図と同じ番号・色で対応しています。カードをクリックすると詳細が展開されます。</p>
+<p>各カードの番号バッジ（<span style="display:inline-flex;align-items:center;gap:3px;vertical-align:middle;"><span style="width:18px;height:18px;background:#1a56cc;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:white;font-family:var(--mono);">1</span></span>〜<span style="display:inline-flex;align-items:center;gap:3px;vertical-align:middle;"><span style="width:18px;height:18px;background:#4a2e70;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:white;font-family:var(--mono);">5</span></span>）は Section 01 の郵便たとえ図と同じ番号・色で対応しています。カードをクリックすると詳細が展開されます。</p>
 
-<div style="background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:22px 0;">
+<div style="background:#fff;border:1px solid var(--line);border-radius:2px;overflow:hidden;margin:22px 0;">
   <div style="background:var(--ink2);color:#fff;padding:10px 18px;font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;display:flex;align-items:center;gap:8px;">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
     覚え方マップ：エージェントを「郵便局」で理解する — クリックで詳細展開
@@ -922,13 +1059,13 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
     <!-- MUA (badge 1) -->
     <div style="flex:1;min-width:0;position:relative;">
       <div class="ico-badge" style="background:#1a56cc;">1</div>
-      <div style="display:flex;flex-direction:column;border:2.5px solid #1a56cc;border-radius:12px;overflow:hidden;margin-top:13px;cursor:pointer;" onclick="toggleCard('card-mua')">
+      <div style="display:flex;flex-direction:column;border:2.5px solid #1a56cc;border-radius:2px;overflow:hidden;margin-top:13px;cursor:pointer;" onclick="toggleCard('card-mua')">
         <div style="background:linear-gradient(135deg,#d0e6ff 0%,#b8d4ff 100%);padding:18px 10px 14px;display:flex;flex-direction:column;align-items:center;gap:8px;">
-          <div style="width:58px;height:58px;background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(26,86,204,.25);">
+          <div style="width:58px;height:58px;background:#fff;border-radius:2px;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(26,86,204,.25);">
             <svg width="36" height="36" viewBox="0 0 48 48" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="5" width="42" height="30" rx="3.5" fill="#daeeff" stroke="#1a56cc" stroke-width="1.6"/>
+              <rect x="3" y="5" width="42" height="30" rx="3.5" fill="#eef1f7" stroke="#1a56cc" stroke-width="1.6"/>
               <rect x="7" y="9" width="34" height="22" rx="2" fill="#1a3a8a"/>
-              <polyline points="7,11 24,18 41,11" stroke="#6ab4f5" stroke-width="1.4" fill="none"/>
+              <polyline points="7,11 24,18 41,11" stroke="#c9a557" stroke-width="1.4" fill="none"/>
               <path d="M1 35 Q1 41 6 41 H42 Q47 41 47 35 Z" fill="#c0d4f0" stroke="#1a56cc" stroke-width="1.5"/>
               <rect x="17" y="42.5" width="14" height="2.5" rx="1.2" fill="#8ab4e0"/>
               <circle cx="43" cy="10" r="5.5" fill="#ef4444"/>
@@ -939,10 +1076,10 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
         </div>
         <div style="padding:12px 12px;background:#f5f9ff;flex:1;display:flex;flex-direction:column;gap:6px;">
           <div style="font-size:10px;color:var(--ink2);line-height:1.5;"><strong>差出人・受取人</strong><br>手紙を書く人・読む人</div>
-          <div style="background:#daeeff;border-radius:5px;padding:4px 8px;font-size:9px;font-family:var(--mono);color:#1a3a8a;">SMTP(送信) / POP3・IMAP4(受信)</div>
+          <div style="background:#eef1f7;border-radius:5px;padding:4px 8px;font-size:9px;font-family:var(--mono);color:#1a3a8a;">SMTP(送信) / POP3・IMAP4(受信)</div>
         </div>
         <!-- 展開パネル -->
-        <div id="card-mua" style="display:none;padding:12px;background:#eaf3ff;border-top:1px solid #a8c8f5;font-size:12px;color:#0b3a6a;line-height:1.7;">
+        <div id="card-mua" style="display:none;padding:12px;background:#eef1f7;border-top:1px solid #bcc8d9;font-size:12px;color:#1a2a42;line-height:1.7;">
           <strong>代表ソフト：</strong>Thunderbird, Outlook, Apple Mail, Gmail(Web)<br>
           <strong>送信プロセス：</strong>ユーザが作成→SMTP-AUTH認証付きでMSA(Port 587)へ投稿<br>
           <strong>受信プロセス：</strong>MRAにPOP3/IMAP4で接続しメールボックスを取得<br>
@@ -960,18 +1097,18 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 
     <!-- MSA (badge 2) -->
     <div style="flex:1;min-width:0;position:relative;">
-      <div class="ico-badge" style="background:#b5821e;">2</div>
-      <div style="display:flex;flex-direction:column;border:2.5px solid #b5821e;border-radius:12px;overflow:hidden;margin-top:13px;cursor:pointer;" onclick="toggleCard('card-msa')">
+      <div class="ico-badge" style="background:#a47a2a;">2</div>
+      <div style="display:flex;flex-direction:column;border:2.5px solid #a47a2a;border-radius:2px;overflow:hidden;margin-top:13px;cursor:pointer;" onclick="toggleCard('card-msa')">
         <div style="background:linear-gradient(135deg,#fff3d0 0%,#ffe8a0 100%);padding:18px 10px 14px;display:flex;flex-direction:column;align-items:center;gap:8px;">
-          <div style="width:58px;height:58px;background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(181,130,30,.28);">
+          <div style="width:58px;height:58px;background:#fff;border-radius:2px;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(164,122,42,.28);">
             <svg width="36" height="36" viewBox="0 0 48 48" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="2" y="28" width="44" height="7" rx="2.5" fill="#ffe0a0" stroke="#b5821e" stroke-width="1.6"/>
-              <rect x="2" y="35" width="44" height="11" rx="2.5" fill="#fff8e6" stroke="#b5821e" stroke-width="1.5"/>
-              <circle cx="24" cy="18" r="8" fill="#ffd080" stroke="#b5821e" stroke-width="1.6"/>
-              <path d="M13 28c0-7 5-11 11-11s11 4 11 11" fill="#fff8e6" stroke="#b5821e" stroke-width="1.4"/>
+              <rect x="2" y="28" width="44" height="7" rx="2.5" fill="#ffe0a0" stroke="#a47a2a" stroke-width="1.6"/>
+              <rect x="2" y="35" width="44" height="11" rx="2.5" fill="#f5efe0" stroke="#a47a2a" stroke-width="1.5"/>
+              <circle cx="24" cy="18" r="8" fill="#ffd080" stroke="#a47a2a" stroke-width="1.6"/>
+              <path d="M13 28c0-7 5-11 11-11s11 4 11 11" fill="#f5efe0" stroke="#a47a2a" stroke-width="1.4"/>
               <rect x="32" y="7" width="15" height="12" rx="2.5" fill="rgba(220,50,50,.85)" stroke="white" stroke-width="1.3"/>
               <text x="39.5" y="16" text-anchor="middle" font-size="9" fill="white" font-weight="800">OK</text>
-              <line x1="2" y1="28" x2="46" y2="28" stroke="rgba(181,130,30,.4)" stroke-width="1" stroke-dasharray="3 2"/>
+              <line x1="2" y1="28" x2="46" y2="28" stroke="rgba(164,122,42,.4)" stroke-width="1" stroke-dasharray="3 2"/>
             </svg>
           </div>
           <div style="text-align:center;"><div style="font-size:17px;font-weight:800;color:#7a4208;font-family:var(--mono);line-height:1.1;">MSA</div><div style="font-size:9px;color:#7a4208;font-weight:600;">Mail Submission Agent</div></div>
@@ -980,7 +1117,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
           <div style="font-size:10px;color:var(--ink2);line-height:1.5;"><strong>郵便局の窓口</strong><br>受付・SMTP-AUTH認証</div>
           <div style="background:#fff3d0;border-radius:5px;padding:4px 8px;font-size:9px;font-family:var(--mono);color:#7a4208;">SMTP Port 587 / SMTP-AUTH</div>
         </div>
-        <div id="card-msa" style="display:none;padding:12px;background:#fff8e6;border-top:1px solid #e0c070;font-size:12px;color:#5a3200;line-height:1.7;">
+        <div id="card-msa" style="display:none;padding:12px;background:#f5efe0;border-top:1px solid #d9c68a;font-size:12px;color:#5a3200;line-height:1.7;">
           <strong>代表ソフト：</strong>Postfix Submission, Exim<br>
           <strong>役割：</strong>MUAからの接続受付 → SMTP-AUTH（SASL）認証 → 正規ユーザ確認後にMTAへ転送<br>
           <strong>試験ポイント：</strong>MTAとの違いはPort 587使用＋SMTP-AUTH必須。OP25BはこのMSA経由を強制する仕組み。
@@ -998,18 +1135,18 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
     <!-- MTA (badge 3) -->
     <div style="flex:1;min-width:0;position:relative;">
       <div class="ico-badge" style="background:#7a1818;">3</div>
-      <div style="display:flex;flex-direction:column;border:2.5px solid #7a1818;border-radius:12px;overflow:hidden;margin-top:13px;cursor:pointer;" onclick="toggleCard('card-mta')">
+      <div style="display:flex;flex-direction:column;border:2.5px solid #7a1818;border-radius:2px;overflow:hidden;margin-top:13px;cursor:pointer;" onclick="toggleCard('card-mta')">
         <div style="background:linear-gradient(135deg,#ffe8e8 0%,#ffd0d0 100%);padding:18px 10px 14px;display:flex;flex-direction:column;align-items:center;gap:8px;">
-          <div style="width:58px;height:58px;background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(122,24,24,.22);">
+          <div style="width:58px;height:58px;background:#fff;border-radius:2px;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(122,24,24,.22);">
             <svg width="36" height="36" viewBox="0 0 48 48" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="2" y="5" width="24" height="36" rx="2.5" fill="#fde8e8" stroke="#7a1818" stroke-width="1.5"/>
+              <rect x="2" y="5" width="24" height="36" rx="2.5" fill="#f3e8e8" stroke="#7a1818" stroke-width="1.5"/>
               <rect x="4" y="8" width="20" height="6" rx="1" fill="#ffe0e0" stroke="#7a1818" stroke-width="1"/>
               <circle cx="6.5" cy="11" r="1.8" fill="#ef4444"/>
               <rect x="4" y="17" width="20" height="6" rx="1" fill="#ffe0e0" stroke="#7a1818" stroke-width="1"/>
               <circle cx="6.5" cy="20" r="1.8" fill="#ef4444"/>
               <rect x="4" y="26" width="20" height="6" rx="1" fill="#ffe0e0" stroke="#7a1818" stroke-width="1"/>
               <circle cx="6.5" cy="29" r="1.8" fill="#fbbf24"/>
-              <rect x="28" y="5" width="18" height="36" rx="2.5" fill="#fde8e8" stroke="#7a1818" stroke-width="1.5"/>
+              <rect x="28" y="5" width="18" height="36" rx="2.5" fill="#f3e8e8" stroke="#7a1818" stroke-width="1.5"/>
               <rect x="30" y="8" width="14" height="6" rx="1" fill="#ffe0e0" stroke="#7a1818" stroke-width="1"/>
               <circle cx="32.5" cy="11" r="1.8" fill="#4ade80"/>
               <rect x="30" y="17" width="14" height="6" rx="1" fill="#ffe0e0" stroke="#7a1818" stroke-width="1"/>
@@ -1025,9 +1162,9 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
         </div>
         <div style="padding:12px 12px;background:#fff5f5;flex:1;display:flex;flex-direction:column;gap:6px;">
           <div style="font-size:10px;color:var(--ink2);line-height:1.5;"><strong>サーバ間転送</strong><br>DNS MX参照・中継</div>
-          <div style="background:#fde8e8;border-radius:5px;padding:4px 8px;font-size:9px;font-family:var(--mono);color:#7a1818;">SMTP Port 25 / MTA間転送</div>
+          <div style="background:#f3e8e8;border-radius:5px;padding:4px 8px;font-size:9px;font-family:var(--mono);color:#7a1818;">SMTP Port 25 / MTA間転送</div>
         </div>
-        <div id="card-mta" style="display:none;padding:12px;background:#fde8e8;border-top:1px solid #e09090;font-size:12px;color:#5a0000;line-height:1.7;">
+        <div id="card-mta" style="display:none;padding:12px;background:#f3e8e8;border-top:1px solid #e09090;font-size:12px;color:#5a0000;line-height:1.7;">
           <strong>代表ソフト：</strong>Postfix, sendmail, qmail, Exim<br>
           <strong>動作：</strong>DNSのMXレコードを参照して宛先MTAのホスト名を解決 → SMTP Port 25で転送<br>
           <strong>SPF/DKIM/DMARCの検証：</strong>受信側MTAがここで実施。Authentication-Resultsヘッダに記録。
@@ -1045,11 +1182,11 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
     <!-- MDA (badge 4) -->
     <div style="flex:1;min-width:0;position:relative;">
       <div class="ico-badge" style="background:#155f44;">4</div>
-      <div style="display:flex;flex-direction:column;border:2.5px solid #155f44;border-radius:12px;overflow:hidden;margin-top:13px;cursor:pointer;" onclick="toggleCard('card-mda')">
-        <div style="background:linear-gradient(135deg,#d0f0e0 0%,#b8e8d0 100%);padding:18px 10px 14px;display:flex;flex-direction:column;align-items:center;gap:8px;">
-          <div style="width:58px;height:58px;background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(21,95,68,.25);">
+      <div style="display:flex;flex-direction:column;border:2.5px solid #155f44;border-radius:2px;overflow:hidden;margin-top:13px;cursor:pointer;" onclick="toggleCard('card-mda')">
+        <div style="background:linear-gradient(135deg,#c8dccf 0%,#b8e8d0 100%);padding:18px 10px 14px;display:flex;flex-direction:column;align-items:center;gap:8px;">
+          <div style="width:58px;height:58px;background:#fff;border-radius:2px;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(21,95,68,.25);">
             <svg width="36" height="36" viewBox="0 0 48 48" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="2" y="26" width="44" height="9" rx="4.5" fill="#d0f0e0" stroke="#155f44" stroke-width="1.6"/>
+              <rect x="2" y="26" width="44" height="9" rx="4.5" fill="#c8dccf" stroke="#155f44" stroke-width="1.6"/>
               <line x1="9" y1="26" x2="9" y2="35" stroke="rgba(21,95,68,.25)" stroke-width="1"/>
               <line x1="17" y1="26" x2="17" y2="35" stroke="rgba(21,95,68,.25)" stroke-width="1"/>
               <line x1="25" y1="26" x2="25" y2="35" stroke="rgba(21,95,68,.25)" stroke-width="1"/>
@@ -1059,12 +1196,12 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
               <circle cx="46" cy="30.5" r="5.5" fill="#b8e8d0" stroke="#155f44" stroke-width="1.3"/>
               <rect x="4" y="14" width="9" height="7" rx="1" fill="rgba(218,238,255,.9)" stroke="#1a56cc" stroke-width=".9"/>
               <polyline points="4,15.5 8.5,18.5 13,15.5" stroke="#1a56cc" stroke-width=".7" fill="none"/>
-              <rect x="18" y="12" width="9" height="7" rx="1" fill="rgba(255,240,180,.9)" stroke="#b5821e" stroke-width=".9"/>
-              <polyline points="18,13.5 22.5,16.5 27,13.5" stroke="#b5821e" stroke-width=".7" fill="none"/>
+              <rect x="18" y="12" width="9" height="7" rx="1" fill="rgba(255,240,180,.9)" stroke="#a47a2a" stroke-width=".9"/>
+              <polyline points="18,13.5 22.5,16.5 27,13.5" stroke="#a47a2a" stroke-width=".7" fill="none"/>
               <rect x="32" y="14" width="9" height="7" rx="1" fill="rgba(255,200,200,.9)" stroke="#7a1818" stroke-width=".9"/>
               <polyline points="32,15.5 36.5,18.5 41,15.5" stroke="#7a1818" stroke-width=".7" fill="none"/>
               <path d="M8.5 21 L6 38" stroke="#1a56cc" stroke-width="1" stroke-dasharray="2 1"/>
-              <path d="M22.5 19 L22.5 38" stroke="#b5821e" stroke-width="1" stroke-dasharray="2 1"/>
+              <path d="M22.5 19 L22.5 38" stroke="#a47a2a" stroke-width="1" stroke-dasharray="2 1"/>
               <path d="M36.5 21 L39 38" stroke="#7a1818" stroke-width="1" stroke-dasharray="2 1"/>
             </svg>
           </div>
@@ -1072,9 +1209,9 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
         </div>
         <div style="padding:12px 12px;background:#f0fbf5;flex:1;display:flex;flex-direction:column;gap:6px;">
           <div style="font-size:10px;color:var(--ink2);line-height:1.5;"><strong>ベルトコンベア仕分け</strong><br>スパム判定・格納</div>
-          <div style="background:#d0f0e0;border-radius:5px;padding:4px 8px;font-size:9px;font-family:var(--mono);color:#155f44;">LMTP / ローカル配送</div>
+          <div style="background:#c8dccf;border-radius:5px;padding:4px 8px;font-size:9px;font-family:var(--mono);color:#155f44;">LMTP / ローカル配送</div>
         </div>
-        <div id="card-mda" style="display:none;padding:12px;background:#eaf7f1;border-top:1px solid #80c898;font-size:12px;color:#0d3d28;line-height:1.7;">
+        <div id="card-mda" style="display:none;padding:12px;background:#ecf1ed;border-top:1px solid #80c898;font-size:12px;color:#1a3d2a;line-height:1.7;">
           <strong>代表ソフト：</strong>Procmail, Dovecot LDA, Sieve<br>
           <strong>処理：</strong>受信MTAからLMTPで受け取り → スパムフィルタ適用 → ユーザのメールボックス（Maildir/mbox）に格納<br>
           <strong>振り分け：</strong>ヘッダ情報を見てフォルダへ自動仕分け。
@@ -1084,38 +1221,38 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 
     <!-- 矢印 4→5 -->
     <div style="flex:0 0 42px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:0 2px;margin-top:64px;">
-      <span style="font-size:7px;font-family:var(--mono);font-weight:700;color:#5a1a9e;white-space:nowrap;">POP3/<br>IMAP4</span>
-      <div style="width:100%;height:2px;background:#5a1a9e;position:relative;"><div style="position:absolute;right:-5px;top:-4px;width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:7px solid #5a1a9e;"></div></div>
+      <span style="font-size:7px;font-family:var(--mono);font-weight:700;color:#4a2e70;white-space:nowrap;">POP3/<br>IMAP4</span>
+      <div style="width:100%;height:2px;background:#4a2e70;position:relative;"><div style="position:absolute;right:-5px;top:-4px;width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:7px solid #4a2e70;"></div></div>
     </div>
 
     <!-- MRA (badge 5) -->
     <div style="flex:1;min-width:0;position:relative;">
-      <div class="ico-badge" style="background:#5a1a9e;">5</div>
-      <div style="display:flex;flex-direction:column;border:2.5px solid #5a1a9e;border-radius:12px;overflow:hidden;margin-top:13px;cursor:pointer;" onclick="toggleCard('card-mra')">
-        <div style="background:linear-gradient(135deg,#ede8ff 0%,#ddd0ff 100%);padding:18px 10px 14px;display:flex;flex-direction:column;align-items:center;gap:8px;">
-          <div style="width:58px;height:58px;background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(90,26,158,.22);">
+      <div class="ico-badge" style="background:#4a2e70;">5</div>
+      <div style="display:flex;flex-direction:column;border:2.5px solid #4a2e70;border-radius:2px;overflow:hidden;margin-top:13px;cursor:pointer;" onclick="toggleCard('card-mra')">
+        <div style="background:linear-gradient(135deg,#ece6f0 0%,#ddd0ff 100%);padding:18px 10px 14px;display:flex;flex-direction:column;align-items:center;gap:8px;">
+          <div style="width:58px;height:58px;background:#fff;border-radius:2px;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(90,26,158,.22);">
             <svg width="36" height="36" viewBox="0 0 48 48" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="8" y="20" width="18" height="16" rx="3" fill="#ede8ff" stroke="#5a1a9e" stroke-width="1.6"/>
-              <path d="M12 20 V14 Q12 8 17 8 Q22 8 22 14 V16" stroke="#5a1a9e" stroke-width="2" fill="none"/>
-              <circle cx="17" cy="28" r="3" fill="none" stroke="#5a1a9e" stroke-width="1.5"/>
+              <rect x="8" y="20" width="18" height="16" rx="3" fill="#ece6f0" stroke="#4a2e70" stroke-width="1.6"/>
+              <path d="M12 20 V14 Q12 8 17 8 Q22 8 22 14 V16" stroke="#4a2e70" stroke-width="2" fill="none"/>
+              <circle cx="17" cy="28" r="3" fill="none" stroke="#4a2e70" stroke-width="1.5"/>
               <rect x="16" y="28" width="2" height="5" rx=".6" fill="#8844cc"/>
-              <rect x="30" y="10" width="16" height="28" rx="3" fill="#ede8ff" stroke="#5a1a9e" stroke-width="1.5"/>
+              <rect x="30" y="10" width="16" height="28" rx="3" fill="#ece6f0" stroke="#4a2e70" stroke-width="1.5"/>
               <rect x="32" y="14" width="12" height="16" rx="1.5" fill="rgba(218,238,255,.6)"/>
-              <line x1="34" y1="18" x2="42" y2="18" stroke="#5a1a9e" stroke-width="1" opacity=".5"/>
-              <line x1="34" y1="21" x2="42" y2="21" stroke="#5a1a9e" stroke-width="1" opacity=".5"/>
-              <line x1="34" y1="24" x2="39" y2="24" stroke="#5a1a9e" stroke-width="1" opacity=".35"/>
+              <line x1="34" y1="18" x2="42" y2="18" stroke="#4a2e70" stroke-width="1" opacity=".5"/>
+              <line x1="34" y1="21" x2="42" y2="21" stroke="#4a2e70" stroke-width="1" opacity=".5"/>
+              <line x1="34" y1="24" x2="39" y2="24" stroke="#4a2e70" stroke-width="1" opacity=".35"/>
               <circle cx="38" cy="34" r="2" fill="#8844cc"/>
-              <path d="M26 28 L30 26" stroke="#5a1a9e" stroke-width="1.6"/>
-              <polygon points="28,24.5 31,26 28,27.5" fill="#5a1a9e"/>
+              <path d="M26 28 L30 26" stroke="#4a2e70" stroke-width="1.6"/>
+              <polygon points="28,24.5 31,26 28,27.5" fill="#4a2e70"/>
             </svg>
           </div>
-          <div style="text-align:center;"><div style="font-size:17px;font-weight:800;color:#5a1a9e;font-family:var(--mono);line-height:1.1;">MRA</div><div style="font-size:9px;color:#5a1a9e;font-weight:600;">Mail Retrieval Agent</div></div>
+          <div style="text-align:center;"><div style="font-size:17px;font-weight:800;color:#4a2e70;font-family:var(--mono);line-height:1.1;">MRA</div><div style="font-size:9px;color:#4a2e70;font-weight:600;">Mail Retrieval Agent</div></div>
         </div>
         <div style="padding:12px 12px;background:#f8f5ff;flex:1;display:flex;flex-direction:column;gap:6px;">
           <div style="font-size:10px;color:var(--ink2);line-height:1.5;"><strong>ロック解除→デバイスへ</strong><br>ボックスからMUAへ</div>
-          <div style="background:#ede8ff;border-radius:5px;padding:4px 8px;font-size:9px;font-family:var(--mono);color:#5a1a9e;">POP3 110/995 / IMAP4 143/993</div>
+          <div style="background:#ece6f0;border-radius:5px;padding:4px 8px;font-size:9px;font-family:var(--mono);color:#4a2e70;">POP3 110/995 / IMAP4 143/993</div>
         </div>
-        <div id="card-mra" style="display:none;padding:12px;background:#f0eaff;border-top:1px solid #a080d0;font-size:12px;color:#3a006e;line-height:1.7;">
+        <div id="card-mra" style="display:none;padding:12px;background:#f0eaff;border-top:1px solid #a080d0;font-size:12px;color:#4a2e70;line-height:1.7;">
           <strong>代表ソフト：</strong>Dovecot, Courier-IMAP<br>
           <strong>POP3の特徴：</strong>ダウンロード後サーバ削除。オフライン向け。複数デバイスに不向き。<br>
           <strong>IMAP4の特徴：</strong>サーバ保持。複数デバイスで同期。フォルダ操作もサーバ側で管理。
@@ -1128,8 +1265,8 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 </div>
 
 <div class="note info">
-<div class="note-i"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1570b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16" stroke-width="2.5"/></svg></div>
-<p><strong>MSA <span style="display:inline-flex;align-items:center;gap:2px;vertical-align:middle;margin:0 2px;"><span style="width:17px;height:17px;background:#b5821e;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:white;font-family:var(--mono);">2</span></span> と MTA <span style="display:inline-flex;align-items:center;gap:2px;vertical-align:middle;margin:0 2px;"><span style="width:17px;height:17px;background:#7a1818;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:white;font-family:var(--mono);">3</span></span> の違い（試験頻出）：</strong>どちらも「SMTP」を使いますが、MSA は Port 587・SMTP-AUTH必須、MTA は Port 25・認証不要です。OP25B はユーザからの Port 25 をブロックし、MSA 経由に誘導します。</p>
+<div class="note-i"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3d6998" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16" stroke-width="2.5"/></svg></div>
+<p><strong>MSA <span style="display:inline-flex;align-items:center;gap:2px;vertical-align:middle;margin:0 2px;"><span style="width:17px;height:17px;background:#a47a2a;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:white;font-family:var(--mono);">2</span></span> と MTA <span style="display:inline-flex;align-items:center;gap:2px;vertical-align:middle;margin:0 2px;"><span style="width:17px;height:17px;background:#7a1818;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:white;font-family:var(--mono);">3</span></span> の違い（試験頻出）：</strong>どちらも「SMTP」を使いますが、MSA は Port 587・SMTP-AUTH必須、MTA は Port 25・認証不要です。OP25B はユーザからの Port 25 をブロックし、MSA 経由に誘導します。</p>
 </div>
 </section>
 <!-- S05 プロトコル比較 -->
@@ -1155,7 +1292,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
   <td style="text-align:left;font-size:12px">サーバからメールをダウンロードし、原則サーバから削除。オフライン利用向け。複数デバイス同期に不向き。</td>
 </tr>
 <tr>
-  <td><span style="font-family:var(--mono);font-weight:700;color:#5a1a9e">IMAP4</span></td>
+  <td><span style="font-family:var(--mono);font-weight:700;color:#4a2e70">IMAP4</span></td>
   <td>受信（操作）</td>
   <td style="font-family:var(--mono);font-size:11px;text-align:left">143<br>993（IMAPS）</td>
   <td class="cmp-good">IMAPS (SSL/TLS)</td>
@@ -1207,7 +1344,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 </table>
 
 <div class="note warn">
-<div class="note-i"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#b5821e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+<div class="note-i"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#a47a2a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
 <p><strong>Base64 は暗号化ではない（頻出混同ポイント）</strong><br>Base64 は単なるエンコード（符号化）であり、機密性を提供しません。デコードに鍵は不要で、誰でも元データに戻せます。S/MIME や PGP の暗号化と混同しないよう注意が必要です。</p>
 </div>
 </section>
@@ -1290,8 +1427,8 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 <p>迷惑メール対策は「<strong>送信側の制限</strong>」と「<strong>受信側の拒否</strong>」の2方向から実施されます。OP25B と IP25B は混同されやすいので、下のイラストで位置づけを確認してください。</p>
 
 <!-- OP25B イラスト — Flexbox完全制御 -->
-<div style="background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:22px 0;">
-  <div style="background:#0b4a82;color:#fff;padding:10px 18px;font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;display:flex;align-items:center;gap:8px;">
+<div style="background:#fff;border:1px solid var(--line);border-radius:2px;overflow:hidden;margin:22px 0;">
+  <div style="background:#1c3a5c;color:#fff;padding:10px 18px;font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;display:flex;align-items:center;gap:8px;">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
     OP25B — Outbound Port 25 Blocking（ISP による送信制御）
   </div>
@@ -1299,7 +1436,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
   <div style="min-width:700px;display:flex;flex-direction:column;gap:16px;">
 
     <!-- ケース① 感染PC（ブロックされる） -->
-    <div style="background:#fdf0f0;border:1.5px solid #e8a8a8;border-radius:10px;padding:16px 20px;">
+    <div style="background:#f3e8e8;border:1.5px solid #d0aaaa;border-radius:2px;padding:16px 20px;">
       <div style="font-size:10.5px;font-weight:700;color:var(--danger);margin-bottom:12px;display:flex;align-items:center;gap:6px;">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
         NG ケース：マルウェア感染PCが直接スパム送信を試みる
@@ -1308,9 +1445,9 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 
         <!-- 感染PC -->
         <div style="flex:0 0 90px;display:flex;flex-direction:column;align-items:center;gap:6px;">
-          <div style="width:64px;height:64px;background:#fff;border:2px solid var(--danger);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;box-shadow:0 3px 10px rgba(122,24,24,.2);">
+          <div style="width:64px;height:64px;background:#fff;border:2px solid var(--danger);border-radius:2px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;box-shadow:0 3px 10px rgba(122,24,24,.2);">
             <svg width="34" height="34" viewBox="0 0 32 32" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="4" width="26" height="18" rx="2.5" fill="#fde8e8" stroke="var(--danger)" stroke-width="1.5"/>
+              <rect x="3" y="4" width="26" height="18" rx="2.5" fill="#f3e8e8" stroke="var(--danger)" stroke-width="1.5"/>
               <!-- 感染バグアイコン（画面内） -->
               <circle cx="16" cy="13" r="5" fill="#ffb0b0" stroke="var(--danger)" stroke-width="1.2"/>
               <path d="M13 11l6 4M19 11l-6 4" stroke="white" stroke-width="1.3"/>
@@ -1329,7 +1466,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
             <div style="width:100%;height:2px;background:repeating-linear-gradient(90deg,var(--danger) 0,var(--danger) 8px,transparent 8px,transparent 13px);"></div>
           </div>
           <!-- ブロック壁 -->
-          <div style="flex:0 0 auto;background:var(--danger);color:white;border-radius:8px;padding:10px 14px;display:flex;flex-direction:column;align-items:center;gap:4px;box-shadow:0 3px 10px rgba(122,24,24,.3);">
+          <div style="flex:0 0 auto;background:var(--danger);color:white;border-radius:2px;padding:10px 14px;display:flex;flex-direction:column;align-items:center;gap:4px;box-shadow:0 3px 10px rgba(122,24,24,.3);">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
             <span style="font-size:9.5px;font-weight:800;letter-spacing:.04em;white-space:nowrap;">BLOCK</span>
           </div>
@@ -1342,7 +1479,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 
         <!-- 外部MTA（グレーアウト） -->
         <div style="flex:0 0 90px;display:flex;flex-direction:column;align-items:center;gap:6px;opacity:.35;">
-          <div style="width:64px;height:64px;background:#f5f5f5;border:2px dashed #bbb;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;">
+          <div style="width:64px;height:64px;background:#f5f5f5;border:2px dashed #bbb;border-radius:2px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;">
             <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke-linecap="round" stroke-linejoin="round">
               <rect x="2" y="5" width="28" height="9" rx="2" fill="#eee" stroke="#bbb" stroke-width="1.4"/>
               <rect x="2" y="18" width="28" height="9" rx="2" fill="#eee" stroke="#bbb" stroke-width="1.4"/>
@@ -1352,13 +1489,13 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
         </div>
 
       </div>
-      <div style="margin-top:10px;background:#fde8e8;border-radius:6px;padding:7px 12px;font-size:9.5px;color:var(--danger);line-height:1.5;">
+      <div style="margin-top:10px;background:#f3e8e8;border-radius:6px;padding:7px 12px;font-size:9.5px;color:var(--danger);line-height:1.5;">
         <strong>ISPが自ネットワーク内ユーザからの外向き Port 25 をブロック。</strong>感染PCが直接スパムを送れなくなります。
       </div>
     </div>
 
     <!-- ケース② 正規ユーザ（通過） -->
-    <div style="background:#eaf7f1;border:1.5px solid #80c8a0;border-radius:10px;padding:16px 20px;">
+    <div style="background:#ecf1ed;border:1.5px solid #80c8a0;border-radius:2px;padding:16px 20px;">
       <div style="font-size:10.5px;font-weight:700;color:var(--success);margin-bottom:12px;display:flex;align-items:center;gap:6px;">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
         OK ケース：正規ユーザは Port 587（Submission）経由で送信
@@ -1367,9 +1504,9 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 
         <!-- 正規ユーザ -->
         <div style="flex:0 0 90px;display:flex;flex-direction:column;align-items:center;gap:6px;">
-          <div style="width:64px;height:64px;background:#fff;border:2px solid var(--success);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;box-shadow:0 3px 10px rgba(21,95,68,.2);">
+          <div style="width:64px;height:64px;background:#fff;border:2px solid var(--success);border-radius:2px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;box-shadow:0 3px 10px rgba(21,95,68,.2);">
             <svg width="34" height="34" viewBox="0 0 32 32" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="4" width="26" height="18" rx="2.5" fill="#d0f0e0" stroke="var(--success)" stroke-width="1.5"/>
+              <rect x="3" y="4" width="26" height="18" rx="2.5" fill="#c8dccf" stroke="var(--success)" stroke-width="1.5"/>
               <rect x="7" y="8" width="18" height="10" rx="1.5" fill="white" stroke="var(--success)" stroke-width="1.2"/>
               <polyline points="7,9 16,13.5 25,9" stroke="var(--success)" stroke-width="1.1" fill="none"/>
               <line x1="16" y1="22" x2="16" y2="26" stroke="var(--success)" stroke-width="1.5"/>
@@ -1389,9 +1526,9 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 
         <!-- MSA -->
         <div style="flex:0 0 90px;display:flex;flex-direction:column;align-items:center;gap:6px;">
-          <div style="width:64px;height:64px;background:#fff;border:2px solid var(--gold);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;box-shadow:0 3px 10px rgba(181,130,30,.2);">
+          <div style="width:64px;height:64px;background:#fff;border:2px solid var(--gold);border-radius:2px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;box-shadow:0 3px 10px rgba(164,122,42,.2);">
             <svg width="34" height="34" viewBox="0 0 32 32" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M4 28V14L16 5l12 9v14z" fill="#fff8e6" stroke="var(--gold)" stroke-width="1.5"/>
+              <path d="M4 28V14L16 5l12 9v14z" fill="#f5efe0" stroke="var(--gold)" stroke-width="1.5"/>
               <polyline points="2,15 16,4 30,15" stroke="var(--gold)" stroke-width="1.5" fill="none"/>
               <rect x="12" y="19" width="8" height="9" rx="1" fill="#ffe0a0" stroke="var(--gold)" stroke-width="1.3"/>
               <svg width="12" height="12" x="9" y="10" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
@@ -1410,10 +1547,10 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 
         <!-- 外部MTA -->
         <div style="flex:0 0 90px;display:flex;flex-direction:column;align-items:center;gap:6px;">
-          <div style="width:64px;height:64px;background:#fff;border:2px solid var(--danger);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;box-shadow:0 3px 10px rgba(122,24,24,.2);">
+          <div style="width:64px;height:64px;background:#fff;border:2px solid var(--danger);border-radius:2px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;box-shadow:0 3px 10px rgba(122,24,24,.2);">
             <svg width="34" height="34" viewBox="0 0 32 32" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="2" y="5" width="28" height="9" rx="2" fill="#fde8e8" stroke="var(--danger)" stroke-width="1.4"/>
-              <rect x="2" y="18" width="28" height="9" rx="2" fill="#fde8e8" stroke="var(--danger)" stroke-width="1.4"/>
+              <rect x="2" y="5" width="28" height="9" rx="2" fill="#f3e8e8" stroke="var(--danger)" stroke-width="1.4"/>
+              <rect x="2" y="18" width="28" height="9" rx="2" fill="#f3e8e8" stroke="var(--danger)" stroke-width="1.4"/>
               <circle cx="5.5" cy="9.5" r="1.8" fill="#e08080"/>
               <circle cx="5.5" cy="22.5" r="1.8" fill="#e08080"/>
               <line x1="10" y1="9.5" x2="26" y2="9.5" stroke="var(--danger)" stroke-width="1.2"/>
@@ -1424,7 +1561,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
         </div>
 
       </div>
-      <div style="margin-top:10px;background:#d0f0e0;border-radius:6px;padding:7px 12px;font-size:9.5px;color:var(--success);line-height:1.5;">
+      <div style="margin-top:10px;background:#c8dccf;border-radius:6px;padding:7px 12px;font-size:9.5px;color:var(--success);line-height:1.5;">
         <strong>正規ユーザは Port 587（Submission）+ SMTP-AUTH でMSAへ投稿。</strong>MSAが認証後に外部MTA（Port 25）へ転送します。
       </div>
     </div>
@@ -1434,7 +1571,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 </div>
 
 <!-- IP25B イラスト — 2カラムGrid -->
-<div style="background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:22px 0;">
+<div style="background:#fff;border:1px solid var(--line);border-radius:2px;overflow:hidden;margin:22px 0;">
   <div style="background:var(--warn);color:#fff;padding:10px 18px;font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;display:flex;align-items:center;gap:8px;">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 6s4-2 5-2 4 2 5 2 4-2 5-2 4 2 5 2"/><path d="M1 12s4-2 5-2 4 2 5 2 4-2 5-2 4 2 5 2"/><path d="M1 18s4-2 5-2 4 2 5 2 4-2 5-2 4 2 5 2"/></svg>
     IP25B — Inbound Port 25 Blocking（受信サーバによる制御）
@@ -1443,7 +1580,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
   <div style="min-width:640px;display:grid;grid-template-columns:1fr 1fr;gap:16px;">
 
     <!-- 動的IP（ブロック） -->
-    <div style="background:#fdf5e6;border:1.5px solid #e0c070;border-radius:10px;padding:18px;">
+    <div style="background:#f5efe0;border:1.5px solid #d9c68a;border-radius:2px;padding:18px;">
       <div style="font-size:10.5px;font-weight:700;color:var(--warn);margin-bottom:14px;display:flex;align-items:center;gap:6px;">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
         動的IP（家庭ユーザ・感染端末）
@@ -1452,7 +1589,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 
         <!-- 動的IP端末 -->
         <div style="flex:0 0 72px;display:flex;flex-direction:column;align-items:center;gap:5px;">
-          <div style="width:58px;height:58px;background:#fff;border:2px solid var(--gold);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;box-shadow:0 2px 8px rgba(181,130,30,.2);">
+          <div style="width:58px;height:58px;background:#fff;border:2px solid var(--gold);border-radius:2px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;box-shadow:0 2px 8px rgba(164,122,42,.2);">
             <svg width="30" height="30" viewBox="0 0 32 32" fill="none" stroke-linecap="round" stroke-linejoin="round">
               <!-- Wi-Fi波 -->
               <path d="M8 20a11 11 0 0 1 16 0" stroke="var(--gold)" stroke-width="1.5" fill="none"/>
@@ -1460,7 +1597,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
               <circle cx="16" cy="27" r="2" fill="var(--gold)"/>
               <!-- 家 -->
               <path d="M6 16L16 8l10 8" stroke="var(--warn)" stroke-width="1.3" fill="none"/>
-              <rect x="10" y="16" width="12" height="9" rx="1" fill="#fff8e6" stroke="var(--warn)" stroke-width="1.2"/>
+              <rect x="10" y="16" width="12" height="9" rx="1" fill="#f5efe0" stroke="var(--warn)" stroke-width="1.2"/>
             </svg>
           </div>
           <span style="font-size:8.5px;font-weight:700;color:var(--warn);text-align:center;line-height:1.3;">動的IP<br>（家庭/感染）</span>
@@ -1476,10 +1613,10 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 
         <!-- 受信MTA + ブロック -->
         <div style="flex:0 0 72px;display:flex;flex-direction:column;align-items:center;gap:5px;">
-          <div style="width:58px;height:58px;background:#fff;border:2px solid var(--danger);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;box-shadow:0 2px 8px rgba(122,24,24,.2);">
+          <div style="width:58px;height:58px;background:#fff;border:2px solid var(--danger);border-radius:2px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;box-shadow:0 2px 8px rgba(122,24,24,.2);">
             <svg width="30" height="30" viewBox="0 0 32 32" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="2" y="4" width="28" height="10" rx="2" fill="#fde8e8" stroke="var(--danger)" stroke-width="1.4"/>
-              <rect x="2" y="18" width="28" height="10" rx="2" fill="#fde8e8" stroke="var(--danger)" stroke-width="1.4"/>
+              <rect x="2" y="4" width="28" height="10" rx="2" fill="#f3e8e8" stroke="var(--danger)" stroke-width="1.4"/>
+              <rect x="2" y="18" width="28" height="10" rx="2" fill="#f3e8e8" stroke="var(--danger)" stroke-width="1.4"/>
               <circle cx="5.5" cy="9" r="1.8" fill="#e08080"/>
               <circle cx="5.5" cy="23" r="1.8" fill="#e08080"/>
               <!-- バツ -->
@@ -1498,7 +1635,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
     </div>
 
     <!-- 固定IP（通過） -->
-    <div style="background:#eaf7f1;border:1.5px solid #80c8a0;border-radius:10px;padding:18px;">
+    <div style="background:#ecf1ed;border:1.5px solid #80c8a0;border-radius:2px;padding:18px;">
       <div style="font-size:10.5px;font-weight:700;color:var(--success);margin-bottom:14px;display:flex;align-items:center;gap:6px;">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
         固定IP（正規メールサーバ）
@@ -1507,10 +1644,10 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 
         <!-- 正規MTA -->
         <div style="flex:0 0 72px;display:flex;flex-direction:column;align-items:center;gap:5px;">
-          <div style="width:58px;height:58px;background:#fff;border:2px solid var(--success);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;box-shadow:0 2px 8px rgba(21,95,68,.2);">
+          <div style="width:58px;height:58px;background:#fff;border:2px solid var(--success);border-radius:2px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;box-shadow:0 2px 8px rgba(21,95,68,.2);">
             <svg width="30" height="30" viewBox="0 0 32 32" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="2" y="4" width="28" height="10" rx="2" fill="#d0f0e0" stroke="var(--success)" stroke-width="1.4"/>
-              <rect x="2" y="18" width="28" height="10" rx="2" fill="#d0f0e0" stroke="var(--success)" stroke-width="1.4"/>
+              <rect x="2" y="4" width="28" height="10" rx="2" fill="#c8dccf" stroke="var(--success)" stroke-width="1.4"/>
+              <rect x="2" y="18" width="28" height="10" rx="2" fill="#c8dccf" stroke="var(--success)" stroke-width="1.4"/>
               <circle cx="5.5" cy="9" r="1.8" fill="#60c090"/>
               <circle cx="5.5" cy="23" r="1.8" fill="#60c090"/>
               <line x1="10" y1="9" x2="26" y2="9" stroke="var(--success)" stroke-width="1.2"/>
@@ -1530,10 +1667,10 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 
         <!-- 受信MTA（通過） -->
         <div style="flex:0 0 72px;display:flex;flex-direction:column;align-items:center;gap:5px;">
-          <div style="width:58px;height:58px;background:#fff;border:2px solid var(--success);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;box-shadow:0 2px 8px rgba(21,95,68,.2);">
+          <div style="width:58px;height:58px;background:#fff;border:2px solid var(--success);border-radius:2px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;box-shadow:0 2px 8px rgba(21,95,68,.2);">
             <svg width="30" height="30" viewBox="0 0 32 32" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="2" y="4" width="28" height="10" rx="2" fill="#d0f0e0" stroke="var(--success)" stroke-width="1.4"/>
-              <rect x="2" y="18" width="28" height="10" rx="2" fill="#d0f0e0" stroke="var(--success)" stroke-width="1.4"/>
+              <rect x="2" y="4" width="28" height="10" rx="2" fill="#c8dccf" stroke="var(--success)" stroke-width="1.4"/>
+              <rect x="2" y="18" width="28" height="10" rx="2" fill="#c8dccf" stroke="var(--success)" stroke-width="1.4"/>
               <circle cx="5.5" cy="9" r="1.8" fill="#60c090"/>
               <circle cx="5.5" cy="23" r="1.8" fill="#60c090"/>
               <!-- チェック -->
@@ -1568,7 +1705,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 </table>
 
 <div class="note info">
-<div class="note-i"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1570b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16" stroke-width="2.5"/></svg></div>
+<div class="note-i"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3d6998" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16" stroke-width="2.5"/></svg></div>
 <p><strong>覚え方：</strong>O（Outbound＝外に出る）P25B → 「外に出る Port 25 をブロック（ISPが送信制限）」。I（Inbound＝内に入る）P25B → 「内に入る Port 25 をブロック（受信側が動的IPを拒否）」。</p>
 </div>
 </section>
@@ -1581,7 +1718,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin:22px 0;">
 
   <!-- SPF カード -->
-  <div style="border:2px solid var(--accent2);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;">
+  <div style="border:2px solid var(--accent2);border-radius:2px;overflow:hidden;display:flex;flex-direction:column;">
     <div style="background:linear-gradient(135deg,var(--accent2) 0%,#0e5fa0 100%);padding:18px 16px;display:flex;flex-direction:column;align-items:center;gap:10px;">
       <div style="width:64px;height:64px;background:rgba(255,255,255,.18);border-radius:14px;display:flex;align-items:center;justify-content:center;border:1.5px solid rgba(255,255,255,.3);">
         <svg width="38" height="38" viewBox="0 0 40 40" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -1604,7 +1741,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
     </div>
     <div style="padding:14px 16px;background:#f5f9ff;flex:1;display:flex;flex-direction:column;gap:10px;">
       <!-- 何を確認 -->
-      <div style="background:#eaf3ff;border-left:3px solid var(--accent2);border-radius:0 6px 6px 0;padding:8px 10px;">
+      <div style="background:#eef1f7;border-left:3px solid var(--accent2);border-radius:0 6px 6px 0;padding:8px 10px;">
         <div style="font-size:9.5px;font-weight:700;color:var(--accent2);margin-bottom:3px;">何を確認するか</div>
         <div style="font-size:10.5px;color:var(--ink2);line-height:1.5;">送信サーバの<strong>IPアドレス</strong>が許可リストに含まれるか</div>
       </div>
@@ -1617,20 +1754,20 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
       <div>
         <div style="font-size:9px;font-weight:700;color:var(--accent);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;">仕組み</div>
         <div style="display:flex;align-items:center;gap:5px;">
-          <div style="flex:1;background:#daeeff;border-radius:5px;padding:5px 8px;font-size:9px;color:var(--accent2);text-align:center;line-height:1.4;font-weight:600;">DNS TXT<br>許可IP登録</div>
+          <div style="flex:1;background:#eef1f7;border-radius:5px;padding:5px 8px;font-size:9px;color:var(--accent2);text-align:center;line-height:1.4;font-weight:600;">DNS TXT<br>許可IP登録</div>
           <div style="color:var(--accent2);font-size:14px;font-weight:700;">→</div>
-          <div style="flex:1;background:#eaf3ff;border-radius:5px;padding:5px 8px;font-size:9px;color:var(--accent2);text-align:center;line-height:1.4;font-weight:600;">受信側が<br>IP照合</div>
+          <div style="flex:1;background:#eef1f7;border-radius:5px;padding:5px 8px;font-size:9px;color:var(--accent2);text-align:center;line-height:1.4;font-weight:600;">受信側が<br>IP照合</div>
         </div>
       </div>
       <!-- 限界 -->
-      <div style="background:#fdf5e6;border-left:3px solid var(--gold);border-radius:0 5px 5px 0;padding:6px 9px;font-size:9px;color:var(--warn);line-height:1.5;">
+      <div style="background:#f5efe0;border-left:3px solid var(--gold);border-radius:0 5px 5px 0;padding:6px 9px;font-size:9px;color:var(--warn);line-height:1.5;">
         <strong>限界：</strong>メール転送時にIPが変わりfailになる。ヘッダFromは検証しない。
       </div>
     </div>
   </div>
 
   <!-- DKIM カード -->
-  <div style="border:2px solid var(--success);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;">
+  <div style="border:2px solid var(--success);border-radius:2px;overflow:hidden;display:flex;flex-direction:column;">
     <div style="background:linear-gradient(135deg,var(--success) 0%,#0e7050 100%);padding:18px 16px;display:flex;flex-direction:column;align-items:center;gap:10px;">
       <div style="width:64px;height:64px;background:rgba(255,255,255,.18);border-radius:14px;display:flex;align-items:center;justify-content:center;border:1.5px solid rgba(255,255,255,.3);">
         <svg width="38" height="38" viewBox="0 0 40 40" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -1656,7 +1793,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
       </div>
     </div>
     <div style="padding:14px 16px;background:#f0fbf5;flex:1;display:flex;flex-direction:column;gap:10px;">
-      <div style="background:#eaf7f1;border-left:3px solid var(--success);border-radius:0 6px 6px 0;padding:8px 10px;">
+      <div style="background:#ecf1ed;border-left:3px solid var(--success);border-radius:0 6px 6px 0;padding:8px 10px;">
         <div style="font-size:9.5px;font-weight:700;color:var(--success);margin-bottom:3px;">何を確認するか</div>
         <div style="font-size:10.5px;color:var(--ink2);line-height:1.5;">メール本文とヘッダが<strong>正規ドメインの秘密鍵</strong>で署名されたものか</div>
       </div>
@@ -1667,19 +1804,19 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
       <div>
         <div style="font-size:9px;font-weight:700;color:var(--accent);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;">仕組み</div>
         <div style="display:flex;align-items:center;gap:5px;">
-          <div style="flex:1;background:#d0f0e0;border-radius:5px;padding:5px 8px;font-size:9px;color:var(--success);text-align:center;line-height:1.4;font-weight:600;">送信MTAが<br>秘密鍵署名</div>
+          <div style="flex:1;background:#c8dccf;border-radius:5px;padding:5px 8px;font-size:9px;color:var(--success);text-align:center;line-height:1.4;font-weight:600;">送信MTAが<br>秘密鍵署名</div>
           <div style="color:var(--success);font-size:14px;font-weight:700;">→</div>
-          <div style="flex:1;background:#eaf7f1;border-radius:5px;padding:5px 8px;font-size:9px;color:var(--success);text-align:center;line-height:1.4;font-weight:600;">DNS公開鍵で<br>受信側検証</div>
+          <div style="flex:1;background:#ecf1ed;border-radius:5px;padding:5px 8px;font-size:9px;color:var(--success);text-align:center;line-height:1.4;font-weight:600;">DNS公開鍵で<br>受信側検証</div>
         </div>
       </div>
-      <div style="background:#eaf7f1;border-left:3px solid var(--success);border-radius:0 5px 5px 0;padding:6px 9px;font-size:9px;color:var(--success);line-height:1.5;">
+      <div style="background:#ecf1ed;border-left:3px solid var(--success);border-radius:0 5px 5px 0;padding:6px 9px;font-size:9px;color:var(--success);line-height:1.5;">
         <strong>強み：</strong>転送後もハッシュが変わらなければ検証可能。改ざん検知も兼ねる。
       </div>
     </div>
   </div>
 
   <!-- DMARC カード -->
-  <div style="border:2px solid var(--gold);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;">
+  <div style="border:2px solid var(--gold);border-radius:2px;overflow:hidden;display:flex;flex-direction:column;">
     <div style="background:linear-gradient(135deg,var(--warn) 0%,#a06010 100%);padding:18px 16px;display:flex;flex-direction:column;align-items:center;gap:10px;">
       <div style="width:64px;height:64px;background:rgba(255,255,255,.18);border-radius:14px;display:flex;align-items:center;justify-content:center;border:1.5px solid rgba(255,255,255,.3);">
         <svg width="38" height="38" viewBox="0 0 40 40" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -1700,7 +1837,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
       </div>
     </div>
     <div style="padding:14px 16px;background:#fffaf0;flex:1;display:flex;flex-direction:column;gap:10px;">
-      <div style="background:#fdf5e6;border-left:3px solid var(--gold);border-radius:0 6px 6px 0;padding:8px 10px;">
+      <div style="background:#f5efe0;border-left:3px solid var(--gold);border-radius:0 6px 6px 0;padding:8px 10px;">
         <div style="font-size:9.5px;font-weight:700;color:var(--warn);margin-bottom:3px;">何を確認するか</div>
         <div style="font-size:10.5px;color:var(--ink2);line-height:1.5;">SPF/DKIMの認証ドメインが<strong>ヘッダFrom</strong>と一致するか（アライメント）+ 失敗時ポリシー</div>
       </div>
@@ -1711,7 +1848,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
       <div>
         <div style="font-size:9px;font-weight:700;color:var(--accent);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em;">ポリシー (p=)</div>
         <div style="display:flex;flex-direction:column;gap:4px;">
-          <div style="display:flex;align-items:center;gap:7px;"><span style="flex:0 0 70px;background:#3a3d52;color:white;font-family:var(--mono);font-size:9px;padding:2px 7px;border-radius:4px;text-align:center;">none</span><span style="font-size:9.5px;color:#3a3d52;">監視のみ（通常通過）</span></div>
+          <div style="display:flex;align-items:center;gap:7px;"><span style="flex:0 0 70px;background:#3d4860;color:white;font-family:var(--mono);font-size:9px;padding:2px 7px;border-radius:4px;text-align:center;">none</span><span style="font-size:9.5px;color:#3d4860;">監視のみ（通常通過）</span></div>
           <div style="display:flex;align-items:center;gap:7px;"><span style="flex:0 0 70px;background:var(--warn);color:white;font-family:var(--mono);font-size:9px;padding:2px 7px;border-radius:4px;text-align:center;">quarantine</span><span style="font-size:9.5px;color:var(--warn);">迷惑メールに振分け</span></div>
           <div style="display:flex;align-items:center;gap:7px;"><span style="flex:0 0 70px;background:var(--danger);color:white;font-family:var(--mono);font-size:9px;padding:2px 7px;border-radius:4px;text-align:center;">reject</span><span style="font-size:9.5px;color:var(--danger);">受信拒否</span></div>
         </div>
@@ -1726,7 +1863,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0;">
 
   <!-- 正常 -->
-  <div style="border:2px solid var(--success);border-radius:10px;overflow:hidden;">
+  <div style="border:2px solid var(--success);border-radius:2px;overflow:hidden;">
     <div style="background:var(--success);padding:10px 14px;display:flex;align-items:center;gap:7px;">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
       <span style="font-size:11px;font-weight:700;color:white;">正常 — アライメント pass</span>
@@ -1755,18 +1892,18 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
   </div>
 
   <!-- なりすまし -->
-  <div style="border:2px solid var(--danger);border-radius:10px;overflow:hidden;">
+  <div style="border:2px solid var(--danger);border-radius:2px;overflow:hidden;">
     <div style="background:var(--danger);padding:10px 14px;display:flex;align-items:center;gap:7px;">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
       <span style="font-size:11px;font-weight:700;color:white;">なりすまし — アライメント fail</span>
     </div>
-    <div style="padding:16px;background:#fdf0f0;display:flex;flex-direction:column;gap:8px;">
-      <div style="background:white;border:1.5px solid #e8a8a8;border-radius:6px;padding:8px 12px;">
+    <div style="padding:16px;background:#f3e8e8;display:flex;flex-direction:column;gap:8px;">
+      <div style="background:white;border:1.5px solid #d0aaaa;border-radius:6px;padding:8px 12px;">
         <div style="font-size:9px;font-family:var(--mono);color:#888;margin-bottom:2px;">MAIL FROM:</div>
         <div style="font-family:var(--mono);font-size:11px;color:var(--danger);font-weight:700;">spam@<strong>malicious.com</strong></div>
         <div style="font-size:9px;color:var(--warn);margin-top:2px;">← SPF: passだが malicious.com</div>
       </div>
-      <div style="background:white;border:1.5px solid #e8a8a8;border-radius:6px;padding:8px 12px;">
+      <div style="background:white;border:1.5px solid #d0aaaa;border-radius:6px;padding:8px 12px;">
         <div style="font-size:9px;font-family:var(--mono);color:#888;margin-bottom:2px;">DKIM-Signature d=</div>
         <div style="font-family:var(--mono);font-size:11px;color:var(--danger);font-weight:700;"><strong>malicious.com</strong></div>
         <div style="font-size:9px;color:var(--danger);margin-top:2px;">← DKIM: fail（秘密鍵なし）</div>
@@ -1807,8 +1944,8 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 <p>送信から受信までの流れの中で、各技術がどのアクター間でいつ・何をしているかを3本のシーケンスで示します。</p>
 
 <!-- SPF シーケンス -->
-<div style="background:#fff;border:1.5px solid #a8c8f5;border-radius:12px;overflow:hidden;margin:16px 0;">
-  <div style="background:linear-gradient(90deg,#1570b8,#0e5fa0);padding:9px 16px;display:flex;align-items:center;gap:10px;">
+<div style="background:#fff;border:1.5px solid #bcc8d9;border-radius:2px;overflow:hidden;margin:16px 0;">
+  <div style="background:linear-gradient(90deg,#3d6998,#0e5fa0);padding:9px 16px;display:flex;align-items:center;gap:10px;">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 8 12 12 14 14"/></svg>
     <div>
       <div style="font-size:11.5px;font-weight:800;color:white;font-family:var(--mono);">SPF — Sender Policy Framework</div>
@@ -1820,7 +1957,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 <defs><marker id="spf-ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
 <!-- 列中心X: A=62 B=236 C=410 D=584 / アクターbox h=48 bottom=52 / ライフライン52→320 -->
 <!-- A --><rect x="18" y="4" width="88" height="48" rx="7" fill="#0c447c"/>
-<g transform="translate(22,8) scale(0.5)"><rect x="2" y="2" width="36" height="26" rx="3" fill="#1a3a8a" stroke="#6ab4f5" stroke-width="1.2"/><polyline points="2,4 20,14 38,4" fill="none" stroke="#6ab4f5" stroke-width="1.3"/><line x1="5" y1="19" x2="35" y2="19" stroke="rgba(106,180,245,0.35)" stroke-width="1"/><line x1="5" y1="23" x2="24" y2="23" stroke="rgba(106,180,245,0.25)" stroke-width="1"/><rect x="14" y="28" width="12" height="3" rx="1" fill="rgba(255,255,255,0.2)"/><rect x="10" y="31" width="20" height="2.5" rx="1" fill="rgba(255,255,255,0.15)"/><circle cx="37" cy="4" r="5" fill="#ef4444"/><text x="37" y="4" font-size="6" fill="white" font-family="monospace" text-anchor="middle" dominant-baseline="central">3</text></g>
+<g transform="translate(22,8) scale(0.5)"><rect x="2" y="2" width="36" height="26" rx="3" fill="#1a3a8a" stroke="#c9a557" stroke-width="1.2"/><polyline points="2,4 20,14 38,4" fill="none" stroke="#c9a557" stroke-width="1.3"/><line x1="5" y1="19" x2="35" y2="19" stroke="rgba(106,180,245,0.35)" stroke-width="1"/><line x1="5" y1="23" x2="24" y2="23" stroke="rgba(106,180,245,0.25)" stroke-width="1"/><rect x="14" y="28" width="12" height="3" rx="1" fill="rgba(255,255,255,0.2)"/><rect x="10" y="31" width="20" height="2.5" rx="1" fill="rgba(255,255,255,0.15)"/><circle cx="37" cy="4" r="5" fill="#ef4444"/><text x="37" y="4" font-size="6" fill="white" font-family="monospace" text-anchor="middle" dominant-baseline="central">3</text></g>
 <text x="62" y="34" font-size="8.5" font-weight="500" fill="white" font-family="sans-serif" text-anchor="middle" dominant-baseline="central">送信MTA</text>
 <text x="62" y="46" font-size="7" fill="rgba(255,255,255,0.6)" font-family="sans-serif" text-anchor="middle" dominant-baseline="central">メールサーバ</text>
 <!-- B --><rect x="192" y="4" width="88" height="48" rx="7" fill="#6e1a1a"/>
@@ -1836,16 +1973,16 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 <text x="584" y="34" font-size="8.5" font-weight="500" fill="white" font-family="sans-serif" text-anchor="middle" dominant-baseline="central">受信者</text>
 <text x="584" y="46" font-size="7" fill="rgba(255,255,255,0.6)" font-family="sans-serif" text-anchor="middle" dominant-baseline="central">MUA</text>
 <!-- ライフライン -->
-<line x1="62"  y1="52" x2="62"  y2="320" stroke="#185fa5" stroke-width="1" stroke-dasharray="4,4" opacity="0.3"/>
+<line x1="62"  y1="52" x2="62"  y2="320" stroke="#3d6998" stroke-width="1" stroke-dasharray="4,4" opacity="0.3"/>
 <line x1="236" y1="52" x2="236" y2="320" stroke="#6e1a1a" stroke-width="1" stroke-dasharray="4,4" opacity="0.3"/>
 <line x1="410" y1="52" x2="410" y2="320" stroke="#085041" stroke-width="1" stroke-dasharray="4,4" opacity="0.3"/>
 <line x1="584" y1="52" x2="584" y2="320" stroke="#26215c" stroke-width="1" stroke-dasharray="4,4" opacity="0.3"/>
 <!-- ① A→B 矢印Y=90 アイコン中心X=149 top=60 -->
 <rect x="4" y="62" width="18" height="18" rx="3" fill="#0c447c"/><text x="13" y="71" font-size="8" font-weight="500" fill="white" font-family="monospace" text-anchor="middle" dominant-baseline="central">①</text>
-<g transform="translate(139,60) scale(0.5)"><rect x="1" y="2" width="26" height="20" rx="2.5" fill="#185fa5"/><polyline points="1,4 14,12 27,4" fill="none" stroke="white" stroke-width="1.4"/><line x1="3" y1="15" x2="16" y2="15" stroke="rgba(255,255,255,0.38)" stroke-width="0.9"/><line x1="29" y1="11" x2="38" y2="11" stroke="#185fa5" stroke-width="2" stroke-linecap="round"/><polyline points="34,7 39,11 34,15" fill="none" stroke="#185fa5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g>
+<g transform="translate(139,60) scale(0.5)"><rect x="1" y="2" width="26" height="20" rx="2.5" fill="#3d6998"/><polyline points="1,4 14,12 27,4" fill="none" stroke="white" stroke-width="1.4"/><line x1="3" y1="15" x2="16" y2="15" stroke="rgba(255,255,255,0.38)" stroke-width="0.9"/><line x1="29" y1="11" x2="38" y2="11" stroke="#3d6998" stroke-width="2" stroke-linecap="round"/><polyline points="34,7 39,11 34,15" fill="none" stroke="#3d6998" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g>
 <text x="163" y="68" font-size="8.5" font-weight="500" fill="#0c447c" font-family="sans-serif" dominant-baseline="central">SMTP接続</text>
-<text x="163" y="80" font-size="7.5" fill="#185fa5" font-family="monospace" dominant-baseline="central">MAIL FROM: noreply@</text>
-<line x1="62" y1="90" x2="236" y2="90" stroke="#185fa5" stroke-width="1.5" marker-end="url(#spf-ar)"/>
+<text x="163" y="80" font-size="7.5" fill="#3d6998" font-family="monospace" dominant-baseline="central">MAIL FROM: noreply@</text>
+<line x1="62" y1="90" x2="236" y2="90" stroke="#3d6998" stroke-width="1.5" marker-end="url(#spf-ar)"/>
 <!-- ② B→C 矢印Y=136 アイコン中心X=323 top=108 -->
 <rect x="4" y="108" width="18" height="18" rx="3" fill="#6e1a1a"/><text x="13" y="117" font-size="8" font-weight="500" fill="white" font-family="monospace" text-anchor="middle" dominant-baseline="central">②</text>
 <g transform="translate(313,108) scale(0.5)"><circle cx="13" cy="16" r="10" fill="rgba(8,80,65,0.1)" stroke="#085041" stroke-width="1.2"/><ellipse cx="13" cy="16" rx="5" ry="10" fill="none" stroke="rgba(8,80,65,0.35)" stroke-width="0.7"/><line x1="3" y1="16" x2="23" y2="16" stroke="rgba(8,80,65,0.35)" stroke-width="0.7"/><circle cx="30" cy="10" r="8" fill="none" stroke="#085041" stroke-width="1.8"/><line x1="36" y1="16" x2="41" y2="22" stroke="#085041" stroke-width="2.2" stroke-linecap="round"/></g>
@@ -1883,16 +2020,16 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 <text x="364" y="304" font-size="7.5" fill="#854f0b" font-family="monospace" dominant-baseline="central">Auth-Results: spf=pass</text>
 <line x1="236" y1="312" x2="540" y2="312" stroke="#6e1a1a" stroke-width="1.5" marker-end="url(#spf-ar)"/>
 <!-- 下部ラベル -->
-<text x="62" y="332" font-size="8" fill="#185fa5" font-family="sans-serif" text-anchor="middle">送信MTA</text>
+<text x="62" y="332" font-size="8" fill="#3d6998" font-family="sans-serif" text-anchor="middle">送信MTA</text>
 <text x="236" y="332" font-size="8" fill="#6e1a1a" font-family="sans-serif" text-anchor="middle">受信MTA</text>
 <text x="410" y="332" font-size="8" fill="#0f6e56" font-family="sans-serif" text-anchor="middle">DNS</text>
 <text x="584" y="332" font-size="8" fill="#26215c" font-family="sans-serif" text-anchor="middle">受信者(MUA)</text>
 </svg>
-    <div style="margin-top:8px;background:#eaf3ff;border:1px solid #a8c8f5;border-radius:6px;padding:7px 11px;font-size:9.5px;color:#0b3a6a;line-height:1.6;"><strong>SPFのポイント：</strong>受信MTAが<code style="font-family:var(--mono);font-size:8.5px;background:rgba(11,74,130,.1);padding:1px 3px;border-radius:3px;">MAIL FROM:</code>のドメインでDNSを引き、送信元IPが許可リスト内かを照合。<strong>DNSクエリは受信側が行う</strong>。送信側はDNSに登録するだけ。</div>
+    <div style="margin-top:8px;background:#eef1f7;border:1px solid #bcc8d9;border-radius:6px;padding:7px 11px;font-size:9.5px;color:#1a2a42;line-height:1.6;"><strong>SPFのポイント：</strong>受信MTAが<code style="font-family:var(--mono);font-size:8.5px;background:rgba(28,58,92,.1);padding:1px 3px;border-radius:3px;">MAIL FROM:</code>のドメインでDNSを引き、送信元IPが許可リスト内かを照合。<strong>DNSクエリは受信側が行う</strong>。送信側はDNSに登録するだけ。</div>
   </div>
 </div>
 <!-- DKIM シーケンス -->
-<div style="background:#fff;border:1.5px solid #80c8a0;border-radius:12px;overflow:hidden;margin:16px 0;">
+<div style="background:#fff;border:1.5px solid #80c8a0;border-radius:2px;overflow:hidden;margin:16px 0;">
   <div style="background:linear-gradient(90deg,#155f44,#0e7050);padding:9px 16px;display:flex;align-items:center;gap:10px;">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3"/></svg>
     <div>
@@ -1914,7 +2051,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
   ⑥ B→D 矢印Y=350 アイコンtop=322
 -->
 <!-- A --><rect x="18" y="4" width="88" height="48" rx="7" fill="#0c447c"/>
-<g transform="translate(22,8) scale(0.5)"><rect x="2" y="2" width="36" height="26" rx="3" fill="#1a3a8a" stroke="#6ab4f5" stroke-width="1.2"/><polyline points="2,4 20,14 38,4" fill="none" stroke="#6ab4f5" stroke-width="1.3"/><line x1="5" y1="19" x2="35" y2="19" stroke="rgba(106,180,245,0.35)" stroke-width="1"/><line x1="5" y1="23" x2="24" y2="23" stroke="rgba(106,180,245,0.25)" stroke-width="1"/><rect x="14" y="28" width="12" height="3" rx="1" fill="rgba(255,255,255,0.2)"/><rect x="10" y="31" width="20" height="2.5" rx="1" fill="rgba(255,255,255,0.15)"/><circle cx="37" cy="4" r="5" fill="#ef4444"/><text x="37" y="4" font-size="6" fill="white" font-family="monospace" text-anchor="middle" dominant-baseline="central">3</text></g>
+<g transform="translate(22,8) scale(0.5)"><rect x="2" y="2" width="36" height="26" rx="3" fill="#1a3a8a" stroke="#c9a557" stroke-width="1.2"/><polyline points="2,4 20,14 38,4" fill="none" stroke="#c9a557" stroke-width="1.3"/><line x1="5" y1="19" x2="35" y2="19" stroke="rgba(106,180,245,0.35)" stroke-width="1"/><line x1="5" y1="23" x2="24" y2="23" stroke="rgba(106,180,245,0.25)" stroke-width="1"/><rect x="14" y="28" width="12" height="3" rx="1" fill="rgba(255,255,255,0.2)"/><rect x="10" y="31" width="20" height="2.5" rx="1" fill="rgba(255,255,255,0.15)"/><circle cx="37" cy="4" r="5" fill="#ef4444"/><text x="37" y="4" font-size="6" fill="white" font-family="monospace" text-anchor="middle" dominant-baseline="central">3</text></g>
 <text x="62" y="34" font-size="8.5" font-weight="500" fill="white" font-family="sans-serif" text-anchor="middle" dominant-baseline="central">送信MTA</text>
 <text x="62" y="46" font-size="7" fill="rgba(255,255,255,0.6)" font-family="sans-serif" text-anchor="middle" dominant-baseline="central">（秘密鍵保持）</text>
 <!-- B --><rect x="192" y="4" width="88" height="48" rx="7" fill="#6e1a1a"/>
@@ -1930,7 +2067,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 <text x="584" y="34" font-size="8.5" font-weight="500" fill="white" font-family="sans-serif" text-anchor="middle" dominant-baseline="central">受信者</text>
 <text x="584" y="46" font-size="7" fill="rgba(255,255,255,0.6)" font-family="sans-serif" text-anchor="middle" dominant-baseline="central">MUA</text>
 <!-- ライフライン -->
-<line x1="62" y1="52" x2="62" y2="400" stroke="#185fa5" stroke-width="1" stroke-dasharray="4,4" opacity="0.3"/>
+<line x1="62" y1="52" x2="62" y2="400" stroke="#3d6998" stroke-width="1" stroke-dasharray="4,4" opacity="0.3"/>
 <line x1="236" y1="52" x2="236" y2="400" stroke="#6e1a1a" stroke-width="1" stroke-dasharray="4,4" opacity="0.3"/>
 <line x1="410" y1="52" x2="410" y2="400" stroke="#085041" stroke-width="1" stroke-dasharray="4,4" opacity="0.3"/>
 <line x1="584" y1="52" x2="584" y2="400" stroke="#26215c" stroke-width="1" stroke-dasharray="4,4" opacity="0.3"/>
@@ -1938,16 +2075,16 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 <rect x="4" y="62" width="18" height="18" rx="3" fill="#0c447c"/><text x="13" y="71" font-size="8" font-weight="500" fill="white" font-family="monospace" text-anchor="middle" dominant-baseline="central">①</text>
 <rect x="54" y="60" width="9" height="50" rx="2" fill="rgba(12,68,124,0.12)" stroke="#0c447c" stroke-width="0.8"/>
 <rect x="66" y="60" width="180" height="50" rx="5" fill="#e6f1fb" stroke="#85b7eb" stroke-width="0.5"/>
-<g transform="translate(69,63) scale(0.5)"><rect x="8" y="18" width="22" height="18" rx="3" fill="#0c447c"/><path d="M13 18 V12 Q13 6 19 6 Q25 6 25 12 V18" fill="none" stroke="#0c447c" stroke-width="2.2" stroke-linecap="round"/><circle cx="19" cy="26" r="3" fill="rgba(255,255,255,0.55)"/><rect x="18" y="26" width="2" height="5" rx="1" fill="rgba(255,255,255,0.55)"/><rect x="2" y="30" width="12" height="6" rx="1.5" fill="#fbbf24" opacity="0.85"/><path d="M28 4 L36 12 L30 18 L22 10 Z" fill="#185fa5"/><path d="M22 10 L20 18 L28 16 Z" fill="#1a3a8a"/></g>
+<g transform="translate(69,63) scale(0.5)"><rect x="8" y="18" width="22" height="18" rx="3" fill="#0c447c"/><path d="M13 18 V12 Q13 6 19 6 Q25 6 25 12 V18" fill="none" stroke="#0c447c" stroke-width="2.2" stroke-linecap="round"/><circle cx="19" cy="26" r="3" fill="rgba(255,255,255,0.55)"/><rect x="18" y="26" width="2" height="5" rx="1" fill="rgba(255,255,255,0.55)"/><rect x="2" y="30" width="12" height="6" rx="1.5" fill="#fbbf24" opacity="0.85"/><path d="M28 4 L36 12 L30 18 L22 10 Z" fill="#3d6998"/><path d="M22 10 L20 18 L28 16 Z" fill="#1a3a8a"/></g>
 <text x="93" y="73" font-size="8.5" font-weight="500" fill="#0c447c" font-family="sans-serif" dominant-baseline="central">秘密鍵で署名生成</text>
-<text x="93" y="86" font-size="7.5" fill="#185fa5" font-family="sans-serif" dominant-baseline="central">ヘッダ＋本文をハッシュ→暗号化</text>
-<text x="93" y="99" font-size="7.5" fill="#185fa5" font-family="monospace" dominant-baseline="central">DKIM-Signature: b=...</text>
+<text x="93" y="86" font-size="7.5" fill="#3d6998" font-family="sans-serif" dominant-baseline="central">ヘッダ＋本文をハッシュ→暗号化</text>
+<text x="93" y="99" font-size="7.5" fill="#3d6998" font-family="monospace" dominant-baseline="central">DKIM-Signature: b=...</text>
 <!-- ② A→B 矢印Y=136 アイコン中心X=149 top=108 -->
 <rect x="4" y="110" width="18" height="18" rx="3" fill="#0c447c"/><text x="13" y="119" font-size="8" font-weight="500" fill="white" font-family="monospace" text-anchor="middle" dominant-baseline="central">②</text>
-<g transform="translate(139,108) scale(0.5)"><rect x="1" y="2" width="26" height="20" rx="2.5" fill="#185fa5"/><polyline points="1,4 14,12 27,4" fill="none" stroke="white" stroke-width="1.4"/><line x1="3" y1="15" x2="16" y2="15" stroke="rgba(255,255,255,0.38)" stroke-width="0.9"/><rect x="18" y="12" width="10" height="10" rx="2" fill="#fbbf24"/><line x1="29" y1="11" x2="38" y2="11" stroke="#185fa5" stroke-width="2" stroke-linecap="round"/><polyline points="34,7 39,11 34,15" fill="none" stroke="#185fa5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g>
+<g transform="translate(139,108) scale(0.5)"><rect x="1" y="2" width="26" height="20" rx="2.5" fill="#3d6998"/><polyline points="1,4 14,12 27,4" fill="none" stroke="white" stroke-width="1.4"/><line x1="3" y1="15" x2="16" y2="15" stroke="rgba(255,255,255,0.38)" stroke-width="0.9"/><rect x="18" y="12" width="10" height="10" rx="2" fill="#fbbf24"/><line x1="29" y1="11" x2="38" y2="11" stroke="#3d6998" stroke-width="2" stroke-linecap="round"/><polyline points="34,7 39,11 34,15" fill="none" stroke="#3d6998" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g>
 <text x="163" y="116" font-size="8.5" font-weight="500" fill="#0c447c" font-family="sans-serif" dominant-baseline="central">DKIM署名付きメール送信</text>
-<text x="163" y="128" font-size="7.5" fill="#185fa5" font-family="monospace" dominant-baseline="central">d=example.com; s=selector1</text>
-<line x1="62" y1="136" x2="236" y2="136" stroke="#185fa5" stroke-width="1.5" marker-end="url(#dk-ar)"/>
+<text x="163" y="128" font-size="7.5" fill="#3d6998" font-family="monospace" dominant-baseline="central">d=example.com; s=selector1</text>
+<line x1="62" y1="136" x2="236" y2="136" stroke="#3d6998" stroke-width="1.5" marker-end="url(#dk-ar)"/>
 <!-- ③ B→C 矢印Y=182 アイコン中心X=323 top=154 -->
 <rect x="4" y="156" width="18" height="18" rx="3" fill="#6e1a1a"/><text x="13" y="165" font-size="8" font-weight="500" fill="white" font-family="monospace" text-anchor="middle" dominant-baseline="central">③</text>
 <g transform="translate(313,154) scale(0.5)"><circle cx="13" cy="16" r="10" fill="rgba(8,80,65,0.1)" stroke="#085041" stroke-width="1.2"/><ellipse cx="13" cy="16" rx="5" ry="10" fill="none" stroke="rgba(8,80,65,0.35)" stroke-width="0.7"/><line x1="3" y1="16" x2="23" y2="16" stroke="rgba(8,80,65,0.35)" stroke-width="0.7"/><circle cx="30" cy="10" r="8" fill="none" stroke="#085041" stroke-width="1.8"/><line x1="36" y1="16" x2="41" y2="22" stroke="#085041" stroke-width="2.2" stroke-linecap="round"/></g>
@@ -1964,7 +2101,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 <rect x="4" y="246" width="18" height="18" rx="3" fill="#6e1a1a"/><text x="13" y="255" font-size="8" font-weight="500" fill="white" font-family="monospace" text-anchor="middle" dominant-baseline="central">⑤</text>
 <rect x="229" y="244" width="9" height="80" rx="2" fill="rgba(110,26,26,0.09)" stroke="#6e1a1a" stroke-width="0.8"/>
 <rect x="241" y="244" width="204" height="80" rx="5" fill="#fcebeb" stroke="#f09595" stroke-width="0.5"/>
-<g transform="translate(244,247) scale(0.45)"><rect x="2" y="18" width="18" height="14" rx="2.5" fill="#6e1a1a" opacity="0.8"/><path d="M6 18 V13 Q6 7 11 7 Q16 7 16 13" fill="none" stroke="#6e1a1a" stroke-width="2" stroke-linecap="round" opacity="0.8"/><path d="M16 13 V9" fill="none" stroke="#6e1a1a" stroke-width="2" stroke-linecap="round" opacity="0.5"/><circle cx="11" cy="25" r="2.5" fill="rgba(255,255,255,0.45)"/><rect x="0" y="30" width="12" height="6" rx="1.5" fill="#185fa5" opacity="0.8"/><circle cx="30" cy="14" r="9" fill="none" stroke="#6e1a1a" stroke-width="1.8"/><line x1="37" y1="21" x2="42" y2="27" stroke="#6e1a1a" stroke-width="2.2" stroke-linecap="round"/><polyline points="25,14 28,18 35,9" fill="none" stroke="#0f6e56" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g>
+<g transform="translate(244,247) scale(0.45)"><rect x="2" y="18" width="18" height="14" rx="2.5" fill="#6e1a1a" opacity="0.8"/><path d="M6 18 V13 Q6 7 11 7 Q16 7 16 13" fill="none" stroke="#6e1a1a" stroke-width="2" stroke-linecap="round" opacity="0.8"/><path d="M16 13 V9" fill="none" stroke="#6e1a1a" stroke-width="2" stroke-linecap="round" opacity="0.5"/><circle cx="11" cy="25" r="2.5" fill="rgba(255,255,255,0.45)"/><rect x="0" y="30" width="12" height="6" rx="1.5" fill="#3d6998" opacity="0.8"/><circle cx="30" cy="14" r="9" fill="none" stroke="#6e1a1a" stroke-width="1.8"/><line x1="37" y1="21" x2="42" y2="27" stroke="#6e1a1a" stroke-width="2.2" stroke-linecap="round"/><polyline points="25,14 28,18 35,9" fill="none" stroke="#0f6e56" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g>
 <text x="265" y="255" font-size="8.5" font-weight="500" fill="#6e1a1a" font-family="sans-serif" dominant-baseline="central">公開鍵で署名検証</text>
 <line x1="246" y1="266" x2="439" y2="266" stroke="#f09595" stroke-width="0.5"/>
 <text x="248" y="277" font-size="7.5" fill="#a32d2d" font-family="sans-serif" dominant-baseline="central">署名値を復号 / 本文ハッシュと照合</text>
@@ -1978,16 +2115,16 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 <text x="364" y="342" font-size="7.5" fill="#854f0b" font-family="monospace" dominant-baseline="central">Auth-Results: dkim=pass</text>
 <line x1="236" y1="350" x2="540" y2="350" stroke="#6e1a1a" stroke-width="1.5" marker-end="url(#dk-ar)"/>
 <!-- 下部ラベル -->
-<text x="62" y="414" font-size="8" fill="#185fa5" font-family="sans-serif" text-anchor="middle">送信MTA</text>
+<text x="62" y="414" font-size="8" fill="#3d6998" font-family="sans-serif" text-anchor="middle">送信MTA</text>
 <text x="236" y="414" font-size="8" fill="#6e1a1a" font-family="sans-serif" text-anchor="middle">受信MTA</text>
 <text x="410" y="414" font-size="8" fill="#0f6e56" font-family="sans-serif" text-anchor="middle">DNS</text>
 <text x="584" y="414" font-size="8" fill="#26215c" font-family="sans-serif" text-anchor="middle">受信者(MUA)</text>
 </svg>
-    <div style="margin-top:8px;background:#eaf7f1;border:1px solid #80c8a0;border-radius:6px;padding:7px 11px;font-size:9.5px;color:#0d3d28;line-height:1.6;"><strong>DKIMのポイント：</strong>送信側が<strong>秘密鍵</strong>でメール本文とヘッダの署名を生成し<code style="font-family:var(--mono);font-size:8.5px;background:rgba(21,95,68,.1);padding:1px 3px;border-radius:3px;">DKIM-Signature</code>ヘッダに添付。受信側はDNSから<strong>公開鍵</strong>を取得して検証。<strong>改ざん検知とドメイン認証を同時に実現</strong>。</div>
+    <div style="margin-top:8px;background:#ecf1ed;border:1px solid #80c8a0;border-radius:6px;padding:7px 11px;font-size:9.5px;color:#1a3d2a;line-height:1.6;"><strong>DKIMのポイント：</strong>送信側が<strong>秘密鍵</strong>でメール本文とヘッダの署名を生成し<code style="font-family:var(--mono);font-size:8.5px;background:rgba(21,95,68,.1);padding:1px 3px;border-radius:3px;">DKIM-Signature</code>ヘッダに添付。受信側はDNSから<strong>公開鍵</strong>を取得して検証。<strong>改ざん検知とドメイン認証を同時に実現</strong>。</div>
   </div>
 </div>
 <!-- DMARC シーケンス -->
-<div style="background:#fff;border:1.5px solid #e0c070;border-radius:12px;overflow:hidden;margin:16px 0;">
+<div style="background:#fff;border:1.5px solid #d9c68a;border-radius:2px;overflow:hidden;margin:16px 0;">
   <div style="background:linear-gradient(90deg,#7a4208,#a06010);padding:9px 16px;display:flex;align-items:center;gap:10px;">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
     <div>
@@ -2011,7 +2148,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
   ラベルY=430
 -->
 <!-- A: 送信MTA --><rect x="6" y="4" width="80" height="48" rx="7" fill="#0c447c"/>
-<g transform="translate(9,8) scale(0.5)"><rect x="2" y="2" width="36" height="26" rx="3" fill="#1a3a8a" stroke="#6ab4f5" stroke-width="1.2"/><polyline points="2,4 20,14 38,4" fill="none" stroke="#6ab4f5" stroke-width="1.3"/><line x1="5" y1="19" x2="35" y2="19" stroke="rgba(106,180,245,0.35)" stroke-width="1"/><line x1="5" y1="23" x2="24" y2="23" stroke="rgba(106,180,245,0.25)" stroke-width="1"/><rect x="14" y="28" width="12" height="3" rx="1" fill="rgba(255,255,255,0.2)"/><rect x="10" y="31" width="20" height="2.5" rx="1" fill="rgba(255,255,255,0.15)"/><circle cx="37" cy="4" r="5" fill="#ef4444"/><text x="37" y="4" font-size="6" fill="white" font-family="monospace" text-anchor="middle" dominant-baseline="central">3</text></g>
+<g transform="translate(9,8) scale(0.5)"><rect x="2" y="2" width="36" height="26" rx="3" fill="#1a3a8a" stroke="#c9a557" stroke-width="1.2"/><polyline points="2,4 20,14 38,4" fill="none" stroke="#c9a557" stroke-width="1.3"/><line x1="5" y1="19" x2="35" y2="19" stroke="rgba(106,180,245,0.35)" stroke-width="1"/><line x1="5" y1="23" x2="24" y2="23" stroke="rgba(106,180,245,0.25)" stroke-width="1"/><rect x="14" y="28" width="12" height="3" rx="1" fill="rgba(255,255,255,0.2)"/><rect x="10" y="31" width="20" height="2.5" rx="1" fill="rgba(255,255,255,0.15)"/><circle cx="37" cy="4" r="5" fill="#ef4444"/><text x="37" y="4" font-size="6" fill="white" font-family="monospace" text-anchor="middle" dominant-baseline="central">3</text></g>
 <text x="46" y="32" font-size="8" font-weight="500" fill="white" font-family="sans-serif" text-anchor="middle" dominant-baseline="central">送信MTA</text>
 <text x="46" y="44" font-size="7" fill="rgba(255,255,255,0.6)" font-family="sans-serif" text-anchor="middle" dominant-baseline="central">メールサーバ</text>
 <!-- B: 受信MTA --><rect x="132" y="4" width="80" height="48" rx="7" fill="#6e1a1a"/>
@@ -2031,17 +2168,17 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 <text x="580" y="32" font-size="8" font-weight="500" fill="white" font-family="sans-serif" text-anchor="middle" dominant-baseline="central">受信者</text>
 <text x="580" y="44" font-size="7" fill="rgba(255,255,255,0.6)" font-family="sans-serif" text-anchor="middle" dominant-baseline="central">MUA</text>
 <!-- ライフライン -->
-<line x1="46" y1="52" x2="46" y2="416" stroke="#185fa5" stroke-width="1" stroke-dasharray="4,4" opacity="0.3"/>
+<line x1="46" y1="52" x2="46" y2="416" stroke="#3d6998" stroke-width="1" stroke-dasharray="4,4" opacity="0.3"/>
 <line x1="172" y1="52" x2="172" y2="416" stroke="#6e1a1a" stroke-width="1" stroke-dasharray="4,4" opacity="0.3"/>
 <line x1="308" y1="52" x2="308" y2="416" stroke="#085041" stroke-width="1" stroke-dasharray="4,4" opacity="0.3"/>
 <line x1="444" y1="52" x2="444" y2="416" stroke="#3c3489" stroke-width="1" stroke-dasharray="4,4" opacity="0.3"/>
 <line x1="580" y1="52" x2="580" y2="416" stroke="#26215c" stroke-width="1" stroke-dasharray="4,4" opacity="0.3"/>
 <!-- ① A→B 矢印Y=90 アイコン中心X=109 top=60 -->
 <rect x="4" y="62" width="18" height="18" rx="3" fill="#0c447c"/><text x="13" y="71" font-size="8" font-weight="500" fill="white" font-family="monospace" text-anchor="middle" dominant-baseline="central">①</text>
-<g transform="translate(99,60) scale(0.5)"><rect x="1" y="2" width="26" height="20" rx="2.5" fill="#185fa5"/><polyline points="1,4 14,12 27,4" fill="none" stroke="white" stroke-width="1.4"/><line x1="3" y1="15" x2="16" y2="15" stroke="rgba(255,255,255,0.38)" stroke-width="0.9"/><circle cx="22" cy="16" r="5" fill="#0f6e56"/><polyline points="19,16 21,19 26,12" fill="none" stroke="white" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><line x1="29" y1="11" x2="38" y2="11" stroke="#185fa5" stroke-width="2" stroke-linecap="round"/><polyline points="34,7 39,11 34,15" fill="none" stroke="#185fa5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g>
+<g transform="translate(99,60) scale(0.5)"><rect x="1" y="2" width="26" height="20" rx="2.5" fill="#3d6998"/><polyline points="1,4 14,12 27,4" fill="none" stroke="white" stroke-width="1.4"/><line x1="3" y1="15" x2="16" y2="15" stroke="rgba(255,255,255,0.38)" stroke-width="0.9"/><circle cx="22" cy="16" r="5" fill="#0f6e56"/><polyline points="19,16 21,19 26,12" fill="none" stroke="white" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><line x1="29" y1="11" x2="38" y2="11" stroke="#3d6998" stroke-width="2" stroke-linecap="round"/><polyline points="34,7 39,11 34,15" fill="none" stroke="#3d6998" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g>
 <text x="123" y="68" font-size="8.5" font-weight="500" fill="#0c447c" font-family="sans-serif" dominant-baseline="central">メール到着</text>
-<text x="123" y="80" font-size="7.5" fill="#185fa5" font-family="sans-serif" dominant-baseline="central">SPF/DKIM検証済</text>
-<line x1="46" y1="90" x2="172" y2="90" stroke="#185fa5" stroke-width="1.5" marker-end="url(#dm-ar)"/>
+<text x="123" y="80" font-size="7.5" fill="#3d6998" font-family="sans-serif" dominant-baseline="central">SPF/DKIM検証済</text>
+<line x1="46" y1="90" x2="172" y2="90" stroke="#3d6998" stroke-width="1.5" marker-end="url(#dm-ar)"/>
 <!-- ② B→C 矢印Y=136 アイコン中心X=240 top=108 -->
 <rect x="4" y="110" width="18" height="18" rx="3" fill="#6e1a1a"/><text x="13" y="119" font-size="8" font-weight="500" fill="white" font-family="monospace" text-anchor="middle" dominant-baseline="central">②</text>
 <g transform="translate(230,108) scale(0.5)"><circle cx="13" cy="16" r="10" fill="rgba(8,80,65,0.1)" stroke="#085041" stroke-width="1.2"/><ellipse cx="13" cy="16" rx="5" ry="10" fill="none" stroke="rgba(8,80,65,0.35)" stroke-width="0.7"/><line x1="3" y1="16" x2="23" y2="16" stroke="rgba(8,80,65,0.35)" stroke-width="0.7"/><circle cx="30" cy="10" r="8" fill="none" stroke="#085041" stroke-width="1.8"/><line x1="36" y1="16" x2="41" y2="22" stroke="#085041" stroke-width="2.2" stroke-linecap="round"/></g>
@@ -2085,13 +2222,13 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 <text x="272" y="348" font-size="7.5" fill="#534ab7" font-family="sans-serif" dominant-baseline="central">rua: 失敗状況を定期報告</text>
 <line x1="172" y1="358" x2="404" y2="358" stroke="#3c3489" stroke-width="1.5" marker-end="url(#dm-ar)"/>
 <!-- 下部ラベル -->
-<text x="46" y="432" font-size="7.5" fill="#185fa5" font-family="sans-serif" text-anchor="middle">送信MTA</text>
+<text x="46" y="432" font-size="7.5" fill="#3d6998" font-family="sans-serif" text-anchor="middle">送信MTA</text>
 <text x="172" y="432" font-size="7.5" fill="#6e1a1a" font-family="sans-serif" text-anchor="middle">受信MTA</text>
 <text x="308" y="432" font-size="7.5" fill="#0f6e56" font-family="sans-serif" text-anchor="middle">DNS</text>
 <text x="444" y="432" font-size="7.5" fill="#3c3489" font-family="sans-serif" text-anchor="middle">送信ドメイン管理者</text>
 <text x="580" y="432" font-size="7.5" fill="#26215c" font-family="sans-serif" text-anchor="middle">受信者(MUA)</text>
 </svg>
-    <div style="margin-top:8px;background:#fdf5e6;border:1px solid #e0c070;border-radius:6px;padding:7px 11px;font-size:9.5px;color:#5a3200;line-height:1.6;"><strong>DMARCのポイント：</strong>SPF・DKIMの認証ドメインが<code style="font-family:var(--mono);font-size:8.5px;background:rgba(181,130,30,.15);padding:1px 3px;border-radius:3px;">From:</code>ヘッダのドメインと一致するかを検証（<strong>アライメント</strong>）。不一致なら<code style="font-family:var(--mono);font-size:8.5px">none/quarantine/reject</code>を適用。失敗状況を<strong>送信ドメイン管理者にレポート</strong>。</div>
+    <div style="margin-top:8px;background:#f5efe0;border:1px solid #d9c68a;border-radius:6px;padding:7px 11px;font-size:9.5px;color:#5a3200;line-height:1.6;"><strong>DMARCのポイント：</strong>SPF・DKIMの認証ドメインが<code style="font-family:var(--mono);font-size:8.5px;background:rgba(164,122,42,.15);padding:1px 3px;border-radius:3px;">From:</code>ヘッダのドメインと一致するかを検証（<strong>アライメント</strong>）。不一致なら<code style="font-family:var(--mono);font-size:8.5px">none/quarantine/reject</code>を適用。失敗状況を<strong>送信ドメイン管理者にレポート</strong>。</div>
   </div>
 </div>
 
@@ -2106,68 +2243,68 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 <tbody>
 <tr>
   <td>SMTP over TLS<br><span style="font-size:10px;font-family:var(--mono);color:var(--accent2)">STARTTLS / SMTPS</span></td>
-  <td style="color:#3a3d52">MTA間の転送経路（インターネット上のサーバ間）</td>
-  <td style="color:#3a3d52">通信路の盗聴・傍受（転送中のメール内容の漏洩）</td>
+  <td style="color:#3d4860">MTA間の転送経路（インターネット上のサーバ間）</td>
+  <td style="color:#3d4860">通信路の盗聴・傍受（転送中のメール内容の漏洩）</td>
   <td style="color:var(--success);font-size:12.5px">転送路の機密性確保。サーバに届いた後は平文（エンドツーエンドではない）</td>
 </tr>
 <tr>
   <td>S/MIME</td>
-  <td style="color:#3a3d52">MUA（エンドユーザ）間のメール本文</td>
-  <td style="color:#3a3d52">メール内容の盗聴・改ざん・なりすまし</td>
+  <td style="color:#3d4860">MUA（エンドユーザ）間のメール本文</td>
+  <td style="color:#3d4860">メール内容の盗聴・改ざん・なりすまし</td>
   <td style="color:var(--success);font-size:12.5px">エンドツーエンドの機密性（暗号化）・完全性・送信者認証・否認防止（デジタル署名）</td>
 </tr>
 <tr>
   <td>PGP / OpenPGP</td>
-  <td style="color:#3a3d52">MUA（エンドユーザ）間のメール本文</td>
-  <td style="color:#3a3d52">メール内容の盗聴・改ざん・なりすまし</td>
+  <td style="color:#3d4860">MUA（エンドユーザ）間のメール本文</td>
+  <td style="color:#3d4860">メール内容の盗聴・改ざん・なりすまし</td>
   <td style="color:var(--success);font-size:12.5px">エンドツーエンドの機密性・完全性・送信者認証。CAなしでWoTモデルで信頼構築</td>
 </tr>
 <tr>
   <td>SMTP-AUTH<br><span style="font-size:10px;font-family:var(--mono);color:var(--accent2)">Port 587</span></td>
-  <td style="color:#3a3d52">MUA → MSA/MTA（送信クライアント→送信サーバ）</td>
-  <td style="color:#3a3d52">不正な第三者による無断メール送信（オープンリレー・スパム送信）</td>
+  <td style="color:#3d4860">MUA → MSA/MTA（送信クライアント→送信サーバ）</td>
+  <td style="color:#3d4860">不正な第三者による無断メール送信（オープンリレー・スパム送信）</td>
   <td style="color:var(--success);font-size:12.5px">送信者のアカウント認証。正規ユーザのみ送信を許可するアクセス制御</td>
 </tr>
 <tr>
   <td>POP before SMTP</td>
-  <td style="color:#3a3d52">MUA → MTA（送信クライアント→送信サーバ）</td>
-  <td style="color:#3a3d52">不正な第三者による無断メール送信</td>
+  <td style="color:#3d4860">MUA → MTA（送信クライアント→送信サーバ）</td>
+  <td style="color:#3d4860">不正な第三者による無断メール送信</td>
   <td style="color:var(--success);font-size:12.5px">POP3認証成功IPからの送信のみ許可（暫定的・現在は廃止傾向）</td>
 </tr>
 <tr>
   <td>OP25B</td>
-  <td style="color:#3a3d52">一般ユーザ端末 → 外部MTA（Port 25・外向き）</td>
-  <td style="color:#3a3d52">マルウェア感染PCによる直接スパム大量送信</td>
+  <td style="color:#3d4860">一般ユーザ端末 → 外部MTA（Port 25・外向き）</td>
+  <td style="color:#3d4860">マルウェア感染PCによる直接スパム大量送信</td>
   <td style="color:var(--success);font-size:12.5px">一般ユーザからの外向きPort 25をISPがブロック。正規送信はPort 587へ誘導</td>
 </tr>
 <tr>
   <td>IP25B</td>
-  <td style="color:#3a3d52">動的IPアドレス端末 → 受信MTA（Port 25・内向き）</td>
-  <td style="color:#3a3d52">動的IPからの直接スパム配信</td>
+  <td style="color:#3d4860">動的IPアドレス端末 → 受信MTA（Port 25・内向き）</td>
+  <td style="color:#3d4860">動的IPからの直接スパム配信</td>
   <td style="color:var(--success);font-size:12.5px">受信サーバが動的IPからの接続を拒否。固定IPの正規MTAのみ受信</td>
 </tr>
 <tr>
   <td>SPF</td>
-  <td style="color:#3a3d52">送信MTA → 受信MTA（SMTP接続のIPアドレス検証）</td>
-  <td style="color:#3a3d52">送信ドメインのなりすまし（エンベロープFromの偽装）</td>
+  <td style="color:#3d4860">送信MTA → 受信MTA（SMTP接続のIPアドレス検証）</td>
+  <td style="color:#3d4860">送信ドメインのなりすまし（エンベロープFromの偽装）</td>
   <td style="color:var(--success);font-size:12.5px">送信ドメインのDNSで許可IPを定義。受信側がIPを照合しメール詐称を検出</td>
 </tr>
 <tr>
   <td>DKIM</td>
-  <td style="color:#3a3d52">メールのヘッダと本文（メール本体の署名検証）</td>
-  <td style="color:#3a3d52">メール本文・ヘッダの改ざん・送信ドメインの詐称</td>
+  <td style="color:#3d4860">メールのヘッダと本文（メール本体の署名検証）</td>
+  <td style="color:#3d4860">メール本文・ヘッダの改ざん・送信ドメインの詐称</td>
   <td style="color:var(--success);font-size:12.5px">送信ドメインの秘密鍵で署名→DNSの公開鍵で検証。完全性と送信ドメイン認証を同時実現</td>
 </tr>
 <tr>
   <td>DMARC</td>
-  <td style="color:#3a3d52">受信サーバでの総合判定（ヘッダFromとSPF/DKIMの整合性）</td>
-  <td style="color:#3a3d52">SPF/DKIMを回避したヘッダFrom詐称（フィッシング・BEC対策の最終防衛ライン）</td>
+  <td style="color:#3d4860">受信サーバでの総合判定（ヘッダFromとSPF/DKIMの整合性）</td>
+  <td style="color:#3d4860">SPF/DKIMを回避したヘッダFrom詐称（フィッシング・BEC対策の最終防衛ライン）</td>
   <td style="color:var(--success);font-size:12.5px">SPF/DKIMにアライメント検証を加えたポリシー統合（none/quarantine/reject）と可視化（レポート）</td>
 </tr>
 <tr>
   <td>MIME / Base64</td>
-  <td style="color:#3a3d52">メール本文・添付ファイルのエンコード</td>
-  <td style="color:#3a3d52">ASCII制限による非テキストデータの転送不能（セキュリティ対策ではない）</td>
+  <td style="color:#3d4860">メール本文・添付ファイルのエンコード</td>
+  <td style="color:#3d4860">ASCII制限による非テキストデータの転送不能（セキュリティ対策ではない）</td>
   <td style="color:var(--success);font-size:12.5px">バイナリデータ・日本語・添付ファイルのSMTP転送を可能にする（機密性なし）</td>
 </tr>
 </tbody>
@@ -2309,7 +2446,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 </div>
 
 <footer>
-<p>電子メールのセキュリティ 技術解説書 Ver.1 — 情報処理安全確保支援士試験 対応版</p>
+<p>電子メールのセキュリティ 技術解説書 Ver.2 — 情報処理安全確保支援士試験 対応版</p>
 <p>シラバス Ver.2.1 | 3-5 ネットワーク及び機器のセキュリティ管理 / 3-8 アカウント管理及びアクセス管理 / 3-1 暗号利用及び鍵管理</p>
 </footer>
 

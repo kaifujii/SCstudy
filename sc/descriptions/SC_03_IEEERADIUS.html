@@ -7,492 +7,642 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600&family=Noto+Sans+JP:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root{--ink:#141824;--ink2:#1e2d4a;--accent:#0b4a82;--accent2:#1570b8;--gold:#b5821e;--soft:#e8edf5;--surface:#f3f6fb;--line:#cdd7e6;--success:#155f44;--warn:#7a4208;--danger:#7a1818;--mono:'JetBrains Mono',monospace;--serif:'Noto Serif JP',serif;--sans:'Noto Sans JP',sans-serif}
+:root{
+  --ink:#111624; --ink2:#1f2a3d; --ink3:#3d4860;
+  --accent:#1c3a5c; --accent2:#3d6998; --accent3:#7a9bc2;
+  --gold:#a47a2a; --gold2:#c9a557;
+  --paper:#fbfbf8; --surface:#f4f2ec; --panel:#ffffff;
+  --line:#d9d5c7; --line2:#e8e5db; --soft:#eef1f7;
+  --success:#2a5f4a; --warn:#7a4a1a; --danger:#742828;
+  --mono:'JetBrains Mono',monospace; --serif:'Noto Serif JP',serif; --sans:'Noto Sans JP',sans-serif;
+}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:var(--sans);background:#edf1f8;color:var(--ink);font-size:15px;line-height:1.78}
-.cover{background:var(--ink);color:#fff;padding:72px 60px 56px;position:relative;overflow:hidden}
-.cover-geo{position:absolute;top:0;right:0;width:420px;height:420px;opacity:.06}
-.cover-kicker{font-size:11px;font-weight:700;letter-spacing:.2em;color:rgba(255,255,255,.42);text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:10px}
-.cover-kicker::before{content:'';display:block;width:24px;height:1px;background:var(--gold)}
-.cover h1{font-family:var(--serif);font-size:40px;font-weight:600;line-height:1.22;margin-bottom:18px}
-.cover h1 em{color:#6ab4f5;font-style:normal}
-.cover-desc{font-size:14px;color:rgba(255,255,255,.58);max-width:560px;margin-bottom:36px;line-height:1.8}
-.cover-tags{display:flex;gap:7px;flex-wrap:wrap}
-.ctag{font-size:10.5px;padding:3px 11px;border-radius:3px;border:1px solid rgba(255,255,255,.16);color:rgba(255,255,255,.6);letter-spacing:.04em;font-family:var(--mono)}
-.layout{display:flex;align-items:flex-start}
-.sidebar{position:sticky;top:0;width:220px;flex-shrink:0;height:100vh;overflow-y:auto;background:var(--ink2);padding:28px 0}
-.sidebar-title{font-size:10px;font-weight:700;letter-spacing:.18em;color:rgba(255,255,255,.3);text-transform:uppercase;padding:0 20px 12px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:8px}
-.sidebar nav a{display:block;padding:8px 20px;font-size:12.5px;color:rgba(255,255,255,.55);text-decoration:none;border-left:2px solid transparent;transition:all .15s;line-height:1.45}
-.sidebar nav a:hover{color:#fff;background:rgba(255,255,255,.05)}
-.sidebar nav a.active{color:#6ab4f5;border-left-color:#6ab4f5;background:rgba(100,180,245,.07)}
-.sidebar nav .nav-num{font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.25);display:block;margin-bottom:1px}
-.main{flex:1;min-width:0;padding:52px 52px 100px}
-.section{margin-bottom:80px;scroll-margin-top:24px}
-.section-header{display:flex;align-items:flex-start;gap:14px;margin-bottom:26px;padding-bottom:16px;border-bottom:1px solid var(--line)}
-.s-num{font-family:var(--mono);font-size:10px;font-weight:500;color:#fff;background:var(--accent);padding:3px 8px;border-radius:3px;margin-top:5px;white-space:nowrap;flex-shrink:0}
-.s-num.gold-bg{background:var(--gold)}
-.s-num.red-bg{background:var(--danger)}
-h2{font-family:var(--serif);font-size:24px;font-weight:600;color:var(--ink);line-height:1.3}
-h3{font-size:15px;font-weight:700;color:var(--ink2);margin:32px 0 12px;padding-left:10px;border-left:3px solid var(--accent2)}
-p{color:#3a3d52;margin-bottom:14px}
-.steps{display:flex;flex-direction:column;gap:8px;margin:16px 0}
-.step{display:flex;gap:12px;align-items:flex-start;padding:11px 15px;border-radius:6px;background:var(--surface);border-left:3px solid var(--line)}
-.step.hi{background:#eaf3ff;border-left-color:var(--accent2)}
-.step.ok{background:#eaf7f1;border-left-color:var(--success)}
-.step.wn{background:#fdf5e6;border-left-color:var(--gold)}
-.step.ng{background:#fdf0f0;border-left-color:var(--danger)}
-.sn{font-family:var(--mono);font-size:10px;font-weight:500;color:#fff;background:var(--accent2);min-width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
-.step.ok .sn{background:var(--success)}
-.step.wn .sn{background:var(--gold)}
-.step.ng .sn{background:var(--danger)}
-.sb{font-size:13.5px;color:var(--ink);line-height:1.65}
-.sb strong{color:var(--ink2)}
-.sb code{font-family:var(--mono);font-size:11.5px;background:rgba(11,74,130,.08);color:var(--accent);padding:1px 5px;border-radius:3px}
-.note{display:flex;gap:11px;border-radius:6px;padding:13px 16px;margin:14px 0;border:1px solid}
-.note-i{flex-shrink:0;margin-top:2px}
-.note p{margin:0;font-size:13px;line-height:1.7}
-.note.info{background:#e8f3fd;border-color:#a8cef5}
-.note.info p{color:#0b3a6a}
-.note.warn{background:#fdf5e6;border-color:#e8c97a}
-.note.warn p{color:#5a3200}
-.note.danger{background:#fdf0f0;border-color:#e8a8a8}
-.note.danger p{color:#5a0000}
-.keypoint{background:var(--ink);color:#fff;border-radius:8px;padding:20px 26px;margin:24px 0}
-.kp-label{font-size:9.5px;font-weight:700;letter-spacing:.2em;color:rgba(181,130,30,.9);text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:8px}
-.kp-label::before{content:'';display:block;width:16px;height:1px;background:var(--gold)}
-.keypoint p{color:rgba(255,255,255,.82);margin:0;font-size:13.5px;line-height:1.8}
-.keypoint strong{color:#6ab4f5}
-.cmp-table{width:100%;border-collapse:collapse;font-size:13px;margin:16px 0}
-.cmp-table th{background:var(--accent);color:#fff;padding:9px 13px;text-align:center;font-size:11px;font-weight:600;letter-spacing:.06em}
-.cmp-table th:first-child{text-align:left;background:var(--ink2)}
-.cmp-table td{padding:9px 13px;border:1px solid var(--line);text-align:center;font-size:12.5px;vertical-align:middle}
-.cmp-table td:first-child{text-align:left;font-weight:600;color:var(--ink2);background:var(--surface);white-space:nowrap}
-.cmp-good{color:var(--success);font-weight:600}
-.cmp-bad{color:var(--danger)}
-.cmp-mid{color:var(--warn)}
-.req-table{width:100%;border-collapse:collapse;font-size:13.5px;margin:16px 0}
-.req-table th{background:var(--ink2);color:#fff;padding:9px 13px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em}
-.req-table td{padding:9px 13px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.6}
-.req-table tr:last-child td{border-bottom:none}
-.req-table tr:nth-child(even) td{background:var(--surface)}
-.req-table td:first-child{font-family:var(--mono);font-size:11.5px;font-weight:600;color:var(--ink2);white-space:nowrap}
-.term-table{width:100%;border-collapse:collapse;font-size:13px;margin:12px 0}
-.term-table td{padding:8px 11px;border-bottom:1px dashed var(--line);vertical-align:top}
-.term-table td:first-child{font-family:var(--mono);font-size:11px;color:var(--accent2);font-weight:500;white-space:nowrap;min-width:160px}
-.term-table tr:last-child td{border-bottom:none}
-.quiz-wrap{display:flex;flex-direction:column;gap:24px;margin:20px 0}
-.quiz{background:#fff;border:1px solid var(--line);border-radius:8px;overflow:hidden}
-.quiz-q{padding:14px 18px;background:var(--ink2);color:#fff;font-size:13.5px;line-height:1.65;display:flex;gap:12px}
-.quiz-qn{font-family:var(--mono);font-size:10px;background:rgba(255,255,255,.15);padding:2px 8px;border-radius:3px;white-space:nowrap;flex-shrink:0;height:fit-content;margin-top:2px}
-.quiz-opts{padding:14px 18px;display:flex;flex-direction:column;gap:7px}
-.quiz-opt{padding:8px 13px;border:1px solid var(--line);border-radius:5px;font-size:13px;color:var(--ink);cursor:pointer;transition:all .15s;background:#fff;text-align:left}
-.quiz-opt:hover{background:var(--surface);border-color:var(--accent2)}
-.quiz-opt.correct{background:#eaf7f1;border-color:var(--success);color:var(--success)}
-.quiz-opt.wrong{background:#fdf0f0;border-color:var(--danger);color:var(--danger)}
-.quiz-opt.reveal{background:var(--surface);color:#aaa}
-.quiz-exp{display:none;padding:12px 18px;background:#f0f6ff;border-top:1px solid #b8d5f5;font-size:13px;color:#0b3a6a;line-height:1.7}
-.quiz-exp.show{display:block}
-footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;padding:22px;font-size:11.5px;letter-spacing:.05em;line-height:1.8}
-@media(max-width:800px){.sidebar{display:none}.main{padding:28px 20px 60px}.cover{padding:48px 24px 40px}.cover h1{font-size:28px}}
+body{
+  font-family:var(--sans); background:var(--paper); color:var(--ink);
+  font-size:14.5px; line-height:1.85;
+  background-image:radial-gradient(circle at 1px 1px, rgba(31,42,61,.05) 1px, transparent 0);
+  background-size:28px 28px;
+}
+
+/* ── Cover ── */
+.cover{
+  background:linear-gradient(180deg, #0f1420 0%, #1a2236 100%);
+  color:#fff; padding:80px 64px 68px; position:relative; overflow:hidden;
+}
+.cover::before{
+  content:''; position:absolute; inset:0;
+  background:
+    radial-gradient(ellipse at top right, rgba(201,165,87,.08), transparent 55%),
+    radial-gradient(ellipse at bottom left, rgba(122,155,194,.08), transparent 55%);
+  pointer-events:none;
+}
+.cover-geo{ position:absolute; top:-60px; right:-60px; width:540px; height:540px; opacity:.07; animation:rotSlow 60s linear infinite; }
+@keyframes rotSlow{ to{ transform:rotate(360deg); } }
+.cover-inner{ position:relative; max-width:1000px; }
+.cover-kicker{
+  font-size:10.5px; font-weight:700; letter-spacing:.28em;
+  color:rgba(201,165,87,.8); text-transform:uppercase;
+  margin-bottom:28px; display:flex; align-items:center; gap:14px;
+}
+.cover-kicker::before{ content:''; display:block; width:32px; height:1px; background:var(--gold2); }
+.cover h1{
+  font-family:var(--serif); font-size:52px; font-weight:600;
+  line-height:1.15; margin-bottom:22px; letter-spacing:.02em;
+}
+.cover h1 em{ color:var(--gold2); font-style:normal; font-weight:500; }
+.cover-desc{
+  font-size:14px; color:rgba(255,255,255,.62); max-width:600px; margin-bottom:42px;
+  line-height:1.9;
+}
+.cover-tags{ display:flex; gap:8px; flex-wrap:wrap; }
+.ctag{
+  font-size:10.5px; padding:5px 13px; border-radius:2px;
+  border:1px solid rgba(201,165,87,.3); color:rgba(255,255,255,.7);
+  letter-spacing:.08em; font-family:var(--mono);
+}
+.cover-illust{
+  position:absolute; right:64px; bottom:60px; width:180px; height:180px;
+  opacity:.9;
+}
+.cover-illust svg{ width:100%; height:100%; }
+.ci-ring{ animation:pulse 4s ease-in-out infinite; transform-origin:center; }
+@keyframes pulse{ 0%,100%{opacity:.3;transform:scale(1)} 50%{opacity:.55;transform:scale(1.04)} }
+.ci-key{ animation:keyFloat 5s ease-in-out infinite; transform-origin:center; }
+@keyframes keyFloat{ 0%,100%{transform:translate(0,0) rotate(0deg)} 50%{transform:translate(4px,-4px) rotate(-8deg)} }
+.ci-chk{ stroke-dasharray:20; stroke-dashoffset:20; animation:chkDraw 3s ease-in-out infinite; }
+@keyframes chkDraw{ 0%,100%{stroke-dashoffset:20} 50%{stroke-dashoffset:0} }
+
+/* ── Layout ── */
+.layout{display:flex; align-items:flex-start; background:var(--paper);}
+.sidebar{
+  position:sticky; top:0; width:240px; flex-shrink:0; height:100vh;
+  overflow-y:auto; background:linear-gradient(180deg,#1a2236,#0f1420); padding:36px 0;
+  border-right:1px solid rgba(201,165,87,.12);
+}
+.sidebar-title{
+  font-size:9.5px; font-weight:700; letter-spacing:.24em;
+  color:rgba(201,165,87,.7); text-transform:uppercase;
+  padding:0 26px 16px; border-bottom:1px solid rgba(255,255,255,.08);
+  margin-bottom:10px;
+}
+.sidebar nav a{
+  display:block; padding:10px 26px; font-size:12.5px; color:rgba(255,255,255,.58);
+  text-decoration:none; border-left:2px solid transparent; transition:all .2s;
+  line-height:1.5;
+}
+.sidebar nav a:hover{ color:#fff; background:rgba(255,255,255,.04); }
+.sidebar nav a.active{ color:var(--gold2); border-left-color:var(--gold2); background:rgba(201,165,87,.06); }
+.sidebar nav .nav-num{ font-family:var(--mono); font-size:9px; color:rgba(201,165,87,.45); display:block; margin-bottom:2px; letter-spacing:.1em; }
+
+.main{ flex:1; min-width:0; padding:64px 64px 120px; max-width:1180px; }
+
+/* ── Section ── */
+.section{ margin-bottom:100px; scroll-margin-top:24px; }
+.section-header{ display:flex; align-items:flex-start; gap:18px; margin-bottom:36px; padding-bottom:22px; border-bottom:1px solid var(--line); position:relative; }
+.section-header::after{ content:''; position:absolute; left:0; bottom:-1px; width:80px; height:2px; background:var(--gold); }
+.s-num{
+  font-family:var(--mono); font-size:10px; font-weight:500; color:#fff;
+  background:var(--ink); padding:4px 10px; border-radius:2px; margin-top:8px;
+  white-space:nowrap; flex-shrink:0; letter-spacing:.1em;
+}
+.s-num.gold-bg{ background:var(--gold); }
+.s-num.red-bg{ background:var(--danger); }
+h2{ font-family:var(--serif); font-size:28px; font-weight:600; color:var(--ink); line-height:1.3; letter-spacing:.01em; }
+h3{ font-size:16px; font-weight:700; color:var(--ink2); margin:40px 0 16px; padding-left:14px; border-left:3px solid var(--gold); font-family:var(--sans); }
+h4{ font-size:13.5px; font-weight:700; color:var(--ink2); margin:24px 0 10px; font-family:var(--sans); }
+p{ color:var(--ink3); margin-bottom:16px; text-wrap:pretty; }
+strong{ color:var(--ink2); font-weight:700; }
+code{ font-family:var(--mono); font-size:11.5px; background:rgba(28,58,92,.07); color:var(--accent); padding:1px 6px; border-radius:2px; }
+
+/* ── Illustration panel ── */
+.illust{ background:var(--panel); border:1px solid var(--line); border-radius:2px; padding:28px; margin:28px 0; position:relative; overflow:hidden; }
+.illust::before{ content:''; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent, var(--gold),transparent); }
+.illust-label{ font-family:var(--mono); font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:var(--gold); margin-bottom:16px; display:flex; align-items:center; gap:10px; }
+.illust-label::after{ content:''; flex:1; height:1px; background:var(--line); }
+
+/* ── Step list ── */
+.steps{ display:flex; flex-direction:column; gap:10px; margin:22px 0; }
+.step{ display:flex; gap:14px; align-items:flex-start; padding:14px 18px; border-radius:2px; background:var(--surface); border-left:3px solid var(--line); }
+.step.hi{ background:#f1f0e8; border-left-color:var(--accent2); }
+.step.ok{ background:#ecf1ed; border-left-color:var(--success); }
+.step.wn{ background:#f5efe0; border-left-color:var(--gold); }
+.step.ng{ background:#f3e8e8; border-left-color:var(--danger); }
+.sn{ font-family:var(--mono); font-size:10px; font-weight:500; color:#fff; background:var(--accent2); min-width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; }
+.step.ok .sn{ background:var(--success); }
+.step.wn .sn{ background:var(--gold); }
+.step.ng .sn{ background:var(--danger); }
+.sb{ font-size:13.5px; color:var(--ink2); line-height:1.75; }
+.sb strong{ color:var(--ink2); }
+.sb code{ font-family:var(--mono); font-size:11.5px; background:rgba(28,58,92,.07); color:var(--accent); padding:1px 6px; border-radius:2px; }
+
+/* ── Note ── */
+.note{ display:flex; gap:12px; border-radius:2px; padding:16px 20px; margin:18px 0; border:1px solid; }
+.note-i{ flex-shrink:0; margin-top:2px; }
+.note p{ margin:0; font-size:13px; line-height:1.8; }
+.note.info{ background:#eef1f7; border-color:#bcc8d9; }
+.note.info p{ color:#1a2a42; }
+.note.warn{ background:#f5efe0; border-color:#d9c68a; }
+.note.warn p{ color:#5c3a10; }
+.note.danger{ background:#f3e8e8; border-color:#d0aaaa; }
+.note.danger p{ color:#5a1a1a; }
+
+/* ── Key point ── */
+.keypoint{
+  background:linear-gradient(135deg,#1a2236,#0f1420);
+  color:#fff; border-radius:2px; padding:28px 32px; margin:28px 0;
+  position:relative; overflow:hidden; border:1px solid var(--gold);
+}
+.keypoint::before{ content:''; position:absolute; top:0; right:0; width:120px; height:120px;
+  background:radial-gradient(circle,rgba(201,165,87,.18),transparent 70%); }
+.kp-label{ font-size:9.5px; font-weight:700; letter-spacing:.24em; color:var(--gold2); text-transform:uppercase; margin-bottom:12px; display:flex; align-items:center; gap:10px; }
+.kp-label::before{ content:''; display:block; width:20px; height:1px; background:var(--gold2); }
+.keypoint p{ color:rgba(255,255,255,.86); margin:0; font-size:13.5px; line-height:1.9; position:relative; }
+.keypoint strong{ color:var(--gold2); }
+
+/* ── Cards ── */
+.card-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px; margin:28px 0; }
+.icard{
+  background:var(--panel); border:1px solid var(--line); border-radius:2px;
+  padding:22px; display:flex; flex-direction:column; gap:12px;
+  transition:all .3s; position:relative; overflow:hidden;
+}
+.icard::before{ content:''; position:absolute; top:0; left:0; width:0; height:2px; background:var(--gold); transition:width .4s ease; }
+.icard:hover{ border-color:var(--gold); transform:translateY(-2px); }
+.icard:hover::before{ width:100%; }
+.icard-icon{ color:var(--accent2); height:40px; display:flex; align-items:center; }
+.icard-label{ font-size:10px; font-weight:700; letter-spacing:.14em; color:var(--gold); text-transform:uppercase; }
+.icard-val{ font-size:13px; color:var(--ink3); line-height:1.7; }
+
+/* ── Comparison table ── */
+.cmp-table{ width:100%; border-collapse:collapse; font-size:13px; margin:20px 0; background:var(--panel); border:1px solid var(--line); }
+.cmp-table th{ background:var(--ink); color:#fff; padding:11px 14px; text-align:center; font-size:11px; font-weight:600; letter-spacing:.08em; }
+.cmp-table th:first-child{ text-align:left; background:var(--ink2); }
+.cmp-table td{ padding:11px 14px; border-top:1px solid var(--line2); text-align:center; font-size:12.5px; vertical-align:middle; }
+.cmp-table td:first-child{ text-align:left; font-weight:600; color:var(--ink2); background:var(--surface); white-space:nowrap; }
+.cmp-good{ color:var(--success); font-weight:600; }
+.cmp-bad{ color:var(--danger); }
+.cmp-mid{ color:var(--warn); }
+
+/* ── Quiz ── */
+.quiz-wrap{ display:flex; flex-direction:column; gap:24px; margin:24px 0; }
+.quiz{ background:var(--panel); border:1px solid var(--line); border-radius:2px; overflow:hidden; }
+.quiz-q{ padding:16px 20px; background:var(--ink2); color:#fff; font-size:13.5px; line-height:1.7; display:flex; gap:14px; }
+.quiz-qn{ font-family:var(--mono); font-size:10px; background:var(--gold); color:#fff; padding:3px 10px; border-radius:2px; white-space:nowrap; flex-shrink:0; height:fit-content; margin-top:2px; letter-spacing:.1em; }
+.quiz-opts{ padding:16px 20px; display:flex; flex-direction:column; gap:8px; }
+.quiz-opt{ padding:10px 14px; border:1px solid var(--line); border-radius:2px; font-size:13px; color:var(--ink2); cursor:pointer; transition:all .2s; background:var(--panel); text-align:left; font-family:var(--sans); }
+.quiz-opt:hover{ background:var(--surface); border-color:var(--accent2); }
+.quiz-opt.correct{ background:#ecf1ed; border-color:var(--success); color:var(--success); }
+.quiz-opt.wrong{ background:#f3e8e8; border-color:var(--danger); color:var(--danger); }
+.quiz-opt.reveal{ background:var(--surface); color:#999; }
+.quiz-exp{ display:none; padding:14px 20px; background:#f5efe0; border-top:1px solid #d9c68a; font-size:13px; color:#5c3a10; line-height:1.8; }
+.quiz-exp.show{ display:block; animation:fadeIn .4s ease; }
+@keyframes fadeIn{ from{opacity:0;transform:translateY(-4px)} to{opacity:1;transform:translateY(0)} }
+
+/* ── Term ── */
+.term-table{ width:100%; border-collapse:collapse; font-size:13px; margin:14px 0; background:var(--panel); border:1px solid var(--line); }
+.term-table td{ padding:10px 14px; border-bottom:1px solid var(--line2); vertical-align:top; }
+.term-table td:first-child{ font-family:var(--mono); font-size:11px; color:var(--accent); font-weight:500; white-space:nowrap; min-width:160px; background:var(--surface); }
+.term-table tr:last-child td{ border-bottom:none; }
+
+/* ── Threat grid ── */
+.threat-grid{ display:grid; grid-template-columns:1fr 1fr; gap:18px; margin:24px 0; }
+.threat-card{ background:var(--panel); border:1px solid var(--line); border-radius:2px; overflow:hidden; transition:transform .2s; }
+.threat-card:hover{ transform:translateY(-2px); }
+.tc-head{ display:flex; align-items:center; gap:12px; padding:14px 18px; background:var(--danger); color:#fff; }
+.tc-head.warn-head{ background:var(--gold); }
+.tc-head.danger-head{ background:var(--danger); }
+.tc-head.green-head{ background:var(--success); }
+.tc-head span{ font-size:13px; font-weight:700; }
+.tc-body{ padding:16px 18px; }
+.tc-body p{ font-size:12.5px; color:var(--ink3); margin:0 0 10px; line-height:1.7; }
+.tc-counter{ font-size:11.5px; color:var(--success); padding:8px 12px; background:#ecf1ed; border-radius:2px; margin:0; border-left:3px solid var(--success); }
+
+/* ── Footer ── */
+footer{
+  background:linear-gradient(180deg,#1a2236,#0f1420);
+  color:rgba(255,255,255,.45); text-align:center; padding:32px; font-size:11.5px; letter-spacing:.08em; line-height:1.9;
+  border-top:1px solid var(--gold);
+}
+
+@media (max-width:900px){
+  .sidebar{ display:none; }
+  .main{ padding:32px 20px 80px; }
+  .threat-grid{ grid-template-columns:1fr; }
+  .cover{ padding:52px 28px; }
+  .cover h1{ font-size:34px; }
+  .cover-illust{ display:none; }
+}
+
+
+
+/* ═══ IEEERADIUS - Topic specific (retoned) ═══ */
+
+/* ── Req table ── */
+.req-table{ width:100%; border-collapse:collapse; font-size:13.5px; margin:20px 0; background:var(--panel); border:1px solid var(--line); }
+.req-table th{ background:var(--ink2); color:#fff; padding:11px 14px; text-align:left; font-size:11px; font-weight:600; letter-spacing:.08em; }
+.req-table td{ padding:11px 14px; border-bottom:1px solid var(--line2); vertical-align:top; line-height:1.7; }
+.req-table tr:last-child td{ border-bottom:none; }
+.req-table tr:nth-child(even) td{ background:var(--surface); }
+.req-table td:first-child{ font-family:var(--mono); font-size:11.5px; font-weight:600; color:var(--ink2); white-space:nowrap; }
 
 /* ═══ INTERACTIVE COMPONENTS ═══ */
 
 /* ── 1. Authentication Flow Simulator ── */
-.auth-sim{background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:28px 0}
-.auth-sim-header{background:var(--ink2);color:#fff;padding:12px 20px;display:flex;align-items:center;justify-content:space-between}
-.auth-sim-title{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.7)}
-.auth-sim-step-counter{font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.45)}
-.auth-sim-stage{padding:24px 24px 20px;min-height:200px;position:relative;overflow:hidden}
-.auth-sim-actors{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:20px;position:relative;z-index:1;padding:0 8px}
-.sim-actor{display:flex;flex-direction:column;align-items:center;gap:6px;width:80px}
-.sim-actor-icon{width:56px;height:56px;border-radius:12px;display:flex;align-items:center;justify-content:center;border:2.5px solid;transition:all .4s cubic-bezier(.34,1.56,.64,1)}
-.sim-actor-icon.dim{opacity:.3;transform:scale(.9)}
-.sim-actor-icon.lit{opacity:1;transform:scale(1)}
-.sim-actor-icon.pulse{animation:simPulse .6s ease-out}
-@keyframes simPulse{0%{transform:scale(1)}50%{transform:scale(1.12)}100%{transform:scale(1)}}
-.sim-actor-label{font-size:10px;font-weight:600;color:var(--ink2);text-align:center;line-height:1.3}
-.sim-actor-sublabel{font-family:var(--mono);font-size:8.5px;color:#94a3b8;text-align:center}
-/* message packet flying across */
-.sim-track{position:relative;height:36px;margin:0 8px;display:flex;align-items:center}
-.sim-road{position:absolute;left:0;right:0;height:2px;background:var(--line);border-radius:1px}
-.sim-packet{position:absolute;top:50%;width:auto;padding:3px 9px;border-radius:4px;font-family:var(--mono);font-size:9px;font-weight:600;white-space:nowrap;transform:translateY(-50%);transition:left .6s cubic-bezier(.4,0,.2,1),opacity .3s;pointer-events:none}
-.sim-packet.blue{background:#eaf3ff;border:1.5px solid var(--accent2);color:var(--accent2)}
-.sim-packet.gold{background:#fdf5e6;border:1.5px solid var(--gold);color:var(--warn)}
-.sim-packet.green{background:#eaf7f1;border:1.5px solid var(--success);color:var(--success)}
-.sim-packet.red{background:#fdf0f0;border:1.5px solid var(--danger);color:var(--danger)}
-.sim-packet.hidden{opacity:0}
-/* port status indicator */
-.sim-port-badge{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:9.5px;font-weight:700;padding:4px 12px;border-radius:4px;transition:all .4s}
-.sim-port-badge.blocked{background:#fdf0f0;border:1.5px solid var(--danger);color:var(--danger)}
-.sim-port-badge.open{background:#eaf7f1;border:1.5px solid var(--success);color:var(--success)}
-/* speech bubble annotation */
-.sim-bubble{background:#fff;border:1.5px solid var(--line);border-radius:8px;padding:8px 14px;margin:12px 8px 0;font-size:12.5px;color:var(--ink2);line-height:1.6;position:relative;min-height:48px;transition:opacity .3s}
-.sim-bubble::before{content:'';position:absolute;top:-7px;left:24px;width:12px;height:12px;background:#fff;border-left:1.5px solid var(--line);border-top:1.5px solid var(--line);transform:rotate(45deg)}
-.sim-bubble strong{color:var(--accent)}
-.sim-bubble .sim-step-num{font-family:var(--mono);font-size:9px;font-weight:700;background:var(--accent2);color:#fff;padding:1px 7px;border-radius:3px;margin-right:6px}
-/* controls */
-.auth-sim-controls{display:flex;gap:8px;padding:0 24px 20px;align-items:center;flex-wrap:wrap}
-.sim-btn{padding:8px 18px;border-radius:5px;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.04em;cursor:pointer;border:none;transition:all .15s}
-.sim-btn.primary{background:var(--accent2);color:#fff}
-.sim-btn.primary:hover{background:#0d5fa0}
-.sim-btn.secondary{background:var(--surface);color:var(--ink2);border:1.5px solid var(--line)}
-.sim-btn.secondary:hover{background:var(--soft);border-color:var(--accent2)}
-.sim-btn:disabled{opacity:.4;cursor:not-allowed}
-.sim-progress{display:flex;gap:4px;align-items:center;margin-left:auto}
-.sim-dot{width:7px;height:7px;border-radius:50%;background:var(--line);transition:background .3s}
-.sim-dot.done{background:var(--success)}
-.sim-dot.active{background:var(--accent2);transform:scale(1.3)}
-/* result flag */
-.sim-result{display:none;padding:10px 20px;margin:0 24px 16px;border-radius:6px;font-size:12.5px;font-weight:600}
-.sim-result.ok{display:block;background:#eaf7f1;border:1.5px solid var(--success);color:var(--success)}
-.sim-result.ng{display:block;background:#fdf0f0;border:1.5px solid var(--danger);color:var(--danger)}
+.auth-sim{ background:var(--panel); border:1px solid var(--line); border-radius:2px; overflow:hidden; margin:28px 0; }
+.auth-sim-header{ background:var(--ink2); color:#fff; padding:14px 22px; display:flex; align-items:center; justify-content:space-between; }
+.auth-sim-title{ font-size:11px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--gold2); }
+.auth-sim-step-counter{ font-family:var(--mono); font-size:11px; color:rgba(255,255,255,.55); }
+.auth-sim-stage{ padding:26px 26px 20px; position:relative; background:var(--surface); }
+.auth-sim-actors{ display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:20px; position:relative; z-index:1; padding:0 8px; }
+.sim-actor{ display:flex; flex-direction:column; align-items:center; gap:8px; width:84px; }
+.sim-actor-icon{ width:56px; height:56px; border-radius:2px; display:flex; align-items:center; justify-content:center; border:2px solid; transition:all .4s cubic-bezier(.34,1.56,.64,1); background:var(--panel); }
+.sim-actor-icon.dim{ opacity:.35; transform:scale(.92); }
+.sim-actor-icon.lit{ opacity:1; transform:scale(1); }
+.sim-actor-icon.pulse{ animation:simPulse .6s ease-out; }
+@keyframes simPulse{ 0%{transform:scale(1)} 50%{transform:scale(1.12)} 100%{transform:scale(1)} }
+.sim-actor-label{ font-size:10.5px; font-weight:700; color:var(--ink2); text-align:center; line-height:1.35; }
+.sim-actor-sublabel{ font-family:var(--mono); font-size:8.5px; color:var(--ink3); text-align:center; letter-spacing:.06em; }
+.sim-track{ position:relative; height:36px; margin:0 8px; display:flex; align-items:center; }
+.sim-road{ position:absolute; left:0; right:0; height:2px; background:var(--line); border-radius:1px; }
+.sim-packet{ position:absolute; top:50%; padding:4px 10px; border-radius:2px; font-family:var(--mono); font-size:9px; font-weight:700; white-space:nowrap; transform:translateY(-50%); transition:left .6s cubic-bezier(.4,0,.2,1),opacity .3s; pointer-events:none; letter-spacing:.04em; }
+.sim-packet.blue{ background:#eef1f7; border:1.5px solid var(--accent2); color:var(--accent); }
+.sim-packet.gold{ background:#f5efe0; border:1.5px solid var(--gold); color:var(--warn); }
+.sim-packet.green{ background:#ecf1ed; border:1.5px solid var(--success); color:var(--success); }
+.sim-packet.red{ background:#f3e8e8; border:1.5px solid var(--danger); color:var(--danger); }
+.sim-packet.hidden{ opacity:0; }
+.sim-port-badge{ display:inline-block; font-family:var(--mono); font-size:9.5px; font-weight:700; padding:5px 14px; border-radius:2px; transition:all .4s; letter-spacing:.06em; }
+.sim-port-badge.blocked{ background:#f3e8e8; border:1px solid var(--danger); color:var(--danger); }
+.sim-port-badge.open{ background:#ecf1ed; border:1px solid var(--success); color:var(--success); }
+.sim-bubble{ background:var(--panel); border:1px solid var(--line); border-radius:2px; padding:10px 16px; margin:14px 8px 0; font-size:12.5px; color:var(--ink2); line-height:1.7; position:relative; min-height:52px; transition:opacity .3s; }
+.sim-bubble::before{ content:''; position:absolute; top:-7px; left:24px; width:12px; height:12px; background:var(--panel); border-left:1px solid var(--line); border-top:1px solid var(--line); transform:rotate(45deg); }
+.sim-bubble strong{ color:var(--accent); }
+.sim-bubble .sim-step-num{ font-family:var(--mono); font-size:9px; font-weight:700; background:var(--gold); color:#fff; padding:2px 8px; border-radius:2px; margin-right:8px; letter-spacing:.06em; }
+.auth-sim-controls{ display:flex; gap:8px; padding:16px 22px; align-items:center; flex-wrap:wrap; border-top:1px solid var(--line); background:var(--panel); }
+.sim-btn{ padding:9px 18px; border-radius:2px; font-family:var(--sans); font-size:12px; font-weight:600; letter-spacing:.04em; cursor:pointer; border:none; transition:all .2s; }
+.sim-btn.primary{ background:var(--accent); color:#fff; }
+.sim-btn.primary:hover{ background:var(--ink2); transform:translateY(-1px); box-shadow:0 3px 8px rgba(0,0,0,.1); }
+.sim-btn.secondary{ background:var(--surface); color:var(--ink2); border:1px solid var(--line); }
+.sim-btn.secondary:hover{ background:var(--soft); border-color:var(--accent2); }
+.sim-btn:disabled{ opacity:.4; cursor:not-allowed; }
+.sim-progress{ display:flex; gap:5px; align-items:center; margin-left:auto; }
+.sim-dot{ width:8px; height:8px; border-radius:50%; background:var(--line); transition:background .3s; }
+.sim-dot.done{ background:var(--success); }
+.sim-dot.active{ background:var(--gold); transform:scale(1.3); }
+.sim-result{ display:none; padding:12px 22px; margin:0 22px 16px; border-radius:2px; font-size:12.5px; font-weight:600; }
+.sim-result.ok{ display:block; background:#ecf1ed; border:1px solid var(--success); color:var(--success); }
+.sim-result.ng{ display:block; background:#f3e8e8; border:1px solid var(--danger); color:var(--danger); }
 
 /* ── 2. Port Status Toggle (S05) ── */
-.port-toggle-wrap{background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:24px 0}
-.port-toggle-header{background:var(--ink2);color:#fff;padding:10px 20px;font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;display:flex;align-items:center;gap:8px}
-.port-toggle-body{display:grid;grid-template-columns:1fr 1fr;gap:0}
-.port-panel{padding:22px 20px;border-right:1px solid var(--line);position:relative;transition:background .4s}
-.port-panel:last-child{border-right:none}
-.port-panel.auth-on{background:#eaf7f1}
-.port-panel.auth-off{background:#fff}
-.port-panel-title{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:7px}
-.port-panel-title.blocked{color:var(--danger)}
-.port-panel-title.allowed{color:var(--success)}
-/* visual port diagram inside panel */
-.port-vis{display:flex;align-items:center;gap:16px;margin-bottom:12px}
-.port-vis-sw{position:relative;width:52px;height:36px;color:var(--accent);flex-shrink:0}
-.port-vis-line{flex:1;height:3px;border-radius:2px;transition:background .4s,opacity .4s}
-.port-vis-pc{position:relative;width:38px;height:34px;color:var(--ink2);flex-shrink:0}
-.port-vis-lock{position:absolute;top:-8px;left:50%;transform:translateX(-50%);font-size:11px;transition:opacity .3s}
-/* toggle switch */
-.port-toggle-control{padding:14px 20px;border-top:1px solid var(--line);display:flex;align-items:center;gap:14px;background:var(--surface)}
-.toggle-switch{position:relative;width:48px;height:26px;cursor:pointer;flex-shrink:0}
-.toggle-switch input{position:absolute;opacity:0;width:0;height:0}
-.toggle-track{position:absolute;inset:0;background:#cdd7e6;border-radius:13px;transition:background .3s}
-.toggle-switch input:checked+.toggle-track{background:var(--success)}
-.toggle-knob{position:absolute;top:3px;left:3px;width:20px;height:20px;background:#fff;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,.2);transition:left .3s}
-.toggle-switch input:checked~.toggle-knob{left:25px}
-.toggle-label{font-size:13px;color:var(--ink2)}
-.toggle-label strong{color:var(--ink2)}
-
-/* ── 3. EAP Method Filter (S07) ── */
-.eap-filter-bar{display:flex;gap:6px;margin:16px 0 4px;flex-wrap:wrap}
-.eap-filter-btn{padding:5px 13px;border-radius:4px;font-family:var(--mono);font-size:10.5px;font-weight:600;cursor:pointer;border:1.5px solid var(--line);background:#fff;color:var(--ink2);transition:all .15s}
-.eap-filter-btn:hover{border-color:var(--accent2);color:var(--accent2)}
-.eap-filter-btn.active{background:var(--accent2);border-color:var(--accent2);color:#fff}
-.eap-filter-btn.active.gold-filter{background:var(--gold);border-color:var(--gold)}
-.eap-filter-btn.active.green-filter{background:var(--success);border-color:var(--success)}
-.eap-filter-btn.active.danger-filter{background:var(--danger);border-color:var(--danger)}
-.eap-row{transition:opacity .25s,transform .25s}
-.eap-row.hidden{opacity:0;pointer-events:none;height:0;overflow:hidden;padding:0!important;border:none!important}
-
-/* ── 4. Sequence Step Player (S08) ── */
-.seq-player-bar{display:flex;gap:8px;padding:12px 0 4px;align-items:center;flex-wrap:wrap;border-top:1px solid var(--line);margin-top:8px}
-.seq-play-btn{padding:7px 16px;border-radius:5px;font-family:var(--mono);font-size:10.5px;font-weight:700;cursor:pointer;border:none;transition:all .15s}
-.seq-play-btn.primary{background:var(--accent2);color:#fff}
-.seq-play-btn.primary:hover{background:#0d5fa0}
-.seq-play-btn.ghost{background:var(--surface);color:var(--ink2);border:1.5px solid var(--line)}
-.seq-play-btn.ghost:hover{border-color:var(--accent2)}
-.seq-play-btn:disabled{opacity:.35;cursor:not-allowed}
-.seq-step-label{font-family:var(--mono);font-size:10.5px;color:var(--ink2);background:var(--surface);border:1px solid var(--line);padding:4px 12px;border-radius:4px;min-width:120px;text-align:center}
-/* highlight rows in sequence */
-.seq-msg-row{transition:opacity .3s,filter .3s}
-.seq-msg-row.future{opacity:.2;filter:blur(.5px)}
-.seq-msg-row.current{opacity:1;filter:none}
-.seq-msg-row.past{opacity:.55;filter:none}
-.seq-highlight-box{display:none;background:#eaf3ff;border:1.5px solid var(--accent2);border-radius:6px;padding:8px 14px;margin:6px 0;font-size:12.5px;color:#0b3a6a;line-height:1.6}
-.seq-highlight-box.visible{display:block}
+.port-toggle-wrap{ background:var(--panel); border:1px solid var(--line); border-radius:2px; overflow:hidden; margin:26px 0; }
+.port-toggle-header{ background:var(--ink2); color:#fff; padding:12px 22px; font-size:10.5px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; display:flex; align-items:center; gap:10px; }
+.port-toggle-header::before{ content:''; display:block; width:16px; height:1px; background:var(--gold2); }
+.port-toggle-body{ display:grid; grid-template-columns:1fr 1fr; gap:0; }
+.port-panel{ padding:22px 20px; border-right:1px solid var(--line); position:relative; transition:background .4s; }
+.port-panel:last-child{ border-right:none; }
+.port-panel.auth-on{ background:#ecf1ed; }
+.port-panel.auth-off{ background:var(--panel); }
+.port-panel-title{ font-size:11px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; margin-bottom:16px; display:flex; align-items:center; gap:8px; }
+.port-panel-title.blocked{ color:var(--danger); }
+.port-panel-title.allowed{ color:var(--success); }
+.port-vis{ display:flex; align-items:center; gap:16px; margin-bottom:14px; }
+.port-vis-sw{ position:relative; width:52px; height:36px; color:var(--accent); flex-shrink:0; }
+.port-vis-line{ flex:1; height:3px; border-radius:2px; transition:background .4s,opacity .4s; }
+.port-vis-pc{ position:relative; width:38px; height:34px; color:var(--ink2); flex-shrink:0; }
+.port-vis-lock{ position:absolute; top:-8px; left:50%; transform:translateX(-50%); font-size:11px; transition:opacity .3s; }
+.port-toggle-control{ padding:16px 22px; border-top:1px solid var(--line); display:flex; align-items:center; gap:14px; background:var(--surface); }
+.toggle-switch{ position:relative; width:48px; height:26px; cursor:pointer; flex-shrink:0; }
+.toggle-switch input{ position:absolute; opacity:0; width:0; height:0; }
+.toggle-track{ position:absolute; inset:0; background:var(--line); border-radius:13px; transition:background .3s; }
+.toggle-switch input:checked + .toggle-track{ background:var(--success); }
+.toggle-knob{ position:absolute; top:3px; left:3px; width:20px; height:20px; background:#fff; border-radius:50%; transition:transform .3s; box-shadow:0 1px 3px rgba(0,0,0,.2); }
+.toggle-switch input:checked ~ .toggle-track .toggle-knob{ transform:translateX(22px); }
+.toggle-label{ font-size:12.5px; color:var(--ink2); font-weight:600; }
 
 /* ═══ CSS-ONLY ICONS (HTML+CSS, no SVG) ═══ */
-.icon{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.icon{ display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; }
 
 /* Door icon */
-.icon-door{width:32px;height:38px;position:relative}
-.icon-door .door-frame{position:absolute;inset:0;border:3px solid currentColor;border-radius:3px 3px 0 0}
-.icon-door .door-knob{position:absolute;right:5px;top:50%;width:5px;height:5px;background:currentColor;border-radius:50%;transform:translateY(-50%)}
-.icon-door .door-hinge{position:absolute;left:4px;top:8px;width:3px;height:5px;background:currentColor;border-radius:1px}
-.icon-door .door-hinge2{position:absolute;left:4px;bottom:10px;width:3px;height:5px;background:currentColor;border-radius:1px}
-.icon-door .door-arc{position:absolute;top:-2px;left:50%;width:22px;height:11px;border:3px solid currentColor;border-bottom:none;border-radius:11px 11px 0 0;transform:translateX(-50%)}
+.icon-door{ width:32px; height:38px; position:relative; }
+.icon-door .door-frame{ position:absolute; inset:0; border:3px solid currentColor; border-radius:3px 3px 0 0; }
+.icon-door .door-knob{ position:absolute; right:5px; top:50%; width:5px; height:5px; background:currentColor; border-radius:50%; transform:translateY(-50%); }
+.icon-door .door-hinge{ position:absolute; left:4px; top:8px; width:3px; height:5px; background:currentColor; border-radius:1px; }
+.icon-door .door-hinge2{ position:absolute; left:4px; bottom:10px; width:3px; height:5px; background:currentColor; border-radius:1px; }
+.icon-door .door-arc{ position:absolute; top:-2px; left:50%; width:22px; height:11px; border:3px solid currentColor; border-bottom:none; border-radius:11px 11px 0 0; transform:translateX(-50%); }
 
 /* Intercom / speech bubble icon */
-.icon-intercom{width:36px;height:36px;position:relative}
-.icon-intercom .ic-box{position:absolute;top:0;left:0;right:0;height:26px;border:2.5px solid currentColor;border-radius:6px}
-.icon-intercom .ic-btn{position:absolute;top:6px;left:6px;width:8px;height:8px;background:currentColor;border-radius:50%}
-.icon-intercom .ic-line1{position:absolute;top:9px;left:18px;right:6px;height:2px;background:currentColor;border-radius:1px}
-.icon-intercom .ic-line2{position:absolute;top:14px;left:18px;right:10px;height:2px;background:currentColor;border-radius:1px}
-.icon-intercom .ic-tail{position:absolute;bottom:6px;left:10px;width:0;height:0;border-left:6px solid transparent;border-right:0;border-top:8px solid currentColor}
+.icon-intercom{ width:36px; height:36px; position:relative; }
+.icon-intercom .ic-box{ position:absolute; top:0; left:0; right:0; height:26px; border:2.5px solid currentColor; border-radius:3px; }
+.icon-intercom .ic-btn{ position:absolute; top:6px; left:6px; width:8px; height:8px; background:currentColor; border-radius:50%; }
+.icon-intercom .ic-line1{ position:absolute; top:9px; left:18px; right:6px; height:2px; background:currentColor; border-radius:1px; }
+.icon-intercom .ic-line2{ position:absolute; top:14px; left:18px; right:10px; height:2px; background:currentColor; border-radius:1px; }
+.icon-intercom .ic-tail{ position:absolute; bottom:6px; left:10px; width:0; height:0; border-left:6px solid transparent; border-right:0; border-top:8px solid currentColor; }
 
 /* Building / office icon */
-.icon-building{width:34px;height:38px;position:relative}
-.icon-building .bld-body{position:absolute;left:4px;right:4px;top:8px;bottom:0;border:2.5px solid currentColor;border-bottom:none}
-.icon-building .bld-roof{position:absolute;top:0;left:0;right:0;height:12px;border-left:2.5px solid transparent;border-right:2.5px solid transparent;border-bottom:10px solid currentColor}
-.icon-building .bld-door{position:absolute;bottom:0;left:50%;width:8px;height:11px;border:2px solid currentColor;border-bottom:none;transform:translateX(-50%)}
-.icon-building .bld-win{position:absolute;width:5px;height:5px;border:1.5px solid currentColor}
-.icon-building .bld-win.w1{top:14px;left:7px}
-.icon-building .bld-win.w2{top:14px;right:7px}
-.icon-building .bld-win.w3{top:22px;left:7px}
-.icon-building .bld-win.w4{top:22px;right:7px}
+.icon-building{ width:34px; height:38px; position:relative; }
+.icon-building .bld-body{ position:absolute; left:4px; right:4px; top:8px; bottom:0; border:2.5px solid currentColor; border-bottom:none; }
+.icon-building .bld-roof{ position:absolute; top:0; left:0; right:0; height:12px; border-left:2.5px solid transparent; border-right:2.5px solid transparent; border-bottom:10px solid currentColor; }
+.icon-building .bld-door{ position:absolute; bottom:0; left:50%; width:8px; height:11px; border:2px solid currentColor; border-bottom:none; transform:translateX(-50%); }
+.icon-building .bld-win{ position:absolute; width:5px; height:5px; border:1.5px solid currentColor; }
+.icon-building .bld-win.w1{ top:14px; left:7px; }
+.icon-building .bld-win.w2{ top:14px; right:7px; }
+.icon-building .bld-win.w3{ top:22px; left:7px; }
+.icon-building .bld-win.w4{ top:22px; right:7px; }
 
 /* Book / rulebook icon */
-.icon-book{width:32px;height:36px;position:relative}
-.icon-book .book-cover{position:absolute;inset:0;border:2.5px solid currentColor;border-radius:2px 6px 6px 2px}
-.icon-book .book-spine{position:absolute;left:0;top:0;bottom:0;width:6px;background:currentColor;border-radius:2px 0 0 2px}
-.icon-book .book-line1{position:absolute;top:10px;left:10px;right:5px;height:2px;background:currentColor;border-radius:1px}
-.icon-book .book-line2{position:absolute;top:17px;left:10px;right:8px;height:2px;background:currentColor;border-radius:1px}
-.icon-book .book-line3{position:absolute;top:24px;left:10px;right:11px;height:2px;background:currentColor;border-radius:1px}
+.icon-book{ width:32px; height:36px; position:relative; }
+.icon-book .book-cover{ position:absolute; inset:0; border:2.5px solid currentColor; border-radius:2px 3px 3px 2px; }
+.icon-book .book-spine{ position:absolute; left:0; top:0; bottom:0; width:6px; background:currentColor; border-radius:2px 0 0 2px; }
+.icon-book .book-line1{ position:absolute; top:10px; left:10px; right:5px; height:2px; background:currentColor; border-radius:1px; }
+.icon-book .book-line2{ position:absolute; top:17px; left:10px; right:8px; height:2px; background:currentColor; border-radius:1px; }
+.icon-book .book-line3{ position:absolute; top:24px; left:10px; right:11px; height:2px; background:currentColor; border-radius:1px; }
 
 /* Server rack icon */
-.icon-server{width:36px;height:38px;position:relative}
-.icon-server .srv-body{position:absolute;inset:0;border:2.5px solid currentColor;border-radius:4px}
-.icon-server .srv-slot{height:6px;border:1.5px solid currentColor;border-radius:2px;margin:0 5px}
-.icon-server .srv-slot.s1{position:absolute;top:6px;left:5px;right:5px}
-.icon-server .srv-slot.s2{position:absolute;top:16px;left:5px;right:5px}
-.icon-server .srv-slot.s3{position:absolute;top:26px;left:5px;right:5px}
-.icon-server .srv-dot{width:4px;height:4px;background:currentColor;border-radius:50%;position:absolute}
-.icon-server .srv-dot.d1{top:8px;right:9px}
-.icon-server .srv-dot.d2{top:18px;right:9px}
-.icon-server .srv-dot.d3{top:28px;right:9px}
+.icon-server{ width:36px; height:38px; position:relative; }
+.icon-server .srv-body{ position:absolute; inset:0; border:2.5px solid currentColor; border-radius:2px; }
+.icon-server .srv-slot{ height:6px; border:1.5px solid currentColor; border-radius:1px; margin:0 5px; }
+.icon-server .srv-slot.s1{ position:absolute; top:6px; left:5px; right:5px; }
+.icon-server .srv-slot.s2{ position:absolute; top:16px; left:5px; right:5px; }
+.icon-server .srv-slot.s3{ position:absolute; top:26px; left:5px; right:5px; }
+.icon-server .srv-dot{ width:4px; height:4px; background:currentColor; border-radius:50%; position:absolute; }
+.icon-server .srv-dot.d1{ top:8px; right:9px; }
+.icon-server .srv-dot.d2{ top:18px; right:9px; }
+.icon-server .srv-dot.d3{ top:28px; right:9px; }
 
 /* Lock icon */
-.icon-lock{width:28px;height:34px;position:relative}
-.icon-lock .lock-body{position:absolute;bottom:0;left:0;right:0;height:20px;border:2.5px solid currentColor;border-radius:4px}
-.icon-lock .lock-shackle{position:absolute;top:0;left:5px;right:5px;height:16px;border:2.5px solid currentColor;border-bottom:none;border-radius:10px 10px 0 0}
-.icon-lock .lock-hole{position:absolute;bottom:5px;left:50%;width:7px;height:9px;border:2px solid currentColor;border-radius:4px 4px 0 0;transform:translateX(-50%)}
-.icon-lock .lock-dot{position:absolute;bottom:3px;left:50%;width:3px;height:3px;background:currentColor;border-radius:50%;transform:translateX(-50%)}
+.icon-lock{ width:28px; height:34px; position:relative; }
+.icon-lock .lock-body{ position:absolute; bottom:0; left:0; right:0; height:20px; border:2.5px solid currentColor; border-radius:2px; }
+.icon-lock .lock-shackle{ position:absolute; top:0; left:5px; right:5px; height:16px; border:2.5px solid currentColor; border-bottom:none; border-radius:10px 10px 0 0; }
+.icon-lock .lock-hole{ position:absolute; bottom:5px; left:50%; width:7px; height:9px; border:2px solid currentColor; border-radius:4px 4px 0 0; transform:translateX(-50%); }
+.icon-lock .lock-dot{ position:absolute; bottom:3px; left:50%; width:3px; height:3px; background:currentColor; border-radius:50%; transform:translateX(-50%); }
 
 /* PC/laptop icon */
-.icon-pc{width:38px;height:34px;position:relative}
-.icon-pc .pc-screen{position:absolute;top:0;left:3px;right:3px;height:22px;border:2.5px solid currentColor;border-radius:4px 4px 2px 2px}
-.icon-pc .pc-chin{position:absolute;top:22px;left:3px;right:3px;height:4px;background:currentColor;opacity:.35;border-radius:0 0 2px 2px}
-.icon-pc .pc-base{position:absolute;bottom:0;left:0;right:0;height:5px;border:2px solid currentColor;border-radius:3px}
-.icon-pc .pc-neck{position:absolute;bottom:5px;left:50%;width:12px;height:5px;background:currentColor;opacity:.3;transform:translateX(-50%)}
-.icon-pc .pc-dot{position:absolute;top:9px;left:50%;width:3px;height:3px;background:currentColor;border-radius:50%;transform:translateX(-50%)}
+.icon-pc{ width:38px; height:34px; position:relative; }
+.icon-pc .pc-screen{ position:absolute; top:0; left:3px; right:3px; height:22px; border:2.5px solid currentColor; border-radius:2px 2px 2px 2px; }
+.icon-pc .pc-chin{ position:absolute; top:22px; left:3px; right:3px; height:4px; background:currentColor; opacity:.35; border-radius:0 0 2px 2px; }
+.icon-pc .pc-base{ position:absolute; bottom:0; left:0; right:0; height:5px; border:2px solid currentColor; border-radius:2px; }
+.icon-pc .pc-neck{ position:absolute; bottom:5px; left:50%; width:12px; height:5px; background:currentColor; opacity:.3; transform:translateX(-50%); }
+.icon-pc .pc-dot{ position:absolute; top:9px; left:50%; width:3px; height:3px; background:currentColor; border-radius:50%; transform:translateX(-50%); }
 
 /* Switch/hub icon */
-.icon-switch{width:44px;height:28px;position:relative}
-.icon-switch .sw-body{position:absolute;inset:0;border:2.5px solid currentColor;border-radius:5px}
-.icon-switch .sw-port{width:5px;height:8px;border:1.5px solid currentColor;border-radius:1px;position:absolute;bottom:7px}
-.icon-switch .sw-port.p1{left:6px}
-.icon-switch .sw-port.p2{left:14px}
-.icon-switch .sw-port.p3{left:22px}
-.icon-switch .sw-port.p4{left:30px}
-.icon-switch .sw-led{width:4px;height:4px;border-radius:50%;background:var(--success);position:absolute;top:7px}
-.icon-switch .sw-led.l1{left:7px}
-.icon-switch .sw-led.l2{left:15px}
-.icon-switch .sw-led.l3{left:23px;background:var(--accent2)}
-.icon-switch .sw-led.l4{left:31px;background:var(--danger)}
+.icon-switch{ width:44px; height:28px; position:relative; }
+.icon-switch .sw-body{ position:absolute; inset:0; border:2.5px solid currentColor; border-radius:3px; }
+.icon-switch .sw-port{ width:5px; height:8px; border:1.5px solid currentColor; border-radius:1px; position:absolute; bottom:7px; }
+.icon-switch .sw-port.p1{ left:6px; }
+.icon-switch .sw-port.p2{ left:14px; }
+.icon-switch .sw-port.p3{ left:22px; }
+.icon-switch .sw-port.p4{ left:30px; }
+.icon-switch .sw-led{ width:4px; height:4px; border-radius:50%; background:var(--success); position:absolute; top:7px; }
+.icon-switch .sw-led.l1{ left:7px; }
+.icon-switch .sw-led.l2{ left:15px; }
+.icon-switch .sw-led.l3{ left:23px; background:var(--accent2); }
+.icon-switch .sw-led.l4{ left:31px; background:var(--danger); }
 
 /* Shield icon */
-.icon-shield{width:30px;height:36px;position:relative}
-.icon-shield::before{content:'';position:absolute;inset:0;background:currentColor;clip-path:polygon(50% 0%,100% 15%,100% 55%,50% 100%,0% 55%,0% 15%);opacity:.15}
-.icon-shield::after{content:'';position:absolute;inset:3px;background:currentColor;clip-path:polygon(50% 0%,100% 15%,100% 55%,50% 100%,0% 55%,0% 15%);opacity:0}
-.icon-shield .sh-outline{position:absolute;inset:0;clip-path:polygon(50% 0%,100% 15%,100% 55%,50% 100%,0% 55%,0% 15%);border:2.5px solid currentColor}
-.icon-shield .sh-check{position:absolute;top:40%;left:50%;width:14px;height:8px;border-bottom:2.5px solid currentColor;border-right:2.5px solid currentColor;transform:translate(-50%,-60%) rotate(45deg)}
+.icon-shield{ width:30px; height:36px; position:relative; }
+.icon-shield::before{ content:''; position:absolute; inset:0; background:currentColor; clip-path:polygon(50% 0%,100% 15%,100% 55%,50% 100%,0% 55%,0% 15%); opacity:.15; }
+.icon-shield .sh-outline{ position:absolute; inset:0; clip-path:polygon(50% 0%,100% 15%,100% 55%,50% 100%,0% 55%,0% 15%); border:2.5px solid currentColor; }
+.icon-shield .sh-check{ position:absolute; top:40%; left:50%; width:14px; height:8px; border-bottom:2.5px solid currentColor; border-right:2.5px solid currentColor; transform:translate(-50%,-60%) rotate(45deg); }
 
 /* Envelope icon */
-.icon-envelope{width:36px;height:28px;position:relative}
-.icon-envelope .env-body{position:absolute;inset:0;border:2.5px solid currentColor;border-radius:3px}
-.icon-envelope .env-flap{position:absolute;top:0;left:0;right:0;height:14px;border-bottom:2.5px solid currentColor;clip-path:polygon(0 0,50% 60%,100% 0)}
-.icon-envelope .env-corner-l{position:absolute;bottom:0;left:0;width:40%;height:55%;border-right:2px solid currentColor;transform-origin:bottom left;transform:skewX(20deg)}
-.icon-envelope .env-corner-r{position:absolute;bottom:0;right:0;width:40%;height:55%;border-left:2px solid currentColor;transform-origin:bottom right;transform:skewX(-20deg)}
+.icon-envelope{ width:36px; height:28px; position:relative; }
+.icon-envelope .env-body{ position:absolute; inset:0; border:2.5px solid currentColor; border-radius:2px; }
+.icon-envelope .env-flap{ position:absolute; top:0; left:0; right:0; height:14px; border-bottom:2.5px solid currentColor; clip-path:polygon(0 0,50% 60%,100% 0); }
+.icon-envelope .env-corner-l{ position:absolute; bottom:0; left:0; width:40%; height:55%; border-right:2px solid currentColor; transform-origin:bottom left; transform:skewX(20deg); }
+.icon-envelope .env-corner-r{ position:absolute; bottom:0; right:0; width:40%; height:55%; border-left:2px solid currentColor; transform-origin:bottom right; transform:skewX(-20deg); }
 
 /* Wifi icon */
-.icon-wifi{width:36px;height:28px;position:relative}
-.icon-wifi .wf-dot{position:absolute;bottom:0;left:50%;width:6px;height:6px;border-radius:50%;background:currentColor;transform:translateX(-50%)}
-.icon-wifi .wf-arc{position:absolute;left:50%;border:2.5px solid currentColor;border-bottom:none;border-radius:50%;transform:translateX(-50%)}
-.icon-wifi .wf-arc.a1{bottom:8px;width:14px;height:7px}
-.icon-wifi .wf-arc.a2{bottom:14px;width:24px;height:12px;opacity:.65}
-.icon-wifi .wf-arc.a3{bottom:20px;width:34px;height:17px;opacity:.35}
+.icon-wifi{ width:36px; height:28px; position:relative; }
+.icon-wifi .wf-dot{ position:absolute; bottom:0; left:50%; width:6px; height:6px; border-radius:50%; background:currentColor; transform:translateX(-50%); }
+.icon-wifi .wf-arc{ position:absolute; left:50%; border:2.5px solid currentColor; border-bottom:none; border-radius:50%; transform:translateX(-50%); }
+.icon-wifi .wf-arc.a1{ bottom:8px; width:14px; height:7px; }
+.icon-wifi .wf-arc.a2{ bottom:14px; width:24px; height:12px; opacity:.65; }
+.icon-wifi .wf-arc.a3{ bottom:20px; width:34px; height:17px; opacity:.35; }
 
 /* ═══ ANALOGY CARDS ═══ */
-.analogy-row{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin:24px 0;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
-.acol{padding:22px 20px;border-right:1px solid var(--line);position:relative}
-.acol:last-child{border-right:none}
-.acol-badge{display:inline-block;font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:3px 9px;border-radius:3px;margin-bottom:12px}
-.acol-badge.blue{background:rgba(11,74,130,.1);color:var(--accent)}
-.acol-badge.green{background:rgba(21,95,68,.1);color:var(--success)}
-.acol-badge.gold{background:rgba(181,130,30,.1);color:var(--gold)}
-.acol-icon-wrap{display:flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:12px;margin-bottom:14px}
-.acol-icon-wrap.blue{background:#e8f3fd;color:var(--accent)}
-.acol-icon-wrap.green{background:#eaf7f1;color:var(--success)}
-.acol-icon-wrap.gold{background:#fdf5e6;color:var(--gold)}
-.acol-title{font-weight:700;font-size:15px;color:var(--ink2);margin-bottom:4px}
-.acol-sub{font-family:var(--mono);font-size:9.5px;color:var(--accent2);margin-bottom:10px;letter-spacing:.04em}
-.acol-text{font-size:12.5px;color:#3a3d52;line-height:1.65}
-.analogy-map{background:#fff;border:1px solid var(--line);border-radius:10px;padding:20px 24px;margin:24px 0}
-.amap-cap{font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:18px;display:flex;align-items:center;gap:10px}
-.amap-cap::after{content:'';flex:1;height:1px;background:var(--line)}
+.analogy-row{ display:grid; grid-template-columns:repeat(3,1fr); gap:0; margin:26px 0; background:var(--panel); border:1px solid var(--line); border-radius:2px; overflow:hidden; }
+.acol{ padding:22px 20px; border-right:1px solid var(--line); position:relative; }
+.acol:last-child{ border-right:none; }
+.acol-badge{ display:inline-block; font-family:var(--mono); font-size:9px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; padding:3px 9px; border-radius:2px; margin-bottom:12px; }
+.acol-badge.blue{ background:rgba(28,58,92,.1); color:var(--accent); }
+.acol-badge.green{ background:rgba(42,95,74,.1); color:var(--success); }
+.acol-badge.gold{ background:rgba(164,122,42,.14); color:var(--gold); }
+.acol-icon-wrap{ display:flex; align-items:center; justify-content:center; width:56px; height:56px; border-radius:2px; margin-bottom:14px; }
+.acol-icon-wrap.blue{ background:#eef1f7; color:var(--accent); }
+.acol-icon-wrap.green{ background:#ecf1ed; color:var(--success); }
+.acol-icon-wrap.gold{ background:#f5efe0; color:var(--gold); }
+.acol-title{ font-weight:700; font-size:15px; color:var(--ink2); margin-bottom:4px; }
+.acol-sub{ font-family:var(--mono); font-size:9.5px; color:var(--accent2); margin-bottom:10px; letter-spacing:.06em; }
+.acol-text{ font-size:12.5px; color:var(--ink3); line-height:1.7; }
+.analogy-map{ background:var(--panel); border:1px solid var(--line); border-radius:2px; padding:20px 24px; margin:24px 0; }
+.amap-cap{ font-size:10.5px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:var(--gold); margin-bottom:18px; display:flex; align-items:center; gap:10px; }
+.amap-cap::after{ content:''; flex:1; height:1px; background:var(--line); }
 
-/* ═══ HTML+CSS DIAGRAMS (no SVG) ═══ */
+/* ═══ HTML+CSS DIAGRAMS ═══ */
 
 /* 1. IEEE 802 Hierarchy diagram */
-.hier-diagram{background:#fff;border:1px solid var(--line);border-radius:10px;padding:32px 28px 24px;margin:24px 0;overflow-x:auto}
-.hier-cap{font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:24px;display:flex;align-items:center;gap:10px}
-.hier-cap::after{content:'';flex:1;height:1px;background:var(--line)}
-.hier-root{display:flex;justify-content:center;margin-bottom:0}
-.hier-root-box{background:var(--ink);color:#fff;padding:10px 28px;border-radius:6px;text-align:center;min-width:200px}
-.hier-root-box .h-title{font-family:var(--mono);font-size:13px;font-weight:600;letter-spacing:.08em}
-.hier-root-box .h-sub{font-size:10px;color:rgba(255,255,255,.45);margin-top:3px}
-.hier-trunk{width:2px;height:28px;background:var(--line);margin:0 auto}
-.hier-hline{height:2px;background:var(--line);margin:0 auto;width:calc(100% - 40px)}
-.hier-branches{display:flex;justify-content:space-between;gap:8px;margin-top:0;position:relative;min-width:640px}
-.hier-branch{display:flex;flex-direction:column;align-items:center;flex:1}
-.hier-vstub{width:2px;height:20px;background:var(--line);margin:0 auto}
-.hier-box{padding:10px 10px 8px;border-radius:6px;text-align:center;width:100%;border:2px solid}
-.hier-box .hb-num{font-family:var(--mono);font-size:11.5px;font-weight:700}
-.hier-box .hb-name{font-size:10px;margin-top:2px}
-.hb-accent{border-color:var(--accent2);background:#eaf3ff}.hb-accent .hb-num{color:var(--accent)}.hb-accent .hb-name{color:var(--ink2)}
-.hb-green{border-color:#8bcfb0;background:#eaf7f1}.hb-green .hb-num{color:var(--success)}.hb-green .hb-name{color:var(--success)}
-.hb-purple{border-color:#a89cd8;background:#f0ecff}.hb-purple .hb-num{color:#5a3a9e}.hb-purple .hb-name{color:#5a3a9e}
-.hb-gray{border-color:var(--line);background:var(--surface)}.hb-gray .hb-num{color:var(--ink2)}.hb-gray .hb-name{color:var(--ink2)}
-.hb-highlight{border-color:var(--gold);background:#fdf5e6;box-shadow:0 0 0 3px rgba(181,130,30,.15)}.hb-highlight .hb-num{color:var(--gold)}.hb-highlight .hb-name{color:var(--warn)}
-.hier-sub{display:flex;gap:5px;margin-top:6px;justify-content:center;flex-wrap:wrap}
-.hsub-box{font-family:var(--mono);font-size:9px;padding:3px 7px;border-radius:3px;border:1px solid var(--line);color:var(--ink2);background:var(--surface);white-space:nowrap}
-.hsub-box.hl{border-color:var(--gold);background:#fdf5e6;color:var(--warn);font-weight:600}
-/* cross arrow note */
-.hier-cross-note{margin-top:16px;padding:8px 14px;border-radius:5px;background:#fdf5e6;border:1px solid #e8c97a;font-size:12px;color:var(--warn);text-align:center}
+.hier-diagram{ background:var(--panel); border:1px solid var(--line); border-radius:2px; padding:32px 28px 24px; margin:26px 0; overflow-x:auto; }
+.hier-cap{ font-size:10.5px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:var(--gold); margin-bottom:24px; display:flex; align-items:center; gap:10px; }
+.hier-cap::after{ content:''; flex:1; height:1px; background:var(--line); }
+.hier-root{ display:flex; justify-content:center; margin-bottom:0; }
+.hier-root-box{ background:var(--ink); color:#fff; padding:12px 30px; border-radius:2px; text-align:center; min-width:220px; border:1px solid var(--gold); }
+.hier-root-box .h-title{ font-family:var(--mono); font-size:13px; font-weight:600; letter-spacing:.1em; color:var(--gold2); }
+.hier-root-box .h-sub{ font-size:10px; color:rgba(255,255,255,.5); margin-top:3px; letter-spacing:.06em; }
+.hier-trunk{ width:2px; height:28px; background:var(--line); margin:0 auto; }
+.hier-hline{ height:2px; background:var(--line); margin:0 auto; width:calc(100% - 40px); }
+.hier-branches{ display:flex; justify-content:space-between; gap:8px; margin-top:0; position:relative; min-width:640px; }
+.hier-branch{ display:flex; flex-direction:column; align-items:center; flex:1; }
+.hier-vstub{ width:2px; height:20px; background:var(--line); margin:0 auto; }
+.hier-box{ padding:10px 10px 8px; border-radius:2px; text-align:center; width:100%; border:2px solid; }
+.hier-box .hb-num{ font-family:var(--mono); font-size:11.5px; font-weight:700; letter-spacing:.06em; }
+.hier-box .hb-name{ font-size:10px; margin-top:2px; }
+.hb-accent{ border-color:var(--accent2); background:#eef1f7; }
+.hb-accent .hb-num{ color:var(--accent); }
+.hb-accent .hb-name{ color:var(--ink2); }
+.hb-green{ border-color:#8bb49e; background:#ecf1ed; }
+.hb-green .hb-num{ color:var(--success); }
+.hb-green .hb-name{ color:var(--success); }
+.hb-purple{ border-color:#a89cd8; background:#f0ecff; }
+.hb-purple .hb-num{ color:#5a3a9e; }
+.hb-purple .hb-name{ color:#5a3a9e; }
+.hb-gray{ border-color:var(--line); background:var(--surface); }
+.hb-gray .hb-num{ color:var(--ink2); }
+.hb-gray .hb-name{ color:var(--ink2); }
+.hb-highlight{ border-color:var(--gold); background:#f5efe0; box-shadow:0 0 0 3px rgba(164,122,42,.18); }
+.hb-highlight .hb-num{ color:var(--gold); }
+.hb-highlight .hb-name{ color:var(--warn); }
+.hier-sub{ display:flex; gap:5px; margin-top:6px; justify-content:center; flex-wrap:wrap; }
+.hsub-box{ font-family:var(--mono); font-size:9px; padding:3px 7px; border-radius:2px; border:1px solid var(--line); color:var(--ink2); background:var(--surface); white-space:nowrap; }
+.hsub-box.hl{ border-color:var(--gold); background:#f5efe0; color:var(--warn); font-weight:600; }
+.hier-cross-note{ margin-top:16px; padding:10px 14px; border-radius:2px; background:#f5efe0; border:1px solid #d9c68a; font-size:12px; color:var(--warn); text-align:center; }
 
-/* 2. Three-entity relationship diagram (no SVG) */
-.rel-diagram{background:#fff;border:1px solid var(--line);border-radius:10px;padding:28px 24px;margin:24px 0;overflow-x:auto}
-.rel-cap{font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:20px;display:flex;align-items:center;gap:10px}
-.rel-cap::after{content:'';flex:1;height:1px;background:var(--line)}
-
-/* Zones */
-.rel-zones{display:flex;gap:16px;min-width:680px}
-.rel-zone{border:1.5px dashed;border-radius:8px;padding:16px 14px}
-.rel-zone.ieee-zone{border-color:#a8cef5;background:#f5f9ff;flex:2}
-.rel-zone.ietf-zone{border-color:#e8c97a;background:#fdfaf4;flex:2}
-.rel-zone-label{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;margin-bottom:12px}
-.rel-zone.ieee-zone .rel-zone-label{color:var(--accent2)}
-.rel-zone.ietf-zone .rel-zone-label{color:var(--warn)}
-
-/* Entity boxes inside zones */
-.rel-entity{background:var(--ink2);color:#fff;padding:12px 14px;border-radius:7px;margin-bottom:10px}
-.rel-entity-name{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.5);margin-bottom:2px}
-.rel-entity-title{font-size:13px;font-weight:700}
-.rel-entity-desc{font-size:11px;color:rgba(255,255,255,.55);margin-top:3px}
-.rel-entity.blue-entity{background:var(--accent)}
-.rel-entity.green-entity{background:var(--success)}
-.rel-entity.gold-entity{background:var(--gold)}
-
-/* Arrow row */
-.rel-arrow-row{display:flex;align-items:center;gap:6px;margin:8px 0;flex-wrap:wrap}
-.rel-arrow-label{font-family:var(--mono);font-size:10px;color:var(--accent);background:#eaf3ff;padding:3px 9px;border-radius:3px;border:1px solid #a8cef5;white-space:nowrap}
-.rel-arrow{display:flex;align-items:center;gap:4px;flex:1;min-width:60px}
-.rel-arrow-line{flex:1;height:2px;background:var(--line);position:relative}
-.rel-arrow-line::after{content:'';position:absolute;right:-4px;top:-4px;border-left:8px solid var(--line);border-top:5px solid transparent;border-bottom:5px solid transparent}
-.rel-arrow-line.blue-line{background:var(--accent2)}
-.rel-arrow-line.blue-line::after{border-left-color:var(--accent2)}
-.rel-arrow-line.gold-line{background:var(--gold)}
-.rel-arrow-line.gold-line::after{border-left-color:var(--gold)}
-.rel-arrow-text{font-family:var(--mono);font-size:9.5px;color:var(--ink2);white-space:nowrap}
+/* 2. Three-entity relationship diagram */
+.rel-diagram{ background:var(--panel); border:1px solid var(--line); border-radius:2px; padding:28px 24px; margin:26px 0; overflow-x:auto; }
+.rel-cap{ font-size:10.5px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:var(--gold); margin-bottom:20px; display:flex; align-items:center; gap:10px; }
+.rel-cap::after{ content:''; flex:1; height:1px; background:var(--line); }
+.rel-zones{ display:flex; gap:18px; min-width:680px; }
+.rel-zone{ border:1.5px dashed; border-radius:2px; padding:18px 14px; }
+.rel-zone.ieee-zone{ border-color:#a8b9d5; background:#eef1f7; flex:2; }
+.rel-zone.ietf-zone{ border-color:#d9c68a; background:#f5efe0; flex:2; }
+.rel-zone-label{ font-family:var(--mono); font-size:9px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; margin-bottom:12px; }
+.rel-zone.ieee-zone .rel-zone-label{ color:var(--accent); }
+.rel-zone.ietf-zone .rel-zone-label{ color:var(--warn); }
+.rel-entity{ background:var(--ink2); color:#fff; padding:12px 14px; border-radius:2px; margin-bottom:10px; }
+.rel-entity-name{ font-family:var(--mono); font-size:10px; color:rgba(255,255,255,.55); margin-bottom:2px; letter-spacing:.06em; }
+.rel-entity-title{ font-size:13px; font-weight:700; }
+.rel-entity-desc{ font-size:11px; color:rgba(255,255,255,.6); margin-top:3px; }
+.rel-entity.blue-entity{ background:var(--accent); }
+.rel-entity.green-entity{ background:var(--success); }
+.rel-entity.gold-entity{ background:var(--gold); }
+.rel-arrow-row{ display:flex; align-items:center; gap:6px; margin:8px 0; flex-wrap:wrap; }
+.rel-arrow-label{ font-family:var(--mono); font-size:10px; color:var(--accent); background:#eef1f7; padding:3px 9px; border-radius:2px; border:1px solid #a8b9d5; white-space:nowrap; }
+.rel-arrow{ display:flex; align-items:center; gap:4px; flex:1; min-width:60px; }
+.rel-arrow-line{ flex:1; height:2px; background:var(--line); position:relative; }
+.rel-arrow-line::after{ content:''; position:absolute; right:-4px; top:-4px; border-left:8px solid var(--line); border-top:5px solid transparent; border-bottom:5px solid transparent; }
+.rel-arrow-line.blue-line{ background:var(--accent2); }
+.rel-arrow-line.blue-line::after{ border-left-color:var(--accent2); }
+.rel-arrow-line.gold-line{ background:var(--gold); }
+.rel-arrow-line.gold-line::after{ border-left-color:var(--gold); }
+.rel-arrow-text{ font-family:var(--mono); font-size:9.5px; color:var(--ink2); white-space:nowrap; }
 
 /* 3. UML Sequence Diagram — pure HTML+CSS */
-.seq-wrap{background:#fff;border:1px solid var(--line);border-radius:10px;padding:28px 24px 20px;margin:24px 0;overflow-x:auto}
-.seq-cap{font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:20px;display:flex;align-items:center;gap:10px}
-.seq-cap::after{content:'';flex:1;height:1px;background:var(--line)}
+.seq-wrap{ background:var(--panel); border:1px solid var(--line); border-radius:2px; padding:32px 28px 24px; margin:28px 0; overflow-x:auto; position:relative; }
+.seq-wrap::before{ content:''; position:absolute; top:0; left:0; width:3px; height:100%; background:linear-gradient(180deg,var(--gold),transparent); }
+.seq-cap{ font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:var(--gold); margin-bottom:24px; display:flex; align-items:center; gap:14px; }
+.seq-cap::after{ content:''; flex:1; height:1px; background:var(--line); }
+.seq-diagram{ min-width:740px; position:relative; }
+.seq-participants{ display:grid; grid-template-columns:160px 1fr 160px 1fr 160px; gap:0; margin-bottom:0; }
+.seq-participant{ display:flex; flex-direction:column; align-items:center; }
+.seq-pbox{ padding:10px 12px; border-radius:2px; text-align:center; width:100%; }
+.seq-pname{ font-size:11.5px; font-weight:700; }
+.seq-psub{ font-family:var(--mono); font-size:8.5px; margin-top:2px; letter-spacing:.06em; }
+.seq-pbox.p-sup{ background:var(--ink2); color:#fff; }
+.seq-pbox.p-sup .seq-psub{ color:rgba(255,255,255,.45); }
+.seq-pbox.p-auth{ background:var(--accent); color:#fff; }
+.seq-pbox.p-auth .seq-psub{ color:rgba(255,255,255,.55); }
+.seq-pbox.p-srv{ background:var(--success); color:#fff; }
+.seq-pbox.p-srv .seq-psub{ color:rgba(255,255,255,.5); }
+.seq-body{ display:grid; grid-template-columns:160px 1fr 160px 1fr 160px; min-height:560px; position:relative; }
+.seq-lifeline{ display:flex; justify-content:center; position:relative; z-index:0; }
+.seq-lifeline::before{ content:''; position:absolute; top:0; bottom:0; left:50%; width:1px; border-left:2px dashed var(--line); transform:translateX(-50%); }
+.seq-spacer{ position:relative; }
+.seq-act{ position:absolute; left:50%; transform:translateX(-50%); width:12px; background:rgba(28,58,92,.12); border:1.5px solid #a8b9d5; border-radius:2px; z-index:0; }
+.seq-messages{ position:absolute; inset:0; pointer-events:none; z-index:1; }
+.seq-msg{ position:absolute; left:0; right:0; display:flex; align-items:center; height:36px; }
+.msg-arrow{ display:flex; align-items:center; height:36px; position:absolute; }
+.msg-line{ height:2px; position:absolute; top:50%; }
+.msg-line.solid{ background:var(--accent2); }
+.msg-line.dashed{ background:repeating-linear-gradient(90deg,var(--accent2) 0,var(--accent2) 5px,transparent 5px,transparent 9px); }
+.msg-line.solid-ok{ background:var(--success); }
+.msg-line.dashed-ok{ background:repeating-linear-gradient(90deg,var(--success) 0,var(--success) 5px,transparent 5px,transparent 9px); }
+.msg-line.solid-srv{ background:var(--gold); }
+.msg-line.dashed-srv{ background:repeating-linear-gradient(90deg,var(--gold) 0,var(--gold) 5px,transparent 5px,transparent 9px); }
+.msg-head{ position:absolute; top:50%; width:0; height:0; transform:translateY(-50%); }
+.msg-head.right{ border-top:5px solid transparent; border-bottom:5px solid transparent; border-left:8px solid var(--accent2); }
+.msg-head.left{ border-top:5px solid transparent; border-bottom:5px solid transparent; border-right:8px solid var(--accent2); }
+.msg-head.right-ok{ border-left-color:var(--success); }
+.msg-head.left-ok{ border-right-color:var(--success); }
+.msg-head.right-srv{ border-left-color:var(--gold); }
+.msg-head.left-srv{ border-right-color:var(--gold); }
+.msg-label{ position:absolute; font-family:var(--mono); font-size:9.5px; white-space:nowrap; background:var(--panel); padding:1px 6px; border-radius:2px; z-index:2; }
+.msg-label.blue{ color:var(--accent); }
+.msg-label.green{ color:var(--success); }
+.msg-label.gold{ color:var(--warn); }
+.seq-step-num{ font-family:var(--mono); font-size:8.5px; color:var(--ink2); background:var(--surface); border:1px solid var(--line); padding:1px 5px; border-radius:2px; position:absolute; right:0; letter-spacing:.06em; }
+.port-badge{ font-family:var(--mono); font-size:9px; font-weight:700; padding:2px 8px; border-radius:2px; position:absolute; letter-spacing:.06em; }
+.port-badge.open{ background:#ecf1ed; color:var(--success); border:1px solid #8bb49e; }
+.port-badge.closed{ background:#f3e8e8; color:var(--danger); border:1px solid #c8a5a5; }
+.seq-legend{ display:flex; gap:20px; margin-top:18px; padding-top:14px; border-top:1px solid var(--line); flex-wrap:wrap; }
+.sl-item{ display:flex; align-items:center; gap:8px; font-size:11.5px; color:var(--ink3); }
+.sl-solid{ width:32px; height:2px; background:var(--accent2); position:relative; }
+.sl-solid::after{ content:''; position:absolute; right:-4px; top:-4px; border-left:8px solid var(--accent2); border-top:5px solid transparent; border-bottom:5px solid transparent; }
+.sl-dashed{ width:32px; height:2px; background:repeating-linear-gradient(90deg,#7a8396 0,#7a8396 5px,transparent 5px,transparent 9px); position:relative; }
+.sl-dashed::after{ content:''; position:absolute; right:-4px; top:-4px; border-left:8px solid #7a8396; border-top:5px solid transparent; border-bottom:5px solid transparent; }
+.sl-actbox{ width:12px; height:18px; background:rgba(28,58,92,.12); border:1.5px solid #a8b9d5; border-radius:2px; }
+.sl-lifeline{ width:32px; height:0; border-top:2px dashed var(--line); }
 
-/* Sequence diagram container */
-.seq-diagram{min-width:740px;position:relative}
+/* ═══ EAP filter ═══ */
+.eap-filter-bar{ display:flex; gap:8px; margin:20px 0 16px; flex-wrap:wrap; align-items:center; }
+.eap-filter-btn{ padding:8px 16px; border-radius:2px; font-family:var(--sans); font-size:12px; font-weight:600; cursor:pointer; border:1px solid var(--line); background:var(--panel); color:var(--ink2); transition:all .2s; letter-spacing:.02em; }
+.eap-filter-btn:hover{ border-color:var(--accent2); background:var(--surface); }
+.eap-filter-btn.active{ background:var(--accent); color:#fff; border-color:var(--accent); }
+.eap-filter-btn.gold-filter.active{ background:var(--gold); border-color:var(--gold); }
+.eap-filter-btn.green-filter.active{ background:var(--success); border-color:var(--success); }
+.eap-filter-btn.danger-filter.active{ background:var(--danger); border-color:var(--danger); }
+.eap-row{ transition:all .3s; }
+.eap-row.hidden{ display:none; }
 
-/* Participant row */
-.seq-participants{display:grid;grid-template-columns:160px 1fr 160px 1fr 160px;gap:0;margin-bottom:0}
-.seq-participant{display:flex;flex-direction:column;align-items:center}
-.seq-pbox{padding:9px 12px;border-radius:5px;text-align:center;width:100%}
-.seq-pname{font-size:11.5px;font-weight:700}
-.seq-psub{font-family:var(--mono);font-size:8.5px;margin-top:2px}
-.seq-pbox.p-sup{background:var(--ink2);color:#fff}.seq-pbox.p-sup .seq-psub{color:rgba(255,255,255,.4)}
-.seq-pbox.p-auth{background:var(--accent);color:#fff}.seq-pbox.p-auth .seq-psub{color:rgba(255,255,255,.5)}
-.seq-pbox.p-srv{background:var(--success);color:#fff}.seq-pbox.p-srv .seq-psub{color:rgba(255,255,255,.45)}
+/* ═══ seq player (inline controls in §08) ═══ */
+.seq-player-bar{ display:flex; gap:8px; align-items:center; margin:16px 0; padding:12px 16px; background:var(--surface); border:1px solid var(--line); border-radius:2px; flex-wrap:wrap; }
+.seq-play-btn{ padding:8px 16px; border-radius:2px; font-family:var(--sans); font-size:12px; font-weight:600; cursor:pointer; border:none; transition:all .2s; letter-spacing:.02em; }
+.seq-play-btn.primary{ background:var(--accent); color:#fff; }
+.seq-play-btn.primary:hover{ background:var(--ink2); }
+.seq-play-btn.secondary{ background:var(--panel); color:var(--ink2); border:1px solid var(--line); }
+.seq-play-btn.secondary:hover{ background:var(--surface); border-color:var(--accent2); }
+.seq-step-label{ font-family:var(--mono); font-size:11px; color:var(--ink3); margin-left:auto; letter-spacing:.06em; }
+.seq-highlight-box{ position:absolute; left:0; right:0; height:40px; background:rgba(164,122,42,.08); border:1.5px solid var(--gold); border-radius:2px; transition:top .4s cubic-bezier(.4,0,.2,1),opacity .3s; pointer-events:none; z-index:0; }
+.seq-explain-box{ position:relative; padding:14px 18px; background:#f5efe0; border:1px solid #d9c68a; border-radius:2px; font-size:13px; color:#5c3a10; line-height:1.8; margin:14px 0 0; }
+.seq-explain-box strong{ color:var(--warn); margin-right:6px; }
 
-/* Lifeline columns — use CSS grid + relative positioning */
-.seq-body{display:grid;grid-template-columns:160px 1fr 160px 1fr 160px;min-height:560px;position:relative}
-.seq-lifeline{display:flex;justify-content:center;position:relative}
-.seq-lifeline::before{content:'';position:absolute;top:0;bottom:0;left:50%;width:1px;border-left:2px dashed #cdd7e6;transform:translateX(-50%)}
-/* Spacer columns (between lifelines) */
-.seq-spacer{position:relative}
-
-/* Activation bars — absolute within lifeline */
-.seq-act{position:absolute;left:50%;transform:translateX(-50%);width:12px;background:rgba(11,74,130,.12);border:1.5px solid #a8cef5;border-radius:2px}
-
-/* Message rows — each message is a div spanning the full grid, positioned by top */
-.seq-messages{position:absolute;inset:0;pointer-events:none}
-.seq-msg{position:absolute;left:0;right:0;display:flex;align-items:center;height:36px}
-/* Message arrow: left→right */
-.msg-arrow{display:flex;align-items:center;height:36px;position:absolute}
-.msg-line{height:2px;position:absolute;top:50%}
-.msg-line.solid{background:var(--accent2)}
-.msg-line.dashed{background:repeating-linear-gradient(90deg,var(--accent2) 0,var(--accent2) 5px,transparent 5px,transparent 9px)}
-.msg-line.solid-ok{background:var(--success)}
-.msg-line.dashed-ok{background:repeating-linear-gradient(90deg,var(--success) 0,var(--success) 5px,transparent 5px,transparent 9px)}
-.msg-line.solid-srv{background:var(--gold)}
-.msg-line.dashed-srv{background:repeating-linear-gradient(90deg,var(--gold) 0,var(--gold) 5px,transparent 5px,transparent 9px)}
-/* Arrow heads */
-.msg-head{position:absolute;top:50%;width:0;height:0;transform:translateY(-50%)}
-.msg-head.right{border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:8px solid var(--accent2)}
-.msg-head.left{border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:8px solid var(--accent2)}
-.msg-head.right-ok{border-left-color:var(--success)}
-.msg-head.left-ok{border-right-color:var(--success)}
-.msg-head.right-srv{border-left-color:var(--gold)}
-.msg-head.left-srv{border-right-color:var(--gold)}
-/* Message labels */
-.msg-label{position:absolute;font-family:var(--mono);font-size:9.5px;white-space:nowrap;background:#fff;padding:1px 6px;border-radius:3px}
-.msg-label.blue{color:var(--accent2)}
-.msg-label.green{color:var(--success)}
-.msg-label.gold{color:var(--warn)}
-/* Step numbers */
-.seq-step-num{font-family:var(--mono);font-size:8.5px;color:var(--ink2);background:var(--surface);border:1px solid var(--line);padding:1px 5px;border-radius:3px;position:absolute;right:0}
-/* Port OPEN/CLOSED badge */
-.port-badge{font-family:var(--mono);font-size:9px;font-weight:700;padding:2px 8px;border-radius:3px;position:absolute}
-.port-badge.open{background:#eaf7f1;color:var(--success);border:1px solid #a0d8bf}
-.port-badge.closed{background:#fdf0f0;color:var(--danger);border:1px solid #e8a8a8}
-
-/* Legend row */
-.seq-legend{display:flex;gap:20px;margin-top:16px;padding-top:12px;border-top:1px solid var(--line);flex-wrap:wrap}
-.sl-item{display:flex;align-items:center;gap:8px;font-size:11.5px;color:#3a3d52}
-.sl-solid{width:32px;height:2px;background:var(--accent2);position:relative}
-.sl-solid::after{content:'';position:absolute;right:-4px;top:-4px;border-left:8px solid var(--accent2);border-top:5px solid transparent;border-bottom:5px solid transparent}
-.sl-dashed{width:32px;height:2px;background:repeating-linear-gradient(90deg,#94a3b8 0,#94a3b8 5px,transparent 5px,transparent 9px);position:relative}
-.sl-dashed::after{content:'';position:absolute;right:-4px;top:-4px;border-left:8px solid #94a3b8;border-top:5px solid transparent;border-bottom:5px solid transparent}
-.sl-actbox{width:12px;height:18px;background:rgba(11,74,130,.12);border:1.5px solid #a8cef5;border-radius:2px}
-.sl-lifeline{width:32px;height:0;border-top:2px dashed #cdd7e6}
-
-/* ── threat grid ── */
-.threat-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:20px 0}
-.threat-card{background:#fff;border:1px solid var(--line);border-radius:8px;overflow:hidden}
-.tc-head{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--danger);color:#fff}
-.tc-head.warn-head{background:var(--gold)}
-.tc-head span{font-size:12.5px;font-weight:700}
-.tc-body{padding:12px 14px}
-.tc-body p{font-size:12.5px;color:#3a3d52;margin:0 0 8px;line-height:1.6}
-.tc-counter{font-size:11.5px;color:var(--success);padding:6px 10px;background:#eaf7f1;border-radius:4px;margin:0;border-left:3px solid var(--success)}
 </style>
 </head>
 <body>
 
 <!-- COVER -->
 <div class="cover">
-  <div class="cover-geo" style="position:absolute;top:0;right:0;width:420px;height:420px;opacity:.06">
-    <div style="position:absolute;top:60px;right:60px;width:280px;height:280px;border:1px solid #fff;border-radius:50%"></div>
-    <div style="position:absolute;top:100px;right:100px;width:200px;height:200px;border:1px solid #fff;border-radius:50%"></div>
-    <div style="position:absolute;top:140px;right:140px;width:120px;height:120px;border:1px solid #fff;border-radius:50%"></div>
-    <div style="position:absolute;top:30px;right:160px;width:2px;height:340px;background:#fff;transform:rotate(45deg)"></div>
-    <div style="position:absolute;top:30px;right:160px;width:2px;height:340px;background:#fff;transform:rotate(-45deg)"></div>
-  </div>
-  <div style="position:relative">
-    <p class="cover-kicker">技術解説書 — 情報処理安全確保支援士対応</p>
+  <svg class="cover-geo" viewBox="0 0 600 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="300" cy="300" r="260" stroke="#c9a557" stroke-width="1"/>
+    <circle cx="300" cy="300" r="200" stroke="#c9a557" stroke-width="1"/>
+    <circle cx="300" cy="300" r="140" stroke="#c9a557" stroke-width="1"/>
+    <circle cx="300" cy="300" r="80" stroke="#c9a557" stroke-width="1"/>
+    <line x1="300" y1="40" x2="300" y2="560" stroke="#c9a557" stroke-width="0.4"/>
+    <line x1="40" y1="300" x2="560" y2="300" stroke="#c9a557" stroke-width="0.4"/>
+    <line x1="116" y1="116" x2="484" y2="484" stroke="#c9a557" stroke-width="0.4"/>
+    <line x1="484" y1="116" x2="116" y2="484" stroke="#c9a557" stroke-width="0.4"/>
+  </svg>
+  <div class="cover-inner">
+    <p class="cover-kicker">技術解説書 — 情報処理安全確保支援士 対応</p>
     <h1>IEEE 802 規格体系と<br><em>IEEE 802.1X</em> 認証</h1>
     <p class="cover-desc">「マンションのオートロック」「配達員と守衛室」のたとえ話から始め、IEEE 802 規格全体の位置づけ・802.1X・EAP・RADIUS の役割と連携・認証シーケンス・EAP 方式比較・セキュリティ考慮事項・試験頻出練習問題まで体系的に整理した完全版解説書。</p>
     <div class="cover-tags">
-      <span class="ctag">IEEE 802.1X</span><span class="ctag">EAP / PEAP / EAP-TLS</span><span class="ctag">RADIUS（RFC 2865）</span><span class="ctag">EAPoL</span><span class="ctag">WPA2-Enterprise</span><span class="ctag">動的VLAN割り当て</span><span class="ctag">MACsec（802.1AE）</span>
+      <span class="ctag">IEEE 802.1X</span>
+      <span class="ctag">EAP / PEAP / EAP-TLS</span>
+      <span class="ctag">RADIUS (RFC 2865)</span>
+      <span class="ctag">EAPoL</span>
+      <span class="ctag">WPA2-Enterprise</span>
+      <span class="ctag">動的VLAN</span>
+      <span class="ctag">MACsec (802.1AE)</span>
     </div>
+  </div>
+  <div class="cover-illust">
+    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="100" cy="100" r="90" stroke="#c9a557" stroke-width="1" fill="none" class="ci-ring"/>
+      <circle cx="100" cy="100" r="70" stroke="#c9a557" stroke-width="0.5" fill="none"/>
+      <!-- Network switch silhouette -->
+      <rect x="58" y="88" width="84" height="28" rx="3" fill="none" stroke="#c9a557" stroke-width="1.6"/>
+      <rect x="64" y="96" width="10" height="12" rx="1" fill="none" stroke="#c9a557" stroke-width="1"/>
+      <rect x="76" y="96" width="10" height="12" rx="1" fill="none" stroke="#c9a557" stroke-width="1"/>
+      <rect x="88" y="96" width="10" height="12" rx="1" fill="none" stroke="#c9a557" stroke-width="1"/>
+      <rect x="100" y="96" width="10" height="12" rx="1" fill="none" stroke="#c9a557" stroke-width="1"/>
+      <rect x="112" y="96" width="10" height="12" rx="1" fill="none" stroke="#c9a557" stroke-width="1"/>
+      <rect x="124" y="96" width="10" height="12" rx="1" fill="none" stroke="#c9a557" stroke-width="1"/>
+      <!-- Shield with check -->
+      <path d="M100 40 L128 50 L128 78 Q128 102 100 118 Q72 102 72 78 L72 50 Z" fill="none" stroke="#c9a557" stroke-width="1.5"/>
+      <path class="ci-chk" d="M86 78 L96 88 L114 70" stroke="#c9a557" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <!-- Floating key -->
+      <g class="ci-key" transform="translate(20 20)">
+        <circle cx="10" cy="10" r="5" fill="none" stroke="#c9a557" stroke-width="1.2"/>
+        <line x1="14" y1="10" x2="26" y2="10" stroke="#c9a557" stroke-width="1.2"/>
+        <line x1="22" y1="10" x2="22" y2="14" stroke="#c9a557" stroke-width="1.2"/>
+      </g>
+    </svg>
   </div>
 </div>
 
+
 <div class="layout">
 <aside class="sidebar">
-  <p class="sidebar-title">目次</p>
+  <p class="sidebar-title">目次 — CONTENTS</p>
   <nav>
     <a href="#s1" onclick="setActive(this)"><span class="nav-num">01</span>たとえ話で整理する</a>
     <a href="#s2" onclick="setActive(this)"><span class="nav-num">02</span>IEEE 802 規格体系</a>
@@ -522,22 +672,23 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 <div class="analogy-row">
   <div class="acol">
     <span class="acol-badge blue">IEEE 規格 / L2</span>
-    <!-- CSS door icon -->
+    <!-- SVG: IEEE 802.1X = door with lock (auto-lock system) -->
     <div class="acol-icon-wrap blue">
-      <div style="position:relative;width:36px;height:44px;color:var(--accent);margin:4px auto 0">
-        <!-- door arch top (fits within 36px width) -->
-        <div style="position:absolute;top:0;left:0;right:0;height:10px;border:2.5px solid currentColor;border-bottom:none;border-radius:18px 18px 0 0"></div>
-        <!-- door body -->
-        <div style="position:absolute;top:10px;left:0;right:0;bottom:0;border:2.5px solid currentColor;border-top:none"></div>
-        <!-- left hinge top -->
-        <div style="position:absolute;left:4px;top:14px;width:3px;height:5px;background:currentColor;border-radius:1px;opacity:.8"></div>
-        <!-- left hinge bottom -->
-        <div style="position:absolute;left:4px;bottom:10px;width:3px;height:5px;background:currentColor;border-radius:1px;opacity:.8"></div>
-        <!-- door knob (right side, vertically centered in body) -->
-        <div style="position:absolute;right:5px;top:50%;width:5px;height:5px;background:currentColor;border-radius:50%;transform:translateY(2px)"></div>
-        <!-- keyhole below knob -->
-        <div style="position:absolute;right:6.5px;top:50%;width:2px;height:4px;background:currentColor;border-radius:1px;transform:translateY(9px)"></div>
-      </div>
+      <svg width="44" height="52" viewBox="0 0 44 52" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <!-- door frame with arched top -->
+        <path d="M7 50 V18 Q7 8 22 8 Q37 8 37 18 V50"/>
+        <!-- ground line -->
+        <line x1="4" y1="50" x2="40" y2="50"/>
+        <!-- door hinge line -->
+        <line x1="11" y1="50" x2="11" y2="22" opacity=".35"/>
+        <!-- lock body -->
+        <rect x="17" y="28" width="10" height="9" rx="1.2"/>
+        <!-- lock shackle -->
+        <path d="M19.5 28 V25 Q19.5 22 22 22 Q24.5 22 24.5 25 V28"/>
+        <!-- keyhole -->
+        <circle cx="22" cy="31.5" r="1.2" fill="currentColor"/>
+        <line x1="22" y1="32.3" x2="22" y2="34.5"/>
+      </svg>
     </div>
     <div class="acol-title">IEEE 802.1X</div>
     <div class="acol-sub">= オートロックのドアシステム</div>
@@ -545,26 +696,20 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
   </div>
   <div class="acol">
     <span class="acol-badge green">IETF 規格 / RFC 3748</span>
-    <!-- CSS intercom / speech icon -->
+    <!-- SVG: EAP = dialog bubbles (conversation protocol) -->
     <div class="acol-icon-wrap green">
-      <div style="position:relative;width:40px;height:44px;color:var(--success)">
-        <!-- intercom main body -->
-        <div style="position:absolute;top:0;left:0;right:0;height:34px;border:2.5px solid currentColor;border-radius:7px;background:rgba(21,95,68,.06)"></div>
-        <!-- camera lens ring -->
-        <div style="position:absolute;top:7px;left:6px;width:11px;height:11px;border:2px solid currentColor;border-radius:50%"></div>
-        <!-- camera lens fill -->
-        <div style="position:absolute;top:10px;left:9px;width:5px;height:5px;background:currentColor;border-radius:50%;opacity:.5"></div>
-        <!-- speaker slit 1 -->
-        <div style="position:absolute;top:8px;left:22px;right:5px;height:2px;background:currentColor;border-radius:1px"></div>
-        <!-- speaker slit 2 -->
-        <div style="position:absolute;top:13px;left:22px;right:8px;height:2px;background:currentColor;border-radius:1px"></div>
-        <!-- speaker slit 3 -->
-        <div style="position:absolute;top:18px;left:22px;right:6px;height:2px;background:currentColor;border-radius:1px"></div>
-        <!-- call button (centered, fits within box) -->
-        <div style="position:absolute;top:25px;left:8px;right:8px;height:7px;border:1.5px solid currentColor;border-radius:3px;background:rgba(21,95,68,.15)"></div>
-        <!-- speech bubble tail (triangle below box) -->
-        <div style="position:absolute;bottom:0;left:13px;width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid currentColor"></div>
-      </div>
+      <svg width="46" height="50" viewBox="0 0 46 50" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <!-- left bubble (question) -->
+        <path d="M4 10 Q4 5 9 5 H20 Q25 5 25 10 V19 Q25 24 20 24 H13 L8 28 V24 Q4 24 4 19 Z"/>
+        <!-- dots in left bubble -->
+        <circle cx="11" cy="14.5" r="1" fill="currentColor"/>
+        <circle cx="15" cy="14.5" r="1" fill="currentColor"/>
+        <circle cx="19" cy="14.5" r="1" fill="currentColor"/>
+        <!-- right bubble (answer) -->
+        <path d="M42 26 Q42 21 37 21 H26 Q21 21 21 26 V35 Q21 40 26 40 H33 L38 44 V40 Q42 40 42 35 Z"/>
+        <!-- check mark in right bubble -->
+        <path d="M27 30.5 L30.5 34 L36 28.5"/>
+      </svg>
     </div>
     <div class="acol-title">EAP</div>
     <div class="acol-sub">= インターホンの会話ルール</div>
@@ -572,24 +717,23 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
   </div>
   <div class="acol">
     <span class="acol-badge gold">IETF 規格 / RFC 2865</span>
-    <!-- CSS building icon -->
+    <!-- SVG: RADIUS = server rack + authority shield -->
     <div class="acol-icon-wrap gold">
-      <div style="position:relative;width:40px;height:48px;color:var(--gold)">
-        <!-- roof triangle: clip-path fills 14px tall area above body -->
-        <div style="position:absolute;top:0;left:3px;right:3px;height:14px;background:currentColor;clip-path:polygon(50% 0%,100% 100%,0% 100%)"></div>
-        <!-- building body: starts flush at roof bottom (14px) -->
-        <div style="position:absolute;top:13px;left:3px;right:3px;bottom:0;border:2.5px solid currentColor;border-top:none;background:rgba(181,130,30,.06)"></div>
-        <!-- window top-left: inside body, 3px below body top -->
-        <div style="position:absolute;top:17px;left:7px;width:9px;height:7px;border:1.5px solid currentColor"></div>
-        <!-- window top-right -->
-        <div style="position:absolute;top:17px;right:7px;width:9px;height:7px;border:1.5px solid currentColor"></div>
-        <!-- window bottom-left: 12px below top windows -->
-        <div style="position:absolute;top:29px;left:7px;width:9px;height:7px;border:1.5px solid currentColor"></div>
-        <!-- window bottom-right -->
-        <div style="position:absolute;top:29px;right:7px;width:9px;height:7px;border:1.5px solid currentColor"></div>
-        <!-- door: centered, flush at bottom -->
-        <div style="position:absolute;bottom:0;left:50%;width:10px;height:12px;border:1.5px solid currentColor;border-bottom:none;transform:translateX(-50%)"></div>
-      </div>
+      <svg width="46" height="50" viewBox="0 0 46 50" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <!-- server rack outer -->
+        <rect x="6" y="4" width="34" height="42" rx="2"/>
+        <!-- slot 1 -->
+        <rect x="10" y="9" width="26" height="7" rx="0.8"/>
+        <circle cx="33" cy="12.5" r="1" fill="currentColor"/>
+        <line x1="12" y1="12.5" x2="20" y2="12.5" opacity=".4"/>
+        <!-- slot 2 -->
+        <rect x="10" y="19" width="26" height="7" rx="0.8"/>
+        <circle cx="33" cy="22.5" r="1" fill="currentColor"/>
+        <line x1="12" y1="22.5" x2="20" y2="22.5" opacity=".4"/>
+        <!-- shield emblem (authority badge) in slot 3 area -->
+        <path d="M15 30 L23 28 L31 30 V36 Q31 41 23 43 Q15 41 15 36 Z"/>
+        <path d="M20 35 L22.5 37.5 L27 33"/>
+      </svg>
     </div>
     <div class="acol-title">RADIUS</div>
     <div class="acol-sub">= 住民台帳を持つ管理会社</div>
@@ -630,7 +774,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 </div>
 
 <div class="note info">
-  <div class="note-i"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1570b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16" stroke-width="2.5"/></svg></div>
+  <div class="note-i"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3d6998" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16" stroke-width="2.5"/></svg></div>
   <p><strong>EAP の「二重包み」とは：</strong>EAP メッセージは端末〜スイッチ間では <code>EAPoL</code>（Ethertype 0x888E）という封筒に入り、スイッチ〜RADIUSサーバ間では <code>RADIUS パケット</code>（属性 Type 79）という別の封筒に入れ替えられます。中の EAP メッセージは同じです。インターホンの会話内容を、守衛が別の電話で管理会社に伝えるイメージです。</p>
 </div>
 
@@ -647,14 +791,12 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
     <div class="auth-sim-actors">
       <!-- Visitor / Supplicant -->
       <div class="sim-actor">
-        <div class="sim-actor-icon lit" id="simActorSup" style="background:#eaf3ff;border-color:var(--accent2);color:var(--accent2)">
-          <!-- person icon CSS -->
-          <div style="position:relative;width:30px;height:34px;color:currentColor">
-            <div style="position:absolute;top:0;left:50%;width:14px;height:14px;border:2.5px solid currentColor;border-radius:50%;background:rgba(21,112,184,.1);transform:translateX(-50%)"></div>
-            <div style="position:absolute;top:15px;left:3px;right:3px;height:16px;border:2.5px solid currentColor;border-top:none;border-radius:0 0 6px 6px;background:rgba(21,112,184,.08)"></div>
-            <div style="position:absolute;top:15px;left:3px;width:10px;height:2.5px;background:currentColor;transform-origin:right center;transform:rotate(-25deg)"></div>
-            <div style="position:absolute;top:15px;right:3px;width:10px;height:2.5px;background:currentColor;transform-origin:left center;transform:rotate(25deg)"></div>
-          </div>
+        <div class="sim-actor-icon lit" id="simActorSup" style="background:#eef1f7;border-color:var(--accent2);color:var(--accent2)">
+          <!-- SVG: Supplicant = person -->
+          <svg width="30" height="34" viewBox="0 0 30 34" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="15" cy="8" r="5.5"/>
+            <path d="M3 32 Q3 19 15 19 Q27 19 27 32"/>
+          </svg>
         </div>
         <div class="sim-actor-label">来訪者<br>（サプリカント）</div>
         <div class="sim-actor-sublabel">端末 / PC</div>
@@ -666,28 +808,23 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
           <div class="sim-road"></div>
           <div class="sim-packet blue hidden" id="pkt1" style="left:4%">EAPoL-Start</div>
         </div>
-        <div style="text-align:center;font-family:var(--mono);font-size:8px;color:#94a3b8;margin-top:2px">EAPoL（L2）</div>
+        <div style="text-align:center;font-family:var(--mono);font-size:8px;color:#7a8396;margin-top:2px">EAPoL（L2）</div>
       </div>
 
       <!-- Guard / Authenticator -->
       <div class="sim-actor">
-        <div class="sim-actor-icon dim" id="simActorAuth" style="background:#eaf3ff;border-color:var(--accent);color:var(--accent)">
-          <!-- guard/switch icon CSS -->
-          <div style="position:relative;width:34px;height:30px;color:currentColor">
-            <div style="position:absolute;inset:0;border:2.5px solid currentColor;border-radius:5px;background:rgba(11,74,130,.07)"></div>
-            <div style="position:absolute;top:5px;left:5px;display:flex;gap:3px">
-              <div style="width:5px;height:5px;background:var(--success);border-radius:50%"></div>
-              <div style="width:5px;height:5px;background:var(--success);border-radius:50%"></div>
-              <div style="width:5px;height:5px;background:#cdd7e6;border-radius:50%" id="authLed3"></div>
-            </div>
-            <div style="position:absolute;top:13px;left:5px;right:5px;height:1px;background:currentColor;opacity:.15"></div>
-            <div style="position:absolute;top:15px;left:5px;right:5px;display:flex;gap:2px">
-              <div style="flex:1;height:9px;border:1.5px solid currentColor;border-radius:1px"></div>
-              <div style="flex:1;height:9px;border:1.5px solid currentColor;border-radius:1px"></div>
-              <div style="flex:1;height:9px;border:1.5px solid currentColor;border-radius:1px"></div>
-              <div style="flex:1;height:9px;border:1.5px solid currentColor;border-radius:1px"></div>
-            </div>
-          </div>
+        <div class="sim-actor-icon dim" id="simActorAuth" style="background:#eef1f7;border-color:var(--accent);color:var(--accent)">
+          <!-- SVG: Authenticator = switch -->
+          <svg width="34" height="30" viewBox="0 0 34 30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="2" y="4" width="30" height="22" rx="2"/>
+            <circle cx="7" cy="9.5" r="1.2" fill="#2a5f4a" stroke="none"/>
+            <circle cx="12" cy="9.5" r="1.2" fill="#2a5f4a" stroke="none"/>
+            <circle cx="17" cy="9.5" r="1.2" fill="currentColor" stroke="none" opacity=".3" id="authLed3Ind"/>
+            <rect x="4" y="14" width="4" height="8" rx="0.6"/>
+            <rect x="10" y="14" width="4" height="8" rx="0.6"/>
+            <rect x="16" y="14" width="4" height="8" rx="0.6"/>
+            <rect x="22" y="14" width="4" height="8" rx="0.6"/>
+          </svg>
         </div>
         <div class="sim-actor-label">守衛<br>（オーセンティケータ）</div>
         <div class="sim-actor-sublabel">スイッチ / AP</div>
@@ -699,20 +836,22 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
           <div class="sim-road"></div>
           <div class="sim-packet gold hidden" id="pkt2" style="left:4%">Access-Request</div>
         </div>
-        <div style="text-align:center;font-family:var(--mono);font-size:8px;color:#94a3b8;margin-top:2px">RADIUS（UDP 1812）</div>
+        <div style="text-align:center;font-family:var(--mono);font-size:8px;color:#7a8396;margin-top:2px">RADIUS（UDP 1812）</div>
       </div>
 
       <!-- Management company / RADIUS -->
       <div class="sim-actor">
-        <div class="sim-actor-icon dim" id="simActorRad" style="background:#fdf5e6;border-color:var(--gold);color:var(--gold)">
-          <!-- building icon CSS -->
-          <div style="position:relative;width:32px;height:36px;color:currentColor">
-            <div style="position:absolute;top:0;left:2px;right:2px;height:11px;background:currentColor;clip-path:polygon(50% 0%,100% 100%,0% 100%)"></div>
-            <div style="position:absolute;top:10px;left:2px;right:2px;bottom:0;border:2px solid currentColor;border-top:none;background:rgba(181,130,30,.07)"></div>
-            <div style="position:absolute;top:13px;left:5px;width:7px;height:6px;border:1.5px solid currentColor"></div>
-            <div style="position:absolute;top:13px;right:5px;width:7px;height:6px;border:1.5px solid currentColor"></div>
-            <div style="position:absolute;bottom:0;left:50%;width:8px;height:9px;border:1.5px solid currentColor;border-bottom:none;transform:translateX(-50%)"></div>
-          </div>
+        <div class="sim-actor-icon dim" id="simActorRad" style="background:#f5efe0;border-color:var(--gold);color:var(--gold)">
+          <!-- SVG: RADIUS = server rack (matches analogy) -->
+          <svg width="32" height="36" viewBox="0 0 32 36" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="2" width="26" height="32" rx="2"/>
+            <rect x="6" y="5" width="20" height="6" rx="0.6"/>
+            <circle cx="23" cy="8" r="0.9" fill="currentColor" stroke="none"/>
+            <rect x="6" y="13" width="20" height="6" rx="0.6"/>
+            <circle cx="23" cy="16" r="0.9" fill="currentColor" stroke="none"/>
+            <path d="M10 22 L16 20.5 L22 22 V27 Q22 31 16 32.5 Q10 31 10 27 Z"/>
+            <path d="M13.5 25.5 L15.5 27.5 L18.5 24"/>
+          </svg>
         </div>
         <div class="sim-actor-label">管理会社<br>（RADIUS）</div>
         <div class="sim-actor-sublabel">認証サーバ</div>
@@ -739,8 +878,8 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
   <div class="auth-sim-controls">
     <button class="sim-btn secondary" onclick="simReset()">リセット</button>
     <button class="sim-btn primary" id="simNextBtn" onclick="simNext()">次へ →</button>
-    <div style="margin-left:8px;font-family:var(--mono);font-size:10px;color:#94a3b8">シナリオ：</div>
-    <button class="sim-btn secondary" id="scenOk" onclick="setScenario('ok')" style="font-size:10px;padding:5px 10px;background:#eaf7f1;border-color:var(--success);color:var(--success)">認証成功</button>
+    <div style="margin-left:8px;font-family:var(--mono);font-size:10px;color:#7a8396">シナリオ：</div>
+    <button class="sim-btn secondary" id="scenOk" onclick="setScenario('ok')" style="font-size:10px;padding:5px 10px;background:#ecf1ed;border-color:var(--success);color:var(--success)">認証成功</button>
     <button class="sim-btn secondary" id="scenNg" onclick="setScenario('ng')" style="font-size:10px;padding:5px 10px">認証失敗</button>
     <div class="sim-progress" id="simProgress">
       <div class="sim-dot active" id="dot0"></div>
@@ -889,7 +1028,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 </table>
 
 <div class="note warn">
-  <div class="note-i"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#b5821e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17" stroke-width="2.5"/></svg></div>
+  <div class="note-i"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#a47a2a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17" stroke-width="2.5"/></svg></div>
   <p><strong>Personal vs Enterprise の決定的な違い：</strong>WPA2-Personal は全員が同じ PSK（パスワード）を使うため、1人が漏らすと全員が危険になります。WPA2-Enterprise は 802.1X + EAP による個人認証なので、ユーザごとに個別クレデンシャルを持ちアクセス制御・ログ管理も可能です。企業ネットワークには Enterprise が必須です。</p>
 </div>
 </section>
@@ -930,7 +1069,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
         <div style="font-size:13.5px;font-weight:700;color:var(--ink2)">サプリカント</div>
       </div>
     </div>
-    <div style="font-size:12.5px;color:#3a3d52;line-height:1.6">ネットワーク接続を要求するエンティティ（端末）。EAPoL で認証情報を送出。Windows・macOS・Linux に標準内蔵。<br><br><em style="color:var(--accent2);font-size:11.5px">たとえ：マンションに入ろうとする来訪者</em></div>
+    <div style="font-size:12.5px;color:#3d4860;line-height:1.6">ネットワーク接続を要求するエンティティ（端末）。EAPoL で認証情報を送出。Windows・macOS・Linux に標準内蔵。<br><br><em style="color:var(--accent2);font-size:11.5px">たとえ：マンションに入ろうとする来訪者</em></div>
   </div>
 
   <!-- Authenticator -->
@@ -962,7 +1101,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
         <div style="font-size:13.5px;font-weight:700;color:var(--ink2)">オーセンティケータ</div>
       </div>
     </div>
-    <div style="font-size:12.5px;color:#3a3d52;line-height:1.6">スイッチや AP。EAP メッセージを中継するだけで認証の判断は自分でしない。RADIUS クライアントとして動作する。<br><br><em style="color:var(--accent2);font-size:11.5px">たとえ：守衛室の守衛（判断は管理会社に委ねる）</em></div>
+    <div style="font-size:12.5px;color:#3d4860;line-height:1.6">スイッチや AP。EAP メッセージを中継するだけで認証の判断は自分でしない。RADIUS クライアントとして動作する。<br><br><em style="color:var(--accent2);font-size:11.5px">たとえ：守衛室の守衛（判断は管理会社に委ねる）</em></div>
   </div>
 
   <!-- Auth Server -->
@@ -988,7 +1127,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
         <div style="font-size:13.5px;font-weight:700;color:var(--ink2)">認証サーバ</div>
       </div>
     </div>
-    <div style="font-size:12.5px;color:#3a3d52;line-height:1.6">実際の認証処理を行う RADIUS サーバ。LDAP/AD と連携してクレデンシャルを検証し Access-Accept / Reject を返す。<br><br><em style="color:var(--accent2);font-size:11.5px">たとえ：住民台帳を持つ管理会社</em></div>
+    <div style="font-size:12.5px;color:#3d4860;line-height:1.6">実際の認証処理を行う RADIUS サーバ。LDAP/AD と連携してクレデンシャルを検証し Access-Accept / Reject を返す。<br><br><em style="color:var(--accent2);font-size:11.5px">たとえ：住民台帳を持つ管理会社</em></div>
   </div>
 </div>
 
@@ -1019,7 +1158,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
       <div class="port-vis">
         <!-- small switch icon -->
         <div class="port-vis-sw">
-          <div style="position:absolute;inset:0;border:2px solid var(--accent);border-radius:4px;background:#eaf3ff"></div>
+          <div style="position:absolute;inset:0;border:2px solid var(--accent);border-radius:4px;background:#eef1f7"></div>
           <div style="position:absolute;top:4px;left:4px;display:flex;gap:2px">
             <div style="width:4px;height:4px;background:var(--success);border-radius:50%"></div>
             <div style="width:4px;height:4px;background:var(--success);border-radius:50%"></div>
@@ -1033,12 +1172,12 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
         <div class="port-vis-line" style="background:var(--success);height:3px"></div>
         <!-- PC -->
         <div class="port-vis-pc">
-          <div style="position:absolute;top:0;left:2px;right:2px;height:18px;border:2px solid var(--success);border-radius:3px;background:#eaf7f1"></div>
+          <div style="position:absolute;top:0;left:2px;right:2px;height:18px;border:2px solid var(--success);border-radius:3px;background:#ecf1ed"></div>
           <div style="position:absolute;top:18px;left:50%;width:6px;height:3px;background:var(--success);opacity:.3;transform:translateX(-50%)"></div>
           <div style="position:absolute;bottom:0;left:3px;right:3px;height:4px;border:2px solid var(--success);border-radius:2px"></div>
         </div>
       </div>
-      <div style="font-size:12px;color:#3a3d52;line-height:1.6">EAPoL フレームのみ通過。<br>認証の会話専用の回線。<br><em style="color:var(--success);font-size:11px">= インターホン回線（常時通じている）</em></div>
+      <div style="font-size:12px;color:#3d4860;line-height:1.6">EAPoL フレームのみ通過。<br>認証の会話専用の回線。<br><em style="color:var(--success);font-size:11px">= インターホン回線（常時通じている）</em></div>
     </div>
 
     <!-- Panel: Controlled Port (toggleable) -->
@@ -1050,7 +1189,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
       <div class="port-vis">
         <!-- switch -->
         <div class="port-vis-sw">
-          <div style="position:absolute;inset:0;border:2px solid var(--accent);border-radius:4px;background:#eaf3ff"></div>
+          <div style="position:absolute;inset:0;border:2px solid var(--accent);border-radius:4px;background:#eef1f7"></div>
           <div style="position:absolute;top:4px;left:4px;display:flex;gap:2px">
             <div style="width:4px;height:4px;background:var(--success);border-radius:50%"></div>
             <div style="width:4px;height:4px;background:var(--success);border-radius:50%"></div>
@@ -1058,21 +1197,21 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
           </div>
           <div style="position:absolute;bottom:5px;left:4px;right:4px;display:flex;gap:2px">
             <div style="flex:1;height:7px;border:1.5px solid var(--accent);border-radius:1px"></div>
-            <div style="flex:1;height:7px;border:1.5px solid var(--danger);border-radius:1px;background:#fde8e8" id="portSlot2"></div>
+            <div style="flex:1;height:7px;border:1.5px solid var(--danger);border-radius:1px;background:#f3e8e8" id="portSlot2"></div>
           </div>
         </div>
         <!-- line changes color / style -->
         <div class="port-vis-line" id="portLine" style="background:repeating-linear-gradient(90deg,var(--danger) 0,var(--danger) 5px,transparent 5px,transparent 9px);opacity:.5"></div>
         <!-- PC -->
         <div class="port-vis-pc" id="portPc">
-          <div style="position:absolute;top:0;left:2px;right:2px;height:18px;border:2px solid var(--danger);border-radius:3px;background:#fdf0f0" id="portPcScreen"></div>
+          <div style="position:absolute;top:0;left:2px;right:2px;height:18px;border:2px solid var(--danger);border-radius:3px;background:#f3e8e8" id="portPcScreen"></div>
           <div style="position:absolute;top:18px;left:50%;width:6px;height:3px;background:var(--danger);opacity:.3;transform:translateX(-50%)"></div>
           <div style="position:absolute;bottom:0;left:3px;right:3px;height:4px;border:2px solid var(--danger);border-radius:2px" id="portPcBase"></div>
         </div>
         <!-- block overlay on line -->
         <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:18px;transition:opacity .4s" id="portBlockIcon">×</div>
       </div>
-      <div style="font-size:12px;color:#3a3d52;line-height:1.6" id="ctrlPortDesc">認証前はすべてのデータをブロック。<br>通常のネットワーク通信は不可。<br><em style="color:var(--danger);font-size:11px">= 施錠されたエントランスドア</em></div>
+      <div style="font-size:12px;color:#3d4860;line-height:1.6" id="ctrlPortDesc">認証前はすべてのデータをブロック。<br>通常のネットワーク通信は不可。<br><em style="color:var(--danger);font-size:11px">= 施錠されたエントランスドア</em></div>
     </div>
   </div>
   <!-- Toggle control -->
@@ -1082,7 +1221,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
       <div class="toggle-track"></div>
       <div class="toggle-knob"></div>
     </label>
-    <div class="toggle-label"><strong id="portToggleLabel">認証前（Controlled Port = BLOCKED）</strong><br><span style="font-size:11.5px;color:#94a3b8">スイッチを ON にすると認証成功後の状態に切り替わります</span></div>
+    <div class="toggle-label"><strong id="portToggleLabel">認証前（Controlled Port = BLOCKED）</strong><br><span style="font-size:11.5px;color:#7a8396">スイッチを ON にすると認証成功後の状態に切り替わります</span></div>
   </div>
 </div>
 </section>
@@ -1110,7 +1249,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
   <div style="display:flex;gap:0;align-items:stretch;min-width:680px">
 
     <!-- IEEE zone -->
-    <div style="flex:1;background:#f5f9ff;border:1.5px dashed #a8cef5;border-radius:8px;padding:16px 14px;display:flex;gap:10px;align-items:center">
+    <div style="flex:1;background:#f5f9ff;border:1.5px dashed #a8b9d5;border-radius:8px;padding:16px 14px;display:flex;gap:10px;align-items:center">
 
       <!-- Supplicant entity -->
       <div style="flex:1;background:var(--ink2);border-radius:7px;padding:14px 12px;text-align:center;color:#fff">
@@ -1137,7 +1276,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
           <div style="flex:1;height:2px;background:var(--accent2)"></div>
           <div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:8px solid var(--accent2)"></div>
         </div>
-        <div style="font-family:var(--mono);font-size:9px;color:var(--accent2);background:#eaf3ff;padding:2px 7px;border-radius:3px;border:1px solid #a8cef5;white-space:nowrap">EAPoL</div>
+        <div style="font-family:var(--mono);font-size:9px;color:var(--accent2);background:#eef1f7;padding:2px 7px;border-radius:3px;border:1px solid #a8b9d5;white-space:nowrap">EAPoL</div>
         <!-- Left arrow -->
         <div style="display:flex;align-items:center;width:100%">
           <div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:8px solid var(--accent2)"></div>
@@ -1183,7 +1322,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
     </div>
 
     <!-- IETF zone -->
-    <div style="flex:1;background:#fdfaf4;border:1.5px dashed #e8c97a;border-radius:8px;padding:16px 14px;display:flex;gap:10px;align-items:center">
+    <div style="flex:1;background:#f5efe0;border:1.5px dashed #d9c68a;border-radius:8px;padding:16px 14px;display:flex;gap:10px;align-items:center">
 
       <!-- RADIUS arrow block -->
       <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex-shrink:0;width:80px">
@@ -1191,12 +1330,12 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
           <div style="flex:1;height:2px;background:var(--gold)"></div>
           <div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:8px solid var(--gold)"></div>
         </div>
-        <div style="font-family:var(--mono);font-size:9px;color:var(--warn);background:#fdf5e6;padding:2px 5px;border-radius:3px;border:1px solid #e8c97a;white-space:nowrap">Access-Req</div>
+        <div style="font-family:var(--mono);font-size:9px;color:var(--warn);background:#f5efe0;padding:2px 5px;border-radius:3px;border:1px solid #d9c68a;white-space:nowrap">Access-Req</div>
         <div style="display:flex;align-items:center;width:100%">
           <div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:8px solid var(--success)"></div>
           <div style="flex:1;height:2px;background:var(--success)"></div>
         </div>
-        <div style="font-family:var(--mono);font-size:9px;color:var(--success);background:#eaf7f1;padding:2px 5px;border-radius:3px;border:1px solid #a0d8bf;white-space:nowrap">Accept/Reject</div>
+        <div style="font-family:var(--mono);font-size:9px;color:var(--success);background:#ecf1ed;padding:2px 5px;border-radius:3px;border:1px solid #8bb49e;white-space:nowrap">Accept/Reject</div>
         <div style="font-family:var(--mono);font-size:8px;color:var(--ink2);white-space:nowrap;margin-top:2px">UDP 1812</div>
         <div style="font-family:var(--mono);font-size:8px;color:var(--ink2);white-space:nowrap">RFC 2865</div>
       </div>
@@ -1229,7 +1368,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
   </div>
 
   <!-- EAP spanning note -->
-  <div style="margin-top:14px;padding:8px 16px;background:rgba(21,112,184,.05);border:1px solid #a8cef5;border-radius:5px;font-size:12px;color:#0b3a6a;text-align:center">
+  <div style="margin-top:14px;padding:8px 16px;background:rgba(21,112,184,.05);border:1px solid #a8b9d5;border-radius:5px;font-size:12px;color:#1a2a42;text-align:center">
     <strong>EAP メッセージ（中身）は同じ：</strong>左区間では EAPoL という封筒に入り、右区間では RADIUS パケットという封筒に入れ替えて運ばれます。守衛が来訪者の声を電話で管理会社に伝えるイメージです。
   </div>
 </div>
@@ -1263,7 +1402,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
         <div style="font-size:13px;font-weight:700;color:var(--ink2)">認証</div>
       </div>
     </div>
-    <div style="font-size:12.5px;color:#3a3d52">本人確認。証明書・パスワードを検証し Access-Accept / Reject を返す。<br><code style="font-family:var(--mono);font-size:11px;background:rgba(11,74,130,.08);color:var(--accent);padding:1px 5px;border-radius:3px">UDP 1812</code></div>
+    <div style="font-size:12.5px;color:#3d4860">本人確認。証明書・パスワードを検証し Access-Accept / Reject を返す。<br><code style="font-family:var(--mono);font-size:11px;background:rgba(11,74,130,.08);color:var(--accent);padding:1px 5px;border-radius:3px">UDP 1812</code></div>
   </div>
   <div style="background:#fff;border:1px solid var(--line);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
     <!-- Check icon CSS -->
@@ -1277,7 +1416,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
         <div style="font-size:13px;font-weight:700;color:var(--ink2)">認可</div>
       </div>
     </div>
-    <div style="font-size:12.5px;color:#3a3d52">アクセス権限付与。VLAN・ACL・帯域制限などを Access-Accept の属性として付加。</div>
+    <div style="font-size:12.5px;color:#3d4860">アクセス権限付与。VLAN・ACL・帯域制限などを Access-Accept の属性として付加。</div>
   </div>
   <div style="background:#fff;border:1px solid var(--line);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
     <!-- Chart icon CSS -->
@@ -1293,12 +1432,12 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
         <div style="font-size:13px;font-weight:700;color:var(--ink2)">アカウンティング</div>
       </div>
     </div>
-    <div style="font-size:12.5px;color:#3a3d52">接続開始・終了・使用量の記録。課金・監査ログ目的。<code style="font-family:var(--mono);font-size:11px;background:rgba(11,74,130,.08);color:var(--accent);padding:1px 5px;border-radius:3px">UDP 1813</code></div>
+    <div style="font-size:12.5px;color:#3d4860">接続開始・終了・使用量の記録。課金・監査ログ目的。<code style="font-family:var(--mono);font-size:11px;background:rgba(11,74,130,.08);color:var(--accent);padding:1px 5px;border-radius:3px">UDP 1813</code></div>
   </div>
 </div>
 
 <div class="note warn">
-  <div class="note-i"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#b5821e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17" stroke-width="2.5"/></svg></div>
+  <div class="note-i"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#a47a2a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17" stroke-width="2.5"/></svg></div>
   <p><strong>動的 VLAN 割り当て（試験頻出）：</strong>RADIUS の Access-Accept に <strong>属性64（Tunnel-Type = 13/VLAN）・属性65（Tunnel-Medium-Type = 6/IEEE 802）・属性81（Tunnel-Private-Group-ID = VLAN ID）</strong> を3点セットで付加することで、認証結果に応じてユーザを自動的に適切な VLAN に配置できます。たとえ話では「101号室に通してよい」という指示に相当します。</p>
 </div>
 </section>
@@ -1441,9 +1580,9 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
   <!-- Protocol zone labels -->
   <div style="display:grid;grid-template-columns:175px 1fr 175px 1fr 175px;gap:0;margin:6px 0 0;position:relative;z-index:2">
     <div></div>
-    <div style="text-align:center"><span style="font-family:var(--mono);font-size:8.5px;background:#eaf3ff;color:var(--accent2);padding:2px 10px;border-radius:3px;border:1px solid #a8cef5">EAPoL（L2）</span></div>
+    <div style="text-align:center"><span style="font-family:var(--mono);font-size:8.5px;background:#eef1f7;color:var(--accent2);padding:2px 10px;border-radius:3px;border:1px solid #a8b9d5">EAPoL（L2）</span></div>
     <div></div>
-    <div style="text-align:center"><span style="font-family:var(--mono);font-size:8.5px;background:#fdf5e6;color:var(--warn);padding:2px 10px;border-radius:3px;border:1px solid #e8c97a">RADIUS（UDP 1812）</span></div>
+    <div style="text-align:center"><span style="font-family:var(--mono);font-size:8.5px;background:#f5efe0;color:var(--warn);padding:2px 10px;border-radius:3px;border:1px solid #d9c68a">RADIUS（UDP 1812）</span></div>
     <div></div>
   </div>
 
@@ -1454,21 +1593,21 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
     <div style="position:absolute;inset:0;display:grid;grid-template-columns:175px 1fr 175px 1fr 175px;pointer-events:none;z-index:0">
       <!-- Supplicant lifeline -->
       <div style="display:flex;justify-content:center;padding-top:6px">
-        <div style="width:2px;height:100%;border-left:2px dashed #cdd7e6"></div>
+        <div style="width:2px;height:100%;border-left:2px dashed #d9d5c7"></div>
       </div>
       <div></div>
       <!-- Auth lifeline (with activation box) -->
       <div style="display:flex;justify-content:center;padding-top:6px;position:relative">
-        <div style="width:2px;height:100%;border-left:2px dashed #cdd7e6"></div>
+        <div style="width:2px;height:100%;border-left:2px dashed #d9d5c7"></div>
         <!-- activation box: full height during auth -->
-        <div style="position:absolute;top:0;left:50%;width:12px;height:96%;background:rgba(11,74,130,.08);border:1.5px solid #a8cef5;border-radius:2px;transform:translateX(-50%)"></div>
+        <div style="position:absolute;top:0;left:50%;width:12px;height:96%;background:rgba(11,74,130,.08);border:1.5px solid #a8b9d5;border-radius:2px;transform:translateX(-50%)"></div>
       </div>
       <div></div>
       <!-- Auth Server lifeline -->
       <div style="display:flex;justify-content:center;padding-top:6px;position:relative">
-        <div style="width:2px;height:100%;border-left:2px dashed #cdd7e6"></div>
+        <div style="width:2px;height:100%;border-left:2px dashed #d9d5c7"></div>
         <!-- activation box starts at ~step 4 -->
-        <div style="position:absolute;top:28%;left:50%;width:12px;height:55%;background:rgba(181,130,30,.08);border:1.5px solid #e8c97a;border-radius:2px;transform:translateX(-50%)"></div>
+        <div style="position:absolute;top:28%;left:50%;width:12px;height:55%;background:rgba(181,130,30,.08);border:1.5px solid #d9c68a;border-radius:2px;transform:translateX(-50%)"></div>
       </div>
     </div>
 
@@ -1493,10 +1632,10 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
     <div id="seqRow2" style="position:absolute;top:14%;left:0;right:0;display:grid;grid-template-columns:175px 1fr 175px 1fr 175px;align-items:center;z-index:1">
       <div></div>
       <div style="display:flex;flex-direction:column;gap:2px">
-        <div style="font-family:var(--mono);font-size:9px;color:#3a3d52;text-align:center">EAP-Request / Identity</div>
+        <div style="font-family:var(--mono);font-size:9px;color:#3d4860;text-align:center">EAP-Request / Identity</div>
         <div style="display:flex;align-items:center">
-          <div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:8px solid #94a3b8"></div>
-          <div style="flex:1;height:2px;background:repeating-linear-gradient(90deg,#94a3b8 0,#94a3b8 5px,transparent 5px,transparent 9px)"></div>
+          <div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:8px solid #7a8396"></div>
+          <div style="flex:1;height:2px;background:repeating-linear-gradient(90deg,#7a8396 0,#7a8396 5px,transparent 5px,transparent 9px)"></div>
         </div>
       </div>
       <div style="text-align:right;padding-right:8px"><span style="font-family:var(--mono);font-size:8px;color:var(--ink2);background:var(--surface);border:1px solid var(--line);padding:1px 5px;border-radius:3px">[2]</span></div>
@@ -1521,7 +1660,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
     <div id="seqRow3b" style="position:absolute;top:31%;left:0;right:0;display:grid;grid-template-columns:175px 1fr 175px 1fr 175px;z-index:1">
       <div></div><div></div>
       <div style="padding:0 4px">
-        <div style="background:#eaf3ff;border:1px solid #a8cef5;border-radius:4px;padding:3px 8px;font-family:var(--mono);font-size:8px;color:var(--accent);text-align:center">EAPoL → RADIUS 変換</div>
+        <div style="background:#eef1f7;border:1px solid #a8b9d5;border-radius:4px;padding:3px 8px;font-family:var(--mono);font-size:8px;color:var(--accent);text-align:center">EAPoL → RADIUS 変換</div>
       </div>
       <div></div><div></div>
     </div>
@@ -1556,10 +1695,10 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
     <div id="seqRow6" style="position:absolute;top:55%;left:0;right:0;display:grid;grid-template-columns:175px 1fr 175px 1fr 175px;align-items:center;z-index:1">
       <div></div>
       <div style="display:flex;flex-direction:column;gap:2px">
-        <div style="font-family:var(--mono);font-size:9px;color:#3a3d52;text-align:center">EAP-Request / Method</div>
+        <div style="font-family:var(--mono);font-size:9px;color:#3d4860;text-align:center">EAP-Request / Method</div>
         <div style="display:flex;align-items:center">
-          <div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:8px solid #94a3b8"></div>
-          <div style="flex:1;height:2px;background:repeating-linear-gradient(90deg,#94a3b8 0,#94a3b8 5px,transparent 5px,transparent 9px)"></div>
+          <div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:8px solid #7a8396"></div>
+          <div style="flex:1;height:2px;background:repeating-linear-gradient(90deg,#7a8396 0,#7a8396 5px,transparent 5px,transparent 9px)"></div>
         </div>
       </div>
       <div style="text-align:right;padding-right:8px"><span style="font-family:var(--mono);font-size:8px;color:var(--ink2);background:var(--surface);border:1px solid var(--line);padding:1px 5px;border-radius:3px">[6]</span></div>
@@ -1597,7 +1736,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
     <div id="seqRow9" style="position:absolute;top:79%;left:0;right:0;display:grid;grid-template-columns:175px 1fr 175px 1fr 175px;align-items:center;z-index:1">
       <div></div><div></div><div></div>
       <div style="display:flex;flex-direction:column;gap:2px">
-        <div style="background:#eaf7f1;border-radius:3px;padding:1px 6px;font-family:var(--mono);font-size:9px;color:var(--success);text-align:center;border:1px solid #a0d8bf">RADIUS Access-Accept（+ VLAN属性）</div>
+        <div style="background:#ecf1ed;border-radius:3px;padding:1px 6px;font-family:var(--mono);font-size:9px;color:var(--success);text-align:center;border:1px solid #8bb49e">RADIUS Access-Accept（+ VLAN属性）</div>
         <div style="display:flex;align-items:center">
           <div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:8px solid var(--success)"></div>
           <div style="flex:1;height:2px;background:repeating-linear-gradient(90deg,var(--success) 0,var(--success) 5px,transparent 5px,transparent 9px)"></div>
@@ -1610,7 +1749,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
     <div id="seqRow10" style="position:absolute;top:87%;left:0;right:0;display:grid;grid-template-columns:175px 1fr 175px 1fr 175px;align-items:center;z-index:1">
       <div></div>
       <div style="display:flex;flex-direction:column;gap:2px">
-        <div style="background:#eaf7f1;border-radius:3px;padding:1px 6px;font-family:var(--mono);font-size:9px;color:var(--success);text-align:center;border:1px solid #a0d8bf">EAP-Success</div>
+        <div style="background:#ecf1ed;border-radius:3px;padding:1px 6px;font-family:var(--mono);font-size:9px;color:var(--success);text-align:center;border:1px solid #8bb49e">EAP-Success</div>
         <div style="display:flex;align-items:center">
           <div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:8px solid var(--success)"></div>
           <div style="flex:1;height:2px;background:repeating-linear-gradient(90deg,var(--success) 0,var(--success) 5px,transparent 5px,transparent 9px)"></div>
@@ -1618,7 +1757,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
       </div>
       <!-- Port OPEN badge -->
       <div style="text-align:center;padding:0 4px">
-        <div style="background:#eaf7f1;border:1.5px solid var(--success);border-radius:4px;padding:4px 8px;font-family:var(--mono);font-size:9px;color:var(--success);font-weight:700">Port OPEN</div>
+        <div style="background:#ecf1ed;border:1.5px solid var(--success);border-radius:4px;padding:4px 8px;font-family:var(--mono);font-size:9px;color:var(--success);font-weight:700">Port OPEN</div>
       </div>
       <div style="text-align:left;padding-left:8px"><span style="font-family:var(--mono);font-size:8px;color:var(--ink2);background:var(--surface);border:1px solid var(--line);padding:1px 5px;border-radius:3px">[10]</span></div>
       <div></div>
@@ -1648,7 +1787,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
   </div>
 
   <!-- Step Player -->
-  <div id="seqExplainBox" class="seq-highlight-box visible" style="margin-top:14px">
+  <div id="seqExplainBox" class="seq-explain-box">
     <strong>ステップ解説：</strong>「次のステップ →」ボタンで各メッセージの説明を順番に表示します。「自動再生」で全ステップを自動送りできます。
   </div>
   <div class="seq-player-bar">
@@ -2063,10 +2202,10 @@ function simReset() {
 
 function setScenario(s) {
   simScenario = s;
-  document.getElementById('scenOk').style.background = s==='ok' ? '#eaf7f1' : '';
+  document.getElementById('scenOk').style.background = s==='ok' ? '#ecf1ed' : '';
   document.getElementById('scenOk').style.borderColor = s==='ok' ? 'var(--success)' : '';
   document.getElementById('scenOk').style.color = s==='ok' ? 'var(--success)' : '';
-  document.getElementById('scenNg').style.background = s==='ng' ? '#fdf0f0' : '';
+  document.getElementById('scenNg').style.background = s==='ng' ? '#f3e8e8' : '';
   document.getElementById('scenNg').style.borderColor = s==='ng' ? 'var(--danger)' : '';
   document.getElementById('scenNg').style.color = s==='ng' ? 'var(--danger)' : '';
   if (simStep === 6) renderSim(6); // re-render result if at end
@@ -2102,10 +2241,10 @@ function togglePortAuth(on) {
     line.style.opacity = '1';
     blockIcon.style.opacity = '0';
     pcScreen.style.borderColor = 'var(--success)';
-    pcScreen.style.background = '#eaf7f1';
+    pcScreen.style.background = '#ecf1ed';
     if (pcBase) { pcBase.style.borderColor = 'var(--success)'; }
-    panel.style.background = '#eaf7f1';
-    if (portSlot2) { portSlot2.style.borderColor = 'var(--success)'; portSlot2.style.background = '#d0f0e0'; }
+    panel.style.background = '#ecf1ed';
+    if (portSlot2) { portSlot2.style.borderColor = 'var(--success)'; portSlot2.style.background = '#d0e4d7'; }
     lbl.textContent = '認証後（Controlled Port = OPEN）';
     desc.innerHTML = '認証成功後、通常のデータが通過可能。<br>ネットワーク通信が許可される状態。<br><em style="color:var(--success);font-size:11px">= 開錠されたエントランスドア</em>';
   } else {
@@ -2118,10 +2257,10 @@ function togglePortAuth(on) {
     line.style.opacity = '0.5';
     blockIcon.style.opacity = '1';
     pcScreen.style.borderColor = 'var(--danger)';
-    pcScreen.style.background = '#fdf0f0';
+    pcScreen.style.background = '#f3e8e8';
     if (pcBase) { pcBase.style.borderColor = 'var(--danger)'; }
     panel.style.background = '';
-    if (portSlot2) { portSlot2.style.borderColor = 'var(--danger)'; portSlot2.style.background = '#fde8e8'; }
+    if (portSlot2) { portSlot2.style.borderColor = 'var(--danger)'; portSlot2.style.background = '#f3e8e8'; }
     lbl.textContent = '認証前（Controlled Port = BLOCKED）';
     desc.innerHTML = '認証前はすべてのデータをブロック。<br>通常のネットワーク通信は不可。<br><em style="color:var(--danger);font-size:11px">= 施錠されたエントランスドア</em>';
   }
@@ -2215,7 +2354,7 @@ function seqApply(step) {
   const data = seqStepsData[step];
   const box = document.getElementById('seqExplainBox');
   box.innerHTML = `<strong>${step === 0 ? '使い方：' : 'ステップ解説：'}</strong> ${data.explain}`;
-  box.className = 'seq-highlight-box visible';
+  box.className = 'seq-explain-box';
 
   // Label
   document.getElementById('seqStepLabel').textContent = data.label;
