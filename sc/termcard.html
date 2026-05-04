@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>解説書カード — SC 技術解説書</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:        #edf1f8;
+  --card-bg:   #ffffff;
+  --text:      #141824;
+  --sub:       #1e2d4a;
+  --muted:     #6b7a99;
+  --border:    #cdd7e6;
+  --accent:    #0b4a82;
+  --accent2:   #1570b8;
+  --accent-lt: #e8f3fd;
+  --gold:      #b5821e;
+  --surface:   #f3f6fb;
+  --header:    #141824;
+  --mono:      'JetBrains Mono', monospace;
+  --serif:     'Noto Serif JP', serif;
+  --sans:      'Noto Sans JP', sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  background-image: radial-gradient(circle, #c4cedf 1px, transparent 1px);
+  background-size: 24px 24px;
+  color: var(--text);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Header ── */
+header {
+  background: var(--header);
+  background-image:
+    linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+  background-size: 36px 36px;
+  height: 54px; padding: 0 20px;
+  display: flex; align-items: center; gap: 10px;
+  position: sticky; top: 0; z-index: 100;
+}
+.back-link {
+  display: flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; border-radius: 5px;
+  text-decoration: none; transition: background 0.15s; flex-shrink: 0;
+}
+.back-link:hover { background: rgba(255,255,255,0.1); }
+.logo-text { display: flex; flex-direction: column; gap: 1px; }
+.logo-sub  { font-family: var(--mono); font-size: 0.48rem; color: rgba(255,255,255,0.32); letter-spacing: 3px; text-transform: uppercase; font-weight: 500; }
+.logo-main { font-family: var(--sans); font-size: 1rem; font-weight: 700; color: #fff; letter-spacing: -0.5px; }
+#progress-text {
+  margin-left: auto;
+  font-family: var(--mono); font-size: 0.68rem; font-weight: 500;
+  color: rgba(255,255,255,0.4); letter-spacing: 1px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Doc selector tabs ── */
+#doc-tabs {
+  background: var(--header);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  padding: 0 16px;
+  display: flex; overflow-x: auto;
+  scrollbar-width: none;
+}
+#doc-tabs::-webkit-scrollbar { display: none; }
+.doc-tab {
+  flex-shrink: 0;
+  padding: 8px 12px;
+  border: none; background: none;
+  font-family: var(--mono); font-size: 0.62rem; font-weight: 500;
+  color: rgba(255,255,255,0.32);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color 0.15s, border-color 0.15s;
+  white-space: nowrap; letter-spacing: 0.5px;
+}
+.doc-tab.active  { color: #fff; border-bottom-color: var(--gold); }
+.doc-tab:hover:not(.active) { color: rgba(255,255,255,0.65); }
+.doc-tab.locked  { opacity: 0.3; cursor: default; }
+
+/* ── App container ── */
+#app { max-width: 560px; margin: 0 auto; padding: 24px 16px 48px; }
+
+/* ── Doc info bar ── */
+#doc-info {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 20px;
+}
+#doc-badge {
+  font-family: var(--mono); font-size: 0.55rem; font-weight: 700; letter-spacing: .14em;
+  text-transform: uppercase; padding: 3px 9px; border-radius: 4px;
+  color: var(--accent); background: var(--accent-lt);
+  border: 1px solid rgba(11,74,130,0.2);
+}
+#doc-title { font-size: 0.8rem; font-weight: 700; color: var(--sub); }
+#doc-count  { margin-left: auto; font-family: var(--mono); font-size: 0.6rem; color: var(--muted); }
+
+/* ── Progress bar ── */
+#progress-bar-wrap {
+  height: 3px; background: var(--border); border-radius: 2px;
+  margin-bottom: 22px; overflow: hidden;
+}
+#progress-bar {
+  height: 100%; background: var(--accent); border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+/* ── Flashcard ── */
+.card-counter {
+  font-family: var(--mono); text-align: center;
+  font-size: 0.66rem; color: var(--muted);
+  margin-bottom: 12px; font-weight: 500;
+  letter-spacing: 2.5px; font-variant-numeric: tabular-nums;
+}
+
+.flashcard {
+  min-height: 320px; cursor: pointer;
+  perspective: 1200px; position: relative; user-select: none;
+}
+.flashcard-inner {
+  position: relative; width: 100%; min-height: 320px;
+  transition: transform 0.42s cubic-bezier(0.25, 1, 0.5, 1);
+  transform-style: preserve-3d;
+}
+.flashcard.flipped .flashcard-inner { transform: rotateY(180deg); }
+
+.flashcard-front, .flashcard-back {
+  position: absolute; inset: 0;
+  backface-visibility: hidden; -webkit-backface-visibility: hidden;
+  border-radius: 10px; padding: 28px 24px 24px;
+  display: flex; flex-direction: column;
+}
+.flashcard-front {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05), 0 16px 40px rgba(0,0,0,0.07);
+}
+.flashcard-back {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--gold);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05), 0 16px 40px rgba(0,0,0,0.07);
+  transform: rotateY(180deg);
+}
+
+/* Front content */
+.card-source-tag {
+  font-family: var(--mono); font-size: 0.5rem; font-weight: 700;
+  letter-spacing: .16em; text-transform: uppercase;
+  color: rgba(255,255,255,0.5); background: var(--sub);
+  padding: 2px 9px 2px 8px; border-radius: 3px;
+  margin-bottom: 20px; display: inline-flex; align-items: center; gap: 5px;
+  align-self: flex-start;
+}
+.card-term {
+  font-family: var(--serif); font-size: 2rem; font-weight: 700;
+  color: var(--text); line-height: 1.35; letter-spacing: -0.01em;
+  flex: 1; word-break: break-word;
+}
+.tap-hint {
+  margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--border);
+  font-size: 0.68rem; color: var(--muted);
+  display: flex; align-items: center; gap: 6px;
+}
+
+/* Back content */
+.card-answer-label {
+  font-family: var(--mono); font-size: 0.5rem; font-weight: 700;
+  letter-spacing: .18em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 14px;
+  display: flex; align-items: center; gap: 10px;
+}
+.card-answer-label::before {
+  content: ''; display: block; width: 20px; height: 1px;
+  background: var(--gold); flex-shrink: 0;
+}
+.card-def {
+  font-size: 0.92rem; line-height: 1.95; color: var(--sub); flex: 1;
+}
+.doc-link-btn {
+  margin-top: 18px; width: 100%; padding: 11px;
+  background: transparent; color: var(--accent);
+  border: 1.5px solid var(--accent); border-radius: 7px;
+  font-family: var(--sans); font-size: 0.8rem; font-weight: 700;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  gap: 7px; letter-spacing: 0.3px;
+  transition: background 0.15s, color 0.15s;
+  text-decoration: none;
+}
+.doc-link-btn:hover { background: var(--accent); color: #fff; }
+.doc-link-btn svg { flex-shrink: 0; }
+
+/* ── Result buttons ── */
+.result-btns {
+  display: flex; gap: 8px; margin-top: 12px;
+}
+.result-btn {
+  flex: 1; padding: 13px; border-radius: 7px;
+  font-family: var(--sans); font-size: 0.86rem; font-weight: 700;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  gap: 6px; transition: all 0.15s;
+}
+#btn-known {
+  background: var(--accent); color: #fff;
+  border: 1.5px solid var(--accent);
+}
+#btn-known:hover { background: #0a3d6b; border-color: #0a3d6b; }
+#btn-again {
+  background: var(--card-bg); color: var(--muted);
+  border: 1.5px solid var(--border);
+}
+#btn-again:hover { border-color: var(--sub); color: var(--sub); }
+
+/* ── Nav buttons ── */
+.card-nav {
+  display: flex; gap: 8px; margin-top: 8px;
+}
+.nav-btn {
+  flex: 1; padding: 11px; border-radius: 7px;
+  font-family: var(--sans); font-size: 0.8rem; font-weight: 700;
+  background: var(--card-bg); color: var(--muted);
+  border: 1px solid var(--border); cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 5px;
+  transition: all 0.15s;
+}
+.nav-btn:hover:not(:disabled) { border-color: var(--sub); color: var(--sub); }
+.nav-btn:disabled { opacity: 0.3; cursor: default; }
+
+/* ── Completed state ── */
+#complete-panel {
+  display: none; text-align: center; padding: 48px 16px;
+}
+#complete-panel.visible { display: block; }
+.complete-icon { font-size: 2.8rem; margin-bottom: 16px; }
+.complete-title {
+  font-family: var(--serif); font-size: 1.5rem; font-weight: 600;
+  color: var(--text); margin-bottom: 8px;
+}
+.complete-sub { font-size: 0.84rem; color: var(--muted); margin-bottom: 28px; line-height: 1.7; }
+.complete-stats {
+  display: flex; justify-content: center; gap: 24px;
+  margin-bottom: 28px;
+}
+.stat-item { text-align: center; }
+.stat-num {
+  font-family: var(--mono); font-size: 2rem; font-weight: 700;
+  color: var(--accent); display: block; line-height: 1;
+}
+.stat-label { font-size: 0.7rem; color: var(--muted); margin-top: 4px; }
+.restart-btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 13px 28px; border-radius: 7px;
+  background: var(--accent); color: #fff;
+  border: none; font-family: var(--sans); font-size: 0.86rem; font-weight: 700;
+  cursor: pointer; transition: background 0.15s; text-decoration: none;
+}
+.restart-btn:hover { background: #0a3d6b; }
+
+/* ── Doc-link note ── */
+.doc-link-note {
+  margin-top: 14px; font-size: 0.68rem; color: var(--muted);
+  text-align: center; display: flex; align-items: center; justify-content: center; gap: 5px;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <a href="descriptions/index.html" class="back-link" title="解説書一覧へ">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+  </a>
+  <div class="logo-text">
+    <div class="logo-sub">情報処理安全確保支援士</div>
+    <div class="logo-main">解説書カード</div>
+  </div>
+  <span id="progress-text">—</span>
+</header>
+
+<!-- Doc selector -->
+<div id="doc-tabs"></div>
+
+<div id="app">
+  <!-- Doc info -->
+  <div id="doc-info">
+    <span id="doc-badge"></span>
+    <span id="doc-title"></span>
+    <span id="doc-count"></span>
+  </div>
+
+  <!-- Progress bar -->
+  <div id="progress-bar-wrap">
+    <div id="progress-bar" style="width:0%"></div>
+  </div>
+
+  <!-- Card area -->
+  <div id="card-area">
+    <div class="card-counter" id="card-counter">— / —</div>
+
+    <div class="flashcard" id="flashcard" onclick="flipCard()">
+      <div class="flashcard-inner">
+        <!-- Front -->
+        <div class="flashcard-front">
+          <div class="card-source-tag" id="front-tag">
+            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            重要用語
+          </div>
+          <div class="card-term" id="card-term">—</div>
+          <div class="tap-hint">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+            タップして解説を見る
+          </div>
+        </div>
+        <!-- Back -->
+        <div class="flashcard-back">
+          <div class="card-answer-label">解説</div>
+          <div class="card-def" id="card-def">—</div>
+          <a class="doc-link-btn" id="doc-link" href="#" target="_blank" rel="noopener" onclick="event.stopPropagation()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            解説書で詳しく確認
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Result buttons (shown after flip) -->
+    <div class="result-btns" id="result-btns" style="display:none">
+      <button class="result-btn" id="btn-again" onclick="markAgain()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.85"/></svg>
+        もう一度
+      </button>
+      <button class="result-btn" id="btn-known" onclick="markKnown()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        覚えた
+      </button>
+    </div>
+
+    <!-- Nav buttons -->
+    <div class="card-nav">
+      <button class="nav-btn" id="btn-prev" onclick="prevCard()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        前へ
+      </button>
+      <button class="nav-btn" id="btn-next" onclick="nextCard()">
+        次へ
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+
+    <p class="doc-link-note">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      解説書は新しいタブで開きます。タブを閉じるとこのカードに戻れます。
+    </p>
+  </div>
+
+  <!-- Complete panel -->
+  <div id="complete-panel">
+    <div class="complete-icon">🎯</div>
+    <div class="complete-title">お疲れさまでした！</div>
+    <div class="complete-sub" id="complete-sub">全カードを確認しました。</div>
+    <div class="complete-stats">
+      <div class="stat-item">
+        <span class="stat-num" id="stat-known">0</span>
+        <div class="stat-label">覚えた</div>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num" id="stat-again">0</span>
+        <div class="stat-label">要復習</div>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num" id="stat-total">0</span>
+        <div class="stat-label">合計</div>
+      </div>
+    </div>
+    <button class="restart-btn" onclick="restart()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.85"/></svg>
+      もう一度挑戦
+    </button>
+  </div>
+</div>
+
+<script src="data/desc_terms.js"></script>
+<script>
+// ── State ──
+let currentDocIdx = 0;
+let deck = [];          // current doc terms (shufflable copy)
+let idx   = 0;         // current position in deck
+let knownSet  = new Set();
+let againSet  = new Set();
+let isFlipped = false;
+
+// ── Init ──
+function init() {
+  buildTabs();
+  loadDoc(0);
+}
+
+function buildTabs() {
+  const tabBar = document.getElementById('doc-tabs');
+  DESC_TERMS.forEach((doc, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'doc-tab' + (i === 0 ? ' active' : ' locked');
+    btn.textContent = doc.badge + ' ' + doc.title.replace(/（.*?）/, '');
+    btn.dataset.idx = i;
+    if (i === 0) {
+      btn.addEventListener('click', () => switchDoc(i));
+    }
+    tabBar.appendChild(btn);
+  });
+}
+
+function switchDoc(i) {
+  document.querySelectorAll('.doc-tab').forEach((t, idx) => {
+    t.classList.toggle('active', idx === i);
+  });
+  currentDocIdx = i;
+  loadDoc(i);
+}
+
+function loadDoc(i) {
+  const doc = DESC_TERMS[i];
+  // Reset state
+  deck = [...doc.terms];
+  idx = 0; knownSet.clear(); againSet.clear();
+  isFlipped = false;
+
+  // Update info bar
+  document.getElementById('doc-badge').textContent  = doc.badge;
+  document.getElementById('doc-title').textContent  = doc.title;
+  document.getElementById('doc-count').textContent  = doc.terms.length + ' 語';
+  document.getElementById('front-tag').innerHTML = `
+    <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+    ${doc.title}`;
+
+  document.getElementById('complete-panel').classList.remove('visible');
+  document.getElementById('card-area').style.display = '';
+
+  renderCard();
+}
+
+function renderCard() {
+  if (idx >= deck.length) { showComplete(); return; }
+
+  const doc  = DESC_TERMS[currentDocIdx];
+  const term = deck[idx];
+  isFlipped  = false;
+
+  // Remove flip class
+  const fc = document.getElementById('flashcard');
+  fc.classList.remove('flipped');
+
+  // Content
+  document.getElementById('card-term').textContent = term.term;
+  document.getElementById('card-def').textContent  = term.def;
+
+  // Link → description file at the relevant section
+  const link = doc.file + '#' + (term.section || doc.section);
+  document.getElementById('doc-link').href = link;
+
+  // Counter & progress
+  const total = deck.length;
+  const done  = idx;
+  document.getElementById('card-counter').textContent = `${idx + 1} / ${total}`;
+  document.getElementById('progress-text').textContent = `${idx + 1} / ${total}`;
+  document.getElementById('progress-bar').style.width = ((done / total) * 100) + '%';
+
+  // Buttons
+  document.getElementById('result-btns').style.display = 'none';
+  document.getElementById('btn-prev').disabled = (idx === 0);
+  document.getElementById('btn-next').disabled = false;
+}
+
+function flipCard() {
+  const fc = document.getElementById('flashcard');
+  isFlipped = !isFlipped;
+  fc.classList.toggle('flipped', isFlipped);
+  if (isFlipped) {
+    document.getElementById('result-btns').style.display = 'flex';
+  }
+}
+
+function nextCard() {
+  if (idx < deck.length - 1) { idx++; renderCard(); }
+  else { showComplete(); }
+}
+
+function prevCard() {
+  if (idx > 0) { idx--; renderCard(); }
+}
+
+function markKnown() {
+  knownSet.add(deck[idx].term);
+  againSet.delete(deck[idx].term);
+  nextCard();
+}
+
+function markAgain() {
+  againSet.add(deck[idx].term);
+  knownSet.delete(deck[idx].term);
+  nextCard();
+}
+
+function showComplete() {
+  document.getElementById('card-area').style.display = 'none';
+  document.getElementById('progress-bar').style.width = '100%';
+  document.getElementById('progress-text').textContent = '完了';
+
+  const total = DESC_TERMS[currentDocIdx].terms.length;
+  const known = knownSet.size;
+  const again = againSet.size;
+  const unrated = total - known - again;
+
+  document.getElementById('stat-known').textContent = known;
+  document.getElementById('stat-again').textContent = again;
+  document.getElementById('stat-total').textContent = total;
+  document.getElementById('complete-sub').textContent =
+    unrated > 0
+      ? `全 ${total} 語を確認しました（未評価 ${unrated} 語）。`
+      : `全 ${total} 語を確認しました。復習が必要な語: ${again} 語。`;
+
+  document.getElementById('complete-panel').classList.add('visible');
+}
+
+function restart() {
+  loadDoc(currentDocIdx);
+}
+
+// ── Keyboard nav ──
+document.addEventListener('keydown', e => {
+  if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); flipCard(); }
+  if (e.key === 'ArrowRight') nextCard();
+  if (e.key === 'ArrowLeft')  prevCard();
+  if (e.key === 'k' || e.key === 'K') { if (isFlipped) markKnown(); }
+  if (e.key === 'r' || e.key === 'R') { if (isFlipped) markAgain(); }
+});
+
+init();
+</script>
+</body>
+</html>

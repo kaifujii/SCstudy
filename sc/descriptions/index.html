@@ -21,6 +21,12 @@
   --gold:      #b5821e;
   --surface:   #f3f6fb;
   --header:    #141824;
+
+  --ap-accent:    #0b6b5e;
+  --ap-accent-lt: #e6f4f1;
+  --ap-border:    #9ecec7;
+  --ap-surface:   #f0faf8;
+  --ap-bg:        #e8f5f2;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 body {
@@ -56,7 +62,7 @@ header {
 .header-badge { margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(181,130,30,0.9); background: rgba(181,130,30,0.12); border: 1px solid rgba(181,130,30,0.3); border-radius: 3px; padding: 3px 9px; }
 
 /* ── Main ── */
-main { max-width: 680px; margin: 0 auto; padding: 40px 16px 80px; }
+main { max-width: 720px; margin: 0 auto; padding: 40px 16px 80px; }
 
 /* ── Hero ── */
 .hero { margin-bottom: 36px; }
@@ -70,41 +76,99 @@ main { max-width: 680px; margin: 0 auto; padding: 40px 16px 80px; }
 .hero-title { font-family: 'Noto Serif JP', serif; font-size: 1.9rem; font-weight: 600; color: var(--text); line-height: 1.25; margin-bottom: 10px; letter-spacing: -0.01em; }
 .hero-sub { font-size: 0.84rem; color: var(--muted); line-height: 1.75; }
 
+/* ── Group panel ── */
+.group-panel {
+  border-radius: 12px;
+  padding: 24px 20px 20px;
+  margin-bottom: 28px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+}
+.group-panel.sc-panel {
+  background: #f8fafd;
+  border: 1px solid var(--border);
+}
+.group-panel.ap-panel {
+  background: var(--ap-bg);
+  border: 1px solid var(--ap-border);
+  box-shadow: 0 2px 12px rgba(11,107,94,0.07);
+}
+
+/* ── Group header ── */
+.group-header {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 22px;
+  padding-bottom: 14px;
+}
+.sc-panel .group-header { border-bottom: 1px solid var(--border); }
+.ap-panel .group-header { border-bottom: 1px solid var(--ap-border); }
+
+.group-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem; font-weight: 700; letter-spacing: .14em;
+  text-transform: uppercase; padding: 3px 10px; border-radius: 4px;
+}
+.sc-panel .group-badge {
+  color: var(--accent); background: var(--accent-lt);
+  border: 1px solid rgba(11,74,130,0.2);
+}
+.ap-panel .group-badge {
+  color: var(--ap-accent); background: var(--ap-accent-lt);
+  border: 1px solid rgba(11,107,94,0.25);
+}
+.group-title {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 0.78rem; font-weight: 700; color: var(--text);
+}
+.group-count {
+  margin-left: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.56rem; color: var(--muted);
+  letter-spacing: .04em;
+}
+
 /* ── Section label ── */
 .section-label {
   font-family: 'JetBrains Mono', monospace;
   font-size: 9px; font-weight: 700; letter-spacing: .18em;
-  text-transform: uppercase; color: var(--accent);
+  text-transform: uppercase;
   display: flex; align-items: center; gap: 10px;
-  margin-bottom: 14px;
+  margin-bottom: 10px;
+  margin-top: 18px;
 }
-.section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.section-label:first-of-type { margin-top: 0; }
+.section-label::after { content: ''; flex: 1; height: 1px; }
+
+.sc-panel .section-label { color: var(--accent); }
+.sc-panel .section-label::after { background: var(--border); }
+.ap-panel .section-label { color: var(--ap-accent); }
+.ap-panel .section-label::after { background: var(--ap-border); }
 
 /* ── Card list ── */
-.card-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px; }
+.card-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 4px; }
 
+/* ── SC cards ── */
 .desc-card {
   background: var(--card-bg);
   border: 1px solid var(--border);
   border-left: 3px solid var(--accent);
   border-radius: 8px;
-  padding: 16px 18px 14px;
+  padding: 14px 16px 12px;
   text-decoration: none; color: inherit;
-  display: flex; align-items: flex-start; gap: 14px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  display: flex; align-items: flex-start; gap: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
   transition: box-shadow 0.18s, transform 0.18s;
 }
-.desc-card:hover { box-shadow: 0 4px 18px rgba(0,0,0,0.09); transform: translateX(3px); }
+.desc-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.09); transform: translateX(3px); }
 
 .desc-icon {
-  flex-shrink: 0; width: 36px; height: 36px; border-radius: 6px;
+  flex-shrink: 0; width: 34px; height: 34px; border-radius: 6px;
   background: var(--accent-lt);
   display: flex; align-items: center; justify-content: center;
   color: var(--accent); margin-top: 1px;
 }
 .desc-body { flex: 1; min-width: 0; }
-.desc-title { font-family: 'Noto Sans JP', sans-serif; font-size: 0.9rem; font-weight: 700; color: var(--text); margin-bottom: 3px; }
-.desc-sub { font-size: 0.71rem; color: var(--muted); line-height: 1.6; margin-bottom: 8px; }
+.desc-title { font-family: 'Noto Sans JP', sans-serif; font-size: 0.88rem; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+.desc-sub { font-size: 0.7rem; color: var(--muted); line-height: 1.6; margin-bottom: 7px; }
 .desc-tags { display: flex; flex-wrap: wrap; gap: 4px; }
 .dtag {
   font-family: 'JetBrains Mono', monospace;
@@ -116,8 +180,26 @@ main { max-width: 680px; margin: 0 auto; padding: 40px 16px 80px; }
   white-space: nowrap;
   letter-spacing: .02em;
 }
-.desc-arrow { color: var(--border); flex-shrink: 0; margin-top: 8px; transition: color 0.15s, transform 0.15s; }
+.desc-arrow { color: var(--border); flex-shrink: 0; margin-top: 7px; transition: color 0.15s, transform 0.15s; }
 .desc-card:hover .desc-arrow { color: var(--accent); transform: translateX(2px); }
+
+/* ── AP cards ── */
+.ap-card {
+  background: var(--ap-surface);
+  border-color: var(--ap-border);
+  border-left-color: var(--ap-accent);
+}
+.ap-card .desc-icon {
+  background: var(--ap-accent-lt);
+  color: var(--ap-accent);
+}
+.ap-card .dtag {
+  background: #e6f4f1;
+  border-color: var(--ap-border);
+  color: #2a6b60;
+}
+.ap-card:hover .desc-arrow { color: var(--ap-accent); }
+.ap-card:hover { box-shadow: 0 4px 16px rgba(11,107,94,0.12); }
 </style>
 </head>
 <body>
@@ -130,7 +212,7 @@ main { max-width: 680px; margin: 0 auto; padding: 40px 16px 80px; }
     <div class="logo-sub">情報処理安全確保支援士</div>
     <div class="logo-main">技術解説書</div>
   </div>
-  <div class="header-badge">14 docs</div>
+  <div class="header-badge">15 docs</div>
 </header>
 
 <main>
@@ -138,233 +220,272 @@ main { max-width: 680px; margin: 0 auto; padding: 40px 16px 80px; }
     <div class="hero-kicker">Technical Reference</div>
     <h1 class="hero-title">SC 試験対策<br>技術解説書一覧</h1>
     <p class="hero-sub">各技術領域の仕組みを体系的にまとめた解説書です。<br>単語帳と組み合わせて理解を深めましょう。</p>
-  </div>
-
-  <!-- 認証・アクセス制御 -->
-  <div class="section-label">認証・アクセス制御</div>
-  <div class="card-list">
-
-    <a href="SC_03_PKI.html" class="desc-card">
-      <div class="desc-icon">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-      </div>
-      <div class="desc-body">
-        <div class="desc-title">PKI（公開鍵基盤）</div>
-        <div class="desc-sub">X.509証明書・CA階層・CRL/OCSP・信頼チェーンの仕組みと運用</div>
-        <div class="desc-tags">
-          <span class="dtag">X.509 / PKCS</span><span class="dtag">CA / RA / IA</span><span class="dtag">CSR</span><span class="dtag">信頼チェーン</span><span class="dtag">OCSP / CRL</span><span class="dtag">CP / CPS</span><span class="dtag">ルート証明書</span>
-        </div>
-      </div>
-      <svg class="desc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-    </a>
-
-    <a href="SC_02_FIDO.html" class="desc-card">
-      <div class="desc-icon">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-      </div>
-      <div class="desc-body">
-        <div class="desc-title">FIDO認証</div>
-        <div class="desc-sub">パスワードレス認証の仕組み・FIDO2 / WebAuthn・Passkeys を解説</div>
-        <div class="desc-tags">
-          <span class="dtag">FIDO2 / WebAuthn</span><span class="dtag">UAF</span><span class="dtag">U2F / CTAP2</span><span class="dtag">Passkeys</span><span class="dtag">チャレンジ応答</span><span class="dtag">パスワードレス</span>
-        </div>
-      </div>
-      <svg class="desc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-    </a>
-
-    <a href="SC_03_ICcard.html" class="desc-card">
-      <div class="desc-icon">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
-      </div>
-      <div class="desc-body">
-        <div class="desc-title">ICカードによる認証</div>
-        <div class="desc-sub">共通鍵・公開鍵認証からICカード認証まで、耐タンパ性・サイドチャネル攻撃も解説</div>
-        <div class="desc-tags">
-          <span class="dtag">共通鍵認証</span><span class="dtag">公開鍵認証</span><span class="dtag">ISO/IEC 7816</span><span class="dtag">チャレンジ応答</span><span class="dtag">耐タンパ性</span><span class="dtag">サイドチャネル攻撃</span><span class="dtag">2要素認証</span>
-        </div>
-      </div>
-      <svg class="desc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-    </a>
-
-    <a href="SC_03_SSO.html" class="desc-card">
-      <div class="desc-icon">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/></svg>
-      </div>
-      <div class="desc-body">
-        <div class="desc-title">シングルサインオン（SSO）</div>
-        <div class="desc-sub">エージェント方式・SAML 2.0・OAuth 2.0・OpenID Connect・フェデレーション・認可委譲</div>
-        <div class="desc-tags">
-          <span class="dtag">エージェント方式</span><span class="dtag">SAML 2.0</span><span class="dtag">OAuth 2.0</span><span class="dtag">OpenID Connect</span><span class="dtag">IdP / SP</span><span class="dtag">フェデレーション</span><span class="dtag">認可委譲</span>
-        </div>
-      </div>
-      <svg class="desc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-    </a>
-
-    <a href="SC_03_SASL.html" class="desc-card">
-      <div class="desc-icon">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-      </div>
-      <div class="desc-body">
-        <div class="desc-title">SASL認証方式</div>
-        <div class="desc-sub">SCRAM-SHA-256・GSSAPI・PLAIN など各メカニズムの違いとダウングレード攻撃対策</div>
-        <div class="desc-tags">
-          <span class="dtag">RFC 4422</span><span class="dtag">SCRAM-SHA-256</span><span class="dtag">GSSAPI / Kerberos</span><span class="dtag">PLAIN / TLS</span><span class="dtag">ダウングレード攻撃</span><span class="dtag">OAUTHBEARER</span>
-        </div>
-      </div>
-      <svg class="desc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-    </a>
-
-    <a href="SC_03_IEEERADIUS.html" class="desc-card">
-      <div class="desc-icon">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
-      </div>
-      <div class="desc-body">
-        <div class="desc-title">IEEE 802規格体系と IEEE 802.1X認証</div>
-        <div class="desc-sub">EAP / PEAP / EAP-TLS・RADIUS・WPA2-Enterprise・動的VLAN割り当て・MACsec</div>
-        <div class="desc-tags">
-          <span class="dtag">IEEE 802.1X</span><span class="dtag">EAP / PEAP / EAP-TLS</span><span class="dtag">RADIUS（RFC 2865）</span><span class="dtag">EAPoL</span><span class="dtag">WPA2-Enterprise</span><span class="dtag">動的VLAN割り当て</span><span class="dtag">MACsec（802.1AE）</span>
-        </div>
-      </div>
-      <svg class="desc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-    </a>
 
   </div>
 
-  <!-- プロトコル・通信セキュリティ -->
-  <div class="section-label">プロトコル・通信セキュリティ</div>
-  <div class="card-list">
+  <!-- ══════════ SC グループ ══════════ -->
+  <div class="group-panel sc-panel">
+    <div class="group-header">
+      <span class="group-badge">SC</span>
+      <span class="group-title">情報処理安全確保支援士</span>
+      <span class="group-count">14 docs</span>
+    </div>
 
-    <a href="SC_03_SSL_TLS.html" class="desc-card">
-      <div class="desc-icon">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-      </div>
-      <div class="desc-body">
-        <div class="desc-title">SSL/TLS プロトコル 完全解説</div>
-        <div class="desc-sub">TLS 1.2 / 1.3 ハンドシェイク・暗号スイート・PFS・クライアント認証・TLSトンネリング</div>
-        <div class="desc-tags">
-          <span class="dtag">TLS 1.2 / 1.3</span><span class="dtag">ハンドシェイク</span><span class="dtag">暗号スイート</span><span class="dtag">Perfect Forward Secrecy</span><span class="dtag">SNI / ALPN</span><span class="dtag">HSTS</span><span class="dtag">TLSトンネリング</span>
+    <!-- 認証・アクセス制御 -->
+    <div class="section-label">認証・アクセス制御</div>
+    <div class="card-list">
+
+      <a href="SC_03_PKI.html" class="desc-card">
+        <div class="desc-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
         </div>
-      </div>
-      <svg class="desc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-    </a>
-
-    <a href="SC_03_HTTPS.html" class="desc-card">
-      <div class="desc-icon">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-      </div>
-      <div class="desc-body">
-        <div class="desc-title">HTTP通信・セッション管理・Webセキュリティ</div>
-        <div class="desc-sub">HTTP/1.1〜3・Cookie / Session・セッションハイジャック・CORS / SOP・HSTS / CSP / WAF</div>
-        <div class="desc-tags">
-          <span class="dtag">HTTP/1.1〜3</span><span class="dtag">Cookie / Session</span><span class="dtag">CSRF / XSS</span><span class="dtag">セッションハイジャック</span><span class="dtag">CORS / SOP</span><span class="dtag">HSTS / CSP / WAF</span>
+        <div class="desc-body">
+          <div class="desc-title">PKI（公開鍵基盤）</div>
+          <div class="desc-sub">X.509証明書・CA階層・CRL/OCSP・信頼チェーンの仕組みと運用</div>
+          <div class="desc-tags">
+            <span class="dtag">X.509 / PKCS</span><span class="dtag">CA / RA / IA</span><span class="dtag">CSR</span><span class="dtag">信頼チェーン</span><span class="dtag">OCSP / CRL</span><span class="dtag">CP / CPS</span><span class="dtag">ルート証明書</span>
+          </div>
         </div>
-      </div>
-      <svg class="desc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-    </a>
+        <svg class="desc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
 
-    <a href="SC_03_DNS.html" class="desc-card">
-      <div class="desc-icon">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-      </div>
-      <div class="desc-body">
-        <div class="desc-title">DNSのセキュリティ</div>
-        <div class="desc-sub">キャッシュポイズニング・カミンスキー攻撃・DNSSEC / DoT / DoH・水攻め攻撃・BCP38</div>
-        <div class="desc-tags">
-          <span class="dtag">キャッシュポイズニング</span><span class="dtag">カミンスキー攻撃</span><span class="dtag">DNSSEC / KSK / ZSK</span><span class="dtag">DNSリフレクション</span><span class="dtag">DoT / DoH</span><span class="dtag">BCP38 / RRL / RPZ</span>
+      <a href="SC_02_FIDO.html" class="desc-card">
+        <div class="desc-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
         </div>
-      </div>
-      <svg class="desc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-    </a>
-
-    <a href="SC_03_EMAIL.html" class="desc-card">
-      <div class="desc-icon">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-      </div>
-      <div class="desc-body">
-        <div class="desc-title">電子メールのセキュリティ</div>
-        <div class="desc-sub">S/MIME・SPF / DKIM / DMARC・SMTP-AUTH・OP25B・なりすまし / フィッシング対策</div>
-        <div class="desc-tags">
-          <span class="dtag">SMTP / POP3 / IMAP4</span><span class="dtag">S/MIME / PGP</span><span class="dtag">SPF / DKIM / DMARC</span><span class="dtag">OP25B / IP25B</span><span class="dtag">SMTP-AUTH</span>
+        <div class="desc-body">
+          <div class="desc-title">FIDO認証</div>
+          <div class="desc-sub">パスワードレス認証の仕組み・FIDO2 / WebAuthn・Passkeys を解説</div>
+          <div class="desc-tags">
+            <span class="dtag">FIDO2 / WebAuthn</span><span class="dtag">UAF</span><span class="dtag">U2F / CTAP2</span><span class="dtag">Passkeys</span><span class="dtag">チャレンジ応答</span><span class="dtag">パスワードレス</span>
+          </div>
         </div>
-      </div>
-      <svg class="desc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-    </a>
+        <svg class="desc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
 
-  </div>
-
-  <!-- インフラ・ネットワーク -->
-  <div class="section-label">インフラ・ネットワークセキュリティ</div>
-  <div class="card-list">
-
-    <a href="SC_03_FW.html" class="desc-card">
-      <div class="desc-icon">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-      </div>
-      <div class="desc-body">
-        <div class="desc-title">ファイアウォール・IDS/IPS・UTM・WAF</div>
-        <div class="desc-sub">Packet Filtering / Stateful Inspection・Application Gateway・IDS/IPS・UTM・WAF・iptables</div>
-        <div class="desc-tags">
-          <span class="dtag">Packet Filtering</span><span class="dtag">Stateful Inspection</span><span class="dtag">Circuit / Application Gateway</span><span class="dtag">IDS / IPS</span><span class="dtag">UTM</span><span class="dtag">WAF</span><span class="dtag">L7 FW</span>
+      <a href="SC_03_ICcard.html" class="desc-card">
+        <div class="desc-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
         </div>
-      </div>
-      <svg class="desc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-    </a>
-
-    <a href="SC_03_CLIENT.html" class="desc-card">
-      <div class="desc-icon">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-      </div>
-      <div class="desc-body">
-        <div class="desc-title">クライアントセキュリティ</div>
-        <div class="desc-sub">VPN（IPsec / SSL-VPN / SSH）・OSIモデル別対策・IKE SA / ISAKMP SA・シンクライアント</div>
-        <div class="desc-tags">
-          <span class="dtag">IPsec AH/ESP</span><span class="dtag">IKE SA / ISAKMP SA</span><span class="dtag">SSL-VPN 3方式</span><span class="dtag">SSH 公開鍵認証</span><span class="dtag">シンクライアント</span>
+        <div class="desc-body">
+          <div class="desc-title">ICカードによる認証</div>
+          <div class="desc-sub">共通鍵・公開鍵認証からICカード認証まで、耐タンパ性・サイドチャネル攻撃も解説</div>
+          <div class="desc-tags">
+            <span class="dtag">共通鍵認証</span><span class="dtag">公開鍵認証</span><span class="dtag">ISO/IEC 7816</span><span class="dtag">チャレンジ応答</span><span class="dtag">耐タンパ性</span><span class="dtag">サイドチャネル攻撃</span><span class="dtag">2要素認証</span>
+          </div>
         </div>
-      </div>
-      <svg class="desc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-    </a>
+        <svg class="desc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
 
-  </div>
-
-  <!-- アプリケーション -->
-  <div class="section-label">アプリケーションセキュリティ</div>
-  <div class="card-list">
-
-    <a href="SC_02_SECURE_PROG.html" class="desc-card">
-      <div class="desc-icon">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-      </div>
-      <div class="desc-body">
-        <div class="desc-title">セキュアプログラミング</div>
-        <div class="desc-sub">XSS・SQLi・CSRF / SSRF・BOF・OSコマンドインジェクション・クリックジャッキング</div>
-        <div class="desc-tags">
-          <span class="dtag">XSS</span><span class="dtag">SQLi</span><span class="dtag">CSRF / SSRF</span><span class="dtag">BOF</span><span class="dtag">セッション攻撃</span><span class="dtag">OSコマンドインジェクション</span><span class="dtag">クリックジャッキング</span><span class="dtag">ヘッダインジェクション</span>
+      <a href="SC_03_SSO.html" class="desc-card">
+        <div class="desc-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/></svg>
         </div>
-      </div>
-      <svg class="desc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-    </a>
-
-  </div>
-
-  <!-- 運用・マネジメント -->
-  <div class="section-label">運用・マネジメント</div>
-  <div class="card-list">
-
-    <a href="SC_03_OpsManagement.html" class="desc-card">
-      <div class="desc-icon">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v4H3z"/><path d="M3 10h18v4H3z"/><path d="M3 17h18v4H3z"/></svg>
-      </div>
-      <div class="desc-body">
-        <div class="desc-title">情報セキュリティの運用マネジメント</div>
-        <div class="desc-sub">ISMS/PDCA・リスクマネジメント・SCAP/CVSS・CSIRT/SOC・ISO 27001/31000・CRYPTREC・個人情報保護法</div>
-        <div class="desc-tags">
-          <span class="dtag">ISMS / PDCA</span><span class="dtag">ISO 27001 / 31000</span><span class="dtag">SCAP / CVSS</span><span class="dtag">CSIRT / SOC</span><span class="dtag">JVN / NVD</span><span class="dtag">CRYPTREC</span><span class="dtag">個人情報保護法</span>
+        <div class="desc-body">
+          <div class="desc-title">シングルサインオン（SSO）</div>
+          <div class="desc-sub">エージェント方式・SAML 2.0・OAuth 2.0・OpenID Connect・フェデレーション・認可委譲</div>
+          <div class="desc-tags">
+            <span class="dtag">エージェント方式</span><span class="dtag">SAML 2.0</span><span class="dtag">OAuth 2.0</span><span class="dtag">OpenID Connect</span><span class="dtag">IdP / SP</span><span class="dtag">フェデレーション</span><span class="dtag">認可委譲</span>
+          </div>
         </div>
-      </div>
-      <svg class="desc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-    </a>
+        <svg class="desc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
 
-  </div>
+      <a href="SC_03_SASL.html" class="desc-card">
+        <div class="desc-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        <div class="desc-body">
+          <div class="desc-title">SASL認証方式</div>
+          <div class="desc-sub">SCRAM-SHA-256・GSSAPI・PLAIN など各メカニズムの違いとダウングレード攻撃対策</div>
+          <div class="desc-tags">
+            <span class="dtag">RFC 4422</span><span class="dtag">SCRAM-SHA-256</span><span class="dtag">GSSAPI / Kerberos</span><span class="dtag">PLAIN / TLS</span><span class="dtag">ダウングレード攻撃</span><span class="dtag">OAUTHBEARER</span>
+          </div>
+        </div>
+        <svg class="desc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+
+      <a href="SC_03_IEEERADIUS.html" class="desc-card">
+        <div class="desc-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+        </div>
+        <div class="desc-body">
+          <div class="desc-title">IEEE 802規格体系と IEEE 802.1X認証</div>
+          <div class="desc-sub">EAP / PEAP / EAP-TLS・RADIUS・WPA2-Enterprise・動的VLAN割り当て・MACsec</div>
+          <div class="desc-tags">
+            <span class="dtag">IEEE 802.1X</span><span class="dtag">EAP / PEAP / EAP-TLS</span><span class="dtag">RADIUS（RFC 2865）</span><span class="dtag">EAPoL</span><span class="dtag">WPA2-Enterprise</span><span class="dtag">動的VLAN割り当て</span><span class="dtag">MACsec（802.1AE）</span>
+          </div>
+        </div>
+        <svg class="desc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+
+    </div>
+
+    <!-- プロトコル・通信セキュリティ -->
+    <div class="section-label">プロトコル・通信セキュリティ</div>
+    <div class="card-list">
+
+      <a href="SC_03_SSL_TLS.html" class="desc-card">
+        <div class="desc-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div class="desc-body">
+          <div class="desc-title">SSL/TLS プロトコル 完全解説</div>
+          <div class="desc-sub">TLS 1.2 / 1.3 ハンドシェイク・暗号スイート・PFS・クライアント認証・TLSトンネリング</div>
+          <div class="desc-tags">
+            <span class="dtag">TLS 1.2 / 1.3</span><span class="dtag">ハンドシェイク</span><span class="dtag">暗号スイート</span><span class="dtag">Perfect Forward Secrecy</span><span class="dtag">SNI / ALPN</span><span class="dtag">HSTS</span><span class="dtag">TLSトンネリング</span>
+          </div>
+        </div>
+        <svg class="desc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+
+      <a href="SC_03_HTTPS.html" class="desc-card">
+        <div class="desc-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        </div>
+        <div class="desc-body">
+          <div class="desc-title">HTTP通信・セッション管理・Webセキュリティ</div>
+          <div class="desc-sub">HTTP/1.1〜3・Cookie / Session・セッションハイジャック・CORS / SOP・HSTS / CSP / WAF</div>
+          <div class="desc-tags">
+            <span class="dtag">HTTP/1.1〜3</span><span class="dtag">Cookie / Session</span><span class="dtag">CSRF / XSS</span><span class="dtag">セッションハイジャック</span><span class="dtag">CORS / SOP</span><span class="dtag">HSTS / CSP / WAF</span>
+          </div>
+        </div>
+        <svg class="desc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+
+      <a href="SC_03_DNS.html" class="desc-card">
+        <div class="desc-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        </div>
+        <div class="desc-body">
+          <div class="desc-title">DNSのセキュリティ</div>
+          <div class="desc-sub">キャッシュポイズニング・カミンスキー攻撃・DNSSEC / DoT / DoH・水攻め攻撃・BCP38</div>
+          <div class="desc-tags">
+            <span class="dtag">キャッシュポイズニング</span><span class="dtag">カミンスキー攻撃</span><span class="dtag">DNSSEC / KSK / ZSK</span><span class="dtag">DNSリフレクション</span><span class="dtag">DoT / DoH</span><span class="dtag">BCP38 / RRL / RPZ</span>
+          </div>
+        </div>
+        <svg class="desc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+
+      <a href="SC_03_EMAIL.html" class="desc-card">
+        <div class="desc-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        </div>
+        <div class="desc-body">
+          <div class="desc-title">電子メールのセキュリティ</div>
+          <div class="desc-sub">S/MIME・SPF / DKIM / DMARC・SMTP-AUTH・OP25B・なりすまし / フィッシング対策</div>
+          <div class="desc-tags">
+            <span class="dtag">SMTP / POP3 / IMAP4</span><span class="dtag">S/MIME / PGP</span><span class="dtag">SPF / DKIM / DMARC</span><span class="dtag">OP25B / IP25B</span><span class="dtag">SMTP-AUTH</span>
+          </div>
+        </div>
+        <svg class="desc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+
+    </div>
+
+    <!-- インフラ・ネットワーク -->
+    <div class="section-label">インフラ・ネットワークセキュリティ</div>
+    <div class="card-list">
+
+      <a href="SC_03_FW.html" class="desc-card">
+        <div class="desc-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <div class="desc-body">
+          <div class="desc-title">ファイアウォール・IDS/IPS・UTM・WAF</div>
+          <div class="desc-sub">Packet Filtering / Stateful Inspection・Application Gateway・IDS/IPS・UTM・WAF・iptables</div>
+          <div class="desc-tags">
+            <span class="dtag">Packet Filtering</span><span class="dtag">Stateful Inspection</span><span class="dtag">Circuit / Application Gateway</span><span class="dtag">IDS / IPS</span><span class="dtag">UTM</span><span class="dtag">WAF</span><span class="dtag">L7 FW</span>
+          </div>
+        </div>
+        <svg class="desc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+
+      <a href="SC_03_CLIENT.html" class="desc-card">
+        <div class="desc-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        </div>
+        <div class="desc-body">
+          <div class="desc-title">クライアントセキュリティ</div>
+          <div class="desc-sub">VPN（IPsec / SSL-VPN / SSH）・OSIモデル別対策・IKE SA / ISAKMP SA・シンクライアント</div>
+          <div class="desc-tags">
+            <span class="dtag">IPsec AH/ESP</span><span class="dtag">IKE SA / ISAKMP SA</span><span class="dtag">SSL-VPN 3方式</span><span class="dtag">SSH 公開鍵認証</span><span class="dtag">シンクライアント</span>
+          </div>
+        </div>
+        <svg class="desc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+
+    </div>
+
+    <!-- アプリケーション -->
+    <div class="section-label">アプリケーションセキュリティ</div>
+    <div class="card-list">
+
+      <a href="SC_02_SECURE_PROG.html" class="desc-card">
+        <div class="desc-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        </div>
+        <div class="desc-body">
+          <div class="desc-title">セキュアプログラミング</div>
+          <div class="desc-sub">XSS・SQLi・CSRF / SSRF・BOF・OSコマンドインジェクション・クリックジャッキング</div>
+          <div class="desc-tags">
+            <span class="dtag">XSS</span><span class="dtag">SQLi</span><span class="dtag">CSRF / SSRF</span><span class="dtag">BOF</span><span class="dtag">セッション攻撃</span><span class="dtag">OSコマンドインジェクション</span><span class="dtag">クリックジャッキング</span><span class="dtag">ヘッダインジェクション</span>
+          </div>
+        </div>
+        <svg class="desc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+
+    </div>
+
+    <!-- 運用・マネジメント -->
+    <div class="section-label">運用・マネジメント</div>
+    <div class="card-list">
+
+      <a href="SC_03_OpsManagement.html" class="desc-card">
+        <div class="desc-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v4H3z"/><path d="M3 10h18v4H3z"/><path d="M3 17h18v4H3z"/></svg>
+        </div>
+        <div class="desc-body">
+          <div class="desc-title">情報セキュリティの運用マネジメント</div>
+          <div class="desc-sub">ISMS/PDCA・リスクマネジメント・SCAP/CVSS・CSIRT/SOC・ISO 27001/31000・CRYPTREC・個人情報保護法</div>
+          <div class="desc-tags">
+            <span class="dtag">ISMS / PDCA</span><span class="dtag">ISO 27001 / 31000</span><span class="dtag">SCAP / CVSS</span><span class="dtag">CSIRT / SOC</span><span class="dtag">JVN / NVD</span><span class="dtag">CRYPTREC</span><span class="dtag">個人情報保護法</span>
+          </div>
+        </div>
+        <svg class="desc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+
+    </div>
+  </div><!-- /.sc-panel -->
+
+  <!-- ══════════ AP グループ ══════════ -->
+  <div class="group-panel ap-panel">
+    <div class="group-header">
+      <span class="group-badge">AP</span>
+      <span class="group-title">応用情報技術者 共通基礎知識</span>
+      <span class="group-count">1 doc</span>
+    </div>
+
+    <!-- 経営・法務 -->
+    <div class="section-label">経営戦略・法務</div>
+    <div class="card-list">
+
+      <a href="AP_01_strategy.html" class="desc-card ap-card">
+        <div class="desc-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg>
+        </div>
+        <div class="desc-body">
+          <div class="desc-title">経営戦略・情報システム戦略と業務プロセス・法務</div>
+          <div class="desc-sub">EA・BPR・ソリューション形態・経営管理システム・契約形態・PL法・著作権まで体系化した完全版</div>
+          <div class="desc-tags">
+            <span class="dtag">EA / DMM</span><span class="dtag">BPR / BPM / RPA</span><span class="dtag">SOA / IaaS-PaaS-SaaS</span><span class="dtag">SWOT / 5Forces / BSC</span><span class="dtag">ERP / SCM / CRM</span><span class="dtag">請負 / 派遣 / 準委任</span><span class="dtag">PL法 / 著作権</span><span class="dtag">XBRL / EDI / BCP</span>
+          </div>
+        </div>
+        <svg class="desc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+
+    </div>
+  </div><!-- /.ap-panel -->
 
 </main>
 </body>
