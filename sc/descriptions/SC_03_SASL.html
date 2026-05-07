@@ -358,61 +358,72 @@
   /* Footer */
   footer{background:linear-gradient(180deg,#1a2236,#0f1420);color:rgba(255,255,255,.45);text-align:center;padding:32px;font-size:11.5px;letter-spacing:.08em;line-height:1.9;border-top:1px solid var(--gold)}
 
-  @media (max-width:960px){
-    .sidebar{position:static;width:100%;height:auto}
-    .main{padding:40px 24px 80px}
+  /* ─────── Responsive: drawer sidebar on narrow viewports ─────── */
+  .menu-toggle{display:none}
+  .menu-backdrop{display:none}
+
+  @media (max-width:1024px){
+    .layout{display:block}
+    .sidebar{
+      position:fixed;top:0;left:0;
+      width:280px;max-width:82vw;height:100vh;
+      z-index:200;
+      transform:translateX(-100%);
+      transition:transform .28s cubic-bezier(.4,0,.2,1);
+      box-shadow:0 0 0 0 rgba(0,0,0,0);
+      border-right:1px solid rgba(201,165,87,.18);
+    }
+    .sidebar.open{
+      transform:translateX(0);
+      box-shadow:8px 0 32px rgba(0,0,0,.32);
+    }
+    .menu-toggle{
+      display:flex;align-items:center;justify-content:center;
+      position:fixed;top:14px;left:14px;
+      width:44px;height:44px;
+      background:linear-gradient(180deg,#1a2236,#0f1420);
+      color:var(--gold2);
+      border:1px solid rgba(201,165,87,.35);
+      border-radius:2px;
+      z-index:210;cursor:pointer;
+      box-shadow:0 4px 14px rgba(0,0,0,.32);
+      transition:color .2s,border-color .2s;
+    }
+    .menu-toggle:hover{color:#fff;border-color:var(--gold2)}
+    .menu-toggle svg{width:22px;height:22px}
+    .menu-toggle .ic-close{display:none}
+    body.menu-open .menu-toggle .ic-open{display:none}
+    body.menu-open .menu-toggle .ic-close{display:block}
+    .menu-backdrop{
+      display:block;position:fixed;inset:0;
+      background:rgba(15,20,32,.55);
+      backdrop-filter:blur(2px);
+      -webkit-backdrop-filter:blur(2px);
+      z-index:190;opacity:0;pointer-events:none;
+      transition:opacity .25s ease;
+    }
+    body.menu-open .menu-backdrop{opacity:1;pointer-events:auto}
+    body.menu-open{overflow:hidden}
+    .main{padding:72px 22px 80px;max-width:none}
     .mech-panel.active{grid-template-columns:1fr}
     .analogy-body{grid-template-columns:1fr}
-    .cover{padding:52px 28px}
+    .cover{padding:56px 24px 48px}
     .cover h1{font-size:34px}
     .cover-illust{display:none}
+    .cover-kicker{margin-bottom:20px}
   }
 
-/* ── Site Header ── */
-.site-header {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 300;
-  height: 44px;
-  background: #0f1420;
-  border-bottom: 1px solid rgba(201,165,87,.18);
-  display: flex; align-items: center; padding: 0 16px; gap: 12px;
-  backdrop-filter: blur(8px);
-}
-.site-header-back {
-  display: flex; align-items: center; gap: 5px;
-  color: rgba(255,255,255,.55); text-decoration: none;
-  font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 500;
-  letter-spacing: .04em; white-space: nowrap;
-  transition: color .15s;
-}
-.site-header-back:hover { color: rgba(201,165,87,.9); }
-.site-header-logo {
-  flex: 1; text-align: center;
-  font-family: 'Noto Sans JP', sans-serif; font-size: 11px; font-weight: 700;
-  color: rgba(255,255,255,.3); letter-spacing: .08em;
-  pointer-events: none;
-}
-.site-header-home {
-  display: flex; align-items: center; justify-content: center;
-  width: 32px; height: 32px; border-radius: 6px;
-  color: rgba(255,255,255,.45); text-decoration: none;
-  transition: background .15s, color .15s; flex-shrink: 0;
-}
-.site-header-home:hover { background: rgba(255,255,255,.08); color: rgba(201,165,87,.9); }
-body { padding-top: 44px !important; }
-.sidebar { top: 44px !important; height: calc(100vh - 44px) !important; }
+  @media (max-width:560px){
+    .cover{padding:44px 18px 38px}
+    .cover h1{font-size:26px}
+    .cover-desc{font-size:13px}
+    .main{padding:64px 14px 64px}
+    h2{font-size:22px}
+    .section-header{gap:12px;margin-bottom:28px}
+  }
 </style>
 </head>
 <body>
-<header class="site-header">
-  <a href="index.html" class="site-header-back">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-    解説書一覧
-  </a>
-  <span class="site-header-logo">SC 技術解説書</span>
-  <a href="../../index.html" class="site-header-home" title="ホームへ">
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-  </a>
-</header>
 
 <!-- COVER -->
 <div class="cover">
@@ -465,8 +476,14 @@ body { padding-top: 44px !important; }
 </div>
 
 <div class="layout">
+  <button class="menu-toggle" id="menuToggle" aria-label="目次を開く" aria-expanded="false" aria-controls="sidebar" onclick="toggleMenu()">
+    <svg class="ic-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+    <svg class="ic-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/></svg>
+  </button>
+  <div class="menu-backdrop" onclick="closeMenu()" aria-hidden="true"></div>
 
-<aside class="sidebar">
+
+<aside class="sidebar" id="sidebar">
   <p class="sidebar-title">目次 — CONTENTS</p>
   <nav>
     <a href="#s1" onclick="setActive(this)"><span class="nav-num">01</span>SASLの立ち位置</a>
@@ -1733,6 +1750,34 @@ function doB64Decode(){
 window.addEventListener('DOMContentLoaded',()=>{
   const inp=document.getElementById('b64-input');
   if(inp){ doB64Encode(); }
+});
+
+/* ─────── Drawer (mobile sidebar) ─────── */
+function toggleMenu(){
+  const open = document.body.classList.toggle('menu-open');
+  document.getElementById('sidebar').classList.toggle('open', open);
+  const btn = document.getElementById('menuToggle');
+  btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  btn.setAttribute('aria-label', open ? '目次を閉じる' : '目次を開く');
+}
+function closeMenu(){
+  document.body.classList.remove('menu-open');
+  document.getElementById('sidebar').classList.remove('open');
+  const btn = document.getElementById('menuToggle');
+  btn.setAttribute('aria-expanded', 'false');
+  btn.setAttribute('aria-label', '目次を開く');
+}
+// Auto-close drawer on nav click (mobile only)
+document.querySelectorAll('.sidebar nav a').forEach(a=>{
+  a.addEventListener('click',()=>{
+    if(window.matchMedia('(max-width:1024px)').matches) closeMenu();
+  });
+});
+// Close drawer on Escape
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeMenu(); });
+// Close drawer if viewport widens past breakpoint
+window.addEventListener('resize',()=>{
+  if(window.innerWidth>1024) closeMenu();
 });
 </script>
 </body>
