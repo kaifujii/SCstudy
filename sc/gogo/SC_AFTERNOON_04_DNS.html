@@ -537,16 +537,39 @@ footer a:hover{ color:var(--gold2); }
   </div>
 
   <h3>名前解決の流れ</h3>
-
-  <div class="uml-seq">
-    <div class="uml-actors" style="grid-template-columns:1fr 1fr 1fr 1fr 1fr;">
-      <div class="uml-actor"><div class="uml-actor-icon"><svg style="color:var(--accent2);" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2"/></svg></div><div class="uml-actor-name">クライアント</div></div>
-      <div class="uml-actor"><div class="uml-actor-icon"><svg style="color:var(--accent2);" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="12" r="3"/><circle cx="18" cy="12" r="3"/><circle cx="12" cy="12" r="2"/><path d="M9 12h1M14 12h1"/></svg></div><div class="uml-actor-name">フルリゾルバ</div></div>
-      <div class="uml-actor"><div class="uml-actor-icon"><svg style="color:var(--gold);" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="6" rx="1"/><rect x="3" y="14" width="18" height="6" rx="1"/><circle cx="7" cy="7" r=".8" fill="currentColor"/><circle cx="7" cy="17" r=".8" fill="currentColor"/></svg></div><div class="uml-actor-name">ルートDNS</div></div>
-      <div class="uml-actor"><div class="uml-actor-icon"><svg style="color:var(--gold);" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="6" rx="1"/><rect x="3" y="14" width="18" height="6" rx="1"/><circle cx="7" cy="7" r=".8" fill="currentColor"/><circle cx="7" cy="17" r=".8" fill="currentColor"/></svg></div><div class="uml-actor-name">.com TLD</div></div>
-      <div class="uml-actor"><div class="uml-actor-icon"><svg style="color:var(--gold);" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg></div><div class="uml-actor-name">example.com<br>権威DNS</div></div>
+  <div class="phaseplayer">
+    <div class="pp-stages">
+      <div class="pp-stage act" data-phase-group="dns-resolve" onclick="setPhase('dns-resolve',0)"><span class="pp-stage-num">①</span>クライアント→リゾルバ</div>
+      <div class="pp-stage" data-phase-group="dns-resolve" onclick="setPhase('dns-resolve',1)"><span class="pp-stage-num">②</span>リゾルバ→ルート</div>
+      <div class="pp-stage" data-phase-group="dns-resolve" onclick="setPhase('dns-resolve',2)"><span class="pp-stage-num">③</span>リゾルバ→TLD</div>
+      <div class="pp-stage" data-phase-group="dns-resolve" onclick="setPhase('dns-resolve',3)"><span class="pp-stage-num">④</span>リゾルバ→権威</div>
+      <div class="pp-stage" data-phase-group="dns-resolve" onclick="setPhase('dns-resolve',4)"><span class="pp-stage-num">⑤</span>権威→リゾルバ</div>
+      <div class="pp-stage" data-phase-group="dns-resolve" onclick="setPhase('dns-resolve',5)"><span class="pp-stage-num">⑥</span>リゾルバ→クライアント</div>
     </div>
-    <div class="uml-note-box">①Client→Resolver: www.example.com の A?  ②Resolver→Root: TLD .com の NS?  ③Resolver→.com: example.com の NS?  ④Resolver→権威DNS: www の A?  ⑤権威→Resolver: A 93.184.216.34  ⑥Resolver→Client: A 93.184.216.34（TTL秒キャッシュ）</div>
+    <div class="pp-content act" data-phase-content="dns-resolve">
+      <h5>① クライアント → フルリゾルバ（再帰問合せ）</h5>
+      クライアント（スタブリゾルバ）が <code>www.example.com</code> の A レコードを問い合わせ。<strong>再帰問合せ</strong>としてフルリゾルバへ送信。フルリゾルバがここから先を代行する。
+    </div>
+    <div class="pp-content" data-phase-content="dns-resolve">
+      <h5>② リゾルバ → ルートDNS（反復問合せ開始）</h5>
+      キャッシュが無ければフルリゾルバはルートDNS へ <code>.com</code> の NS レコードを問い合わせ（<strong>反復問合せ</strong>）。ルートは <code>.com</code> TLD サーバのアドレスを委任情報として返す。
+    </div>
+    <div class="pp-content" data-phase-content="dns-resolve">
+      <h5>③ リゾルバ → .com TLD（委任の連鎖）</h5>
+      <code>.com</code> TLD サーバに <code>example.com</code> の NS レコードを問い合わせ。TLD は <code>example.com</code> の<em>権威 DNS サーバ</em>のアドレスを委任情報として返す。
+    </div>
+    <div class="pp-content" data-phase-content="dns-resolve">
+      <h5>④ リゾルバ → 権威 DNS（最終問合せ）</h5>
+      <code>example.com</code> の権威 DNS サーバに <code>www</code> の A レコードを問い合わせ。権威 DNS はそのドメインのゾーンデータを保持する<strong>最終回答者</strong>。
+    </div>
+    <div class="pp-content" data-phase-content="dns-resolve">
+      <h5>⑤ 権威 DNS → リゾルバ（A レコード返答）</h5>
+      権威 DNS が A レコード <code>93.184.216.34</code> を返答。フルリゾルバは <strong>TTL 秒間キャッシュ</strong>。<em>DNS キャッシュポイズニング</em>はこのキャッシュを偽の応答で上書きする攻撃。
+    </div>
+    <div class="pp-content" data-phase-content="dns-resolve">
+      <h5>⑥ リゾルバ → クライアント（名前解決完了）</h5>
+      フルリゾルバがクライアントに <code>93.184.216.34</code> を返却。クライアントはその IP へ TCP/TLS 接続を開始。<em>DNSSEC</em> が有効なら、各応答の署名を検証して改ざんを検知する。
+    </div>
   </div>
 
   <h3>主要レコードタイプ</h3>

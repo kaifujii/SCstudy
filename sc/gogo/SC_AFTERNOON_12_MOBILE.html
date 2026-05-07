@@ -621,7 +621,7 @@ footer a:hover{ color:var(--gold2); }
   <div class="section-header"><span class="s-num">3</span><div><h2>端末上のデータ保護</h2></div></div>
 
   <h3>何をどこに保存すべきか</h3>
-  <div class="cmp-table"><table><thead><tr><th>データ種別</th><th>iOSの保存先</th><th>Androidの保存先</th><th>禁忌</th></tr></thead><tbody>
+  <div class="cmp-table"><table style="table-layout:fixed;word-break:break-word;"><colgroup><col style="width:18%"><col style="width:28%"><col style="width:28%"><col style="width:26%"></colgroup><thead><tr><th>データ種別</th><th>iOSの保存先</th><th>Androidの保存先</th><th>禁忌</th></tr></thead><tbody>
     <tr><td>認証トークン・APIキー</td><td>Keychain (kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly)</td><td>EncryptedSharedPreferences / Keystore</td><td>SharedPreferences/UserDefaults平文</td></tr>
     <tr><td>暗号鍵（マスター）</td><td>Secure Enclave (Keychain SecKey)</td><td>StrongBox/TEE (KeyStore)</td><td>ファイルやコード埋込</td></tr>
     <tr><td>大容量データ</td><td>FileProtectionComplete + 鍵はKeychain</td><td>SQLCipher + 鍵はKeyStore</td><td>SDカード保存</td></tr>
@@ -635,6 +635,7 @@ footer a:hover{ color:var(--gold2); }
       <h4><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15" r="1.2" fill="currentColor"/><path d="M12 16v2"/></svg> iOS Keychain + Secure Enclave</h4>
       <p>Apple T2/A系チップ内の<strong>専用セキュリティチップ</strong>に鍵格納。CPUからも鍵本体を取り出せず、署名/復号操作だけが可能。生体認証（Face ID/Touch ID）と連動。</p>
     </div>
+    <div class="cmp-arrow"><span style="font-size:12px;font-weight:700;color:var(--ink3);font-family:var(--mono);">vs</span></div>
     <div class="cmp-side cmp-good">
       <h4><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15" r="1.2" fill="currentColor"/><path d="M12 16v2"/></svg> Android Keystore + StrongBox</h4>
       <p>API 28+ で<strong>StrongBox</strong>（独立TEE/Secure Element）対応。鍵はOSからもアクセス不能。BiometricPromptと組み合わせて鍵使用を生体認証ゲート化できる。</p>
@@ -740,6 +741,7 @@ footer a:hover{ color:var(--gold2); }
       <h4><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L4 6v6c0 5 3.5 9 8 10 4.5-1 8-5 8-10V6l-8-4z"/></svg> L1 — 標準セキュリティ</h4>
       <p>一般的なアプリで満たすべきベースライン。MASVS-RESILIENCE以外を網羅。</p>
     </div>
+    <div class="cmp-arrow"><span style="font-size:12px;font-weight:700;color:var(--ink3);font-family:var(--mono);">vs</span></div>
     <div class="cmp-side cmp-good">
       <h4><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L4 6v6c0 5 3.5 9 8 10 4.5-1 8-5 8-10V6l-8-4z"/><polyline points="9,12 11,14 15,10"/></svg> L2 — 防御的アプリ</h4>
       <p>金融・医療等。L1 に MASVS-RESILIENCE（耐解析・耐改ざん）を加えた最高レベル。</p>

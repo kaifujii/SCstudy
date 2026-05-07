@@ -535,21 +535,38 @@ footer a:hover{ color:var(--gold2); }
   </div>
 
   <h3>決済フロー（典型）</h3>
-  <div class="uml-seq">
-    <div class="uml-actors" style="grid-template-columns:1fr 1fr 1fr 1fr 1fr;">
-      <div class="uml-actor"><div class="uml-actor-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2"/></svg></div><div class="uml-actor-name">会員</div></div>
-      <div class="uml-actor"><div class="uml-actor-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V5l9-3 9 3v16"/><path d="M9 9h.01M13 9h.01M9 13h.01M13 13h.01M9 17h.01M13 17h.01"/></svg></div><div class="uml-actor-name">加盟店</div></div>
-      <div class="uml-actor"><div class="uml-actor-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="12" r="3"/><circle cx="18" cy="12" r="3"/><circle cx="12" cy="12" r="2"/><path d="M9 12h1M14 12h1"/></svg></div><div class="uml-actor-name">PSP</div></div>
-      <div class="uml-actor"><div class="uml-actor-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="14" rx="1"/><path d="M8 8h8M8 11h5"/><circle cx="12" cy="19" r="3"/><path d="M10 21l-1 2M14 21l1 2"/></svg></div><div class="uml-actor-name">アクワイアラ&lt;br&gt;ブランド</div></div>
-      <div class="uml-actor"><div class="uml-actor-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg></div><div class="uml-actor-name">イシュア</div></div>
+  <div class="phaseplayer">
+    <div class="pp-stages">
+      <div class="pp-stage act" data-phase-group="payment-flow" onclick="setPhase('payment-flow',0)"><span class="pp-stage-num">①</span>購入</div>
+      <div class="pp-stage" data-phase-group="payment-flow" onclick="setPhase('payment-flow',1)"><span class="pp-stage-num">②</span>カード入力</div>
+      <div class="pp-stage" data-phase-group="payment-flow" onclick="setPhase('payment-flow',2)"><span class="pp-stage-num">③</span>オーソリ要求</div>
+      <div class="pp-stage" data-phase-group="payment-flow" onclick="setPhase('payment-flow',3)"><span class="pp-stage-num">④</span>与信判定</div>
+      <div class="pp-stage" data-phase-group="payment-flow" onclick="setPhase('payment-flow',4)"><span class="pp-stage-num">⑤</span>購入完了</div>
+      <div class="pp-stage" data-phase-group="payment-flow" onclick="setPhase('payment-flow',5)"><span class="pp-stage-num">⑥</span>売上請求</div>
     </div>
-    <div class="uml-note-box">
-      ①購入: 会員→加盟店 (商品選択)<br>
-      ②カード番号入力: 会員→PSP (※非保持化により<em>加盟店を経由しない</em>)<br>
-      ③オーソリ要求: PSP→アクワイアラ→ブランド→イシュア<br>
-      ④与信判定: イシュア→ブランド→アクワイアラ→PSP<br>
-      ⑤購入完了: PSP→加盟店→会員 (取引IDのみ加盟店が保持)<br>
-      ⑥売上請求: アクワイアラ→ブランド→イシュア (後日精算)
+    <div class="pp-content act" data-phase-content="payment-flow">
+      <h5>① 購入：会員 → 加盟店</h5>
+      会員が加盟店サイトで商品を選択し購入ボタンを押す。加盟店サーバが決済フローを開始。<strong>この時点ではカード番号は未入力</strong>。
+    </div>
+    <div class="pp-content" data-phase-content="payment-flow">
+      <h5>② カード番号入力：会員 → PSP</h5>
+      <em>非保持化（リンク型・JS型）</em>により、カード番号入力画面は PSP のドメイン。<strong>加盟店サーバを経由しない</strong>ため、加盟店はカード番号を保持しない。
+    </div>
+    <div class="pp-content" data-phase-content="payment-flow">
+      <h5>③ オーソリ要求：PSP → アクワイアラ → ブランド → イシュア</h5>
+      PSP がカード情報を受け取り、アクワイアラ（加盟店契約会社）→ 国際ブランド（Visa 等）→ イシュア（カード発行会社）へ<strong>与信確認</strong>を転送。
+    </div>
+    <div class="pp-content" data-phase-content="payment-flow">
+      <h5>④ 与信判定：イシュア → ブランド → アクワイアラ → PSP</h5>
+      イシュアが与信限度・不正フラグを確認し<strong>承認 or 拒否</strong>を判定。結果は逆経路で PSP に返却。3-Dセキュア 2.0 のリスクベース認証もこのフェーズで行われる。
+    </div>
+    <div class="pp-content" data-phase-content="payment-flow">
+      <h5>⑤ 購入完了：PSP → 加盟店 → 会員</h5>
+      PSP が承認済みの<strong>取引 ID</strong> を加盟店に通知。加盟店は取引 ID のみ記録し（カード番号ゼロ保持）、会員に購入完了通知を送る。
+    </div>
+    <div class="pp-content" data-phase-content="payment-flow">
+      <h5>⑥ 売上請求：アクワイアラ → ブランド → イシュア（後日精算）</h5>
+      後日のクリアリング・セトルメント処理。アクワイアラ → 国際ブランド → イシュア の経路で<strong>資金移動</strong>が行われる。加盟店への入金は通常数日後。
     </div>
   </div>
 </section>

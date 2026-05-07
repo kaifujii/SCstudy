@@ -581,6 +581,7 @@ footer a:hover{ color:var(--gold2); }
       <h4><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L4 6v6c0 5 3.5 9 8 10 4.5-1 8-5 8-10V6l-8-4z"/><polyline points="9,12 11,14 15,10"/></svg> ブラックリスト方式（ネガティブ）</h4>
       <p>「<em>既知の攻撃パターンを拒否</em>」する。<strong>ModSecurity/OWASP CRS</strong>等。<em>誤検知が少ない</em>が新種攻撃に弱い。導入容易。</p>
     </div>
+    <div class="cmp-arrow"><span style="font-size:12px;font-weight:700;color:var(--ink3);font-family:var(--mono);">vs</span></div>
     <div class="cmp-side cmp-good">
       <h4><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L4 6v6c0 5 3.5 9 8 10 4.5-1 8-5 8-10V6l-8-4z"/><polyline points="9,12 11,14 15,10"/></svg> ホワイトリスト方式（ポジティブ）</h4>
       <p>「<em>正規パターンのみ許可</em>」。学習期間でアプリの正常通信を覚え、それ以外を拒否。<em>誤検知が多い</em>が0day対応可。チューニング必要。</p>
@@ -610,6 +611,7 @@ footer a:hover{ color:var(--gold2); }
       <h4><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg> Forward Proxy（社員→外部）</h4>
       <p>社内端末がインターネットへ出る際に経由。<strong>URLフィルタ・ウイルス検査・SSL Inspection</strong>を実施。一括で出口を集約することで監査ログ取得・攻撃通信遮断が可能。</p>
     </div>
+    <div class="cmp-arrow"><span style="font-size:12px;font-weight:700;color:var(--ink3);font-family:var(--mono);">vs</span></div>
     <div class="cmp-side cmp-good">
       <h4><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg> Reverse Proxy（外部→社内サーバ）</h4>
       <p>公開Webサーバの前段に配置。<strong>負荷分散・SSL終端・WAF・キャッシュ・DDoS吸収</strong>。直接サーバに到達させず一段挟むことで攻撃面を縮小。</p>
@@ -737,6 +739,7 @@ footer a:hover{ color:var(--gold2); }
       <h4><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L4 6v6c0 5 3.5 9 8 10 4.5-1 8-5 8-10V6l-8-4z"/></svg> 従来型AV</h4>
       <p>シグネチャ照合中心。<em>既知マルウェアのファイル単位検知・除去</em>。0day/標的型に弱い。</p>
     </div>
+    <div class="cmp-arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></div>
     <div class="cmp-side cmp-good">
       <h4><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L4 6v6c0 5 3.5 9 8 10 4.5-1 8-5 8-10V6l-8-4z"/><polyline points="9,12 11,14 15,10"/></svg> EDR</h4>
       <p>挙動監視＋ログ保全＋遠隔隔離。<em>「侵入されたあと」の検知・封じ込め・調査</em>を可能にする。</p>
