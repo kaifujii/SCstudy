@@ -284,6 +284,12 @@ main {
   border: 1px solid rgba(45,122,79,0.2);
 }
 .sc-opt-card:hover { background: #e0f0e6; }
+.sc-opt-gogo {
+  background: #fef6ec;
+  color: #b45309;
+  border: 1px solid rgba(180,83,9,0.2);
+}
+.sc-opt-gogo:hover { background: #fdecd6; }
 .sc-opt svg { flex-shrink: 0; }
 .sc-opt span { flex: 1; }
 .sc-opt-label { font-size: 0.62rem; font-weight: 500; color: inherit; opacity: 0.65; }
@@ -312,6 +318,12 @@ main {
 [data-dark] .course-card::before {
   background: radial-gradient(ellipse at top right, rgba(91,141,245,0.06) 0%, transparent 70%);
 }
+[data-dark] .sc-opt-gogo {
+  background: #1f1408;
+  color: #f59e0b;
+  border-color: rgba(245,158,11,0.2);
+}
+[data-dark] .sc-opt-gogo:hover { background: #2a1c0a; }
 </style>
 </head>
 <body>
@@ -365,6 +377,11 @@ main {
         <a href="sc/flashcard.html" class="sc-opt sc-opt-card" onclick="event.stopPropagation()">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
           <span>カードで覚える</span>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </a>
+        <a href="sc/gogo/SC_AFTERNOON_INDEX.html" class="sc-opt sc-opt-gogo" onclick="event.stopPropagation()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          <span>午後試験対策</span>
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
         </a>
       </div>

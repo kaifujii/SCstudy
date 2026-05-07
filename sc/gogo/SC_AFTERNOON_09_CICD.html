@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第09章 CI/CD・DevSecOps — 情報処理安全確保支援士 午後試験完全対策</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+
+:root{
+  --ink:#111624; --ink2:#1f2a3d; --ink3:#3d4860;
+  --accent:#1c3a5c; --accent2:#3d6998; --accent3:#7a9bc2;
+  --gold:#a47a2a; --gold2:#c9a557;
+  --paper:#fbfbf8; --surface:#f4f2ec; --panel:#ffffff;
+  --line:#d9d5c7; --line2:#e8e5db;
+  --success:#2a5f4a; --warn:#7a4a1a; --danger:#742828;
+  --info:#1a4a6a;
+  --mono:'JetBrains Mono',monospace; --serif:'Noto Serif JP',serif; --sans:'Noto Sans JP',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{ font-family:var(--sans); background:var(--paper); color:var(--ink); font-size:14.5px; line-height:1.85;
+  background-image:radial-gradient(circle at 1px 1px, rgba(31,42,61,.05) 1px, transparent 0); background-size:28px 28px; }
+
+/* COVER */
+.cover{ background:linear-gradient(180deg,#0f1420 0%,#1a2236 100%); color:#fff; padding:80px 64px 68px; position:relative; overflow:hidden; }
+.cover::before{ content:''; position:absolute; inset:0;
+  background: radial-gradient(ellipse at top right, rgba(201,165,87,.08), transparent 55%),
+              radial-gradient(ellipse at bottom left, rgba(122,155,194,.08), transparent 55%);
+  pointer-events:none; }
+.cover-geo{ position:absolute; top:-60px; right:-60px; width:540px; height:540px; opacity:.07; animation:rotSlow 60s linear infinite; }
+@keyframes rotSlow{ to{ transform:rotate(360deg); } }
+.cover-inner{ position:relative; max-width:1000px; }
+.cover-kicker{ font-size:10.5px; font-weight:700; letter-spacing:.28em; color:rgba(201,165,87,.8); text-transform:uppercase; margin-bottom:28px; display:flex; align-items:center; gap:14px; }
+.cover-kicker::before{ content:''; display:block; width:32px; height:1px; background:var(--gold2); }
+.cover h1{ font-family:var(--serif); font-size:48px; font-weight:600; line-height:1.18; margin-bottom:22px; letter-spacing:.02em; }
+.cover h1 em{ color:var(--gold2); font-style:normal; font-weight:500; }
+.cover-desc{ font-size:14px; color:rgba(255,255,255,.62); max-width:680px; margin-bottom:42px; line-height:1.9; }
+.cover-tags{ display:flex; gap:8px; flex-wrap:wrap; }
+.ctag{ font-size:10.5px; padding:5px 13px; border-radius:2px; border:1px solid rgba(201,165,87,.3); color:rgba(255,255,255,.7); letter-spacing:.08em; font-family:var(--mono); }
+.cover-meta{ display:flex; gap:24px; margin-top:34px; padding-top:24px; border-top:1px solid rgba(201,165,87,.18); flex-wrap:wrap; }
+.cover-meta-i{ font-size:11px; color:rgba(255,255,255,.55); }
+.cover-meta-i strong{ display:block; color:var(--gold2); font-size:13px; font-weight:600; margin-top:3px; letter-spacing:.04em; font-family:var(--mono); }
+
+/* LAYOUT */
+.layout{ display:flex; align-items:flex-start; background:var(--paper); }
+.sidebar{ position:sticky; top:0; width:240px; flex-shrink:0; height:100vh; overflow-y:auto;
+  background:linear-gradient(180deg,#1a2236,#0f1420); padding:36px 0; border-right:1px solid rgba(201,165,87,.12); }
+.sidebar-title{ font-size:9.5px; font-weight:700; letter-spacing:.24em; color:rgba(201,165,87,.7); text-transform:uppercase;
+  padding:0 26px 16px; border-bottom:1px solid rgba(255,255,255,.08); margin-bottom:10px; }
+.sidebar nav a{ display:block; padding:10px 26px; font-size:12.5px; color:rgba(255,255,255,.58);
+  text-decoration:none; border-left:2px solid transparent; transition:all .2s; line-height:1.5; }
+.sidebar nav a:hover{ color:#fff; background:rgba(255,255,255,.04); }
+.sidebar nav a.active{ color:var(--gold2); border-left-color:var(--gold2); background:rgba(201,165,87,.06); }
+.sidebar nav .nav-num{ font-family:var(--mono); font-size:9px; color:rgba(201,165,87,.45); display:block; margin-bottom:2px; letter-spacing:.1em; }
+.sidebar-meta{ padding:18px 26px; border-top:1px solid rgba(255,255,255,.08); margin-top:18px; }
+.sb-other{ display:block; font-size:10.5px; padding:6px 0; color:rgba(255,255,255,.45); text-decoration:none; }
+.sb-other:hover{ color:var(--gold2); }
+.sb-other strong{ color:rgba(255,255,255,.7); display:block; font-size:11px; }
+.main{ flex:1; min-width:0; padding:64px 64px 120px; max-width:1180px; }
+
+/* SECTION */
+.section{ margin-bottom:100px; scroll-margin-top:24px; }
+.section-header{ display:flex; align-items:flex-start; gap:18px; margin-bottom:36px; padding-bottom:22px; border-bottom:1px solid var(--line); position:relative; }
+.section-header::after{ content:''; position:absolute; left:0; bottom:-1px; width:80px; height:2px; background:var(--gold); }
+.s-num{ font-family:var(--mono); font-size:10px; font-weight:500; color:#fff; background:var(--ink); padding:4px 10px; border-radius:2px; margin-top:8px; white-space:nowrap; flex-shrink:0; letter-spacing:.1em; }
+.s-num.gold-bg{ background:var(--gold); }
+.s-num.red-bg{ background:var(--danger); }
+.section-sub{ font-size:13px; color:var(--ink3); margin-top:6px; }
+h2{ font-family:var(--serif); font-size:28px; font-weight:600; color:var(--ink); line-height:1.3; letter-spacing:.01em; }
+h3{ font-size:16px; font-weight:700; color:var(--ink2); margin:40px 0 16px; padding-left:14px; border-left:3px solid var(--gold); font-family:var(--sans); }
+h4{ font-size:14px; font-weight:700; color:var(--ink2); margin:24px 0 10px; padding-left:10px; border-left:2px solid var(--accent2); font-family:var(--sans); }
+p{ color:var(--ink3); margin-bottom:16px; text-wrap:pretty; }
+strong{ color:var(--ink2); font-weight:700; }
+code{ font-family:var(--mono); font-size:11.5px; background:rgba(28,58,92,.07); color:var(--accent); padding:1px 6px; border-radius:2px; }
+em{ font-style:normal; color:var(--gold); font-weight:600; }
+a{ color:var(--accent2); }
+
+/* CARDS */
+.card-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px; margin:24px 0; }
+.icard{ background:var(--panel); border:1px solid var(--line); border-radius:2px; padding:22px; display:flex; flex-direction:column; gap:12px; transition:all .3s; position:relative; overflow:hidden; }
+.icard::before{ content:''; position:absolute; top:0; left:0; width:0; height:2px; background:var(--gold); transition:width .4s; }
+.icard:hover{ border-color:var(--gold); transform:translateY(-2px); }
+.icard:hover::before{ width:100%; }
+.icard-icon{ color:var(--accent2); height:40px; display:flex; align-items:center; }
+.icard-label{ font-size:10px; font-weight:700; letter-spacing:.14em; color:var(--gold); text-transform:uppercase; }
+.icard-val{ font-size:13px; color:var(--ink3); line-height:1.7; }
+
+/* COMPARISON TABLE */
+.cmp-table{ width:100%; border-collapse:collapse; font-size:13px; margin:20px 0; background:var(--panel); border:1px solid var(--line); }
+.cmp-table th{ background:var(--ink); color:#fff; padding:11px 14px; text-align:center; font-size:11px; font-weight:600; letter-spacing:.08em; }
+.cmp-table th:first-child{ text-align:left; background:var(--ink2); }
+.cmp-table td{ padding:11px 14px; border-top:1px solid var(--line2); text-align:center; font-size:12.5px; vertical-align:middle; }
+.cmp-table td:first-child{ text-align:left; font-weight:600; color:var(--ink2); background:var(--surface); }
+.cmp-good{ color:var(--success); font-weight:600; }
+.cmp-bad{ color:var(--danger); }
+.cmp-mid{ color:var(--warn); }
+
+/* STEPS */
+.steps{ display:flex; flex-direction:column; gap:10px; margin:22px 0; }
+.step{ display:flex; gap:14px; align-items:flex-start; padding:14px 18px; border-radius:2px; background:var(--surface); border-left:3px solid var(--line); }
+.step.hi{ background:#f1f0e8; border-left-color:var(--accent2); }
+.step.ok{ background:#ecf1ed; border-left-color:var(--success); }
+.step.wn{ background:#f5efe0; border-left-color:var(--gold); }
+.step.ng{ background:#f3e8e8; border-left-color:var(--danger); }
+.sn{ font-family:var(--mono); font-size:10px; font-weight:500; color:#fff; background:var(--accent2); min-width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; padding:0 6px; }
+.step.ok .sn{ background:var(--success); }
+.step.wn .sn{ background:var(--gold); }
+.step.ng .sn{ background:var(--danger); }
+.sb{ font-size:13.5px; color:var(--ink2); line-height:1.75; }
+
+/* NOTE */
+.note{ display:flex; gap:12px; border-radius:2px; padding:16px 20px; margin:18px 0; border:1px solid; }
+.note-i{ flex-shrink:0; margin-top:2px; }
+.note p{ margin:0; font-size:13px; line-height:1.8; }
+.note.info{ background:#eef1f7; border-color:#bcc8d9; }
+.note.info p{ color:#1a2a42; }
+.note.warn{ background:#f5efe0; border-color:#d9c68a; }
+.note.warn p{ color:#5c3a10; }
+.note.danger{ background:#f3e8e8; border-color:#d0aaaa; }
+.note.danger p{ color:#5a1a1a; }
+.note.ok{ background:#ecf1ed; border-color:#a8c8b4; }
+.note.ok p{ color:#1a3d2a; }
+
+/* THREAT GRID */
+.threat-grid{ display:grid; grid-template-columns:1fr 1fr; gap:18px; margin:24px 0; }
+.threat-card{ background:var(--panel); border:1px solid var(--line); border-radius:2px; overflow:hidden; transition:transform .2s; }
+.threat-card:hover{ transform:translateY(-2px); }
+.tc-head{ display:flex; align-items:center; gap:12px; padding:14px 18px; background:var(--danger); color:#fff; }
+.tc-head.warn-head{ background:var(--gold); }
+.tc-head.info-head{ background:var(--accent); }
+.tc-head span{ font-size:13px; font-weight:700; }
+.tc-body{ padding:16px 18px; }
+.tc-body p{ font-size:12.5px; color:var(--ink3); margin:0 0 10px; line-height:1.7; }
+.tc-counter{ font-size:11.5px; color:var(--success); padding:8px 12px; background:#ecf1ed; border-radius:2px; margin:0; border-left:3px solid var(--success); }
+
+/* KEY POINT */
+.keypoint{ background:linear-gradient(135deg,#1a2236,#0f1420); color:#fff; border-radius:2px; padding:28px 32px; margin:28px 0; position:relative; overflow:hidden; border:1px solid var(--gold); }
+.keypoint::before{ content:''; position:absolute; top:0; right:0; width:120px; height:120px; background:radial-gradient(circle,rgba(201,165,87,.18),transparent 70%); }
+.kp-label{ font-size:9.5px; font-weight:700; letter-spacing:.24em; color:var(--gold2); text-transform:uppercase; margin-bottom:12px; display:flex; align-items:center; gap:10px; }
+.kp-label::before{ content:''; display:block; width:20px; height:1px; background:var(--gold2); }
+.keypoint p{ color:rgba(255,255,255,.86); margin:0; font-size:13.5px; line-height:1.9; position:relative; }
+.keypoint strong{ color:var(--gold2); }
+
+/* QUIZ */
+.quiz-wrap{ display:flex; flex-direction:column; gap:24px; margin:24px 0; }
+.quiz{ background:var(--panel); border:1px solid var(--line); border-radius:2px; overflow:hidden; }
+.quiz-q{ padding:16px 20px; background:var(--ink2); color:#fff; font-size:13.5px; line-height:1.7; display:flex; gap:14px; }
+.quiz-qn{ font-family:var(--mono); font-size:10px; background:var(--gold); color:#fff; padding:3px 10px; border-radius:2px; white-space:nowrap; flex-shrink:0; height:fit-content; margin-top:2px; letter-spacing:.1em; }
+.quiz-opts{ padding:16px 20px; display:flex; flex-direction:column; gap:8px; }
+.quiz-opt{ padding:10px 14px; border:1px solid var(--line); border-radius:2px; font-size:13px; color:var(--ink2); cursor:pointer; transition:all .2s; background:var(--panel); text-align:left; font-family:var(--sans); }
+.quiz-opt:hover{ background:var(--surface); border-color:var(--accent2); }
+.quiz-opt.correct{ background:#ecf1ed; border-color:var(--success); color:var(--success); }
+.quiz-opt.wrong{ background:#f3e8e8; border-color:var(--danger); color:var(--danger); }
+.quiz-opt.reveal{ background:var(--surface); color:#999; }
+.quiz-exp{ display:none; padding:14px 20px; background:#f5efe0; border-top:1px solid #d9c68a; font-size:13px; color:#5c3a10; line-height:1.8; }
+.quiz-exp.show{ display:block; animation:fadeIn .4s ease; }
+@keyframes fadeIn{ from{opacity:0;transform:translateY(-4px)} to{opacity:1;transform:translateY(0)} }
+
+/* ACCORDION */
+.accordion{ border:1px solid var(--line); border-radius:2px; overflow:hidden; margin:18px 0; background:var(--panel); }
+.acc-item{ border-bottom:1px solid var(--line); }
+.acc-item:last-child{ border-bottom:none; }
+.acc-trigger{ width:100%; text-align:left; padding:14px 22px; background:var(--panel); border:none; cursor:pointer; display:flex; align-items:center; gap:14px; font-size:13.5px; font-weight:600; color:var(--ink2); transition:background .2s; font-family:var(--sans); }
+.acc-trigger:hover{ background:var(--surface); }
+.acc-trigger.open{ background:#f5efe0; color:var(--warn); }
+.acc-arrow{ margin-left:auto; width:18px; height:18px; position:relative; flex-shrink:0; transition:transform .3s; }
+.acc-trigger.open .acc-arrow{ transform:rotate(45deg); }
+.acc-arrow::before{ content:''; width:10px; height:2px; background:var(--gold); position:absolute; top:8px; left:4px; }
+.acc-arrow::after{ content:''; width:2px; height:10px; background:var(--gold); position:absolute; top:4px; left:8px; }
+.acc-content{ display:none; padding:16px 22px 20px; background:#faf6ec; border-top:1px solid var(--line); font-size:13px; color:var(--ink3); line-height:1.85; }
+.acc-content.open{ display:block; animation:fadeIn .4s ease; }
+
+/* TAB */
+.tab-wrap{ background:var(--panel); border:1px solid var(--line); border-radius:2px; overflow:hidden; margin:22px 0; }
+.tab-bar{ display:flex; border-bottom:1px solid var(--line); background:var(--surface); overflow-x:auto; }
+.tab-btn{ padding:12px 22px; font-size:12.5px; font-weight:600; color:var(--ink3); background:none; border:none; cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-1px; transition:all .2s; white-space:nowrap; font-family:var(--sans); display:flex; align-items:center; gap:10px; }
+.tab-btn:hover{ color:var(--ink2); }
+.tab-btn.active{ color:var(--gold); border-bottom-color:var(--gold); background:var(--panel); }
+.tab-panel{ display:none; padding:26px; }
+.tab-panel.active{ display:block; animation:fadeIn .4s ease; }
+
+/* SY BADGE */
+.sy-badge{ display:inline-flex; align-items:center; gap:6px; background:#eef1f7; color:var(--accent); padding:3px 10px; border-radius:2px; font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.08em; margin-right:6px; margin-bottom:10px; }
+.year-badge{ display:inline-flex; align-items:center; gap:4px; background:var(--gold); color:#fff; padding:2px 8px; border-radius:2px; font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.08em; margin-right:4px; }
+
+/* ── HTML+CSS Sequence diagram (no SVG) ── */
+.uml-seq{ background:var(--panel); border:1px solid var(--line); border-radius:2px; padding:24px; margin:24px 0; overflow-x:auto; }
+.uml-actors{ display:grid; gap:16px; align-items:end; }
+.uml-actor{ background:var(--surface); border:1px solid var(--line); border-radius:2px; padding:12px 8px; text-align:center; }
+.uml-actor-icon{ width:36px; height:36px; margin:0 auto 8px; display:flex; align-items:center; justify-content:center; background:var(--panel); border-radius:50%; border:1px solid var(--line); }
+.uml-actor-name{ font-size:11px; font-weight:700; color:var(--ink2); line-height:1.3; }
+.uml-actor-sub{ font-size:9px; color:var(--ink3); margin-top:3px; font-family:var(--mono); letter-spacing:.04em; }
+.uml-msg-row{ display:grid; align-items:center; padding:10px 0; position:relative; }
+.uml-msg-row::before{ content:''; position:absolute; top:0; bottom:0; left:0; right:0; pointer-events:none; }
+.uml-arrow{ height:2px; background:var(--accent2); position:relative; align-self:center; }
+.uml-arrow.rev{ background:var(--gold); }
+.uml-arrow.danger{ background:var(--danger); }
+.uml-arrow.success{ background:var(--success); }
+.uml-arrow::after{ content:''; position:absolute; right:-1px; top:-5px; width:0; height:0; border:6px solid transparent; border-left-color:var(--accent2); }
+.uml-arrow.rev::after{ right:auto; left:-1px; border-left-color:transparent; border-right-color:var(--gold); }
+.uml-arrow.danger::after{ border-left-color:var(--danger); }
+.uml-arrow.success::after{ border-left-color:var(--success); }
+.uml-msg-label{ font-size:11.5px; color:var(--ink2); padding:4px 10px; background:var(--panel); border:1px solid var(--line); border-radius:2px; line-height:1.5; text-align:center; }
+.uml-msg-row.note{ }
+.uml-note-box{ background:#f5efe0; border:1px solid #d9c68a; border-radius:2px; padding:8px 12px; font-size:11px; color:#5c3a10; line-height:1.55; grid-column:1 / -1; }
+
+/* ── HTML topology (no SVG) ── */
+.topo{ background:var(--panel); border:1px solid var(--line); border-radius:2px; padding:24px; margin:24px 0; overflow-x:auto; }
+.topo-zone{ border:1.5px dashed var(--line); border-radius:2px; padding:14px; margin:8px 0; position:relative; }
+.topo-zone-label{ position:absolute; top:-10px; left:14px; background:var(--paper); padding:0 8px; font-size:10px; font-weight:700; color:var(--ink3); letter-spacing:.1em; text-transform:uppercase; }
+.topo-zone.dmz{ border-color:var(--gold); }
+.topo-zone.intra{ border-color:var(--accent2); }
+.topo-zone.extra{ border-color:var(--danger); }
+.topo-zone.cloud{ border-color:var(--success); }
+.topo-row{ display:flex; gap:14px; align-items:center; flex-wrap:wrap; padding:8px 0; }
+.topo-node{ background:var(--surface); border:1px solid var(--line); border-radius:2px; padding:10px 14px; min-width:120px; text-align:center; position:relative; }
+.topo-node-icon{ width:28px; height:28px; margin:0 auto 6px; color:var(--accent2); }
+.topo-node-name{ font-size:11px; font-weight:700; color:var(--ink2); }
+.topo-node-ip{ font-size:9.5px; font-family:var(--mono); color:var(--ink3); margin-top:2px; }
+.topo-conn{ flex:1; min-width:30px; height:2px; background:repeating-linear-gradient(90deg,var(--line) 0,var(--line) 4px,transparent 4px,transparent 8px); position:relative; }
+.topo-conn-label{ position:absolute; top:-18px; left:50%; transform:translateX(-50%); font-size:9.5px; color:var(--ink3); background:var(--panel); padding:1px 6px; border:1px solid var(--line2); border-radius:2px; white-space:nowrap; font-family:var(--mono); }
+
+/* ── Chip ── */
+.chip{ display:inline-block; padding:2px 10px; border-radius:2px; font-size:10.5px; font-weight:700; font-family:var(--mono); letter-spacing:.04em; margin:2px 4px 2px 0; }
+.chip.attack{ background:#f3e8e8; color:var(--danger); border:1px solid #d0aaaa; }
+.chip.defend{ background:#ecf1ed; color:var(--success); border:1px solid #a8c8b4; }
+.chip.neutral{ background:var(--surface); color:var(--ink3); border:1px solid var(--line); }
+.chip.gold{ background:#f5efe0; color:var(--warn); border:1px solid #d9c68a; }
+.chip.info{ background:#eef1f7; color:var(--accent); border:1px solid #bcc8d9; }
+
+/* ── Past exam ref box ── */
+.pastref{ display:flex; gap:10px; padding:12px 16px; background:linear-gradient(90deg,#f5efe0,var(--surface) 70%); border-left:3px solid var(--gold); border-radius:2px; margin:18px 0; font-size:12.5px; color:var(--ink2); align-items:flex-start; }
+.pastref-icon{ flex-shrink:0; color:var(--gold); margin-top:2px; }
+.pastref strong{ color:var(--warn); }
+.pastref code{ background:#fff; }
+
+/* ── Q-card (past exam style question) ── */
+.qcard{ background:var(--panel); border:1px solid var(--line); border-radius:2px; margin:24px 0; overflow:hidden; }
+.qcard-head{ background:linear-gradient(90deg,var(--ink),var(--ink2)); color:#fff; padding:14px 22px; display:flex; gap:14px; align-items:center; }
+.qcard-tag{ background:var(--gold); color:#fff; padding:3px 10px; border-radius:2px; font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.1em; }
+.qcard-title{ font-size:13.5px; font-weight:700; line-height:1.5; }
+.qcard-meta{ margin-left:auto; font-size:10.5px; color:rgba(255,255,255,.6); font-family:var(--mono); }
+.qcard-body{ padding:20px 22px; }
+.qcard-scenario{ font-size:12.5px; color:var(--ink2); line-height:1.85; padding:14px 18px; background:var(--surface); border-radius:2px; margin-bottom:18px; }
+.qcard-q{ font-size:13px; font-weight:700; color:var(--ink); margin:14px 0 8px; padding-left:10px; border-left:3px solid var(--accent2); }
+.qcard-input{ font-family:var(--mono); font-size:12px; padding:10px 14px; background:#faf6ec; border:1px dashed #d9c68a; border-radius:2px; color:var(--warn); margin:8px 0; }
+.qcard-actions{ display:flex; gap:8px; margin-top:14px; flex-wrap:wrap; }
+.qbtn{ padding:7px 16px; border-radius:2px; border:1px solid var(--line); background:var(--panel); cursor:pointer; font-size:11.5px; font-weight:600; color:var(--ink2); transition:all .2s; font-family:var(--sans); }
+.qbtn:hover{ background:var(--accent); color:#fff; border-color:var(--accent); }
+.qbtn.hint{ color:var(--accent); border-color:var(--accent2); }
+.qbtn.hint:hover{ background:var(--accent2); }
+.qbtn.ans{ color:var(--success); border-color:var(--success); }
+.qbtn.ans:hover{ background:var(--success); color:#fff; }
+.qcard-reveal{ display:none; padding:14px 18px; margin-top:14px; border-radius:2px; font-size:12.5px; line-height:1.8; }
+.qcard-reveal.show{ display:block; animation:fadeIn .4s ease; }
+.qcard-reveal.hint-r{ background:#eef1f7; border-left:3px solid var(--accent2); color:var(--accent); }
+.qcard-reveal.ans-r{ background:#ecf1ed; border-left:3px solid var(--success); color:var(--ink2); }
+.qcard-reveal.ans-r strong{ color:var(--success); }
+
+/* ── Compare panel (good/bad) ── */
+.cmp-pair{ display:grid; grid-template-columns:1fr 60px 1fr; gap:0; margin:22px 0; background:var(--panel); border:1px solid var(--line); }
+.cmp-side{ padding:18px 20px; }
+.cmp-side.good{ background:#ecf1ed; }
+.cmp-side.bad{ background:#f3e8e8; }
+.cmp-side h5{ font-size:11px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; margin-bottom:10px; }
+.cmp-side.good h5{ color:var(--success); }
+.cmp-side.bad h5{ color:var(--danger); }
+.cmp-side p{ font-size:12.5px; color:var(--ink2); margin:0 0 6px; line-height:1.65; }
+.cmp-side .ex{ font-family:var(--mono); font-size:11px; padding:8px 10px; background:rgba(255,255,255,.6); border-radius:2px; margin:6px 0; }
+.cmp-arrow{ display:flex; align-items:center; justify-content:center; background:var(--surface); border-left:1px solid var(--line); border-right:1px solid var(--line); }
+
+/* ── Theme matrix ── */
+.theme-mat{ overflow-x:auto; margin:20px 0; }
+.theme-mat table{ width:100%; min-width:800px; border-collapse:collapse; font-size:11.5px; background:var(--panel); border:1px solid var(--line); }
+.theme-mat th{ background:var(--ink); color:#fff; padding:8px; font-size:10.5px; font-weight:600; }
+.theme-mat th:first-child{ background:var(--ink2); text-align:left; padding-left:14px; }
+.theme-mat td{ padding:8px; text-align:center; border-top:1px solid var(--line2); }
+.theme-mat td:first-child{ text-align:left; font-weight:700; color:var(--ink2); padding-left:14px; background:var(--surface); white-space:nowrap; }
+.theme-mat .hit{ background:#f5efe0; font-weight:700; color:var(--warn); }
+.theme-mat .hit2{ background:#e8d8a8; color:var(--warn); font-weight:700; }
+.theme-mat .hit3{ background:#d9c184; color:#fff; font-weight:700; }
+
+/* ── Risk matrix ── */
+.risk-grid{ display:grid; grid-template-columns:80px repeat(5,1fr); grid-auto-rows:48px; gap:2px; margin:18px 0 8px; max-width:600px; }
+.risk-grid .rg-cell{ display:flex; align-items:center; justify-content:center; font-size:10.5px; font-weight:600; }
+.risk-grid .rg-axis{ color:var(--ink3); font-family:var(--mono); font-size:9.5px; background:transparent; }
+.risk-grid .rg-h{ color:#fff; font-weight:700; font-size:10.5px; padding:4px; }
+.risk-grid .rg-low{ background:#a8c8b4; color:#1a3d2a; }
+.risk-grid .rg-mid{ background:#e8d896; color:#5c3a10; }
+.risk-grid .rg-hi{ background:#d99e85; color:#5a1a1a; }
+.risk-grid .rg-cri{ background:#a85a4a; color:#fff; }
+.risk-axis-x{ display:grid; grid-template-columns:80px repeat(5,1fr); gap:2px; max-width:600px; font-size:9.5px; color:var(--ink3); font-family:var(--mono); padding:4px 0; }
+.risk-axis-x span{ text-align:center; }
+
+/* ── log entry simulator ── */
+.logsim{ background:#0f1420; color:#c5d4e8; border-radius:2px; padding:16px 18px; font-family:var(--mono); font-size:11px; line-height:1.8; margin:18px 0; overflow-x:auto; max-height:380px; overflow-y:auto; border:1px solid #2a3548; }
+.logsim .l-time{ color:#a47a2a; }
+.logsim .l-info{ color:#7a9bc2; }
+.logsim .l-warn{ color:#e8b075; }
+.logsim .l-err{ color:#e08585; }
+.logsim .l-ok{ color:#85d8a8; }
+.logsim .l-suspect{ background:rgba(232,176,117,.12); padding:0 4px; border-left:2px solid #e8b075; display:block; }
+.logsim .l-attack{ background:rgba(224,133,133,.16); padding:0 4px; border-left:2px solid #e08585; display:block; }
+.logsim-ctrl{ display:flex; gap:6px; padding:8px 12px; background:#1a2236; border-radius:2px 2px 0 0; border:1px solid #2a3548; border-bottom:none; }
+.logsim-ctrl .lf-btn{ padding:4px 10px; font-size:10.5px; border-radius:2px; border:1px solid #3a4762; background:#0f1420; color:#7a9bc2; cursor:pointer; font-family:var(--mono); }
+.logsim-ctrl .lf-btn.act{ background:var(--gold); color:#fff; border-color:var(--gold); }
+.logsim-ctrl .lf-btn:hover{ border-color:var(--gold2); color:var(--gold2); }
+
+/* ── Phase player ── */
+.phaseplayer{ background:var(--panel); border:1px solid var(--line); border-radius:2px; padding:22px; margin:24px 0; }
+.pp-stages{ display:flex; gap:6px; margin-bottom:18px; overflow-x:auto; }
+.pp-stage{ flex:1; min-width:90px; padding:10px 8px; background:var(--surface); border:1px solid var(--line); border-radius:2px; cursor:pointer; text-align:center; font-size:11px; font-weight:600; color:var(--ink3); transition:all .2s; font-family:var(--sans); }
+.pp-stage.act{ background:var(--gold); color:#fff; border-color:var(--gold); transform:translateY(-2px); box-shadow:0 3px 8px rgba(164,122,42,.3); }
+.pp-stage:hover:not(.act){ border-color:var(--gold); color:var(--gold); }
+.pp-stage-num{ display:block; font-family:var(--mono); font-size:9px; opacity:.6; margin-bottom:3px; }
+.pp-content{ min-height:140px; padding:18px 20px; background:var(--surface); border-left:3px solid var(--gold); border-radius:2px; font-size:13px; color:var(--ink2); line-height:1.85; display:none; }
+.pp-content.act{ display:block; animation:fadeIn .4s ease; }
+.pp-content h5{ font-size:13px; color:var(--warn); margin-bottom:8px; font-weight:700; }
+.pp-content code{ background:rgba(0,0,0,.04); }
+
+/* ── Footer ── */
+footer{ background:linear-gradient(180deg,#1a2236,#0f1420); color:rgba(255,255,255,.45); text-align:center; padding:32px; font-size:11.5px; letter-spacing:.08em; line-height:1.9; border-top:1px solid var(--gold); }
+footer a{ color:rgba(201,165,87,.7); text-decoration:none; }
+footer a:hover{ color:var(--gold2); }
+
+/* RESPONSIVE */
+@media (max-width:900px){
+  .sidebar{ display:none; }
+  .main{ padding:32px 20px 80px; }
+  .threat-grid,.cmp-pair{ grid-template-columns:1fr; }
+  .cover{ padding:52px 28px; }
+  .cover h1{ font-size:32px; }
+  .pp-stages{ flex-wrap:wrap; }
+}
+
+/* ====== 第9章以降 拡張コンポーネント ====== */
+.analogy{ display:flex; gap:14px; padding:18px 20px; background:linear-gradient(135deg, #faf6ee 0%, #f6efe0 100%); border:1px solid #d6c7a3; border-left:4px solid var(--gold); border-radius:2px; margin:18px 0 22px; }
+.analogy-icon{ flex:0 0 36px; display:flex; align-items:flex-start; justify-content:center; padding-top:2px; }
+.analogy-body{ font-size:15px; line-height:1.85; color:var(--ink); }
+.analogy-body strong:first-child{ display:inline-block; color:var(--gold-dark,#8a6d27); margin-bottom:4px; }
+
+.pipe-stages{ display:grid; grid-template-columns:repeat(6, 1fr); gap:8px; margin:14px 0 22px; }
+.pst{ background:#fbf8f0; border:1px solid #e0d6bf; border-top:3px solid var(--gold); border-radius:2px; padding:12px 10px; text-align:center; }
+.pst-i{ display:flex; justify-content:center; margin-bottom:6px; color:var(--ink); }
+.pst-n{ font-weight:600; font-size:13px; color:var(--ink); margin-bottom:4px; }
+.pst-c{ font-size:11.5px; color:var(--ink2,#5a5340); line-height:1.55; }
+
+.shift-track{ display:flex; align-items:stretch; gap:0; margin:14px 0 4px; padding:12px 14px; background:#1a2235; border-radius:2px; position:relative; flex-wrap:wrap; }
+.shift-arrow{ display:flex; align-items:center; color:var(--gold); padding:0 8px; }
+.shift-stage{ flex:1 1 130px; padding:10px 8px; background:#222d44; border:1px solid #2f3b56; color:#cdd2dd; border-radius:2px; font-size:12px; line-height:1.55; margin:2px; position:relative; }
+.shift-stage::after{ content:attr(data-cost); display:block; margin-top:6px; font-size:10.5px; color:#8a93a8; font-family:'JetBrains Mono',monospace; }
+.shift-stage.on{ border-color:var(--gold); background:#2c3654; color:#fff; }
+.shift-stage.on::after{ color:var(--gold); }
+
+.point-list{ display:flex; flex-direction:column; gap:8px; margin:12px 0 18px; }
+.point{ display:flex; gap:10px; align-items:flex-start; padding:10px 12px; background:#fafaf6; border-left:3px solid var(--accent); border-radius:0 2px 2px 0; }
+.pt-mark{ flex:0 0 22px; display:flex; align-items:flex-start; justify-content:center; padding-top:2px; }
+.pt-body{ font-size:13.5px; line-height:1.7; color:var(--ink); }
+
+.warn-box{ display:flex; gap:12px; padding:14px 16px; background:#fff4ec; border:1px solid #f0c8a8; border-left:4px solid var(--danger); border-radius:2px; margin:14px 0 20px; }
+.warn-i{ flex:0 0 28px; }
+.warn-box code{ background:#fff; padding:1px 5px; border-radius:2px; font-size:12.5px; }
+
+.iac-flow{ display:flex; flex-wrap:wrap; align-items:stretch; gap:0; margin:14px 0 20px; padding:14px; background:#f7f3e8; border:1px solid #d6c7a3; border-radius:2px; }
+.iacf{ flex:1 1 130px; padding:10px 12px; background:#fff; border:1px solid #d6c7a3; border-top:3px solid var(--accent); border-radius:2px; font-size:12px; line-height:1.55; color:var(--ink); margin:3px; }
+.iacf-h{ font-weight:600; font-size:12.5px; color:var(--gold-dark,#8a6d27); margin-bottom:5px; }
+.iacf-arr{ display:flex; align-items:center; color:var(--gold); padding:0 2px; }
+
+.layer-stack{ display:flex; flex-direction:column; gap:2px; margin:14px 0 20px; }
+.ls-row{ display:grid; grid-template-columns:140px 1fr 40px; gap:0; align-items:center; background:#fbf8f0; border:1px solid #e0d6bf; border-left:3px solid var(--gold); border-radius:2px; min-height:38px; }
+.ls-l{ padding:8px 12px; background:#f0e9d7; font-weight:600; font-size:12.5px; color:var(--ink); }
+.ls-c{ padding:8px 14px; font-size:13px; color:var(--ink); font-family:'JetBrains Mono',monospace; }
+.ls-r{ display:flex; justify-content:center; align-items:center; padding:8px; color:var(--accent); }
+
+.summary-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-top:14px; }
+.sm-card{ background:linear-gradient(135deg,#1a2235 0%, #232c44 100%); color:#e8eaf0; padding:14px 16px; border-radius:2px; border:1px solid #2f3b56; border-top:3px solid var(--gold); font-size:13px; line-height:1.7; }
+.sm-h{ display:flex; align-items:center; gap:8px; font-weight:600; color:var(--gold); margin-bottom:6px; font-size:13.5px; }
+
+/* qcard 追補 - 既存 qcard と併存 */
+.qcard{ background:#fbf8f0; border:1px solid #d6c7a3; border-left:3px solid var(--gold); border-radius:2px; padding:14px 18px; margin:14px 0 18px; }
+.qcard-h{ font-weight:600; color:var(--gold-dark,#8a6d27); font-size:14px; margin-bottom:8px; padding-bottom:6px; border-bottom:1px dashed #d6c7a3; }
+.qcard-q{ font-size:14px; line-height:1.85; color:var(--ink); margin-bottom:10px; }
+.qcard-q code{ background:#fff; padding:1px 5px; border-radius:2px; font-size:12.5px; }
+.qcard-btn{ display:inline-block; padding:5px 12px; margin:3px 6px 3px 0; background:var(--ink); color:#fff; border:none; border-radius:2px; font-size:12px; cursor:pointer; font-family:inherit; }
+.qcard-btn:hover{ background:var(--gold); }
+.qcard-rev{ display:none; margin-top:8px; padding:10px 14px; background:#fff; border:1px solid #e0d6bf; border-radius:2px; font-size:13px; line-height:1.8; color:var(--ink); }
+.qcard-rev.show{ display:block; }
+.qcard-rev-ans{ background:#f0f6ee; border-color:#a8c89c; border-left:3px solid var(--success); }
+
+.caption-note{ font-size:12.5px; color:var(--ink2,#5a5340); padding:8px 12px; background:#f5f1e4; border-left:3px solid var(--accent); border-radius:0 2px 2px 0; margin:8px 0 14px; line-height:1.7; }
+
+.exam-ref{ display:flex; align-items:center; gap:10px; padding:8px 14px; background:var(--ink); color:var(--gold); font-weight:600; font-size:13px; border-radius:2px; margin:14px 0 14px; }
+
+/* ====== 第10章以降 暗号・PKI 拡張 ====== */
+.crypto-pair{ display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:14px 0 20px; }
+.cp-side{ background:#fbf8f0; border:1px solid #d6c7a3; border-top:3px solid var(--gold); border-radius:2px; padding:14px 16px; }
+.cp-side h4{ display:flex; align-items:center; gap:8px; margin:0 0 8px; font-size:14px; color:var(--gold-dark,#8a6d27); }
+.cp-pri{ border-top-color:var(--danger); }
+.cp-pri h4{ color:var(--danger); }
+.cp-pub{ border-top-color:var(--accent); }
+.cp-pub h4{ color:var(--accent); }
+.cp-side ul{ font-size:12.5px; line-height:1.85; padding-left:18px; margin:6px 0; }
+
+/* ====== 第11章以降 クラウド / ZeroTrust ====== */
+.zt-pillars{ display:grid; grid-template-columns:repeat(5,1fr); gap:8px; margin:14px 0 20px; }
+.ztp{ background:#fbf8f0; border:1px solid #e0d6bf; border-top:3px solid var(--accent); border-radius:2px; padding:12px 10px; text-align:center; min-height:120px; }
+.ztp-i{ display:flex; justify-content:center; margin-bottom:6px; }
+.ztp-n{ font-weight:600; font-size:12.5px; color:var(--ink); margin-bottom:4px; }
+.ztp-c{ font-size:11px; color:var(--ink2,#5a5340); line-height:1.55; }
+
+/* ====== 第13章 ログ分析 ====== */
+.logbox{ background:#0e1422; color:#cdd2dd; padding:14px 16px; border-radius:2px; font-family:'JetBrains Mono',monospace; font-size:12px; line-height:1.85; overflow-x:auto; margin:10px 0 16px; }
+.logbox .lg-time{ color:#8a93a8; }
+.logbox .lg-warn{ color:#e6b86a; }
+.logbox .lg-err{ color:#e07d6f; }
+.logbox .lg-ok{ color:#7fc18a; }
+.logbox .lg-attack{ color:#ff6b8b; font-weight:600; }
+.logbox .lg-hl{ background:#3a3a1f; padding:0 3px; }
+
+/* ====== 第14章 ドリル ====== */
+.drill-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin:14px 0 20px; }
+.drill-tag{ display:inline-block; padding:2px 8px; background:var(--gold); color:#fff; font-size:11px; border-radius:2px; margin-right:6px; }
+
+/* ====== 試験形式の変遷（ch01） ====== */
+.format-history{ display:flex; flex-direction:column; gap:0; margin:14px 0 18px; }
+.fh-row{ display:flex; gap:18px; padding:14px 18px; border:1px solid var(--line); border-radius:2px; align-items:flex-start; }
+.fh-old{ background:#f6f7fa; border-left:3px solid #3d4860; }
+.fh-new{ background:#fbf3f1; border-left:3px solid var(--danger); }
+.fh-period{ flex:0 0 180px; font-weight:700; font-size:13px; color:var(--ink); display:flex; align-items:center; gap:8px; padding-top:2px; }
+.fh-detail{ flex:1; font-size:12.5px; color:var(--ink3); line-height:1.85; }
+.fh-arrow{ display:flex; align-items:center; justify-content:center; gap:8px; padding:8px; font-size:11px; color:var(--gold); font-family:var(--mono); letter-spacing:.08em; font-weight:700; }
+
+/* ====== 旧過去問より 歴史例ボックス ====== */
+.legacy-box{ background:linear-gradient(180deg, #f6f7fa 0%, #fbfbf8 100%); border:1px solid #c9cdd6; border-left:4px solid #3d4860; border-radius:2px; padding:16px 20px; margin:18px 0; position:relative; }
+.legacy-box::before{ content:'LEGACY'; position:absolute; top:8px; right:12px; font-family:var(--mono); font-size:9.5px; font-weight:700; letter-spacing:.18em; color:#3d4860; opacity:.7; }
+.legacy-h{ font-size:13.5px; font-weight:700; color:#1f2a3d; margin-bottom:8px; padding-bottom:6px; border-bottom:1px dashed #c9cdd6; display:flex; align-items:center; gap:8px; }
+.legacy-h .legacy-tag{ background:#3d4860; color:#fff; font-family:var(--mono); font-size:10px; font-weight:700; padding:2px 8px; border-radius:2px; letter-spacing:.06em; }
+.legacy-body{ font-size:12.5px; color:var(--ink3); line-height:1.85; }
+.legacy-body strong{ color:var(--ink); }
+.legacy-body em{ color:var(--gold); font-weight:600; }
+
+/* responsive overrides for new components */
+@media(max-width:880px){
+  .pipe-stages{ grid-template-columns:repeat(2,1fr); }
+  .crypto-pair{ grid-template-columns:1fr; }
+  .zt-pillars{ grid-template-columns:repeat(2,1fr); }
+  .summary-grid{ grid-template-columns:1fr; }
+  .drill-grid{ grid-template-columns:1fr; }
+  .ls-row{ grid-template-columns:90px 1fr 36px; }
+  .fh-row{ flex-direction:column; gap:8px; }
+  .fh-period{ flex:0 0 auto; }
+}
+
+/* responsibility model cells */
+.cmp-cust{ background:#fff4ec !important; color:#a85b2e; font-weight:600; text-align:center; }
+.cmp-prov{ background:#eef4fb !important; color:#2e5b8a; font-weight:600; text-align:center; }
+.cmp-shared{ background:#f5efe2 !important; color:#8a6d27; font-weight:600; text-align:center; }
+
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <svg class="cover-geo" viewBox="0 0 600 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="300" cy="300" r="260" stroke="#c9a557" stroke-width="1"/>
+    <circle cx="300" cy="300" r="200" stroke="#c9a557" stroke-width="1"/>
+    <circle cx="300" cy="300" r="140" stroke="#c9a557" stroke-width="1"/>
+    <circle cx="300" cy="300" r="80" stroke="#c9a557" stroke-width="1"/>
+    <line x1="300" y1="40" x2="300" y2="560" stroke="#c9a557" stroke-width="0.4"/>
+    <line x1="40" y1="300" x2="560" y2="300" stroke="#c9a557" stroke-width="0.4"/>
+    <line x1="116" y1="116" x2="484" y2="484" stroke="#c9a557" stroke-width="0.4"/>
+    <line x1="484" y1="116" x2="116" y2="484" stroke="#c9a557" stroke-width="0.4"/>
+  </svg>
+  <div class="cover-inner">
+    <p class="cover-kicker">CHAPTER 09 · CI/CD &amp; DEVSECOPS</p>
+    <h1>開発と運用のあいだに<br><em>セキュリティを織り込む</em></h1>
+    <p class="cover-desc">R5秋問3で問われたCI/CDセキュアパイプラインを軸に、シークレット管理・IaC統制・SAST/DAST・コンテナ脆弱性まで俯瞰。</p>
+    <div class="cover-tags">
+<span class="ctag">CI/CD</span>
+<span class="ctag">シフトレフト</span>
+<span class="ctag">SAST/DAST</span>
+<span class="ctag">シークレット管理</span>
+<span class="ctag">IaC</span>
+<span class="ctag">コンテナ</span>
+    </div>
+<div class="cover-meta"><div class="cover-meta-i">過去5回出題数<strong>1問</strong></div><div class="cover-meta-i">該当回<strong>R5秋問3</strong></div><div class="cover-meta-i">習得時間<strong>3時間</strong></div></div>
+  </div>
+</div>
+
+<div class="layout">
+
+<aside class="sidebar">
+  <div class="sidebar-title">本章の構成</div>
+  <nav>
+<a href="#s1"><span class="nav-num">CHAPTER 09 · §1</span>CI/CDパイプライン全体像</a>
+<a href="#s2"><span class="nav-num">CHAPTER 09 · §2</span>DevSecOpsとシフトレフト</a>
+<a href="#s3"><span class="nav-num">CHAPTER 09 · §3</span>シークレット管理</a>
+<a href="#s4"><span class="nav-num">CHAPTER 09 · §4</span>IaCのセキュリティ統制</a>
+<a href="#s5"><span class="nav-num">CHAPTER 09 · §5</span>コンテナ・サプライチェーン</a>
+<a href="#s6"><span class="nav-num">CHAPTER 09 · §6</span>過去問記述演習（R5秋問3）</a>
+  </nav>
+  <div class="sidebar-meta">
+    <div class="sidebar-title" style="border:none;padding:0 0 10px;">他の章</div>
+    <a class="sb-other" href="SC_AFTERNOON_INDEX.html"><strong>目次</strong>全章一覧</a>
+<a class="sb-other" href="SC_AFTERNOON_01_GUIDE.html"><strong>Ch.01</strong>午後試験ガイド</a>
+<a class="sb-other" href="SC_AFTERNOON_02_READING.html"><strong>Ch.02</strong>シナリオ読解術</a>
+<a class="sb-other" href="SC_AFTERNOON_03_WEBAPI.html"><strong>Ch.03</strong>Web・APIセキュリティ</a>
+<a class="sb-other" href="SC_AFTERNOON_04_DNS.html"><strong>Ch.04</strong>DNS・ドメイン</a>
+<a class="sb-other" href="SC_AFTERNOON_05_INCIDENT.html"><strong>Ch.05</strong>インシデントレスポンス</a>
+<a class="sb-other" href="SC_AFTERNOON_06_VULN.html"><strong>Ch.06</strong>脆弱性管理</a>
+<a class="sb-other" href="SC_AFTERNOON_07_SUPPLY.html"><strong>Ch.07</strong>サプライチェーン</a>
+<a class="sb-other" href="SC_AFTERNOON_08_PAYMENT.html"><strong>Ch.08</strong>決済・PCI DSS</a>
+<a class="sb-other" href="SC_AFTERNOON_10_CRYPTO.html"><strong>Ch.10</strong>暗号・PKI・認証</a>
+<a class="sb-other" href="SC_AFTERNOON_11_CLOUD.html"><strong>Ch.11</strong>クラウド・ゼロトラスト</a>
+<a class="sb-other" href="SC_AFTERNOON_12_MOBILE.html"><strong>Ch.12</strong>モバイル・スマホアプリ</a>
+<a class="sb-other" href="SC_AFTERNOON_13_NETWORK.html"><strong>Ch.13</strong>ネットワーク・ログ分析</a>
+<a class="sb-other" href="SC_AFTERNOON_14_DRILL.html"><strong>Ch.14</strong>過去問完全演習</a>
+  </div>
+</aside>
+
+<main class="main">
+
+<section class="section" id="s1">
+  <div class="section-header"><span class="s-num">1</span><div><h2>CI/CDパイプライン全体像</h2></div></div>
+
+  <h3>位置づけ — どこに属する話か</h3>
+  <p><strong>CI/CD</strong>は「ソースコードを書いてから本番に乗るまで」のすべての工程を自動化するしくみ。Web/APIセキュリティ（第3章）が「動いているアプリの中身」、本章は「アプリが本番に到達するまでの<em>レール</em>」。レール側に毒を仕込まれると、いくらアプリが堅牢でも全システムが汚染される（=サプライチェーン攻撃の主要侵入口）。</p>
+
+  <div class="analogy">
+    <div class="analogy-icon"><svg style="color:var(--gold);" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L3 6.5v11L12 22l9-4.5v-11z"/><path d="M3 6.5l9 4.5 9-4.5M12 11v11"/></svg></div>
+    <div class="analogy-body">
+      <strong>たとえ話：寿司屋の調理場</strong><br>
+      コードを書く＝魚を仕入れる、ビルド＝さばく、テスト＝味見、デプロイ＝客に出す。「客に出す前に毒見をする」のが昔ながらの方法（リリース前検査）。<strong>シフトレフト</strong>は「仕入れの段階で毒見する」——さばいた後より仕入れ時点のほうが入れ替えが効くし、被害も小さい。
+    </div>
+  </div>
+
+  <h3>標準的な6段階パイプライン</h3>
+  <div class="pipe-stages">
+    <div class="pst"><div class="pst-i"><svg style="color:var(--accent2);" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="8,5 2,12 8,19"/><polyline points="16,5 22,12 16,19"/></svg></div><div class="pst-n">①コード</div><div class="pst-c">Git push<br>署名コミット</div></div>
+    <div class="pst"><div class="pst-i"><svg style="color:var(--gold);" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.5-4.5"/></svg></div><div class="pst-n">②静的解析</div><div class="pst-c">SAST<br>SCA<br>シークレット検査</div></div>
+    <div class="pst"><div class="pst-i"><svg style="color:var(--accent);" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v3M12 20v3M4 12H1M23 12h-3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg></div><div class="pst-n">③ビルド</div><div class="pst-c">コンパイル<br>SBOM生成<br>署名</div></div>
+    <div class="pst"><div class="pst-i"><svg style="color:var(--success);" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></div><div class="pst-n">④動的検査</div><div class="pst-c">DAST<br>IAST<br>ファジング</div></div>
+    <div class="pst"><div class="pst-i"><svg style="color:var(--accent2);" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L3 6.5v11L12 22l9-4.5v-11z"/><path d="M3 6.5l9 4.5 9-4.5M12 11v11"/></svg></div><div class="pst-n">⑤Artifact</div><div class="pst-c">レジストリ<br>イメージ署名<br>イミュータブル</div></div>
+    <div class="pst"><div class="pst-i"><svg style="color:var(--gold);" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a4 4 0 0 1-1-7.9 5 5 0 0 1 9.5-1A4 4 0 0 1 18 18z"/></svg></div><div class="pst-n">⑥デプロイ</div><div class="pst-c">IaC適用<br>カナリア<br>RBAC</div></div>
+  </div>
+
+  <h3>主要ツール対応表</h3>
+  <div class="cmp-table"><table><thead><tr><th>機能</th><th>OSS / 主要製品</th><th>役割</th></tr></thead><tbody>
+    <tr><td>CIサーバ</td><td>Jenkins, GitHub Actions, GitLab CI, CircleCI</td><td>ジョブの起動・並列実行・成果物保管</td></tr>
+    <tr><td>SAST</td><td>SonarQube, Semgrep, CodeQL</td><td>ソースコード静的解析。脆弱パターン検出</td></tr>
+    <tr><td>SCA</td><td>OWASP Dependency-Check, Snyk, Trivy</td><td>依存ライブラリの既知脆弱性検知（Log4Shellなど）</td></tr>
+    <tr><td>シークレット検査</td><td>git-secrets, TruffleHog, Gitleaks</td><td>コミット内のAPIキー・パスワード混入検知</td></tr>
+    <tr><td>DAST</td><td>OWASP ZAP, Burp Suite</td><td>稼働Webアプリへの攻撃シミュレーション</td></tr>
+    <tr><td>コンテナ検査</td><td>Trivy, Clair, Anchore</td><td>イメージのCVE検出・ポリシー検査</td></tr>
+    <tr><td>シークレット管理</td><td>HashiCorp Vault, AWS Secrets Manager, GCP Secret Manager</td><td>動的シークレット発行・ローテーション</td></tr>
+    <tr><td>IaC</td><td>Terraform, AWS CloudFormation, Ansible</td><td>インフラの宣言的構築（ドリフト検知も）</td></tr>
+    <tr><td>IaCセキュリティ</td><td>tfsec, Checkov, KICS</td><td>IaCコード上での誤設定検出（公開S3など）</td></tr>
+  </tbody></table></div>
+</section>
+
+
+<section class="section" id="s2">
+  <div class="section-header"><span class="s-num">2</span><div><h2>DevSecOpsとシフトレフト</h2></div></div>
+
+  <h3>3つの開発スタイルの比較</h3>
+  <div class="cmp-table"><table><thead><tr><th>項目</th><th>ウォーターフォール</th><th>DevOps</th><th>DevSecOps</th></tr></thead><tbody>
+    <tr><td>セキュリティ実施タイミング</td><td>受入テスト直前（最後）</td><td>本番投入後の運用監視中心</td><td>全工程に常時組込</td></tr>
+    <tr><td>修正コスト</td><td>高（再設計を伴う）</td><td>中</td><td>低（早期検知）</td></tr>
+    <tr><td>開発者の役割</td><td>機能開発のみ</td><td>機能 + 運用</td><td>機能 + 運用 + セキュリティ</td></tr>
+    <tr><td>リリース頻度</td><td>年数回</td><td>週/日</td><td>週/日（ゲート付）</td></tr>
+    <tr><td>セキュリティ部門</td><td>査閲・承認の門番</td><td>並走者</td><td>イネーブラ（自動化を提供）</td></tr>
+  </tbody></table></div>
+
+  <h3>シフトレフト — 検出を「早く・上流に」</h3>
+  <div class="shift-track">
+    <div class="shift-arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></div>
+    <div class="shift-stage" data-cost="高 ¥¥¥¥¥"><strong>本番障害</strong><br>顧客影響・信用失墜</div>
+    <div class="shift-stage" data-cost="高 ¥¥¥¥"><strong>受入テスト</strong><br>再設計が必要</div>
+    <div class="shift-stage" data-cost="中 ¥¥¥"><strong>結合テスト</strong><br>修正にコスト</div>
+    <div class="shift-stage" data-cost="低 ¥¥"><strong>単体テスト</strong><br>SASTで検出</div>
+    <div class="shift-stage on" data-cost="極低 ¥"><strong>コミット時</strong><br>IDE/プリコミット</div>
+  </div>
+  <p class="caption-note">→ 検出位置を1段「左（上流）」に動かすごとに、修正コストは桁単位で下がる（NIST IR 4909より一般化）。</p>
+
+  <h3>シフトレフトを実装する5つのフック</h3>
+  <div class="card-grid">
+    <div class="icard"><div class="icard-icon"><svg style="color:var(--accent2);" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="8,5 2,12 8,19"/><polyline points="16,5 22,12 16,19"/></svg></div><div class="icard-label">① IDEプラグイン</div><div class="icard-val">タイプ中にSASTヒント。修正は秒</div></div>
+    <div class="icard"><div class="icard-icon"><svg style="color:var(--gold);" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4,12 10,18 20,6"/></svg></div><div class="icard-label">② プリコミットフック</div><div class="icard-val">git commit前にlint+secret検査</div></div>
+    <div class="icard"><div class="icard-icon"><svg style="color:var(--accent);" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><circle cx="17" cy="9" r="2.5"/><path d="M2 21v-2a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v2M16 21v-2c0-1-.5-1.8-1.3-2.4M22 21v-2c0-1.5-1.1-2.6-2.5-3"/></svg></div><div class="icard-label">③ プルリクチェック</div><div class="icard-val">必須レビュー2名+自動SAST</div></div>
+    <div class="icard"><div class="icard-icon"><svg style="color:var(--success);" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="6" r="2"/><circle cx="5" cy="18" r="2"/><circle cx="19" cy="12" r="2"/><path d="M7 6h7l3 4M7 18h7l3-4"/></svg></div><div class="icard-label">④ CIジョブゲート</div><div class="icard-val">SCA/DAST結果でビルド失敗</div></div>
+    <div class="icard"><div class="icard-icon"><svg style="color:var(--gold);" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L4 6v6c0 5 3.5 9 8 10 4.5-1 8-5 8-10V6l-8-4z"/><polyline points="9,12 11,14 15,10"/></svg></div><div class="icard-label">⑤ デプロイポリシー</div><div class="icard-val">未署名イメージは本番拒否</div></div>
+  </div>
+</section>
+
+
+<section class="section" id="s3">
+  <div class="section-header"><span class="s-num">3</span><div><h2>シークレット管理</h2></div></div>
+
+  <h3>なぜシークレットは漏えいするか</h3>
+  <p>APIキー・DB接続文字列・証明書秘密鍵などを<strong>ソースコード/設定ファイル/CI環境変数</strong>に直書きすると、Git公開リポジトリへの誤プッシュ・退職者の手元PC・ビルドログ流出のいずれかで遅かれ早かれ流出する。GitHub上だけで日常的に検出されており、攻撃者は公開直後のコミットを継続スキャンしている。</p>
+
+  <h3>4段階の成熟度モデル</h3>
+  <div class="cmp-table"><table><thead><tr><th>段階</th><th>方式</th><th>問題</th></tr></thead><tbody>
+    <tr><td>L0</td><td>ソースに平文で埋め込み</td><td>Git公開で即漏えい・ローテ不可</td></tr>
+    <tr><td>L1</td><td>環境変数 + .env（gitignore）</td><td>誤コミット・サーバ侵入で全漏えい</td></tr>
+    <tr><td>L2</td><td>暗号化済み設定 + 復号鍵を別管理</td><td>復号鍵そのものの管理が課題に</td></tr>
+    <tr><td>L3</td><td>Secret Manager（HashiCorp Vault等）+ 短期トークン</td><td>運用整備が必須だが攻撃面が最小</td></tr>
+  </tbody></table></div>
+
+  <h3>シークレット取得のシーケンス（Vault Dynamic Secrets）</h3>
+  <div class="uml-seq">
+    <div class="uml-actors" style="grid-template-columns:1fr 1fr 1fr 1fr;">
+      <div class="uml-actor"><div class="uml-actor-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="6" r="2"/><circle cx="5" cy="18" r="2"/><circle cx="19" cy="12" r="2"/><path d="M7 6h7l3 4M7 18h7l3-4"/></svg></div><div class="uml-actor-name">CIジョブ</div></div>
+      <div class="uml-actor"><div class="uml-actor-icon"><svg style="color:var(--gold);" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15" r="1.2" fill="currentColor"/><path d="M12 16v2"/></svg></div><div class="uml-actor-name">Vault</div></div>
+      <div class="uml-actor"><div class="uml-actor-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2"/><path d="M19 4l1 2 2 .3-1.5 1.5.4 2-1.9-1-1.9 1 .4-2L16 6.3l2-.3 1-2z"/></svg></div><div class="uml-actor-name">IDプロバイダ</div></div>
+      <div class="uml-actor"><div class="uml-actor-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg></div><div class="uml-actor-name">DB</div></div>
+    </div>
+    <div class="uml-note-box">
+      ①CIジョブ→IDプロバイダ：OIDC/サービスアカウントトークン要求<br>
+      ②Vault→IDプロバイダ：トークン検証<br>
+      ③CIジョブ→Vault：DB接続情報を要求（短期）<br>
+      ④Vault→DB：その場で<em>1時間有効</em>のユーザを動的作成<br>
+      ⑤Vault→CIジョブ：1時間TTLの一時資格情報を返却<br>
+      ⑥CIジョブ→DB：マイグレーション実行<br>
+      ⑦TTL満了→Vault→DB：ユーザ自動削除
+    </div>
+  </div>
+  <p class="caption-note">→ <strong>万一トークンが漏えいしても1時間で自然失効</strong>するため、被害が最小化される（Static Secretとの最大の違い）。</p>
+
+  <h3>記述問題で問われやすい論点</h3>
+  <div class="point-list">
+    <div class="point"><div class="pt-mark"><svg style="color:var(--gold);" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4l11 4-11 4"/></svg></div><div class="pt-body"><strong>「コードに直書きはなぜ問題か」</strong> → ローテーション不可・公開リポジトリ誤投稿で<em>履歴に残り続ける</em>・退職者環境からも参照可能 の3点を書く</div></div>
+    <div class="point"><div class="pt-mark"><svg style="color:var(--gold);" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4l11 4-11 4"/></svg></div><div class="pt-body"><strong>「git rm で削除すれば良いか」</strong> → 履歴に残るためNG。漏えいシークレットは<em>失効・再発行</em>が必須</div></div>
+    <div class="point"><div class="pt-mark"><svg style="color:var(--gold);" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4l11 4-11 4"/></svg></div><div class="pt-body"><strong>「動的シークレットの利点」</strong> → 短いTTLで自然失効・利用主体ごとに別資格・監査ログで誰がいつ使ったか追跡可能</div></div>
+  </div>
+
+  <div class="legacy-box">
+    <div class="legacy-h"><span class="legacy-tag">R3秋 PM1問2</span><svg style="color:#3d4860;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5a2 2 0 0 1 2-2h14v18H6a2 2 0 0 1-2-2z"/><path d="M4 19a2 2 0 0 1 2-2h14"/></svg> 旧過去問より — システム開発工程での情報漏えい対策</div>
+    <div class="legacy-body">
+      旧形式の時代、<strong>開発工程の情報漏えい</strong>がCI/CD領域の代表的論点として問われた。論点は：①<strong>本番データの開発環境への流入防止</strong>（マスキング・匿名加工）、②<strong>ソースコード中のハードコードされた認証情報</strong>（git-secrets等のpre-commitフック導入）、③<strong>テスト環境のアクセス管理</strong>（本番と同等の権限管理）。<em>新形式R5秋問3「CI/CD」</em>では同テーマが大問丸ごと出題されており、旧形式の論点は完全に発展継承されている。「シフトレフト」「シークレット管理」を学ぶ前提として旧過去問の発想は有効。
+    </div>
+  </div>
+</section>
+
+
+<section class="section" id="s4">
+  <div class="section-header"><span class="s-num">4</span><div><h2>IaCのセキュリティ統制</h2></div></div>
+
+  <h3>IaCの威力と表裏一体のリスク</h3>
+  <p><strong>IaC（Infrastructure as Code）</strong>は<em>「インフラ構成を宣言的にコードで記述」</em>する手法。Terraformで「S3バケットを作る」と宣言すれば、何度実行しても同じ構成が再現される（冪等性）。同時に<strong>たった1行のミスで全環境が公開設定になる</strong>「核戦争ボタン」でもある。</p>
+
+  <div class="analogy">
+    <div class="analogy-icon"><svg style="color:var(--gold);" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5a2 2 0 0 1 2-2h14v18H6a2 2 0 0 1-2-2z"/><path d="M4 19a2 2 0 0 1 2-2h14"/></svg></div>
+    <div class="analogy-body">
+      <strong>たとえ話：レシピと料理</strong><br>
+      手作業での構築＝シェフが毎回手作り（味のばらつき）。IaC＝レシピ通り全工場で同じ味（再現性）。ただし<em>レシピに塩を10倍と書けば、全国の工場で塩辛い料理が一斉生産される</em>。だからこそレシピ自体の校閲（IaCコードレビュー）が極めて重要。
+    </div>
+  </div>
+
+  <h3>典型的なIaC誤設定TOP5</h3>
+  <div class="cmp-table"><table><thead><tr><th>#</th><th>誤設定</th><th>影響</th><th>検知ツール</th></tr></thead><tbody>
+    <tr><td>1</td><td>S3バケット public-read</td><td>機密ファイル全世界公開</td><td>tfsec, Checkov</td></tr>
+    <tr><td>2</td><td>SG inbound 0.0.0.0/0:22 (SSH全開放)</td><td>総当たり攻撃の標的化</td><td>tfsec</td></tr>
+    <tr><td>3</td><td>RDS パブリックアクセス有効</td><td>DBへの直接接続が可能に</td><td>Checkov</td></tr>
+    <tr><td>4</td><td>暗号化（At Rest）無効</td><td>スナップショット流出時に平文露出</td><td>tfsec, KICS</td></tr>
+    <tr><td>5</td><td>IAMポリシーで Action: "*" Resource: "*"</td><td>権限過剰による横展開</td><td>Checkov, AWS IAM Access Analyzer</td></tr>
+  </tbody></table></div>
+
+  <h3>IaCセキュアパイプライン</h3>
+  <div class="iac-flow">
+    <div class="iacf"><div class="iacf-h">① コード変更</div><div>tf/yaml ファイル修正</div></div>
+    <div class="iacf-arr"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></div>
+    <div class="iacf"><div class="iacf-h">② 静的検査</div><div>tfsec/Checkov<br>誤設定検知</div></div>
+    <div class="iacf-arr"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></div>
+    <div class="iacf"><div class="iacf-h">③ Plan</div><div>terraform plan<br>差分の人間レビュー</div></div>
+    <div class="iacf-arr"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></div>
+    <div class="iacf"><div class="iacf-h">④ 承認</div><div>2名以上のレビュー必須</div></div>
+    <div class="iacf-arr"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></div>
+    <div class="iacf"><div class="iacf-h">⑤ Apply</div><div>本番反映<br>state暗号化</div></div>
+    <div class="iacf-arr"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></div>
+    <div class="iacf"><div class="iacf-h">⑥ ドリフト検知</div><div>定期 plan で<br>手動変更を検出</div></div>
+  </div>
+
+  <h3>State ファイルの取扱い注意</h3>
+  <div class="warn-box">
+    <div class="warn-i"><svg style="color:var(--danger);" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 20h20L12 2z"/><path d="M12 9v5M12 17v.5" stroke-width="2"/></svg></div>
+    <div>Terraformの<code>terraform.tfstate</code>には<strong>取得した秘密鍵・DBパスワードが平文で残る</strong>場合がある。<br>
+    ・絶対にGit管理に入れない<br>
+    ・S3 + DynamoDB で remote state（暗号化・ロック・履歴）<br>
+    ・state アクセス権限を絞る（管理者のみ）</div>
+  </div>
+</section>
+
+
+<section class="section" id="s5">
+  <div class="section-header"><span class="s-num">5</span><div><h2>コンテナ・サプライチェーン</h2></div></div>
+
+  <h3>コンテナイメージの階層構造</h3>
+  <div class="layer-stack">
+    <div class="ls-row"><div class="ls-l">アプリ層</div><div class="ls-c">自社コード</div><div class="ls-r"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="8,5 2,12 8,19"/><polyline points="16,5 22,12 16,19"/></svg></div></div>
+    <div class="ls-row"><div class="ls-l">依存層</div><div class="ls-c">npm/pip/maven パッケージ</div><div class="ls-r"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L3 6.5v11L12 22l9-4.5v-11z"/><path d="M3 6.5l9 4.5 9-4.5M12 11v11"/></svg></div></div>
+    <div class="ls-row"><div class="ls-l">ランタイム層</div><div class="ls-c">Node.js / Python / OpenJDK</div><div class="ls-r"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v3M12 20v3M4 12H1M23 12h-3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg></div></div>
+    <div class="ls-row"><div class="ls-l">OSパッケージ層</div><div class="ls-c">apt/yum 依存（OpenSSL等）</div><div class="ls-r"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1" fill="currentColor"/><circle cx="3.5" cy="12" r="1" fill="currentColor"/><circle cx="3.5" cy="18" r="1" fill="currentColor"/></svg></div></div>
+    <div class="ls-row"><div class="ls-l">ベースOS層</div><div class="ls-c">Alpine / Ubuntu / Distroless</div><div class="ls-r"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="6" rx="1"/><rect x="3" y="14" width="18" height="6" rx="1"/><circle cx="7" cy="7" r=".8" fill="currentColor"/><circle cx="7" cy="17" r=".8" fill="currentColor"/></svg></div></div>
+  </div>
+  <p class="caption-note">→ どの層でCVEが見つかっても全体が脆弱になる。<strong>ベースOS層を「Distroless」など最小化</strong>すれば攻撃面が劇的に減る。</p>
+
+  <h3>イメージ署名とSLSA</h3>
+  <div class="cmp-table"><table><thead><tr><th>用語</th><th>内容</th></tr></thead><tbody>
+    <tr><td><strong>Sigstore / cosign</strong></td><td>コンテナイメージへの署名・検証OSS。短期証明書で署名</td></tr>
+    <tr><td><strong>SBOM</strong></td><td>Software Bill of Materials。SPDX/CycloneDX形式で依存を一覧化</td></tr>
+    <tr><td><strong>SLSA</strong></td><td>Supply-chain Levels for Software Artifacts。L1〜L4のレベル基準</td></tr>
+    <tr><td><strong>in-toto</strong></td><td>各ビルドステップのattestation（出所証明）を集約するフレームワーク</td></tr>
+    <tr><td><strong>Provenance</strong></td><td>「いつ・誰が・どのコードから・どうビルドしたか」を改ざん不能に記録</td></tr>
+  </tbody></table></div>
+
+  <h3>コンテナ実行時セキュリティ</h3>
+  <div class="point-list">
+    <div class="point"><div class="pt-mark"><svg style="color:var(--success);" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4,12 10,18 20,6"/></svg></div><div class="pt-body"><strong>非rootユーザで実行</strong> — Dockerfileに<code>USER 1000</code></div></div>
+    <div class="point"><div class="pt-mark"><svg style="color:var(--success);" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4,12 10,18 20,6"/></svg></div><div class="pt-body"><strong>Read-onlyファイルシステム</strong> — マルウェア書き込み防止</div></div>
+    <div class="point"><div class="pt-mark"><svg style="color:var(--success);" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4,12 10,18 20,6"/></svg></div><div class="pt-body"><strong>Capability最小化</strong> — <code>--cap-drop=ALL</code> でデフォルト剥奪</div></div>
+    <div class="point"><div class="pt-mark"><svg style="color:var(--success);" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4,12 10,18 20,6"/></svg></div><div class="pt-body"><strong>NetworkPolicy</strong> — Kubernetes上でPod間通信を必要最小限に</div></div>
+    <div class="point"><div class="pt-mark"><svg style="color:var(--success);" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4,12 10,18 20,6"/></svg></div><div class="pt-body"><strong>Admission Controller（OPA/Gatekeeper, Kyverno）</strong> — 未署名イメージを本番拒否</div></div>
+  </div>
+</section>
+
+
+<section class="section" id="s6">
+  <div class="section-header"><span class="s-num">6</span><div><h2>過去問記述演習（R5秋問3より）</h2></div></div>
+
+  <p class="exam-ref"><span class="year-badge">R5秋</span> 問3「CI/CD環境のセキュリティ」</p>
+
+  <div class="qcard">
+    <div class="qcard-h">設問1：シークレット管理の問題点</div>
+    <div class="qcard-q">CIジョブから利用するDB管理者パスワードを、<code>.gitlab-ci.yml</code>内の環境変数（変更履歴付）に直接記述している。この管理方法のセキュリティ上の問題点を、25字以内で述べよ。</div>
+    <button class="qcard-btn" onclick="showReveal('q9-1h')">ヒントを見る</button>
+    <div id="q9-1h" class="qcard-rev"><strong>ヒント：</strong>「Git履歴」と「ローテーション」がキーワード。</div>
+    <button class="qcard-btn" onclick="showReveal('q9-1a')">解答例を表示</button>
+    <div id="q9-1a" class="qcard-rev qcard-rev-ans">
+      <strong>模範解答（22字）：</strong>履歴から削除できず漏えい時に失効困難。<br>
+      <strong>採点ポイント：</strong>「履歴に残る」「失効/ローテーションが困難」の両方に触れる。<br>
+      <strong>別解：</strong>「過去のコミット参照で平文取得が可能」もOK。
+    </div>
+  </div>
+
+  <div class="qcard">
+    <div class="qcard-h">設問2：Vault導入後のシーケンス</div>
+    <div class="qcard-q">HashiCorp Vault導入後、CIジョブが認証トークンを偽装される攻撃を防ぐため、CIサーバ側で実装すべき対策を1つ挙げよ（35字以内）。</div>
+    <button class="qcard-btn" onclick="showReveal('q9-2h')">ヒントを見る</button>
+    <div id="q9-2h" class="qcard-rev"><strong>ヒント：</strong>「OIDC」と「Audience(aud)」の検証。</div>
+    <button class="qcard-btn" onclick="showReveal('q9-2a')">解答例を表示</button>
+    <div id="q9-2a" class="qcard-rev qcard-rev-ans">
+      <strong>模範解答（32字）：</strong>OIDCトークンのaudクレームをVaultで厳格に検証する。<br>
+      <strong>採点ポイント：</strong>OIDCのClaim検証（aud, iss, sub）の仕組みに言及できているか。
+    </div>
+  </div>
+
+  <div class="qcard">
+    <div class="qcard-h">設問3：IaC誤設定の検知タイミング</div>
+    <div class="qcard-q">本番環境のS3バケットが意図せず public-read 設定でデプロイされ、機密ファイルが公開された。この事故をデプロイ<strong>前</strong>に検知するため、CIパイプラインに組み込むべき工程を述べよ（30字以内）。</div>
+    <button class="qcard-btn" onclick="showReveal('q9-3a')">解答例を表示</button>
+    <div id="q9-3a" class="qcard-rev qcard-rev-ans">
+      <strong>模範解答（28字）：</strong>tfsec等によるIaCコードの静的解析を必須化する。<br>
+      <strong>採点ポイント：</strong>「IaCコードを静的解析する」工程の追加に言及。具体的ツール名（tfsec/Checkov）はあれば加点。
+    </div>
+  </div>
+
+  <div class="qcard">
+    <div class="qcard-h">設問4：本番デプロイ時の追加統制</div>
+    <div class="qcard-q">未署名のコンテナイメージが本番環境にデプロイされることを防ぐため、Kubernetesクラスタ側に導入すべき機能を答えよ（25字以内）。</div>
+    <button class="qcard-btn" onclick="showReveal('q9-4a')">解答例を表示</button>
+    <div id="q9-4a" class="qcard-rev qcard-rev-ans">
+      <strong>模範解答（23字）：</strong>署名検証を行うAdmission Controller。<br>
+      <strong>採点ポイント：</strong>OPA/Gatekeeper, Kyverno, Sigstore policy-controller のいずれかでも可。
+    </div>
+  </div>
+
+  <h3 style="margin-top:32px;">本章の要点まとめ</h3>
+  <div class="summary-grid">
+    <div class="sm-card"><div class="sm-h"><svg style="color:var(--gold);" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="6" r="2"/><circle cx="5" cy="18" r="2"/><circle cx="19" cy="12" r="2"/><path d="M7 6h7l3 4M7 18h7l3-4"/></svg> シフトレフト</div>検出を上流に移すほど修正コストは桁単位で減る</div>
+    <div class="sm-card"><div class="sm-h"><svg style="color:var(--gold);" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15" r="1.2" fill="currentColor"/><path d="M12 16v2"/></svg> シークレット管理</div>L3（Vault + 動的シークレット + 短TTL）が最終形</div>
+    <div class="sm-card"><div class="sm-h"><svg style="color:var(--gold);" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5a2 2 0 0 1 2-2h14v18H6a2 2 0 0 1-2-2z"/><path d="M4 19a2 2 0 0 1 2-2h14"/></svg> IaC統制</div>レシピ自体のレビュー＋静的解析＋ドリフト検知</div>
+    <div class="sm-card"><div class="sm-h"><svg style="color:var(--gold);" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L3 6.5v11L12 22l9-4.5v-11z"/><path d="M3 6.5l9 4.5 9-4.5M12 11v11"/></svg> 供給網保証</div>署名・SBOM・SLSAでProvenanceを担保</div>
+  </div>
+</section>
+
+</main>
+</div>
+
+<footer>
+  <p>情報処理安全確保支援士 午後試験 完全対策 — 過去問分析シリーズ</p>
+  <p>シラバス Ver.2.1 準拠 / 過去問出典：IPA 公開資料 / 解説参照：sc-siken.com</p>
+  <p><a href="SC_AFTERNOON_INDEX.html">▲ 全章目次へ戻る</a></p>
+</footer>
+
+
+<script>
+/* sidebar active scroll-spy */
+const sections=document.querySelectorAll('section.section');
+const navLinks=document.querySelectorAll('.sidebar nav a');
+window.addEventListener('scroll',()=>{
+  let c='';
+  sections.forEach(s=>{ if(window.scrollY>=s.offsetTop-100) c=s.id; });
+  navLinks.forEach(l=>{ l.classList.toggle('active', l.getAttribute('href')==='#'+c); });
+}, {passive:true});
+
+/* Quiz */
+function answerQ(qid, sel, cor){
+  const q=document.getElementById(qid);
+  if(!q) return;
+  const opts=q.querySelectorAll('.quiz-opt');
+  const exp=document.getElementById(qid+'-exp');
+  const labels=['a','b','c','d','e'];
+  opts.forEach((o,i)=>{
+    o.disabled=true;
+    const lab=labels[i];
+    if(lab===cor) o.classList.add('correct');
+    else if(lab===sel) o.classList.add('wrong');
+    else o.classList.add('reveal');
+  });
+  if(exp) exp.classList.add('show');
+}
+
+/* Accordion */
+function toggleAcc(btn){
+  const c=btn.nextElementSibling;
+  const open=btn.classList.toggle('open');
+  c.classList.toggle('open',open);
+}
+
+/* Tabs */
+function switchTab(btn,pid){
+  const wrap=btn.closest('.tab-wrap');
+  wrap.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  wrap.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  const panel=document.getElementById(pid);
+  if(panel) panel.classList.add('active');
+}
+
+/* Q-card hint/answer reveal */
+function showReveal(id){
+  const el=document.getElementById(id);
+  if(el) el.classList.toggle('show');
+}
+
+/* Phase player */
+function setPhase(group, idx){
+  const stages=document.querySelectorAll('[data-phase-group="'+group+'"]');
+  const contents=document.querySelectorAll('[data-phase-content="'+group+'"]');
+  stages.forEach((s,i)=>{ s.classList.toggle('act', i===idx); });
+  contents.forEach((c,i)=>{ c.classList.toggle('act', i===idx); });
+}
+
+/* Log filter */
+function filterLog(group, kind){
+  const wrap=document.querySelector('[data-log-group="'+group+'"]');
+  if(!wrap) return;
+  wrap.querySelectorAll('.lf-btn').forEach(b=>b.classList.remove('act'));
+  const btn=wrap.querySelector('.lf-btn[data-kind="'+kind+'"]');
+  if(btn) btn.classList.add('act');
+  wrap.querySelectorAll('[data-log-line]').forEach(line=>{
+    if(kind==='all') line.style.display='block';
+    else line.style.display = line.dataset.logLine.includes(kind) ? 'block' : 'none';
+  });
+}
+</script>
+
+</body>
+</html>

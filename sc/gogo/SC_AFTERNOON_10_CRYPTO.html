@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第10章 暗号・PKI・認証 — 情報処理安全確保支援士 午後試験完全対策</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+
+:root{
+  --ink:#111624; --ink2:#1f2a3d; --ink3:#3d4860;
+  --accent:#1c3a5c; --accent2:#3d6998; --accent3:#7a9bc2;
+  --gold:#a47a2a; --gold2:#c9a557;
+  --paper:#fbfbf8; --surface:#f4f2ec; --panel:#ffffff;
+  --line:#d9d5c7; --line2:#e8e5db;
+  --success:#2a5f4a; --warn:#7a4a1a; --danger:#742828;
+  --info:#1a4a6a;
+  --mono:'JetBrains Mono',monospace; --serif:'Noto Serif JP',serif; --sans:'Noto Sans JP',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{ font-family:var(--sans); background:var(--paper); color:var(--ink); font-size:14.5px; line-height:1.85;
+  background-image:radial-gradient(circle at 1px 1px, rgba(31,42,61,.05) 1px, transparent 0); background-size:28px 28px; }
+
+/* COVER */
+.cover{ background:linear-gradient(180deg,#0f1420 0%,#1a2236 100%); color:#fff; padding:80px 64px 68px; position:relative; overflow:hidden; }
+.cover::before{ content:''; position:absolute; inset:0;
+  background: radial-gradient(ellipse at top right, rgba(201,165,87,.08), transparent 55%),
+              radial-gradient(ellipse at bottom left, rgba(122,155,194,.08), transparent 55%);
+  pointer-events:none; }
+.cover-geo{ position:absolute; top:-60px; right:-60px; width:540px; height:540px; opacity:.07; animation:rotSlow 60s linear infinite; }
+@keyframes rotSlow{ to{ transform:rotate(360deg); } }
+.cover-inner{ position:relative; max-width:1000px; }
+.cover-kicker{ font-size:10.5px; font-weight:700; letter-spacing:.28em; color:rgba(201,165,87,.8); text-transform:uppercase; margin-bottom:28px; display:flex; align-items:center; gap:14px; }
+.cover-kicker::before{ content:''; display:block; width:32px; height:1px; background:var(--gold2); }
+.cover h1{ font-family:var(--serif); font-size:48px; font-weight:600; line-height:1.18; margin-bottom:22px; letter-spacing:.02em; }
+.cover h1 em{ color:var(--gold2); font-style:normal; font-weight:500; }
+.cover-desc{ font-size:14px; color:rgba(255,255,255,.62); max-width:680px; margin-bottom:42px; line-height:1.9; }
+.cover-tags{ display:flex; gap:8px; flex-wrap:wrap; }
+.ctag{ font-size:10.5px; padding:5px 13px; border-radius:2px; border:1px solid rgba(201,165,87,.3); color:rgba(255,255,255,.7); letter-spacing:.08em; font-family:var(--mono); }
+.cover-meta{ display:flex; gap:24px; margin-top:34px; padding-top:24px; border-top:1px solid rgba(201,165,87,.18); flex-wrap:wrap; }
+.cover-meta-i{ font-size:11px; color:rgba(255,255,255,.55); }
+.cover-meta-i strong{ display:block; color:var(--gold2); font-size:13px; font-weight:600; margin-top:3px; letter-spacing:.04em; font-family:var(--mono); }
+
+/* LAYOUT */
+.layout{ display:flex; align-items:flex-start; background:var(--paper); }
+.sidebar{ position:sticky; top:0; width:240px; flex-shrink:0; height:100vh; overflow-y:auto;
+  background:linear-gradient(180deg,#1a2236,#0f1420); padding:36px 0; border-right:1px solid rgba(201,165,87,.12); }
+.sidebar-title{ font-size:9.5px; font-weight:700; letter-spacing:.24em; color:rgba(201,165,87,.7); text-transform:uppercase;
+  padding:0 26px 16px; border-bottom:1px solid rgba(255,255,255,.08); margin-bottom:10px; }
+.sidebar nav a{ display:block; padding:10px 26px; font-size:12.5px; color:rgba(255,255,255,.58);
+  text-decoration:none; border-left:2px solid transparent; transition:all .2s; line-height:1.5; }
+.sidebar nav a:hover{ color:#fff; background:rgba(255,255,255,.04); }
+.sidebar nav a.active{ color:var(--gold2); border-left-color:var(--gold2); background:rgba(201,165,87,.06); }
+.sidebar nav .nav-num{ font-family:var(--mono); font-size:9px; color:rgba(201,165,87,.45); display:block; margin-bottom:2px; letter-spacing:.1em; }
+.sidebar-meta{ padding:18px 26px; border-top:1px solid rgba(255,255,255,.08); margin-top:18px; }
+.sb-other{ display:block; font-size:10.5px; padding:6px 0; color:rgba(255,255,255,.45); text-decoration:none; }
+.sb-other:hover{ color:var(--gold2); }
+.sb-other strong{ color:rgba(255,255,255,.7); display:block; font-size:11px; }
+.main{ flex:1; min-width:0; padding:64px 64px 120px; max-width:1180px; }
+
+/* SECTION */
+.section{ margin-bottom:100px; scroll-margin-top:24px; }
+.section-header{ display:flex; align-items:flex-start; gap:18px; margin-bottom:36px; padding-bottom:22px; border-bottom:1px solid var(--line); position:relative; }
+.section-header::after{ content:''; position:absolute; left:0; bottom:-1px; width:80px; height:2px; background:var(--gold); }
+.s-num{ font-family:var(--mono); font-size:10px; font-weight:500; color:#fff; background:var(--ink); padding:4px 10px; border-radius:2px; margin-top:8px; white-space:nowrap; flex-shrink:0; letter-spacing:.1em; }
+.s-num.gold-bg{ background:var(--gold); }
+.s-num.red-bg{ background:var(--danger); }
+.section-sub{ font-size:13px; color:var(--ink3); margin-top:6px; }
+h2{ font-family:var(--serif); font-size:28px; font-weight:600; color:var(--ink); line-height:1.3; letter-spacing:.01em; }
+h3{ font-size:16px; font-weight:700; color:var(--ink2); margin:40px 0 16px; padding-left:14px; border-left:3px solid var(--gold); font-family:var(--sans); }
+h4{ font-size:14px; font-weight:700; color:var(--ink2); margin:24px 0 10px; padding-left:10px; border-left:2px solid var(--accent2); font-family:var(--sans); }
+p{ color:var(--ink3); margin-bottom:16px; text-wrap:pretty; }
+strong{ color:var(--ink2); font-weight:700; }
+code{ font-family:var(--mono); font-size:11.5px; background:rgba(28,58,92,.07); color:var(--accent); padding:1px 6px; border-radius:2px; }
+em{ font-style:normal; color:var(--gold); font-weight:600; }
+a{ color:var(--accent2); }
+
+/* CARDS */
+.card-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px; margin:24px 0; }
+.icard{ background:var(--panel); border:1px solid var(--line); border-radius:2px; padding:22px; display:flex; flex-direction:column; gap:12px; transition:all .3s; position:relative; overflow:hidden; }
+.icard::before{ content:''; position:absolute; top:0; left:0; width:0; height:2px; background:var(--gold); transition:width .4s; }
+.icard:hover{ border-color:var(--gold); transform:translateY(-2px); }
+.icard:hover::before{ width:100%; }
+.icard-icon{ color:var(--accent2); height:40px; display:flex; align-items:center; }
+.icard-label{ font-size:10px; font-weight:700; letter-spacing:.14em; color:var(--gold); text-transform:uppercase; }
+.icard-val{ font-size:13px; color:var(--ink3); line-height:1.7; }
+
+/* COMPARISON TABLE */
+.cmp-table{ width:100%; border-collapse:collapse; font-size:13px; margin:20px 0; background:var(--panel); border:1px solid var(--line); }
+.cmp-table th{ background:var(--ink); color:#fff; padding:11px 14px; text-align:center; font-size:11px; font-weight:600; letter-spacing:.08em; }
+.cmp-table th:first-child{ text-align:left; background:var(--ink2); }
+.cmp-table td{ padding:11px 14px; border-top:1px solid var(--line2); text-align:center; font-size:12.5px; vertical-align:middle; }
+.cmp-table td:first-child{ text-align:left; font-weight:600; color:var(--ink2); background:var(--surface); }
+.cmp-good{ color:var(--success); font-weight:600; }
+.cmp-bad{ color:var(--danger); }
+.cmp-mid{ color:var(--warn); }
+
+/* STEPS */
+.steps{ display:flex; flex-direction:column; gap:10px; margin:22px 0; }
+.step{ display:flex; gap:14px; align-items:flex-start; padding:14px 18px; border-radius:2px; background:var(--surface); border-left:3px solid var(--line); }
+.step.hi{ background:#f1f0e8; border-left-color:var(--accent2); }
+.step.ok{ background:#ecf1ed; border-left-color:var(--success); }
+.step.wn{ background:#f5efe0; border-left-color:var(--gold); }
+.step.ng{ background:#f3e8e8; border-left-color:var(--danger); }
+.sn{ font-family:var(--mono); font-size:10px; font-weight:500; color:#fff; background:var(--accent2); min-width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; padding:0 6px; }
+.step.ok .sn{ background:var(--success); }
+.step.wn .sn{ background:var(--gold); }
+.step.ng .sn{ background:var(--danger); }
+.sb{ font-size:13.5px; color:var(--ink2); line-height:1.75; }
+
+/* NOTE */
+.note{ display:flex; gap:12px; border-radius:2px; padding:16px 20px; margin:18px 0; border:1px solid; }
+.note-i{ flex-shrink:0; margin-top:2px; }
+.note p{ margin:0; font-size:13px; line-height:1.8; }
+.note.info{ background:#eef1f7; border-color:#bcc8d9; }
+.note.info p{ color:#1a2a42; }
+.note.warn{ background:#f5efe0; border-color:#d9c68a; }
+.note.warn p{ color:#5c3a10; }
+.note.danger{ background:#f3e8e8; border-color:#d0aaaa; }
+.note.danger p{ color:#5a1a1a; }
+.note.ok{ background:#ecf1ed; border-color:#a8c8b4; }
+.note.ok p{ color:#1a3d2a; }
+
+/* THREAT GRID */
+.threat-grid{ display:grid; grid-template-columns:1fr 1fr; gap:18px; margin:24px 0; }
+.threat-card{ background:var(--panel); border:1px solid var(--line); border-radius:2px; overflow:hidden; transition:transform .2s; }
+.threat-card:hover{ transform:translateY(-2px); }
+.tc-head{ display:flex; align-items:center; gap:12px; padding:14px 18px; background:var(--danger); color:#fff; }
+.tc-head.warn-head{ background:var(--gold); }
+.tc-head.info-head{ background:var(--accent); }
+.tc-head span{ font-size:13px; font-weight:700; }
+.tc-body{ padding:16px 18px; }
+.tc-body p{ font-size:12.5px; color:var(--ink3); margin:0 0 10px; line-height:1.7; }
+.tc-counter{ font-size:11.5px; color:var(--success); padding:8px 12px; background:#ecf1ed; border-radius:2px; margin:0; border-left:3px solid var(--success); }
+
+/* KEY POINT */
+.keypoint{ background:linear-gradient(135deg,#1a2236,#0f1420); color:#fff; border-radius:2px; padding:28px 32px; margin:28px 0; position:relative; overflow:hidden; border:1px solid var(--gold); }
+.keypoint::before{ content:''; position:absolute; top:0; right:0; width:120px; height:120px; background:radial-gradient(circle,rgba(201,165,87,.18),transparent 70%); }
+.kp-label{ font-size:9.5px; font-weight:700; letter-spacing:.24em; color:var(--gold2); text-transform:uppercase; margin-bottom:12px; display:flex; align-items:center; gap:10px; }
+.kp-label::before{ content:''; display:block; width:20px; height:1px; background:var(--gold2); }
+.keypoint p{ color:rgba(255,255,255,.86); margin:0; font-size:13.5px; line-height:1.9; position:relative; }
+.keypoint strong{ color:var(--gold2); }
+
+/* QUIZ */
+.quiz-wrap{ display:flex; flex-direction:column; gap:24px; margin:24px 0; }
+.quiz{ background:var(--panel); border:1px solid var(--line); border-radius:2px; overflow:hidden; }
+.quiz-q{ padding:16px 20px; background:var(--ink2); color:#fff; font-size:13.5px; line-height:1.7; display:flex; gap:14px; }
+.quiz-qn{ font-family:var(--mono); font-size:10px; background:var(--gold); color:#fff; padding:3px 10px; border-radius:2px; white-space:nowrap; flex-shrink:0; height:fit-content; margin-top:2px; letter-spacing:.1em; }
+.quiz-opts{ padding:16px 20px; display:flex; flex-direction:column; gap:8px; }
+.quiz-opt{ padding:10px 14px; border:1px solid var(--line); border-radius:2px; font-size:13px; color:var(--ink2); cursor:pointer; transition:all .2s; background:var(--panel); text-align:left; font-family:var(--sans); }
+.quiz-opt:hover{ background:var(--surface); border-color:var(--accent2); }
+.quiz-opt.correct{ background:#ecf1ed; border-color:var(--success); color:var(--success); }
+.quiz-opt.wrong{ background:#f3e8e8; border-color:var(--danger); color:var(--danger); }
+.quiz-opt.reveal{ background:var(--surface); color:#999; }
+.quiz-exp{ display:none; padding:14px 20px; background:#f5efe0; border-top:1px solid #d9c68a; font-size:13px; color:#5c3a10; line-height:1.8; }
+.quiz-exp.show{ display:block; animation:fadeIn .4s ease; }
+@keyframes fadeIn{ from{opacity:0;transform:translateY(-4px)} to{opacity:1;transform:translateY(0)} }
+
+/* ACCORDION */
+.accordion{ border:1px solid var(--line); border-radius:2px; overflow:hidden; margin:18px 0; background:var(--panel); }
+.acc-item{ border-bottom:1px solid var(--line); }
+.acc-item:last-child{ border-bottom:none; }
+.acc-trigger{ width:100%; text-align:left; padding:14px 22px; background:var(--panel); border:none; cursor:pointer; display:flex; align-items:center; gap:14px; font-size:13.5px; font-weight:600; color:var(--ink2); transition:background .2s; font-family:var(--sans); }
+.acc-trigger:hover{ background:var(--surface); }
+.acc-trigger.open{ background:#f5efe0; color:var(--warn); }
+.acc-arrow{ margin-left:auto; width:18px; height:18px; position:relative; flex-shrink:0; transition:transform .3s; }
+.acc-trigger.open .acc-arrow{ transform:rotate(45deg); }
+.acc-arrow::before{ content:''; width:10px; height:2px; background:var(--gold); position:absolute; top:8px; left:4px; }
+.acc-arrow::after{ content:''; width:2px; height:10px; background:var(--gold); position:absolute; top:4px; left:8px; }
+.acc-content{ display:none; padding:16px 22px 20px; background:#faf6ec; border-top:1px solid var(--line); font-size:13px; color:var(--ink3); line-height:1.85; }
+.acc-content.open{ display:block; animation:fadeIn .4s ease; }
+
+/* TAB */
+.tab-wrap{ background:var(--panel); border:1px solid var(--line); border-radius:2px; overflow:hidden; margin:22px 0; }
+.tab-bar{ display:flex; border-bottom:1px solid var(--line); background:var(--surface); overflow-x:auto; }
+.tab-btn{ padding:12px 22px; font-size:12.5px; font-weight:600; color:var(--ink3); background:none; border:none; cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-1px; transition:all .2s; white-space:nowrap; font-family:var(--sans); display:flex; align-items:center; gap:10px; }
+.tab-btn:hover{ color:var(--ink2); }
+.tab-btn.active{ color:var(--gold); border-bottom-color:var(--gold); background:var(--panel); }
+.tab-panel{ display:none; padding:26px; }
+.tab-panel.active{ display:block; animation:fadeIn .4s ease; }
+
+/* SY BADGE */
+.sy-badge{ display:inline-flex; align-items:center; gap:6px; background:#eef1f7; color:var(--accent); padding:3px 10px; border-radius:2px; font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.08em; margin-right:6px; margin-bottom:10px; }
+.year-badge{ display:inline-flex; align-items:center; gap:4px; background:var(--gold); color:#fff; padding:2px 8px; border-radius:2px; font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.08em; margin-right:4px; }
+
+/* ── HTML+CSS Sequence diagram (no SVG) ── */
+.uml-seq{ background:var(--panel); border:1px solid var(--line); border-radius:2px; padding:24px; margin:24px 0; overflow-x:auto; }
+.uml-actors{ display:grid; gap:16px; align-items:end; }
+.uml-actor{ background:var(--surface); border:1px solid var(--line); border-radius:2px; padding:12px 8px; text-align:center; }
+.uml-actor-icon{ width:36px; height:36px; margin:0 auto 8px; display:flex; align-items:center; justify-content:center; background:var(--panel); border-radius:50%; border:1px solid var(--line); }
+.uml-actor-name{ font-size:11px; font-weight:700; color:var(--ink2); line-height:1.3; }
+.uml-actor-sub{ font-size:9px; color:var(--ink3); margin-top:3px; font-family:var(--mono); letter-spacing:.04em; }
+.uml-msg-row{ display:grid; align-items:center; padding:10px 0; position:relative; }
+.uml-msg-row::before{ content:''; position:absolute; top:0; bottom:0; left:0; right:0; pointer-events:none; }
+.uml-arrow{ height:2px; background:var(--accent2); position:relative; align-self:center; }
+.uml-arrow.rev{ background:var(--gold); }
+.uml-arrow.danger{ background:var(--danger); }
+.uml-arrow.success{ background:var(--success); }
+.uml-arrow::after{ content:''; position:absolute; right:-1px; top:-5px; width:0; height:0; border:6px solid transparent; border-left-color:var(--accent2); }
+.uml-arrow.rev::after{ right:auto; left:-1px; border-left-color:transparent; border-right-color:var(--gold); }
+.uml-arrow.danger::after{ border-left-color:var(--danger); }
+.uml-arrow.success::after{ border-left-color:var(--success); }
+.uml-msg-label{ font-size:11.5px; color:var(--ink2); padding:4px 10px; background:var(--panel); border:1px solid var(--line); border-radius:2px; line-height:1.5; text-align:center; }
+.uml-msg-row.note{ }
+.uml-note-box{ background:#f5efe0; border:1px solid #d9c68a; border-radius:2px; padding:8px 12px; font-size:11px; color:#5c3a10; line-height:1.55; grid-column:1 / -1; }
+
+/* ── HTML topology (no SVG) ── */
+.topo{ background:var(--panel); border:1px solid var(--line); border-radius:2px; padding:24px; margin:24px 0; overflow-x:auto; }
+.topo-zone{ border:1.5px dashed var(--line); border-radius:2px; padding:14px; margin:8px 0; position:relative; }
+.topo-zone-label{ position:absolute; top:-10px; left:14px; background:var(--paper); padding:0 8px; font-size:10px; font-weight:700; color:var(--ink3); letter-spacing:.1em; text-transform:uppercase; }
+.topo-zone.dmz{ border-color:var(--gold); }
+.topo-zone.intra{ border-color:var(--accent2); }
+.topo-zone.extra{ border-color:var(--danger); }
+.topo-zone.cloud{ border-color:var(--success); }
+.topo-row{ display:flex; gap:14px; align-items:center; flex-wrap:wrap; padding:8px 0; }
+.topo-node{ background:var(--surface); border:1px solid var(--line); border-radius:2px; padding:10px 14px; min-width:120px; text-align:center; position:relative; }
+.topo-node-icon{ width:28px; height:28px; margin:0 auto 6px; color:var(--accent2); }
+.topo-node-name{ font-size:11px; font-weight:700; color:var(--ink2); }
+.topo-node-ip{ font-size:9.5px; font-family:var(--mono); color:var(--ink3); margin-top:2px; }
+.topo-conn{ flex:1; min-width:30px; height:2px; background:repeating-linear-gradient(90deg,var(--line) 0,var(--line) 4px,transparent 4px,transparent 8px); position:relative; }
+.topo-conn-label{ position:absolute; top:-18px; left:50%; transform:translateX(-50%); font-size:9.5px; color:var(--ink3); background:var(--panel); padding:1px 6px; border:1px solid var(--line2); border-radius:2px; white-space:nowrap; font-family:var(--mono); }
+
+/* ── Chip ── */
+.chip{ display:inline-block; padding:2px 10px; border-radius:2px; font-size:10.5px; font-weight:700; font-family:var(--mono); letter-spacing:.04em; margin:2px 4px 2px 0; }
+.chip.attack{ background:#f3e8e8; color:var(--danger); border:1px solid #d0aaaa; }
+.chip.defend{ background:#ecf1ed; color:var(--success); border:1px solid #a8c8b4; }
+.chip.neutral{ background:var(--surface); color:var(--ink3); border:1px solid var(--line); }
+.chip.gold{ background:#f5efe0; color:var(--warn); border:1px solid #d9c68a; }
+.chip.info{ background:#eef1f7; color:var(--accent); border:1px solid #bcc8d9; }
+
+/* ── Past exam ref box ── */
+.pastref{ display:flex; gap:10px; padding:12px 16px; background:linear-gradient(90deg,#f5efe0,var(--surface) 70%); border-left:3px solid var(--gold); border-radius:2px; margin:18px 0; font-size:12.5px; color:var(--ink2); align-items:flex-start; }
+.pastref-icon{ flex-shrink:0; color:var(--gold); margin-top:2px; }
+.pastref strong{ color:var(--warn); }
+.pastref code{ background:#fff; }
+
+/* ── Q-card (past exam style question) ── */
+.qcard{ background:var(--panel); border:1px solid var(--line); border-radius:2px; margin:24px 0; overflow:hidden; }
+.qcard-head{ background:linear-gradient(90deg,var(--ink),var(--ink2)); color:#fff; padding:14px 22px; display:flex; gap:14px; align-items:center; }
+.qcard-tag{ background:var(--gold); color:#fff; padding:3px 10px; border-radius:2px; font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.1em; }
+.qcard-title{ font-size:13.5px; font-weight:700; line-height:1.5; }
+.qcard-meta{ margin-left:auto; font-size:10.5px; color:rgba(255,255,255,.6); font-family:var(--mono); }
+.qcard-body{ padding:20px 22px; }
+.qcard-scenario{ font-size:12.5px; color:var(--ink2); line-height:1.85; padding:14px 18px; background:var(--surface); border-radius:2px; margin-bottom:18px; }
+.qcard-q{ font-size:13px; font-weight:700; color:var(--ink); margin:14px 0 8px; padding-left:10px; border-left:3px solid var(--accent2); }
+.qcard-input{ font-family:var(--mono); font-size:12px; padding:10px 14px; background:#faf6ec; border:1px dashed #d9c68a; border-radius:2px; color:var(--warn); margin:8px 0; }
+.qcard-actions{ display:flex; gap:8px; margin-top:14px; flex-wrap:wrap; }
+.qbtn{ padding:7px 16px; border-radius:2px; border:1px solid var(--line); background:var(--panel); cursor:pointer; font-size:11.5px; font-weight:600; color:var(--ink2); transition:all .2s; font-family:var(--sans); }
+.qbtn:hover{ background:var(--accent); color:#fff; border-color:var(--accent); }
+.qbtn.hint{ color:var(--accent); border-color:var(--accent2); }
+.qbtn.hint:hover{ background:var(--accent2); }
+.qbtn.ans{ color:var(--success); border-color:var(--success); }
+.qbtn.ans:hover{ background:var(--success); color:#fff; }
+.qcard-reveal{ display:none; padding:14px 18px; margin-top:14px; border-radius:2px; font-size:12.5px; line-height:1.8; }
+.qcard-reveal.show{ display:block; animation:fadeIn .4s ease; }
+.qcard-reveal.hint-r{ background:#eef1f7; border-left:3px solid var(--accent2); color:var(--accent); }
+.qcard-reveal.ans-r{ background:#ecf1ed; border-left:3px solid var(--success); color:var(--ink2); }
+.qcard-reveal.ans-r strong{ color:var(--success); }
+
+/* ── Compare panel (good/bad) ── */
+.cmp-pair{ display:grid; grid-template-columns:1fr 60px 1fr; gap:0; margin:22px 0; background:var(--panel); border:1px solid var(--line); }
+.cmp-side{ padding:18px 20px; }
+.cmp-side.good{ background:#ecf1ed; }
+.cmp-side.bad{ background:#f3e8e8; }
+.cmp-side h5{ font-size:11px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; margin-bottom:10px; }
+.cmp-side.good h5{ color:var(--success); }
+.cmp-side.bad h5{ color:var(--danger); }
+.cmp-side p{ font-size:12.5px; color:var(--ink2); margin:0 0 6px; line-height:1.65; }
+.cmp-side .ex{ font-family:var(--mono); font-size:11px; padding:8px 10px; background:rgba(255,255,255,.6); border-radius:2px; margin:6px 0; }
+.cmp-arrow{ display:flex; align-items:center; justify-content:center; background:var(--surface); border-left:1px solid var(--line); border-right:1px solid var(--line); }
+
+/* ── Theme matrix ── */
+.theme-mat{ overflow-x:auto; margin:20px 0; }
+.theme-mat table{ width:100%; min-width:800px; border-collapse:collapse; font-size:11.5px; background:var(--panel); border:1px solid var(--line); }
+.theme-mat th{ background:var(--ink); color:#fff; padding:8px; font-size:10.5px; font-weight:600; }
+.theme-mat th:first-child{ background:var(--ink2); text-align:left; padding-left:14px; }
+.theme-mat td{ padding:8px; text-align:center; border-top:1px solid var(--line2); }
+.theme-mat td:first-child{ text-align:left; font-weight:700; color:var(--ink2); padding-left:14px; background:var(--surface); white-space:nowrap; }
+.theme-mat .hit{ background:#f5efe0; font-weight:700; color:var(--warn); }
+.theme-mat .hit2{ background:#e8d8a8; color:var(--warn); font-weight:700; }
+.theme-mat .hit3{ background:#d9c184; color:#fff; font-weight:700; }
+
+/* ── Risk matrix ── */
+.risk-grid{ display:grid; grid-template-columns:80px repeat(5,1fr); grid-auto-rows:48px; gap:2px; margin:18px 0 8px; max-width:600px; }
+.risk-grid .rg-cell{ display:flex; align-items:center; justify-content:center; font-size:10.5px; font-weight:600; }
+.risk-grid .rg-axis{ color:var(--ink3); font-family:var(--mono); font-size:9.5px; background:transparent; }
+.risk-grid .rg-h{ color:#fff; font-weight:700; font-size:10.5px; padding:4px; }
+.risk-grid .rg-low{ background:#a8c8b4; color:#1a3d2a; }
+.risk-grid .rg-mid{ background:#e8d896; color:#5c3a10; }
+.risk-grid .rg-hi{ background:#d99e85; color:#5a1a1a; }
+.risk-grid .rg-cri{ background:#a85a4a; color:#fff; }
+.risk-axis-x{ display:grid; grid-template-columns:80px repeat(5,1fr); gap:2px; max-width:600px; font-size:9.5px; color:var(--ink3); font-family:var(--mono); padding:4px 0; }
+.risk-axis-x span{ text-align:center; }
+
+/* ── log entry simulator ── */
+.logsim{ background:#0f1420; color:#c5d4e8; border-radius:2px; padding:16px 18px; font-family:var(--mono); font-size:11px; line-height:1.8; margin:18px 0; overflow-x:auto; max-height:380px; overflow-y:auto; border:1px solid #2a3548; }
+.logsim .l-time{ color:#a47a2a; }
+.logsim .l-info{ color:#7a9bc2; }
+.logsim .l-warn{ color:#e8b075; }
+.logsim .l-err{ color:#e08585; }
+.logsim .l-ok{ color:#85d8a8; }
+.logsim .l-suspect{ background:rgba(232,176,117,.12); padding:0 4px; border-left:2px solid #e8b075; display:block; }
+.logsim .l-attack{ background:rgba(224,133,133,.16); padding:0 4px; border-left:2px solid #e08585; display:block; }
+.logsim-ctrl{ display:flex; gap:6px; padding:8px 12px; background:#1a2236; border-radius:2px 2px 0 0; border:1px solid #2a3548; border-bottom:none; }
+.logsim-ctrl .lf-btn{ padding:4px 10px; font-size:10.5px; border-radius:2px; border:1px solid #3a4762; background:#0f1420; color:#7a9bc2; cursor:pointer; font-family:var(--mono); }
+.logsim-ctrl .lf-btn.act{ background:var(--gold); color:#fff; border-color:var(--gold); }
+.logsim-ctrl .lf-btn:hover{ border-color:var(--gold2); color:var(--gold2); }
+
+/* ── Phase player ── */
+.phaseplayer{ background:var(--panel); border:1px solid var(--line); border-radius:2px; padding:22px; margin:24px 0; }
+.pp-stages{ display:flex; gap:6px; margin-bottom:18px; overflow-x:auto; }
+.pp-stage{ flex:1; min-width:90px; padding:10px 8px; background:var(--surface); border:1px solid var(--line); border-radius:2px; cursor:pointer; text-align:center; font-size:11px; font-weight:600; color:var(--ink3); transition:all .2s; font-family:var(--sans); }
+.pp-stage.act{ background:var(--gold); color:#fff; border-color:var(--gold); transform:translateY(-2px); box-shadow:0 3px 8px rgba(164,122,42,.3); }
+.pp-stage:hover:not(.act){ border-color:var(--gold); color:var(--gold); }
+.pp-stage-num{ display:block; font-family:var(--mono); font-size:9px; opacity:.6; margin-bottom:3px; }
+.pp-content{ min-height:140px; padding:18px 20px; background:var(--surface); border-left:3px solid var(--gold); border-radius:2px; font-size:13px; color:var(--ink2); line-height:1.85; display:none; }
+.pp-content.act{ display:block; animation:fadeIn .4s ease; }
+.pp-content h5{ font-size:13px; color:var(--warn); margin-bottom:8px; font-weight:700; }
+.pp-content code{ background:rgba(0,0,0,.04); }
+
+/* ── Footer ── */
+footer{ background:linear-gradient(180deg,#1a2236,#0f1420); color:rgba(255,255,255,.45); text-align:center; padding:32px; font-size:11.5px; letter-spacing:.08em; line-height:1.9; border-top:1px solid var(--gold); }
+footer a{ color:rgba(201,165,87,.7); text-decoration:none; }
+footer a:hover{ color:var(--gold2); }
+
+/* RESPONSIVE */
+@media (max-width:900px){
+  .sidebar{ display:none; }
+  .main{ padding:32px 20px 80px; }
+  .threat-grid,.cmp-pair{ grid-template-columns:1fr; }
+  .cover{ padding:52px 28px; }
+  .cover h1{ font-size:32px; }
+  .pp-stages{ flex-wrap:wrap; }
+}
+
+/* ====== 第9章以降 拡張コンポーネント ====== */
+.analogy{ display:flex; gap:14px; padding:18px 20px; background:linear-gradient(135deg, #faf6ee 0%, #f6efe0 100%); border:1px solid #d6c7a3; border-left:4px solid var(--gold); border-radius:2px; margin:18px 0 22px; }
+.analogy-icon{ flex:0 0 36px; display:flex; align-items:flex-start; justify-content:center; padding-top:2px; }
+.analogy-body{ font-size:15px; line-height:1.85; color:var(--ink); }
+.analogy-body strong:first-child{ display:inline-block; color:var(--gold-dark,#8a6d27); margin-bottom:4px; }
+
+.pipe-stages{ display:grid; grid-template-columns:repeat(6, 1fr); gap:8px; margin:14px 0 22px; }
+.pst{ background:#fbf8f0; border:1px solid #e0d6bf; border-top:3px solid var(--gold); border-radius:2px; padding:12px 10px; text-align:center; }
+.pst-i{ display:flex; justify-content:center; margin-bottom:6px; color:var(--ink); }
+.pst-n{ font-weight:600; font-size:13px; color:var(--ink); margin-bottom:4px; }
+.pst-c{ font-size:11.5px; color:var(--ink2,#5a5340); line-height:1.55; }
+
+.shift-track{ display:flex; align-items:stretch; gap:0; margin:14px 0 4px; padding:12px 14px; background:#1a2235; border-radius:2px; position:relative; flex-wrap:wrap; }
+.shift-arrow{ display:flex; align-items:center; color:var(--gold); padding:0 8px; }
+.shift-stage{ flex:1 1 130px; padding:10px 8px; background:#222d44; border:1px solid #2f3b56; color:#cdd2dd; border-radius:2px; font-size:12px; line-height:1.55; margin:2px; position:relative; }
+.shift-stage::after{ content:attr(data-cost); display:block; margin-top:6px; font-size:10.5px; color:#8a93a8; font-family:'JetBrains Mono',monospace; }
+.shift-stage.on{ border-color:var(--gold); background:#2c3654; color:#fff; }
+.shift-stage.on::after{ color:var(--gold); }
+
+.point-list{ display:flex; flex-direction:column; gap:8px; margin:12px 0 18px; }
+.point{ display:flex; gap:10px; align-items:flex-start; padding:10px 12px; background:#fafaf6; border-left:3px solid var(--accent); border-radius:0 2px 2px 0; }
+.pt-mark{ flex:0 0 22px; display:flex; align-items:flex-start; justify-content:center; padding-top:2px; }
+.pt-body{ font-size:13.5px; line-height:1.7; color:var(--ink); }
+
+.warn-box{ display:flex; gap:12px; padding:14px 16px; background:#fff4ec; border:1px solid #f0c8a8; border-left:4px solid var(--danger); border-radius:2px; margin:14px 0 20px; }
+.warn-i{ flex:0 0 28px; }
+.warn-box code{ background:#fff; padding:1px 5px; border-radius:2px; font-size:12.5px; }
+
+.iac-flow{ display:flex; flex-wrap:wrap; align-items:stretch; gap:0; margin:14px 0 20px; padding:14px; background:#f7f3e8; border:1px solid #d6c7a3; border-radius:2px; }
+.iacf{ flex:1 1 130px; padding:10px 12px; background:#fff; border:1px solid #d6c7a3; border-top:3px solid var(--accent); border-radius:2px; font-size:12px; line-height:1.55; color:var(--ink); margin:3px; }
+.iacf-h{ font-weight:600; font-size:12.5px; color:var(--gold-dark,#8a6d27); margin-bottom:5px; }
+.iacf-arr{ display:flex; align-items:center; color:var(--gold); padding:0 2px; }
+
+.layer-stack{ display:flex; flex-direction:column; gap:2px; margin:14px 0 20px; }
+.ls-row{ display:grid; grid-template-columns:140px 1fr 40px; gap:0; align-items:center; background:#fbf8f0; border:1px solid #e0d6bf; border-left:3px solid var(--gold); border-radius:2px; min-height:38px; }
+.ls-l{ padding:8px 12px; background:#f0e9d7; font-weight:600; font-size:12.5px; color:var(--ink); }
+.ls-c{ padding:8px 14px; font-size:13px; color:var(--ink); font-family:'JetBrains Mono',monospace; }
+.ls-r{ display:flex; justify-content:center; align-items:center; padding:8px; color:var(--accent); }
+
+.summary-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-top:14px; }
+.sm-card{ background:linear-gradient(135deg,#1a2235 0%, #232c44 100%); color:#e8eaf0; padding:14px 16px; border-radius:2px; border:1px solid #2f3b56; border-top:3px solid var(--gold); font-size:13px; line-height:1.7; }
+.sm-h{ display:flex; align-items:center; gap:8px; font-weight:600; color:var(--gold); margin-bottom:6px; font-size:13.5px; }
+
+/* qcard 追補 - 既存 qcard と併存 */
+.qcard{ background:#fbf8f0; border:1px solid #d6c7a3; border-left:3px solid var(--gold); border-radius:2px; padding:14px 18px; margin:14px 0 18px; }
+.qcard-h{ font-weight:600; color:var(--gold-dark,#8a6d27); font-size:14px; margin-bottom:8px; padding-bottom:6px; border-bottom:1px dashed #d6c7a3; }
+.qcard-q{ font-size:14px; line-height:1.85; color:var(--ink); margin-bottom:10px; }
+.qcard-q code{ background:#fff; padding:1px 5px; border-radius:2px; font-size:12.5px; }
+.qcard-btn{ display:inline-block; padding:5px 12px; margin:3px 6px 3px 0; background:var(--ink); color:#fff; border:none; border-radius:2px; font-size:12px; cursor:pointer; font-family:inherit; }
+.qcard-btn:hover{ background:var(--gold); }
+.qcard-rev{ display:none; margin-top:8px; padding:10px 14px; background:#fff; border:1px solid #e0d6bf; border-radius:2px; font-size:13px; line-height:1.8; color:var(--ink); }
+.qcard-rev.show{ display:block; }
+.qcard-rev-ans{ background:#f0f6ee; border-color:#a8c89c; border-left:3px solid var(--success); }
+
+.caption-note{ font-size:12.5px; color:var(--ink2,#5a5340); padding:8px 12px; background:#f5f1e4; border-left:3px solid var(--accent); border-radius:0 2px 2px 0; margin:8px 0 14px; line-height:1.7; }
+
+.exam-ref{ display:flex; align-items:center; gap:10px; padding:8px 14px; background:var(--ink); color:var(--gold); font-weight:600; font-size:13px; border-radius:2px; margin:14px 0 14px; }
+
+/* ====== 第10章以降 暗号・PKI 拡張 ====== */
+.crypto-pair{ display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:14px 0 20px; }
+.cp-side{ background:#fbf8f0; border:1px solid #d6c7a3; border-top:3px solid var(--gold); border-radius:2px; padding:14px 16px; }
+.cp-side h4{ display:flex; align-items:center; gap:8px; margin:0 0 8px; font-size:14px; color:var(--gold-dark,#8a6d27); }
+.cp-pri{ border-top-color:var(--danger); }
+.cp-pri h4{ color:var(--danger); }
+.cp-pub{ border-top-color:var(--accent); }
+.cp-pub h4{ color:var(--accent); }
+.cp-side ul{ font-size:12.5px; line-height:1.85; padding-left:18px; margin:6px 0; }
+
+/* ====== 第11章以降 クラウド / ZeroTrust ====== */
+.zt-pillars{ display:grid; grid-template-columns:repeat(5,1fr); gap:8px; margin:14px 0 20px; }
+.ztp{ background:#fbf8f0; border:1px solid #e0d6bf; border-top:3px solid var(--accent); border-radius:2px; padding:12px 10px; text-align:center; min-height:120px; }
+.ztp-i{ display:flex; justify-content:center; margin-bottom:6px; }
+.ztp-n{ font-weight:600; font-size:12.5px; color:var(--ink); margin-bottom:4px; }
+.ztp-c{ font-size:11px; color:var(--ink2,#5a5340); line-height:1.55; }
+
+/* ====== 第13章 ログ分析 ====== */
+.logbox{ background:#0e1422; color:#cdd2dd; padding:14px 16px; border-radius:2px; font-family:'JetBrains Mono',monospace; font-size:12px; line-height:1.85; overflow-x:auto; margin:10px 0 16px; }
+.logbox .lg-time{ color:#8a93a8; }
+.logbox .lg-warn{ color:#e6b86a; }
+.logbox .lg-err{ color:#e07d6f; }
+.logbox .lg-ok{ color:#7fc18a; }
+.logbox .lg-attack{ color:#ff6b8b; font-weight:600; }
+.logbox .lg-hl{ background:#3a3a1f; padding:0 3px; }
+
+/* ====== 第14章 ドリル ====== */
+.drill-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin:14px 0 20px; }
+.drill-tag{ display:inline-block; padding:2px 8px; background:var(--gold); color:#fff; font-size:11px; border-radius:2px; margin-right:6px; }
+
+/* ====== 試験形式の変遷（ch01） ====== */
+.format-history{ display:flex; flex-direction:column; gap:0; margin:14px 0 18px; }
+.fh-row{ display:flex; gap:18px; padding:14px 18px; border:1px solid var(--line); border-radius:2px; align-items:flex-start; }
+.fh-old{ background:#f6f7fa; border-left:3px solid #3d4860; }
+.fh-new{ background:#fbf3f1; border-left:3px solid var(--danger); }
+.fh-period{ flex:0 0 180px; font-weight:700; font-size:13px; color:var(--ink); display:flex; align-items:center; gap:8px; padding-top:2px; }
+.fh-detail{ flex:1; font-size:12.5px; color:var(--ink3); line-height:1.85; }
+.fh-arrow{ display:flex; align-items:center; justify-content:center; gap:8px; padding:8px; font-size:11px; color:var(--gold); font-family:var(--mono); letter-spacing:.08em; font-weight:700; }
+
+/* ====== 旧過去問より 歴史例ボックス ====== */
+.legacy-box{ background:linear-gradient(180deg, #f6f7fa 0%, #fbfbf8 100%); border:1px solid #c9cdd6; border-left:4px solid #3d4860; border-radius:2px; padding:16px 20px; margin:18px 0; position:relative; }
+.legacy-box::before{ content:'LEGACY'; position:absolute; top:8px; right:12px; font-family:var(--mono); font-size:9.5px; font-weight:700; letter-spacing:.18em; color:#3d4860; opacity:.7; }
+.legacy-h{ font-size:13.5px; font-weight:700; color:#1f2a3d; margin-bottom:8px; padding-bottom:6px; border-bottom:1px dashed #c9cdd6; display:flex; align-items:center; gap:8px; }
+.legacy-h .legacy-tag{ background:#3d4860; color:#fff; font-family:var(--mono); font-size:10px; font-weight:700; padding:2px 8px; border-radius:2px; letter-spacing:.06em; }
+.legacy-body{ font-size:12.5px; color:var(--ink3); line-height:1.85; }
+.legacy-body strong{ color:var(--ink); }
+.legacy-body em{ color:var(--gold); font-weight:600; }
+
+/* responsive overrides for new components */
+@media(max-width:880px){
+  .pipe-stages{ grid-template-columns:repeat(2,1fr); }
+  .crypto-pair{ grid-template-columns:1fr; }
+  .zt-pillars{ grid-template-columns:repeat(2,1fr); }
+  .summary-grid{ grid-template-columns:1fr; }
+  .drill-grid{ grid-template-columns:1fr; }
+  .ls-row{ grid-template-columns:90px 1fr 36px; }
+  .fh-row{ flex-direction:column; gap:8px; }
+  .fh-period{ flex:0 0 auto; }
+}
+
+/* responsibility model cells */
+.cmp-cust{ background:#fff4ec !important; color:#a85b2e; font-weight:600; text-align:center; }
+.cmp-prov{ background:#eef4fb !important; color:#2e5b8a; font-weight:600; text-align:center; }
+.cmp-shared{ background:#f5efe2 !important; color:#8a6d27; font-weight:600; text-align:center; }
+
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <svg class="cover-geo" viewBox="0 0 600 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="300" cy="300" r="260" stroke="#c9a557" stroke-width="1"/>
+    <circle cx="300" cy="300" r="200" stroke="#c9a557" stroke-width="1"/>
+    <circle cx="300" cy="300" r="140" stroke="#c9a557" stroke-width="1"/>
+    <circle cx="300" cy="300" r="80" stroke="#c9a557" stroke-width="1"/>
+    <line x1="300" y1="40" x2="300" y2="560" stroke="#c9a557" stroke-width="0.4"/>
+    <line x1="40" y1="300" x2="560" y2="300" stroke="#c9a557" stroke-width="0.4"/>
+    <line x1="116" y1="116" x2="484" y2="484" stroke="#c9a557" stroke-width="0.4"/>
+    <line x1="484" y1="116" x2="116" y2="484" stroke="#c9a557" stroke-width="0.4"/>
+  </svg>
+  <div class="cover-inner">
+    <p class="cover-kicker">CHAPTER 10 · CRYPTO &amp; PKI</p>
+    <h1>鍵と署名と信頼の<br><em>連鎖を読み解く</em></h1>
+    <p class="cover-desc">共通鍵/公開鍵の役割分担、TLS 1.3ハンドシェイク、X.509証明書のライフサイクル、OAuth/OIDC/SAML、そしてR7秋問2のサイドチャネル攻撃まで一気通貫。</p>
+    <div class="cover-tags">
+<span class="ctag">共通鍵 vs 公開鍵</span>
+<span class="ctag">TLS 1.3</span>
+<span class="ctag">X.509</span>
+<span class="ctag">OCSP</span>
+<span class="ctag">OAuth 2.0</span>
+<span class="ctag">サイドチャネル</span>
+    </div>
+<div class="cover-meta"><div class="cover-meta-i">過去5回出題数<strong>3問</strong></div><div class="cover-meta-i">該当回<strong>R5秋問1, R7秋問2 他</strong></div><div class="cover-meta-i">習得時間<strong>5時間</strong></div></div>
+  </div>
+</div>
+
+<div class="layout">
+
+<aside class="sidebar">
+  <div class="sidebar-title">本章の構成</div>
+  <nav>
+<a href="#s1"><span class="nav-num">CHAPTER 10 · §1</span>暗号方式の全体像</a>
+<a href="#s2"><span class="nav-num">CHAPTER 10 · §2</span>公開鍵暗号と署名 — 役割の違い</a>
+<a href="#s3"><span class="nav-num">CHAPTER 10 · §3</span>PKIと証明書のライフサイクル</a>
+<a href="#s4"><span class="nav-num">CHAPTER 10 · §4</span>TLS 1.3ハンドシェイク</a>
+<a href="#s5"><span class="nav-num">CHAPTER 10 · §5</span>OAuth 2.0 / OIDC / SAML</a>
+<a href="#s6"><span class="nav-num">CHAPTER 10 · §6</span>サイドチャネル攻撃と対策</a>
+<a href="#s7"><span class="nav-num">CHAPTER 10 · §7</span>過去問記述演習（R7秋問2）</a>
+  </nav>
+  <div class="sidebar-meta">
+    <div class="sidebar-title" style="border:none;padding:0 0 10px;">他の章</div>
+    <a class="sb-other" href="SC_AFTERNOON_INDEX.html"><strong>目次</strong>全章一覧</a>
+<a class="sb-other" href="SC_AFTERNOON_01_GUIDE.html"><strong>Ch.01</strong>午後試験ガイド</a>
+<a class="sb-other" href="SC_AFTERNOON_02_READING.html"><strong>Ch.02</strong>シナリオ読解術</a>
+<a class="sb-other" href="SC_AFTERNOON_03_WEBAPI.html"><strong>Ch.03</strong>Web・APIセキュリティ</a>
+<a class="sb-other" href="SC_AFTERNOON_04_DNS.html"><strong>Ch.04</strong>DNS・ドメイン</a>
+<a class="sb-other" href="SC_AFTERNOON_05_INCIDENT.html"><strong>Ch.05</strong>インシデントレスポンス</a>
+<a class="sb-other" href="SC_AFTERNOON_06_VULN.html"><strong>Ch.06</strong>脆弱性管理</a>
+<a class="sb-other" href="SC_AFTERNOON_07_SUPPLY.html"><strong>Ch.07</strong>サプライチェーン</a>
+<a class="sb-other" href="SC_AFTERNOON_08_PAYMENT.html"><strong>Ch.08</strong>決済・PCI DSS</a>
+<a class="sb-other" href="SC_AFTERNOON_09_CICD.html"><strong>Ch.09</strong>CI/CD・DevSecOps</a>
+<a class="sb-other" href="SC_AFTERNOON_11_CLOUD.html"><strong>Ch.11</strong>クラウド・ゼロトラスト</a>
+<a class="sb-other" href="SC_AFTERNOON_12_MOBILE.html"><strong>Ch.12</strong>モバイル・スマホアプリ</a>
+<a class="sb-other" href="SC_AFTERNOON_13_NETWORK.html"><strong>Ch.13</strong>ネットワーク・ログ分析</a>
+<a class="sb-other" href="SC_AFTERNOON_14_DRILL.html"><strong>Ch.14</strong>過去問完全演習</a>
+  </div>
+</aside>
+
+<main class="main">
+
+<section class="section" id="s1">
+  <div class="section-header"><span class="s-num">1</span><div><h2>暗号方式の全体像</h2></div></div>
+
+  <h3>位置づけ — どこで効いているか</h3>
+  <p>暗号は<strong>機密性・完全性・認証・否認防止</strong>の4つを支える基盤技術。本シリーズの第3章（Web）の通信路は本章のTLSで、第4章（DNS）はDNSSEC署名で、第8章（PCI DSS）はカード情報暗号化で、第11章（クラウド）はKMSで——すべて本章の応用。</p>
+
+  <h3>3大カテゴリの違い</h3>
+  <div class="cmp-table"><table><thead><tr><th>項目</th><th>共通鍵暗号<br>(対称暗号)</th><th>公開鍵暗号<br>(非対称暗号)</th><th>ハッシュ関数</th></tr></thead><tbody>
+    <tr><td>鍵の種類</td><td>1個（送受で同じ）</td><td>2個ペア（公開鍵+秘密鍵）</td><td>鍵なし</td></tr>
+    <tr><td>用途</td><td>大量データの暗号化</td><td>鍵交換・署名・少量暗号</td><td>完全性検証・パスワード保管</td></tr>
+    <tr><td>速度</td><td>非常に高速</td><td>低速（共通鍵の数百倍遅い）</td><td>非常に高速</td></tr>
+    <tr><td>代表アルゴリズム</td><td>AES-128/256, ChaCha20</td><td>RSA, ECDSA, Ed25519, ECDH</td><td>SHA-256, SHA-3, BLAKE2</td></tr>
+    <tr><td>鍵配送問題</td><td>あり（事前共有が必要）</td><td>なし</td><td>—</td></tr>
+    <tr><td>典型用途</td><td>TLSのデータ転送</td><td>TLS鍵交換・電子署名</td><td>HMAC, パスワード, ブロックチェーン</td></tr>
+  </tbody></table></div>
+
+  <div class="analogy">
+    <div class="analogy-icon"><svg style="color:var(--gold);" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15" r="1.2" fill="currentColor"/><path d="M12 16v2"/></svg></div>
+    <div class="analogy-body">
+      <strong>たとえ話：金庫と郵便受け</strong><br>
+      共通鍵=<em>同じ鍵で開け閉め</em>する金庫。鍵を相手に渡す道中が危険。公開鍵=<em>投函口は誰でも入れられるが、取り出せるのは郵便受けの所有者だけ</em>。投函口（公開鍵）はネットに晒してOK、取出鍵（秘密鍵）は厳重保管。ハッシュ=<em>シュレッダー</em>。原本に戻せないが、同じ書類を投入すれば必ず同じ「散乱パターン」が出る。
+    </div>
+  </div>
+
+  <h3>ハイブリッド暗号 — TLSで実際に使われる形</h3>
+  <p>公開鍵暗号で<em>共通鍵そのもの</em>を安全に交換し、以降の大量データ通信は共通鍵で行う。「速度の共通鍵」と「鍵配送の公開鍵」のいいとこ取り。</p>
+</section>
+
+
+<section class="section" id="s2">
+  <div class="section-header"><span class="s-num">2</span><div><h2>公開鍵暗号と署名 — 役割の違い</h2></div></div>
+
+  <p>同じ公開鍵ペアでも、<strong>「誰の鍵で暗号化し」「誰の鍵で復号するか」</strong>で意味が真逆になる。試験で最も間違えやすいポイント。</p>
+
+  <div class="crypto-pair">
+    <div class="cp-side cp-pub">
+      <h4><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15" r="1.2" fill="currentColor"/><path d="M12 16v2"/></svg> ① 暗号化（機密性）</h4>
+      <ul>
+        <li><strong>受信者の公開鍵</strong>で暗号化</li>
+        <li><strong>受信者の秘密鍵</strong>で復号</li>
+        <li>「鍵を誰でも投函できるが、開けるのは受信者だけ」</li>
+        <li>用途：データの秘匿（盗聴防止）</li>
+      </ul>
+    </div>
+    <div class="cp-side cp-pri">
+      <h4><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l4-4 8 8H7l-4-4z"/><path d="M14 6l4 4M11 9l4 4M18 6l-3-3"/></svg> ② 署名（真正性・否認防止）</h4>
+      <ul>
+        <li><strong>送信者の秘密鍵</strong>でハッシュを暗号化（=署名）</li>
+        <li><strong>送信者の公開鍵</strong>で復号して検証</li>
+        <li>「自分にしか押せない印鑑を押す」</li>
+        <li>用途：本人確認・改ざん検知</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>署名検証のシーケンス</h3>
+  <div class="uml-seq">
+    <div class="uml-actors" style="grid-template-columns:1fr 1fr;">
+      <div class="uml-actor"><div class="uml-actor-icon"><svg style="color:var(--accent2);" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2"/></svg></div><div class="uml-actor-name">送信者 Alice</div><div class="uml-actor-sub">秘密鍵保有</div></div>
+      <div class="uml-actor"><div class="uml-actor-icon"><svg style="color:var(--accent);" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2"/></svg></div><div class="uml-actor-name">受信者 Bob</div><div class="uml-actor-sub">Aliceの公開鍵保有</div></div>
+    </div>
+    <div class="uml-note-box">
+      ①Alice：ハッシュ化 — H(M) ＝ ダイジェスト<br>
+      ②Alice：自分の<strong>秘密鍵</strong>でダイジェストを暗号化 → 署名 S<br>
+      ③Alice→Bob：M（平文）と S（署名）を送信<br>
+      ④Bob：受信した M を再ハッシュ → H(M')<br>
+      ⑤Bob：Aliceの<strong>公開鍵</strong>で S を復号 → ダイジェスト D<br>
+      ⑥Bob：H(M') == D ならば<em>「本人が送り、改ざんされていない」</em>
+    </div>
+  </div>
+
+  <h3>署名アルゴリズムの選択</h3>
+  <div class="cmp-table"><table><thead><tr><th>アルゴリズム</th><th>鍵長</th><th>速度</th><th>用途</th></tr></thead><tbody>
+    <tr><td>RSA-2048</td><td>2048bit</td><td>遅い・大きい</td><td>従来主流。互換性◎</td></tr>
+    <tr><td>RSA-PSS</td><td>2048bit以上</td><td>同上</td><td>より安全な署名フォーマット</td></tr>
+    <tr><td>ECDSA (P-256)</td><td>256bit</td><td>速い・小さい</td><td>TLS証明書の主流</td></tr>
+    <tr><td>Ed25519</td><td>256bit</td><td>最速・決定論的</td><td>SSH, JWT, モダン用途</td></tr>
+  </tbody></table></div>
+</section>
+
+
+<section class="section" id="s3">
+  <div class="section-header"><span class="s-num">3</span><div><h2>PKIと証明書のライフサイクル</h2></div></div>
+
+  <h3>PKI構成要素</h3>
+  <div class="card-grid">
+    <div class="icard"><div class="icard-icon"><svg style="color:var(--gold);" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="14" rx="1"/><path d="M8 8h8M8 11h5"/><circle cx="12" cy="19" r="3"/><path d="M10 21l-1 2M14 21l1 2"/></svg></div><div class="icard-label">CA（認証局）</div><div class="icard-val">証明書を発行・失効する信頼の起点</div></div>
+    <div class="icard"><div class="icard-icon"><svg style="color:var(--accent2);" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2"/><path d="M19 4l1 2 2 .3-1.5 1.5.4 2-1.9-1-1.9 1 .4-2L16 6.3l2-.3 1-2z"/></svg></div><div class="icard-label">RA（登録局）</div><div class="icard-val">申請者の本人確認を代行</div></div>
+    <div class="icard"><div class="icard-icon"><svg style="color:var(--accent);" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg></div><div class="icard-label">リポジトリ</div><div class="icard-val">発行済証明書とCRLを公開</div></div>
+    <div class="icard"><div class="icard-icon"><svg style="color:var(--success);" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></div><div class="icard-label">検証者</div><div class="icard-val">提示された証明書を検証する側</div></div>
+    <div class="icard"><div class="icard-icon"><svg style="color:var(--danger);" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="14" r="4" fill="currentColor" fill-opacity=".25"/><path d="M11 14h10M17 14v4M21 14v4"/></svg></div><div class="icard-label">サブスクライバ</div><div class="icard-val">証明書を所有する主体（サーバ等）</div></div>
+    <div class="icard"><div class="icard-icon"><svg style="color:var(--gold);" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15" r="1.2" fill="currentColor"/><path d="M12 16v2"/></svg></div><div class="icard-label">HSM</div><div class="icard-val">CA秘密鍵を耐タンパで保護</div></div>
+  </div>
+
+  <h3>X.509証明書の主要フィールド</h3>
+  <div class="cmp-table"><table><thead><tr><th>フィールド</th><th>内容</th><th>備考</th></tr></thead><tbody>
+    <tr><td>Subject</td><td>所有者名（CN, O, OU等）</td><td>従来はCNでホスト名指定</td></tr>
+    <tr><td><strong>SAN</strong>(Subject Alternative Name)</td><td>サーバ証明書の対象ホスト一覧</td><td>現在の主流。CNより優先</td></tr>
+    <tr><td>Issuer</td><td>発行CAの識別名</td><td>チェーン検証で次のCAを特定</td></tr>
+    <tr><td>Validity</td><td>有効期間（NotBefore, NotAfter）</td><td>パブリックTLSは最大398日</td></tr>
+    <tr><td>Public Key</td><td>所有者の公開鍵</td><td>RSA/EC/Ed25519</td></tr>
+    <tr><td>Signature</td><td>発行CAによる署名</td><td>これでチェーンが繋がる</td></tr>
+    <tr><td>EKU</td><td>使用目的（serverAuth, clientAuth等）</td><td>用途を限定する</td></tr>
+    <tr><td>AIA</td><td>Authority Info Access (OCSP URL等)</td><td>失効確認の問合せ先</td></tr>
+  </tbody></table></div>
+
+  <h3>失効確認 — CRL vs OCSP vs OCSP Stapling</h3>
+  <div class="cmp-table"><table><thead><tr><th>方式</th><th>仕組み</th><th>長所</th><th>短所</th></tr></thead><tbody>
+    <tr><td>CRL</td><td>失効リストをCAが定期発行</td><td>シンプル</td><td>巨大化・反映遅延</td></tr>
+    <tr><td>OCSP</td><td>クライアントがCAにリアルタイム問合</td><td>最新性◎</td><td>CAの可用性に依存・閲覧履歴がCAに残る</td></tr>
+    <tr><td><strong>OCSP Stapling</strong></td><td>サーバが事前取得したOCSP応答をTLSで添付</td><td>クライアント問合不要・高速・プライバシ保護</td><td>サーバ側設定が必須</td></tr>
+    <tr><td>CRLite / Must-Staple</td><td>新世代の効率化方式</td><td>規模対応</td><td>普及途上</td></tr>
+  </tbody></table></div>
+
+  <h3>CAA レコード — 証明書発行を許可するCAを指定</h3>
+  <p>DNSの CAAレコード で <code>example.jp. CAA 0 issue "letsencrypt.org"</code> と宣言すれば、Let's Encrypt 以外のCAは発行を<strong>拒否しなければならない</strong>（CA/Browser Forum BR要件）。誤発行や不正発行への防衛策。第4章とのクロスリファレンスポイント。</p>
+</section>
+
+
+<section class="section" id="s4">
+  <div class="section-header"><span class="s-num">4</span><div><h2>TLS 1.3ハンドシェイク</h2></div></div>
+
+  <h3>TLS 1.2と1.3の違い</h3>
+  <div class="cmp-table"><table><thead><tr><th>項目</th><th>TLS 1.2</th><th>TLS 1.3</th></tr></thead><tbody>
+    <tr><td>RTT（往復回数）</td><td>2-RTT</td><td><strong>1-RTT</strong>（0-RTT も可）</td></tr>
+    <tr><td>鍵交換</td><td>RSA鍵交換 / DHE / ECDHE</td><td><strong>(EC)DHEのみ</strong>（PFS必須）</td></tr>
+    <tr><td>暗号スイート</td><td>多数（脆弱なものも残存）</td><td>5種類のみ（AEAD必須）</td></tr>
+    <tr><td>署名</td><td>RSA, DSA, ECDSA</td><td>RSA-PSS, ECDSA, EdDSA</td></tr>
+    <tr><td>圧縮</td><td>あり（CRIME攻撃の原因）</td><td>削除</td></tr>
+    <tr><td>再ネゴシエーション</td><td>あり</td><td>削除</td></tr>
+    <tr><td>SNI暗号化</td><td>不可</td><td>ESNI/ECH拡張で可能</td></tr>
+  </tbody></table></div>
+
+  <h3>TLS 1.3 ハンドシェイクシーケンス（1-RTT）</h3>
+  <div class="uml-seq">
+    <div class="uml-actors" style="grid-template-columns:1fr 1fr;">
+      <div class="uml-actor"><div class="uml-actor-icon"><svg style="color:var(--accent2);" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="13" rx="1"/><path d="M8 21h8M12 17v4"/></svg></div><div class="uml-actor-name">クライアント</div></div>
+      <div class="uml-actor"><div class="uml-actor-icon"><svg style="color:var(--gold);" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="6" rx="1"/><rect x="3" y="14" width="18" height="6" rx="1"/><circle cx="7" cy="7" r=".8" fill="currentColor"/><circle cx="7" cy="17" r=".8" fill="currentColor"/></svg></div><div class="uml-actor-name">サーバ</div></div>
+    </div>
+    <div class="uml-note-box">
+      <strong>=== Round Trip 1 ===</strong><br>
+      ①Client→Server: ClientHello（サポート暗号スイート, key_share=Cの公開鍵, SNI）<br>
+      ②Server→Client: ServerHello（採用スイート, key_share=Sの公開鍵）<br>
+      ③Server: 以降を即時暗号化（鍵が確定したため）<br>
+      ④Server→Client: {Certificate}, {CertificateVerify(署名)}, {Finished}<br>
+      <strong>=== Round Trip 2（実データ送信） ===</strong><br>
+      ⑤Client：証明書チェーン検証 + 署名検証 + 共通鍵導出<br>
+      ⑥Client→Server: {Finished}, {Application Data}<br>
+      <em>※</em>{}<em>は暗号化されている部分。1-RTTでアプリデータを送信開始可能。</em>
+    </div>
+  </div>
+
+  <h3>覚えておくべき5つの暗号スイート（TLS 1.3）</h3>
+  <div class="point-list">
+    <div class="point"><div class="pt-mark"><svg style="color:var(--success);" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4,12 10,18 20,6"/></svg></div><div class="pt-body"><code>TLS_AES_256_GCM_SHA384</code> — 高セキュリティ標準</div></div>
+    <div class="point"><div class="pt-mark"><svg style="color:var(--success);" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4,12 10,18 20,6"/></svg></div><div class="pt-body"><code>TLS_CHACHA20_POLY1305_SHA256</code> — モバイル向け（AES-NIなし環境で高速）</div></div>
+    <div class="point"><div class="pt-mark"><svg style="color:var(--success);" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4,12 10,18 20,6"/></svg></div><div class="pt-body"><code>TLS_AES_128_GCM_SHA256</code> — 互換性重視</div></div>
+    <div class="point"><div class="pt-mark"><svg style="color:var(--success);" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4,12 10,18 20,6"/></svg></div><div class="pt-body"><code>TLS_AES_128_CCM_SHA256</code> — IoT向け軽量</div></div>
+    <div class="point"><div class="pt-mark"><svg style="color:var(--success);" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4,12 10,18 20,6"/></svg></div><div class="pt-body"><code>TLS_AES_128_CCM_8_SHA256</code> — IoT向け超軽量（タグ短縮）</div></div>
+  </div>
+</section>
+
+
+<section class="section" id="s5">
+  <div class="section-header"><span class="s-num">5</span><div><h2>OAuth 2.0 / OIDC / SAML</h2></div></div>
+
+  <h3>位置づけの違い</h3>
+  <div class="cmp-table"><table><thead><tr><th>仕様</th><th>主目的</th><th>規格元</th><th>主流域</th></tr></thead><tbody>
+    <tr><td><strong>OAuth 2.0</strong></td><td>認可の委譲（権限の貸与）</td><td>IETF (RFC 6749)</td><td>API認可</td></tr>
+    <tr><td><strong>OpenID Connect (OIDC)</strong></td><td>認証（誰なのか）+ OAuth 2.0</td><td>OpenID Foundation</td><td>SNSログイン・モバイル</td></tr>
+    <tr><td><strong>SAML 2.0</strong></td><td>認証アサーションの連携（XMLベース）</td><td>OASIS</td><td>企業SSO・基幹SaaS</td></tr>
+  </tbody></table></div>
+
+  <div class="warn-box">
+    <div class="warn-i"><svg style="color:var(--danger);" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 20h20L12 2z"/><path d="M12 9v5M12 17v.5" stroke-width="2"/></svg></div>
+    <div><strong>「認証(Authentication)と認可(Authorization)を混同しない」</strong>—— 認証は「誰か」、認可は「何ができるか」。OAuth単体では認証用途に使ってはならない（user-id を id_token のように扱うと脆弱）。OIDCがOAuth上に認証の標準を定義したのはそのため。</div>
+  </div>
+
+  <h3>OAuth 2.0 認可コードフロー（PKCE付）</h3>
+  <div class="uml-seq">
+    <div class="uml-actors" style="grid-template-columns:1fr 1fr 1fr 1fr;">
+      <div class="uml-actor"><div class="uml-actor-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2"/></svg></div><div class="uml-actor-name">User</div></div>
+      <div class="uml-actor"><div class="uml-actor-icon"><svg style="color:var(--accent2);" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/></svg></div><div class="uml-actor-name">Client App</div></div>
+      <div class="uml-actor"><div class="uml-actor-icon"><svg style="color:var(--gold);" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2"/><path d="M19 4l1 2 2 .3-1.5 1.5.4 2-1.9-1-1.9 1 .4-2L16 6.3l2-.3 1-2z"/></svg></div><div class="uml-actor-name">認可サーバ</div></div>
+      <div class="uml-actor"><div class="uml-actor-icon"><svg style="color:var(--accent);" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="6" rx="1"/><rect x="3" y="14" width="18" height="6" rx="1"/><circle cx="7" cy="7" r=".8" fill="currentColor"/><circle cx="7" cy="17" r=".8" fill="currentColor"/></svg></div><div class="uml-actor-name">リソースサーバ</div></div>
+    </div>
+    <div class="uml-note-box">
+      ①Client：code_verifier（ランダム）生成 → SHA-256 → code_challenge<br>
+      ②Client→認可サーバ：認可リクエスト（client_id, redirect_uri, code_challenge, scope）<br>
+      ③User→認可サーバ：認証 + 同意<br>
+      ④認可サーバ→Client：認可コード（ブラウザリダイレクト）<br>
+      ⑤Client→認可サーバ：トークン要求（code + <strong>code_verifier</strong>）<br>
+      ⑥認可サーバ：code_verifier をハッシュ化して code_challenge と一致確認<br>
+      ⑦認可サーバ→Client：access_token + refresh_token (+ id_token if OIDC)<br>
+      ⑧Client→リソースサーバ：Bearer access_token でAPI呼出<br>
+      <em>※PKCE（RFC 7636）により認可コード盗聴があっても code_verifier がない攻撃者は token に交換できない。</em>
+    </div>
+  </div>
+
+  <h3>JWT — alg=NONE攻撃（R6春問1の論点）</h3>
+  <p>JWT (JSON Web Token) は <code>header.payload.signature</code> の3部構成。<strong>header の <code>alg</code> フィールドに <code>"none"</code> を指定して署名なしで送る攻撃</strong>がある。古いライブラリは「アルゴリズム none ＝署名検証スキップ」と解釈し、改ざんペイロードを通してしまう。</p>
+  <div class="point-list">
+    <div class="point"><div class="pt-mark"><svg style="color:var(--success);" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L4 6v6c0 5 3.5 9 8 10 4.5-1 8-5 8-10V6l-8-4z"/><polyline points="9,12 11,14 15,10"/></svg></div><div class="pt-body"><strong>対策1：</strong>許可するアルゴリズムを<em>明示的にホワイトリスト</em>（<code>RS256</code>のみ等）。<code>jwt.verify(token, key, {algorithms:['RS256']})</code></div></div>
+    <div class="point"><div class="pt-mark"><svg style="color:var(--success);" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L4 6v6c0 5 3.5 9 8 10 4.5-1 8-5 8-10V6l-8-4z"/><polyline points="9,12 11,14 15,10"/></svg></div><div class="pt-body"><strong>対策2：</strong>HS256とRS256の混在に注意（鍵混同攻撃: 公開鍵をHS256のシークレットとして使う）</div></div>
+    <div class="point"><div class="pt-mark"><svg style="color:var(--success);" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L4 6v6c0 5 3.5 9 8 10 4.5-1 8-5 8-10V6l-8-4z"/><polyline points="9,12 11,14 15,10"/></svg></div><div class="pt-body"><strong>対策3：</strong>有効期限（exp）と発行者（iss）と対象（aud）の3つを必ず検証</div></div>
+  </div>
+
+  <div class="legacy-box">
+    <div class="legacy-h"><span class="legacy-tag">R3春 PM1問1</span><svg style="color:#3d4860;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5a2 2 0 0 1 2-2h14v18H6a2 2 0 0 1-2-2z"/><path d="M4 19a2 2 0 0 1 2-2h14"/></svg> 旧過去問より — SAMLによるSSO実装</div>
+    <div class="legacy-body">
+      旧形式時代の認証SSO問題。複数のSaaS利用環境で<strong>各サービス独立のID管理が運用負担</strong>となっており、SAMLによるSSO化を設計する。<em>採点ポイントの3要素</em>：①<strong>IdP（認証主体）とSP（サービス側）の分担</strong>、②<strong>SAMLアサーション（XML）への署名と検証</strong>、③<strong>ブラウザリダイレクトを介した受け渡し</strong>。新形式でも複合シナリオの一部として頻出。OIDCとの違いも問われやすい（SAMLはXML/SPベース、OIDCはJSON/JWT/モバイル親和性高）。第14章Q40参照。
+    </div>
+  </div>
+
+  <div class="legacy-box">
+    <div class="legacy-h"><span class="legacy-tag">H29秋 PM1問3 / H29秋 PM2問2</span><svg style="color:#3d4860;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5a2 2 0 0 1 2-2h14v18H6a2 2 0 0 1-2-2z"/><path d="M4 19a2 2 0 0 1 2-2h14"/></svg> 旧過去問より — TLS暗号スイート＋HSTS／鍵階層 KEK/DEK</div>
+    <div class="legacy-body">
+      <strong>2017年（黎明期）の連続出題テーマ</strong>。①<strong>TLSサーバ運用</strong>＝RC4・3DESなど脆弱な暗号スイートの無効化、AES-GCM等の強い暗号のみ許可、<em>HSTSヘッダ</em>でブラウザを強制HTTPS化。②<strong>データ暗号化設計</strong>＝<em>KEK/DEK鍵階層</em>でDEK（データ毎の鍵）をKEK（マスター鍵）で暗号化保管。HSMでKEKを保護すれば、DBごとDEKが漏えいしても復号不能。<strong>大量データのDEK更新が不要</strong>になり運用コストが下がる。両者とも現代の暗号運用設計の基礎であり、TLS 1.3時代でも考え方は不変。第14章Q52/Q54参照。
+    </div>
+  </div>
+
+  <div class="legacy-box">
+    <div class="legacy-h"><span class="legacy-tag">H29春 PM1問3</span><svg style="color:#3d4860;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5a2 2 0 0 1 2-2h14v18H6a2 2 0 0 1-2-2z"/><path d="M4 19a2 2 0 0 1 2-2h14"/></svg> 旧過去問より — OAuth 2.0アクセストークン検証</div>
+    <div class="legacy-body">
+      クラウド認証連携の黎明期出題。OAuth 2.0アクセストークンの検証方式として<strong>2方式の対比</strong>が問われた。①<em>イントロスペクション方式</em>＝認可サーバへ毎回問合せ、常に最新の失効状態を反映できるが認可サーバ負荷大。②<em>JWT自己完結型</em>＝署名検証のみで即可否判断、スケールしやすいが失効反映が遅延。<strong>失効性 vs 性能のトレードオフ</strong>が中心論点で、<em>短い有効期限＋リフレッシュトークン</em>の組み合わせで折衷するのが現代の正解。第14章Q56参照。
+    </div>
+  </div>
+</section>
+
+
+<section class="section" id="s6">
+  <div class="section-header"><span class="s-num">6</span><div><h2>サイドチャネル攻撃と対策</h2></div></div>
+
+  <p class="exam-ref"><span class="year-badge">R7秋</span> 問2「鍵管理と暗号通貨」で電磁波解析が出題</p>
+
+  <h3>サイドチャネルとは — 「鍵を直接取らずに横から漏らさせる」</h3>
+  <p>暗号アルゴリズム自体が数学的に堅牢でも、<em>実装しているハードウェア/ソフトウェアの「副次的な情報」</em>から鍵を推測する攻撃。観測対象は処理時間・電力消費・電磁波・キャッシュアクセスパターン・音響など多岐にわたる。</p>
+
+  <div class="analogy">
+    <div class="analogy-icon"><svg style="color:var(--gold);" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></div>
+    <div class="analogy-body">
+      <strong>たとえ話：金庫破りの上級技</strong><br>
+      普通の泥棒は鍵穴をピッキングする（暗号解読）。サイドチャネル攻撃者は<em>金庫が動く時の音・温度・電気使用量を計って、内部のダイヤル位置を割り出す</em>——金庫を1ミリも触らずに番号を当てるイメージ。
+    </div>
+  </div>
+
+  <h3>主要なサイドチャネル攻撃</h3>
+  <div class="cmp-table"><table><thead><tr><th>攻撃</th><th>観測対象</th><th>典型シナリオ</th></tr></thead><tbody>
+    <tr><td><strong>タイミング攻撃</strong></td><td>処理時間の差</td><td>パスワード文字列比較が「1文字目で違えば即return」だと、文字単位で総当たり可能</td></tr>
+    <tr><td><strong>電力解析（SPA/DPA）</strong></td><td>消費電力波形</td><td>ICカードのRSA処理時、ビット0/1で消費電力が違うことから秘密鍵ビットを逐次推定</td></tr>
+    <tr><td><strong>電磁波解析（EMA）</strong></td><td>放射電磁波</td><td>R7秋問2の論点。HSM/ICカードに非接触で近接アンテナ測定</td></tr>
+    <tr><td><strong>音響解析</strong></td><td>CPUコイル鳴き</td><td>マイクでRSA鍵抽出（GenkinらRSA音響解析）</td></tr>
+    <tr><td><strong>キャッシュ攻撃</strong></td><td>L1/L2キャッシュアクセス</td><td>同一CPU上の他プロセスからAES鍵を抽出（Flush+Reload, Spectre）</td></tr>
+    <tr><td><strong>故障注入（FI）</strong></td><td>—（能動的）</td><td>電源グリッチ・レーザでビット反転を起こし、誤動作からの差分解析</td></tr>
+  </tbody></table></div>
+
+  <h3>対策の3層</h3>
+  <div class="layer-stack">
+    <div class="ls-row"><div class="ls-l">アルゴリズム層</div><div class="ls-c">定数時間実装 / マスキング / シャッフリング / ブラインディング</div><div class="ls-r"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="8,5 2,12 8,19"/><polyline points="16,5 22,12 16,19"/></svg></div></div>
+    <div class="ls-row"><div class="ls-l">実装層</div><div class="ls-c">分岐の排除 / 配列アクセスの非依存化 / RSA-CRTのチェック</div><div class="ls-r"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v3M12 20v3M4 12H1M23 12h-3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg></div></div>
+    <div class="ls-row"><div class="ls-l">物理層</div><div class="ls-c">耐タンパHSM / 電源フィルタ / シールドケース / センサ</div><div class="ls-r"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L4 6v6c0 5 3.5 9 8 10 4.5-1 8-5 8-10V6l-8-4z"/><polyline points="9,12 11,14 15,10"/></svg></div></div>
+  </div>
+
+  <h3>HSMとは何か（再確認）</h3>
+  <p><strong>HSM（Hardware Security Module）</strong>は秘密鍵を<em>外部に取り出せない</em>専用ハードウェア。FIPS 140-2/140-3 Level 3以上では物理開封でゼロ化される。クラウドではAWS CloudHSM, Azure Dedicated HSM, GCP Cloud HSM。<strong>サイドチャネル耐性試験</strong>もFIPS 140-3で強化された。</p>
+
+  <h3>記述で問われやすい論点</h3>
+  <div class="point-list">
+    <div class="point"><div class="pt-mark"><svg style="color:var(--gold);" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4l11 4-11 4"/></svg></div><div class="pt-body"><strong>「なぜ非接触で攻撃できるか」</strong> → ICチップが動作する際に放射される電磁波/消費電力の波形に、処理しているビット列の情報が含まれているため</div></div>
+    <div class="point"><div class="pt-mark"><svg style="color:var(--gold);" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4l11 4-11 4"/></svg></div><div class="pt-body"><strong>「対策となる実装」</strong> → 定数時間実装・マスキング（中間値の乱数化）・耐タンパHSMの利用</div></div>
+    <div class="point"><div class="pt-mark"><svg style="color:var(--gold);" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4l11 4-11 4"/></svg></div><div class="pt-body"><strong>「鍵更新の意義」</strong> → 1つの鍵で十分なサンプル数を観測される前にローテーションすれば攻撃難度が上がる</div></div>
+  </div>
+</section>
+
+
+<section class="section" id="s7">
+  <div class="section-header"><span class="s-num">7</span><div><h2>過去問記述演習</h2></div></div>
+
+  <p class="exam-ref"><span class="year-badge">R7秋</span> 問2「暗号通貨ウォレット鍵管理」</p>
+
+  <div class="qcard">
+    <div class="qcard-h">設問1：HSMから鍵が漏えいする可能性</div>
+    <div class="qcard-q">耐タンパHSMに格納した秘密鍵が、HSM自体を攻撃者が物理的に保有した場合に外部抽出される懸念がある。サイドチャネル攻撃の観点から、攻撃者が観測する物理量を1つ挙げよ（20字以内）。</div>
+    <button class="qcard-btn" onclick="showReveal('q10-1a')">解答例を表示</button>
+    <div id="q10-1a" class="qcard-rev qcard-rev-ans">
+      <strong>模範解答（10字）：</strong>放射電磁波<br>
+      <strong>別解：</strong>消費電力波形（8字）/ 処理時間（4字）<br>
+      <strong>採点ポイント：</strong>サイドチャネル攻撃の観測対象を具体的に1つ挙げる。
+    </div>
+  </div>
+
+  <div class="qcard">
+    <div class="qcard-h">設問2：ソフトウェア実装側の対策</div>
+    <div class="qcard-q">RSA秘密鍵を扱うコードに対し、タイミング攻撃を防ぐためにソースコードレベルで実装すべき対策を1つ挙げよ（30字以内）。</div>
+    <button class="qcard-btn" onclick="showReveal('q10-2a')">解答例を表示</button>
+    <div id="q10-2a" class="qcard-rev qcard-rev-ans">
+      <strong>模範解答（25字）：</strong>条件分岐に依存しない定数時間実装にする。<br>
+      <strong>別解：</strong>「ブラインディングを適用する（13字）」も可。<br>
+      <strong>採点ポイント：</strong>処理時間が秘密値に依存しない仕組み（定数時間/マスキング/ブラインディング）に言及。
+    </div>
+  </div>
+
+  <div class="qcard">
+    <div class="qcard-h">設問3：鍵更新（ローテーション）の意義</div>
+    <div class="qcard-q">サイドチャネル攻撃に対する運用面での対策として、定期的な鍵更新（ローテーション）が有効である理由を述べよ（35字以内）。</div>
+    <button class="qcard-btn" onclick="showReveal('q10-3a')">解答例を表示</button>
+    <div id="q10-3a" class="qcard-rev qcard-rev-ans">
+      <strong>模範解答（33字）：</strong>攻撃に必要な観測サンプル数が集まる前に鍵が無効化されるため。<br>
+      <strong>採点ポイント：</strong>「サイドチャネル攻撃が統計的に多数のサンプルを必要とする」点と「鍵更新で攻撃のタイムウィンドウを閉じる」両方に言及できると満点。
+    </div>
+  </div>
+
+  <div class="qcard">
+    <div class="qcard-h">設問4：JWT alg=none</div>
+    <div class="qcard-q"><span class="year-badge">R6春</span>応用：JWT検証ライブラリで <code>jwt.verify(token, key)</code> とのみ呼び出している。alg=none攻撃を防ぐためソースに加えるべき修正を述べよ（30字以内）。</div>
+    <button class="qcard-btn" onclick="showReveal('q10-4a')">解答例を表示</button>
+    <div id="q10-4a" class="qcard-rev qcard-rev-ans">
+      <strong>模範解答（28字）：</strong>algのホワイトリスト（RS256のみ等）を指定する。<br>
+      <strong>採点ポイント：</strong>「許可するアルゴリズムを明示する」ことに言及。
+    </div>
+  </div>
+
+  <h3 style="margin-top:32px;">本章の要点まとめ</h3>
+  <div class="summary-grid">
+    <div class="sm-card"><div class="sm-h"><svg style="color:var(--gold);" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="14" r="4"/><path d="M11 14h10M17 14v4M21 14v4"/></svg> 鍵の使い分け</div>暗号化＝受信者公開鍵 / 署名＝送信者秘密鍵</div>
+    <div class="sm-card"><div class="sm-h"><svg style="color:var(--gold);" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="14" rx="1"/><path d="M8 8h8M8 11h5"/><circle cx="12" cy="19" r="3"/><path d="M10 21l-1 2M14 21l1 2"/></svg> 証明書検証</div>SAN・チェーン・有効期限・失効（OCSP）の4点</div>
+    <div class="sm-card"><div class="sm-h"><svg style="color:var(--gold);" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L4 6v6c0 5 3.5 9 8 10 4.5-1 8-5 8-10V6l-8-4z"/><polyline points="9,12 11,14 15,10"/></svg> TLS 1.3</div>1-RTT、PFS必須、AEAD必須、再ネゴ廃止</div>
+    <div class="sm-card"><div class="sm-h"><svg style="color:var(--gold);" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg> サイドチャネル</div>定数時間・マスキング・耐タンパHSM の3層防御</div>
+  </div>
+</section>
+
+</main>
+</div>
+
+<footer>
+  <p>情報処理安全確保支援士 午後試験 完全対策 — 過去問分析シリーズ</p>
+  <p>シラバス Ver.2.1 準拠 / 過去問出典：IPA 公開資料 / 解説参照：sc-siken.com</p>
+  <p><a href="SC_AFTERNOON_INDEX.html">▲ 全章目次へ戻る</a></p>
+</footer>
+
+
+<script>
+/* sidebar active scroll-spy */
+const sections=document.querySelectorAll('section.section');
+const navLinks=document.querySelectorAll('.sidebar nav a');
+window.addEventListener('scroll',()=>{
+  let c='';
+  sections.forEach(s=>{ if(window.scrollY>=s.offsetTop-100) c=s.id; });
+  navLinks.forEach(l=>{ l.classList.toggle('active', l.getAttribute('href')==='#'+c); });
+}, {passive:true});
+
+/* Quiz */
+function answerQ(qid, sel, cor){
+  const q=document.getElementById(qid);
+  if(!q) return;
+  const opts=q.querySelectorAll('.quiz-opt');
+  const exp=document.getElementById(qid+'-exp');
+  const labels=['a','b','c','d','e'];
+  opts.forEach((o,i)=>{
+    o.disabled=true;
+    const lab=labels[i];
+    if(lab===cor) o.classList.add('correct');
+    else if(lab===sel) o.classList.add('wrong');
+    else o.classList.add('reveal');
+  });
+  if(exp) exp.classList.add('show');
+}
+
+/* Accordion */
+function toggleAcc(btn){
+  const c=btn.nextElementSibling;
+  const open=btn.classList.toggle('open');
+  c.classList.toggle('open',open);
+}
+
+/* Tabs */
+function switchTab(btn,pid){
+  const wrap=btn.closest('.tab-wrap');
+  wrap.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  wrap.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  const panel=document.getElementById(pid);
+  if(panel) panel.classList.add('active');
+}
+
+/* Q-card hint/answer reveal */
+function showReveal(id){
+  const el=document.getElementById(id);
+  if(el) el.classList.toggle('show');
+}
+
+/* Phase player */
+function setPhase(group, idx){
+  const stages=document.querySelectorAll('[data-phase-group="'+group+'"]');
+  const contents=document.querySelectorAll('[data-phase-content="'+group+'"]');
+  stages.forEach((s,i)=>{ s.classList.toggle('act', i===idx); });
+  contents.forEach((c,i)=>{ c.classList.toggle('act', i===idx); });
+}
+
+/* Log filter */
+function filterLog(group, kind){
+  const wrap=document.querySelector('[data-log-group="'+group+'"]');
+  if(!wrap) return;
+  wrap.querySelectorAll('.lf-btn').forEach(b=>b.classList.remove('act'));
+  const btn=wrap.querySelector('.lf-btn[data-kind="'+kind+'"]');
+  if(btn) btn.classList.add('act');
+  wrap.querySelectorAll('[data-log-line]').forEach(line=>{
+    if(kind==='all') line.style.display='block';
+    else line.style.display = line.dataset.logLine.includes(kind) ? 'block' : 'none';
+  });
+}
+</script>
+
+</body>
+</html>

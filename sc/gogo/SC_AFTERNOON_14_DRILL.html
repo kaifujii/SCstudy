@@ -1,0 +1,2096 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第14章 過去問完全演習 — 情報処理安全確保支援士 午後試験完全対策</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+
+:root{
+  --ink:#111624; --ink2:#1f2a3d; --ink3:#3d4860;
+  --accent:#1c3a5c; --accent2:#3d6998; --accent3:#7a9bc2;
+  --gold:#a47a2a; --gold2:#c9a557;
+  --paper:#fbfbf8; --surface:#f4f2ec; --panel:#ffffff;
+  --line:#d9d5c7; --line2:#e8e5db;
+  --success:#2a5f4a; --warn:#7a4a1a; --danger:#742828;
+  --info:#1a4a6a;
+  --mono:'JetBrains Mono',monospace; --serif:'Noto Serif JP',serif; --sans:'Noto Sans JP',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{ font-family:var(--sans); background:var(--paper); color:var(--ink); font-size:14.5px; line-height:1.85;
+  background-image:radial-gradient(circle at 1px 1px, rgba(31,42,61,.05) 1px, transparent 0); background-size:28px 28px; }
+
+/* COVER */
+.cover{ background:linear-gradient(180deg,#0f1420 0%,#1a2236 100%); color:#fff; padding:80px 64px 68px; position:relative; overflow:hidden; }
+.cover::before{ content:''; position:absolute; inset:0;
+  background: radial-gradient(ellipse at top right, rgba(201,165,87,.08), transparent 55%),
+              radial-gradient(ellipse at bottom left, rgba(122,155,194,.08), transparent 55%);
+  pointer-events:none; }
+.cover-geo{ position:absolute; top:-60px; right:-60px; width:540px; height:540px; opacity:.07; animation:rotSlow 60s linear infinite; }
+@keyframes rotSlow{ to{ transform:rotate(360deg); } }
+.cover-inner{ position:relative; max-width:1000px; }
+.cover-kicker{ font-size:10.5px; font-weight:700; letter-spacing:.28em; color:rgba(201,165,87,.8); text-transform:uppercase; margin-bottom:28px; display:flex; align-items:center; gap:14px; }
+.cover-kicker::before{ content:''; display:block; width:32px; height:1px; background:var(--gold2); }
+.cover h1{ font-family:var(--serif); font-size:48px; font-weight:600; line-height:1.18; margin-bottom:22px; letter-spacing:.02em; }
+.cover h1 em{ color:var(--gold2); font-style:normal; font-weight:500; }
+.cover-desc{ font-size:14px; color:rgba(255,255,255,.62); max-width:680px; margin-bottom:42px; line-height:1.9; }
+.cover-tags{ display:flex; gap:8px; flex-wrap:wrap; }
+.ctag{ font-size:10.5px; padding:5px 13px; border-radius:2px; border:1px solid rgba(201,165,87,.3); color:rgba(255,255,255,.7); letter-spacing:.08em; font-family:var(--mono); }
+.cover-meta{ display:flex; gap:24px; margin-top:34px; padding-top:24px; border-top:1px solid rgba(201,165,87,.18); flex-wrap:wrap; }
+.cover-meta-i{ font-size:11px; color:rgba(255,255,255,.55); }
+.cover-meta-i strong{ display:block; color:var(--gold2); font-size:13px; font-weight:600; margin-top:3px; letter-spacing:.04em; font-family:var(--mono); }
+
+/* LAYOUT */
+.layout{ display:flex; align-items:flex-start; background:var(--paper); }
+.sidebar{ position:sticky; top:0; width:240px; flex-shrink:0; height:100vh; overflow-y:auto;
+  background:linear-gradient(180deg,#1a2236,#0f1420); padding:36px 0; border-right:1px solid rgba(201,165,87,.12); }
+.sidebar-title{ font-size:9.5px; font-weight:700; letter-spacing:.24em; color:rgba(201,165,87,.7); text-transform:uppercase;
+  padding:0 26px 16px; border-bottom:1px solid rgba(255,255,255,.08); margin-bottom:10px; }
+.sidebar nav a{ display:block; padding:10px 26px; font-size:12.5px; color:rgba(255,255,255,.58);
+  text-decoration:none; border-left:2px solid transparent; transition:all .2s; line-height:1.5; }
+.sidebar nav a:hover{ color:#fff; background:rgba(255,255,255,.04); }
+.sidebar nav a.active{ color:var(--gold2); border-left-color:var(--gold2); background:rgba(201,165,87,.06); }
+.sidebar nav .nav-num{ font-family:var(--mono); font-size:9px; color:rgba(201,165,87,.45); display:block; margin-bottom:2px; letter-spacing:.1em; }
+.sidebar-meta{ padding:18px 26px; border-top:1px solid rgba(255,255,255,.08); margin-top:18px; }
+.sb-other{ display:block; font-size:10.5px; padding:6px 0; color:rgba(255,255,255,.45); text-decoration:none; }
+.sb-other:hover{ color:var(--gold2); }
+.sb-other strong{ color:rgba(255,255,255,.7); display:block; font-size:11px; }
+.main{ flex:1; min-width:0; padding:64px 64px 120px; max-width:1180px; }
+
+/* SECTION */
+.section{ margin-bottom:100px; scroll-margin-top:24px; }
+.section-header{ display:flex; align-items:flex-start; gap:18px; margin-bottom:36px; padding-bottom:22px; border-bottom:1px solid var(--line); position:relative; }
+.section-header::after{ content:''; position:absolute; left:0; bottom:-1px; width:80px; height:2px; background:var(--gold); }
+.s-num{ font-family:var(--mono); font-size:10px; font-weight:500; color:#fff; background:var(--ink); padding:4px 10px; border-radius:2px; margin-top:8px; white-space:nowrap; flex-shrink:0; letter-spacing:.1em; }
+.s-num.gold-bg{ background:var(--gold); }
+.s-num.red-bg{ background:var(--danger); }
+.section-sub{ font-size:13px; color:var(--ink3); margin-top:6px; }
+h2{ font-family:var(--serif); font-size:28px; font-weight:600; color:var(--ink); line-height:1.3; letter-spacing:.01em; }
+h3{ font-size:16px; font-weight:700; color:var(--ink2); margin:40px 0 16px; padding-left:14px; border-left:3px solid var(--gold); font-family:var(--sans); }
+h4{ font-size:14px; font-weight:700; color:var(--ink2); margin:24px 0 10px; padding-left:10px; border-left:2px solid var(--accent2); font-family:var(--sans); }
+p{ color:var(--ink3); margin-bottom:16px; text-wrap:pretty; }
+strong{ color:var(--ink2); font-weight:700; }
+code{ font-family:var(--mono); font-size:11.5px; background:rgba(28,58,92,.07); color:var(--accent); padding:1px 6px; border-radius:2px; }
+em{ font-style:normal; color:var(--gold); font-weight:600; }
+a{ color:var(--accent2); }
+
+/* CARDS */
+.card-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px; margin:24px 0; }
+.icard{ background:var(--panel); border:1px solid var(--line); border-radius:2px; padding:22px; display:flex; flex-direction:column; gap:12px; transition:all .3s; position:relative; overflow:hidden; }
+.icard::before{ content:''; position:absolute; top:0; left:0; width:0; height:2px; background:var(--gold); transition:width .4s; }
+.icard:hover{ border-color:var(--gold); transform:translateY(-2px); }
+.icard:hover::before{ width:100%; }
+.icard-icon{ color:var(--accent2); height:40px; display:flex; align-items:center; }
+.icard-label{ font-size:10px; font-weight:700; letter-spacing:.14em; color:var(--gold); text-transform:uppercase; }
+.icard-val{ font-size:13px; color:var(--ink3); line-height:1.7; }
+
+/* COMPARISON TABLE */
+.cmp-table{ width:100%; border-collapse:collapse; font-size:13px; margin:20px 0; background:var(--panel); border:1px solid var(--line); }
+.cmp-table th{ background:var(--ink); color:#fff; padding:11px 14px; text-align:center; font-size:11px; font-weight:600; letter-spacing:.08em; }
+.cmp-table th:first-child{ text-align:left; background:var(--ink2); }
+.cmp-table td{ padding:11px 14px; border-top:1px solid var(--line2); text-align:center; font-size:12.5px; vertical-align:middle; }
+.cmp-table td:first-child{ text-align:left; font-weight:600; color:var(--ink2); background:var(--surface); }
+.cmp-good{ color:var(--success); font-weight:600; }
+.cmp-bad{ color:var(--danger); }
+.cmp-mid{ color:var(--warn); }
+
+/* STEPS */
+.steps{ display:flex; flex-direction:column; gap:10px; margin:22px 0; }
+.step{ display:flex; gap:14px; align-items:flex-start; padding:14px 18px; border-radius:2px; background:var(--surface); border-left:3px solid var(--line); }
+.step.hi{ background:#f1f0e8; border-left-color:var(--accent2); }
+.step.ok{ background:#ecf1ed; border-left-color:var(--success); }
+.step.wn{ background:#f5efe0; border-left-color:var(--gold); }
+.step.ng{ background:#f3e8e8; border-left-color:var(--danger); }
+.sn{ font-family:var(--mono); font-size:10px; font-weight:500; color:#fff; background:var(--accent2); min-width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; padding:0 6px; }
+.step.ok .sn{ background:var(--success); }
+.step.wn .sn{ background:var(--gold); }
+.step.ng .sn{ background:var(--danger); }
+.sb{ font-size:13.5px; color:var(--ink2); line-height:1.75; }
+
+/* NOTE */
+.note{ display:flex; gap:12px; border-radius:2px; padding:16px 20px; margin:18px 0; border:1px solid; }
+.note-i{ flex-shrink:0; margin-top:2px; }
+.note p{ margin:0; font-size:13px; line-height:1.8; }
+.note.info{ background:#eef1f7; border-color:#bcc8d9; }
+.note.info p{ color:#1a2a42; }
+.note.warn{ background:#f5efe0; border-color:#d9c68a; }
+.note.warn p{ color:#5c3a10; }
+.note.danger{ background:#f3e8e8; border-color:#d0aaaa; }
+.note.danger p{ color:#5a1a1a; }
+.note.ok{ background:#ecf1ed; border-color:#a8c8b4; }
+.note.ok p{ color:#1a3d2a; }
+
+/* THREAT GRID */
+.threat-grid{ display:grid; grid-template-columns:1fr 1fr; gap:18px; margin:24px 0; }
+.threat-card{ background:var(--panel); border:1px solid var(--line); border-radius:2px; overflow:hidden; transition:transform .2s; }
+.threat-card:hover{ transform:translateY(-2px); }
+.tc-head{ display:flex; align-items:center; gap:12px; padding:14px 18px; background:var(--danger); color:#fff; }
+.tc-head.warn-head{ background:var(--gold); }
+.tc-head.info-head{ background:var(--accent); }
+.tc-head span{ font-size:13px; font-weight:700; }
+.tc-body{ padding:16px 18px; }
+.tc-body p{ font-size:12.5px; color:var(--ink3); margin:0 0 10px; line-height:1.7; }
+.tc-counter{ font-size:11.5px; color:var(--success); padding:8px 12px; background:#ecf1ed; border-radius:2px; margin:0; border-left:3px solid var(--success); }
+
+/* KEY POINT */
+.keypoint{ background:linear-gradient(135deg,#1a2236,#0f1420); color:#fff; border-radius:2px; padding:28px 32px; margin:28px 0; position:relative; overflow:hidden; border:1px solid var(--gold); }
+.keypoint::before{ content:''; position:absolute; top:0; right:0; width:120px; height:120px; background:radial-gradient(circle,rgba(201,165,87,.18),transparent 70%); }
+.kp-label{ font-size:9.5px; font-weight:700; letter-spacing:.24em; color:var(--gold2); text-transform:uppercase; margin-bottom:12px; display:flex; align-items:center; gap:10px; }
+.kp-label::before{ content:''; display:block; width:20px; height:1px; background:var(--gold2); }
+.keypoint p{ color:rgba(255,255,255,.86); margin:0; font-size:13.5px; line-height:1.9; position:relative; }
+.keypoint strong{ color:var(--gold2); }
+
+/* QUIZ */
+.quiz-wrap{ display:flex; flex-direction:column; gap:24px; margin:24px 0; }
+.quiz{ background:var(--panel); border:1px solid var(--line); border-radius:2px; overflow:hidden; }
+.quiz-q{ padding:16px 20px; background:var(--ink2); color:#fff; font-size:13.5px; line-height:1.7; display:flex; gap:14px; }
+.quiz-qn{ font-family:var(--mono); font-size:10px; background:var(--gold); color:#fff; padding:3px 10px; border-radius:2px; white-space:nowrap; flex-shrink:0; height:fit-content; margin-top:2px; letter-spacing:.1em; }
+.quiz-opts{ padding:16px 20px; display:flex; flex-direction:column; gap:8px; }
+.quiz-opt{ padding:10px 14px; border:1px solid var(--line); border-radius:2px; font-size:13px; color:var(--ink2); cursor:pointer; transition:all .2s; background:var(--panel); text-align:left; font-family:var(--sans); }
+.quiz-opt:hover{ background:var(--surface); border-color:var(--accent2); }
+.quiz-opt.correct{ background:#ecf1ed; border-color:var(--success); color:var(--success); }
+.quiz-opt.wrong{ background:#f3e8e8; border-color:var(--danger); color:var(--danger); }
+.quiz-opt.reveal{ background:var(--surface); color:#999; }
+.quiz-exp{ display:none; padding:14px 20px; background:#f5efe0; border-top:1px solid #d9c68a; font-size:13px; color:#5c3a10; line-height:1.8; }
+.quiz-exp.show{ display:block; animation:fadeIn .4s ease; }
+@keyframes fadeIn{ from{opacity:0;transform:translateY(-4px)} to{opacity:1;transform:translateY(0)} }
+
+/* ACCORDION */
+.accordion{ border:1px solid var(--line); border-radius:2px; overflow:hidden; margin:18px 0; background:var(--panel); }
+.acc-item{ border-bottom:1px solid var(--line); }
+.acc-item:last-child{ border-bottom:none; }
+.acc-trigger{ width:100%; text-align:left; padding:14px 22px; background:var(--panel); border:none; cursor:pointer; display:flex; align-items:center; gap:14px; font-size:13.5px; font-weight:600; color:var(--ink2); transition:background .2s; font-family:var(--sans); }
+.acc-trigger:hover{ background:var(--surface); }
+.acc-trigger.open{ background:#f5efe0; color:var(--warn); }
+.acc-arrow{ margin-left:auto; width:18px; height:18px; position:relative; flex-shrink:0; transition:transform .3s; }
+.acc-trigger.open .acc-arrow{ transform:rotate(45deg); }
+.acc-arrow::before{ content:''; width:10px; height:2px; background:var(--gold); position:absolute; top:8px; left:4px; }
+.acc-arrow::after{ content:''; width:2px; height:10px; background:var(--gold); position:absolute; top:4px; left:8px; }
+.acc-content{ display:none; padding:16px 22px 20px; background:#faf6ec; border-top:1px solid var(--line); font-size:13px; color:var(--ink3); line-height:1.85; }
+.acc-content.open{ display:block; animation:fadeIn .4s ease; }
+
+/* TAB */
+.tab-wrap{ background:var(--panel); border:1px solid var(--line); border-radius:2px; overflow:hidden; margin:22px 0; }
+.tab-bar{ display:flex; border-bottom:1px solid var(--line); background:var(--surface); overflow-x:auto; }
+.tab-btn{ padding:12px 22px; font-size:12.5px; font-weight:600; color:var(--ink3); background:none; border:none; cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-1px; transition:all .2s; white-space:nowrap; font-family:var(--sans); display:flex; align-items:center; gap:10px; }
+.tab-btn:hover{ color:var(--ink2); }
+.tab-btn.active{ color:var(--gold); border-bottom-color:var(--gold); background:var(--panel); }
+.tab-panel{ display:none; padding:26px; }
+.tab-panel.active{ display:block; animation:fadeIn .4s ease; }
+
+/* SY BADGE */
+.sy-badge{ display:inline-flex; align-items:center; gap:6px; background:#eef1f7; color:var(--accent); padding:3px 10px; border-radius:2px; font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.08em; margin-right:6px; margin-bottom:10px; }
+.year-badge{ display:inline-flex; align-items:center; gap:4px; background:var(--gold); color:#fff; padding:2px 8px; border-radius:2px; font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.08em; margin-right:4px; }
+
+/* ── HTML+CSS Sequence diagram (no SVG) ── */
+.uml-seq{ background:var(--panel); border:1px solid var(--line); border-radius:2px; padding:24px; margin:24px 0; overflow-x:auto; }
+.uml-actors{ display:grid; gap:16px; align-items:end; }
+.uml-actor{ background:var(--surface); border:1px solid var(--line); border-radius:2px; padding:12px 8px; text-align:center; }
+.uml-actor-icon{ width:36px; height:36px; margin:0 auto 8px; display:flex; align-items:center; justify-content:center; background:var(--panel); border-radius:50%; border:1px solid var(--line); }
+.uml-actor-name{ font-size:11px; font-weight:700; color:var(--ink2); line-height:1.3; }
+.uml-actor-sub{ font-size:9px; color:var(--ink3); margin-top:3px; font-family:var(--mono); letter-spacing:.04em; }
+.uml-msg-row{ display:grid; align-items:center; padding:10px 0; position:relative; }
+.uml-msg-row::before{ content:''; position:absolute; top:0; bottom:0; left:0; right:0; pointer-events:none; }
+.uml-arrow{ height:2px; background:var(--accent2); position:relative; align-self:center; }
+.uml-arrow.rev{ background:var(--gold); }
+.uml-arrow.danger{ background:var(--danger); }
+.uml-arrow.success{ background:var(--success); }
+.uml-arrow::after{ content:''; position:absolute; right:-1px; top:-5px; width:0; height:0; border:6px solid transparent; border-left-color:var(--accent2); }
+.uml-arrow.rev::after{ right:auto; left:-1px; border-left-color:transparent; border-right-color:var(--gold); }
+.uml-arrow.danger::after{ border-left-color:var(--danger); }
+.uml-arrow.success::after{ border-left-color:var(--success); }
+.uml-msg-label{ font-size:11.5px; color:var(--ink2); padding:4px 10px; background:var(--panel); border:1px solid var(--line); border-radius:2px; line-height:1.5; text-align:center; }
+.uml-msg-row.note{ }
+.uml-note-box{ background:#f5efe0; border:1px solid #d9c68a; border-radius:2px; padding:8px 12px; font-size:11px; color:#5c3a10; line-height:1.55; grid-column:1 / -1; }
+
+/* ── HTML topology (no SVG) ── */
+.topo{ background:var(--panel); border:1px solid var(--line); border-radius:2px; padding:24px; margin:24px 0; overflow-x:auto; }
+.topo-zone{ border:1.5px dashed var(--line); border-radius:2px; padding:14px; margin:8px 0; position:relative; }
+.topo-zone-label{ position:absolute; top:-10px; left:14px; background:var(--paper); padding:0 8px; font-size:10px; font-weight:700; color:var(--ink3); letter-spacing:.1em; text-transform:uppercase; }
+.topo-zone.dmz{ border-color:var(--gold); }
+.topo-zone.intra{ border-color:var(--accent2); }
+.topo-zone.extra{ border-color:var(--danger); }
+.topo-zone.cloud{ border-color:var(--success); }
+.topo-row{ display:flex; gap:14px; align-items:center; flex-wrap:wrap; padding:8px 0; }
+.topo-node{ background:var(--surface); border:1px solid var(--line); border-radius:2px; padding:10px 14px; min-width:120px; text-align:center; position:relative; }
+.topo-node-icon{ width:28px; height:28px; margin:0 auto 6px; color:var(--accent2); }
+.topo-node-name{ font-size:11px; font-weight:700; color:var(--ink2); }
+.topo-node-ip{ font-size:9.5px; font-family:var(--mono); color:var(--ink3); margin-top:2px; }
+.topo-conn{ flex:1; min-width:30px; height:2px; background:repeating-linear-gradient(90deg,var(--line) 0,var(--line) 4px,transparent 4px,transparent 8px); position:relative; }
+.topo-conn-label{ position:absolute; top:-18px; left:50%; transform:translateX(-50%); font-size:9.5px; color:var(--ink3); background:var(--panel); padding:1px 6px; border:1px solid var(--line2); border-radius:2px; white-space:nowrap; font-family:var(--mono); }
+
+/* ── Chip ── */
+.chip{ display:inline-block; padding:2px 10px; border-radius:2px; font-size:10.5px; font-weight:700; font-family:var(--mono); letter-spacing:.04em; margin:2px 4px 2px 0; }
+.chip.attack{ background:#f3e8e8; color:var(--danger); border:1px solid #d0aaaa; }
+.chip.defend{ background:#ecf1ed; color:var(--success); border:1px solid #a8c8b4; }
+.chip.neutral{ background:var(--surface); color:var(--ink3); border:1px solid var(--line); }
+.chip.gold{ background:#f5efe0; color:var(--warn); border:1px solid #d9c68a; }
+.chip.info{ background:#eef1f7; color:var(--accent); border:1px solid #bcc8d9; }
+
+/* ── Past exam ref box ── */
+.pastref{ display:flex; gap:10px; padding:12px 16px; background:linear-gradient(90deg,#f5efe0,var(--surface) 70%); border-left:3px solid var(--gold); border-radius:2px; margin:18px 0; font-size:12.5px; color:var(--ink2); align-items:flex-start; }
+.pastref-icon{ flex-shrink:0; color:var(--gold); margin-top:2px; }
+.pastref strong{ color:var(--warn); }
+.pastref code{ background:#fff; }
+
+/* ── Q-card (past exam style question) ── */
+.qcard{ background:var(--panel); border:1px solid var(--line); border-radius:2px; margin:24px 0; overflow:hidden; }
+.qcard-head{ background:linear-gradient(90deg,var(--ink),var(--ink2)); color:#fff; padding:14px 22px; display:flex; gap:14px; align-items:center; }
+.qcard-tag{ background:var(--gold); color:#fff; padding:3px 10px; border-radius:2px; font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.1em; }
+.qcard-title{ font-size:13.5px; font-weight:700; line-height:1.5; }
+.qcard-meta{ margin-left:auto; font-size:10.5px; color:rgba(255,255,255,.6); font-family:var(--mono); }
+.qcard-body{ padding:20px 22px; }
+.qcard-scenario{ font-size:12.5px; color:var(--ink2); line-height:1.85; padding:14px 18px; background:var(--surface); border-radius:2px; margin-bottom:18px; }
+.qcard-q{ font-size:13px; font-weight:700; color:var(--ink); margin:14px 0 8px; padding-left:10px; border-left:3px solid var(--accent2); }
+.qcard-input{ font-family:var(--mono); font-size:12px; padding:10px 14px; background:#faf6ec; border:1px dashed #d9c68a; border-radius:2px; color:var(--warn); margin:8px 0; }
+.qcard-actions{ display:flex; gap:8px; margin-top:14px; flex-wrap:wrap; }
+.qbtn{ padding:7px 16px; border-radius:2px; border:1px solid var(--line); background:var(--panel); cursor:pointer; font-size:11.5px; font-weight:600; color:var(--ink2); transition:all .2s; font-family:var(--sans); }
+.qbtn:hover{ background:var(--accent); color:#fff; border-color:var(--accent); }
+.qbtn.hint{ color:var(--accent); border-color:var(--accent2); }
+.qbtn.hint:hover{ background:var(--accent2); }
+.qbtn.ans{ color:var(--success); border-color:var(--success); }
+.qbtn.ans:hover{ background:var(--success); color:#fff; }
+.qcard-reveal{ display:none; padding:14px 18px; margin-top:14px; border-radius:2px; font-size:12.5px; line-height:1.8; }
+.qcard-reveal.show{ display:block; animation:fadeIn .4s ease; }
+.qcard-reveal.hint-r{ background:#eef1f7; border-left:3px solid var(--accent2); color:var(--accent); }
+.qcard-reveal.ans-r{ background:#ecf1ed; border-left:3px solid var(--success); color:var(--ink2); }
+.qcard-reveal.ans-r strong{ color:var(--success); }
+
+/* ── Compare panel (good/bad) ── */
+.cmp-pair{ display:grid; grid-template-columns:1fr 60px 1fr; gap:0; margin:22px 0; background:var(--panel); border:1px solid var(--line); }
+.cmp-side{ padding:18px 20px; }
+.cmp-side.good{ background:#ecf1ed; }
+.cmp-side.bad{ background:#f3e8e8; }
+.cmp-side h5{ font-size:11px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; margin-bottom:10px; }
+.cmp-side.good h5{ color:var(--success); }
+.cmp-side.bad h5{ color:var(--danger); }
+.cmp-side p{ font-size:12.5px; color:var(--ink2); margin:0 0 6px; line-height:1.65; }
+.cmp-side .ex{ font-family:var(--mono); font-size:11px; padding:8px 10px; background:rgba(255,255,255,.6); border-radius:2px; margin:6px 0; }
+.cmp-arrow{ display:flex; align-items:center; justify-content:center; background:var(--surface); border-left:1px solid var(--line); border-right:1px solid var(--line); }
+
+/* ── Theme matrix ── */
+.theme-mat{ overflow-x:auto; margin:20px 0; }
+.theme-mat table{ width:100%; min-width:800px; border-collapse:collapse; font-size:11.5px; background:var(--panel); border:1px solid var(--line); }
+.theme-mat th{ background:var(--ink); color:#fff; padding:8px; font-size:10.5px; font-weight:600; }
+.theme-mat th:first-child{ background:var(--ink2); text-align:left; padding-left:14px; }
+.theme-mat td{ padding:8px; text-align:center; border-top:1px solid var(--line2); }
+.theme-mat td:first-child{ text-align:left; font-weight:700; color:var(--ink2); padding-left:14px; background:var(--surface); white-space:nowrap; }
+.theme-mat .hit{ background:#f5efe0; font-weight:700; color:var(--warn); }
+.theme-mat .hit2{ background:#e8d8a8; color:var(--warn); font-weight:700; }
+.theme-mat .hit3{ background:#d9c184; color:#fff; font-weight:700; }
+
+/* ── Risk matrix ── */
+.risk-grid{ display:grid; grid-template-columns:80px repeat(5,1fr); grid-auto-rows:48px; gap:2px; margin:18px 0 8px; max-width:600px; }
+.risk-grid .rg-cell{ display:flex; align-items:center; justify-content:center; font-size:10.5px; font-weight:600; }
+.risk-grid .rg-axis{ color:var(--ink3); font-family:var(--mono); font-size:9.5px; background:transparent; }
+.risk-grid .rg-h{ color:#fff; font-weight:700; font-size:10.5px; padding:4px; }
+.risk-grid .rg-low{ background:#a8c8b4; color:#1a3d2a; }
+.risk-grid .rg-mid{ background:#e8d896; color:#5c3a10; }
+.risk-grid .rg-hi{ background:#d99e85; color:#5a1a1a; }
+.risk-grid .rg-cri{ background:#a85a4a; color:#fff; }
+.risk-axis-x{ display:grid; grid-template-columns:80px repeat(5,1fr); gap:2px; max-width:600px; font-size:9.5px; color:var(--ink3); font-family:var(--mono); padding:4px 0; }
+.risk-axis-x span{ text-align:center; }
+
+/* ── log entry simulator ── */
+.logsim{ background:#0f1420; color:#c5d4e8; border-radius:2px; padding:16px 18px; font-family:var(--mono); font-size:11px; line-height:1.8; margin:18px 0; overflow-x:auto; max-height:380px; overflow-y:auto; border:1px solid #2a3548; }
+.logsim .l-time{ color:#a47a2a; }
+.logsim .l-info{ color:#7a9bc2; }
+.logsim .l-warn{ color:#e8b075; }
+.logsim .l-err{ color:#e08585; }
+.logsim .l-ok{ color:#85d8a8; }
+.logsim .l-suspect{ background:rgba(232,176,117,.12); padding:0 4px; border-left:2px solid #e8b075; display:block; }
+.logsim .l-attack{ background:rgba(224,133,133,.16); padding:0 4px; border-left:2px solid #e08585; display:block; }
+.logsim-ctrl{ display:flex; gap:6px; padding:8px 12px; background:#1a2236; border-radius:2px 2px 0 0; border:1px solid #2a3548; border-bottom:none; }
+.logsim-ctrl .lf-btn{ padding:4px 10px; font-size:10.5px; border-radius:2px; border:1px solid #3a4762; background:#0f1420; color:#7a9bc2; cursor:pointer; font-family:var(--mono); }
+.logsim-ctrl .lf-btn.act{ background:var(--gold); color:#fff; border-color:var(--gold); }
+.logsim-ctrl .lf-btn:hover{ border-color:var(--gold2); color:var(--gold2); }
+
+/* ── Phase player ── */
+.phaseplayer{ background:var(--panel); border:1px solid var(--line); border-radius:2px; padding:22px; margin:24px 0; }
+.pp-stages{ display:flex; gap:6px; margin-bottom:18px; overflow-x:auto; }
+.pp-stage{ flex:1; min-width:90px; padding:10px 8px; background:var(--surface); border:1px solid var(--line); border-radius:2px; cursor:pointer; text-align:center; font-size:11px; font-weight:600; color:var(--ink3); transition:all .2s; font-family:var(--sans); }
+.pp-stage.act{ background:var(--gold); color:#fff; border-color:var(--gold); transform:translateY(-2px); box-shadow:0 3px 8px rgba(164,122,42,.3); }
+.pp-stage:hover:not(.act){ border-color:var(--gold); color:var(--gold); }
+.pp-stage-num{ display:block; font-family:var(--mono); font-size:9px; opacity:.6; margin-bottom:3px; }
+.pp-content{ min-height:140px; padding:18px 20px; background:var(--surface); border-left:3px solid var(--gold); border-radius:2px; font-size:13px; color:var(--ink2); line-height:1.85; display:none; }
+.pp-content.act{ display:block; animation:fadeIn .4s ease; }
+.pp-content h5{ font-size:13px; color:var(--warn); margin-bottom:8px; font-weight:700; }
+.pp-content code{ background:rgba(0,0,0,.04); }
+
+/* ── Footer ── */
+footer{ background:linear-gradient(180deg,#1a2236,#0f1420); color:rgba(255,255,255,.45); text-align:center; padding:32px; font-size:11.5px; letter-spacing:.08em; line-height:1.9; border-top:1px solid var(--gold); }
+footer a{ color:rgba(201,165,87,.7); text-decoration:none; }
+footer a:hover{ color:var(--gold2); }
+
+/* RESPONSIVE */
+@media (max-width:900px){
+  .sidebar{ display:none; }
+  .main{ padding:32px 20px 80px; }
+  .threat-grid,.cmp-pair{ grid-template-columns:1fr; }
+  .cover{ padding:52px 28px; }
+  .cover h1{ font-size:32px; }
+  .pp-stages{ flex-wrap:wrap; }
+}
+
+/* ====== 第9章以降 拡張コンポーネント ====== */
+.analogy{ display:flex; gap:14px; padding:18px 20px; background:linear-gradient(135deg, #faf6ee 0%, #f6efe0 100%); border:1px solid #d6c7a3; border-left:4px solid var(--gold); border-radius:2px; margin:18px 0 22px; }
+.analogy-icon{ flex:0 0 36px; display:flex; align-items:flex-start; justify-content:center; padding-top:2px; }
+.analogy-body{ font-size:15px; line-height:1.85; color:var(--ink); }
+.analogy-body strong:first-child{ display:inline-block; color:var(--gold-dark,#8a6d27); margin-bottom:4px; }
+
+.pipe-stages{ display:grid; grid-template-columns:repeat(6, 1fr); gap:8px; margin:14px 0 22px; }
+.pst{ background:#fbf8f0; border:1px solid #e0d6bf; border-top:3px solid var(--gold); border-radius:2px; padding:12px 10px; text-align:center; }
+.pst-i{ display:flex; justify-content:center; margin-bottom:6px; color:var(--ink); }
+.pst-n{ font-weight:600; font-size:13px; color:var(--ink); margin-bottom:4px; }
+.pst-c{ font-size:11.5px; color:var(--ink2,#5a5340); line-height:1.55; }
+
+.shift-track{ display:flex; align-items:stretch; gap:0; margin:14px 0 4px; padding:12px 14px; background:#1a2235; border-radius:2px; position:relative; flex-wrap:wrap; }
+.shift-arrow{ display:flex; align-items:center; color:var(--gold); padding:0 8px; }
+.shift-stage{ flex:1 1 130px; padding:10px 8px; background:#222d44; border:1px solid #2f3b56; color:#cdd2dd; border-radius:2px; font-size:12px; line-height:1.55; margin:2px; position:relative; }
+.shift-stage::after{ content:attr(data-cost); display:block; margin-top:6px; font-size:10.5px; color:#8a93a8; font-family:'JetBrains Mono',monospace; }
+.shift-stage.on{ border-color:var(--gold); background:#2c3654; color:#fff; }
+.shift-stage.on::after{ color:var(--gold); }
+
+.point-list{ display:flex; flex-direction:column; gap:8px; margin:12px 0 18px; }
+.point{ display:flex; gap:10px; align-items:flex-start; padding:10px 12px; background:#fafaf6; border-left:3px solid var(--accent); border-radius:0 2px 2px 0; }
+.pt-mark{ flex:0 0 22px; display:flex; align-items:flex-start; justify-content:center; padding-top:2px; }
+.pt-body{ font-size:13.5px; line-height:1.7; color:var(--ink); }
+
+.warn-box{ display:flex; gap:12px; padding:14px 16px; background:#fff4ec; border:1px solid #f0c8a8; border-left:4px solid var(--danger); border-radius:2px; margin:14px 0 20px; }
+.warn-i{ flex:0 0 28px; }
+.warn-box code{ background:#fff; padding:1px 5px; border-radius:2px; font-size:12.5px; }
+
+.iac-flow{ display:flex; flex-wrap:wrap; align-items:stretch; gap:0; margin:14px 0 20px; padding:14px; background:#f7f3e8; border:1px solid #d6c7a3; border-radius:2px; }
+.iacf{ flex:1 1 130px; padding:10px 12px; background:#fff; border:1px solid #d6c7a3; border-top:3px solid var(--accent); border-radius:2px; font-size:12px; line-height:1.55; color:var(--ink); margin:3px; }
+.iacf-h{ font-weight:600; font-size:12.5px; color:var(--gold-dark,#8a6d27); margin-bottom:5px; }
+.iacf-arr{ display:flex; align-items:center; color:var(--gold); padding:0 2px; }
+
+.layer-stack{ display:flex; flex-direction:column; gap:2px; margin:14px 0 20px; }
+.ls-row{ display:grid; grid-template-columns:140px 1fr 40px; gap:0; align-items:center; background:#fbf8f0; border:1px solid #e0d6bf; border-left:3px solid var(--gold); border-radius:2px; min-height:38px; }
+.ls-l{ padding:8px 12px; background:#f0e9d7; font-weight:600; font-size:12.5px; color:var(--ink); }
+.ls-c{ padding:8px 14px; font-size:13px; color:var(--ink); font-family:'JetBrains Mono',monospace; }
+.ls-r{ display:flex; justify-content:center; align-items:center; padding:8px; color:var(--accent); }
+
+.summary-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-top:14px; }
+.sm-card{ background:linear-gradient(135deg,#1a2235 0%, #232c44 100%); color:#e8eaf0; padding:14px 16px; border-radius:2px; border:1px solid #2f3b56; border-top:3px solid var(--gold); font-size:13px; line-height:1.7; }
+.sm-h{ display:flex; align-items:center; gap:8px; font-weight:600; color:var(--gold); margin-bottom:6px; font-size:13.5px; }
+
+/* qcard 追補 - 既存 qcard と併存 */
+.qcard{ background:#fbf8f0; border:1px solid #d6c7a3; border-left:3px solid var(--gold); border-radius:2px; padding:14px 18px; margin:14px 0 18px; }
+.qcard-h{ font-weight:600; color:var(--gold-dark,#8a6d27); font-size:14px; margin-bottom:8px; padding-bottom:6px; border-bottom:1px dashed #d6c7a3; }
+.qcard-q{ font-size:14px; line-height:1.85; color:var(--ink); margin-bottom:10px; }
+.qcard-q code{ background:#fff; padding:1px 5px; border-radius:2px; font-size:12.5px; }
+.qcard-btn{ display:inline-block; padding:5px 12px; margin:3px 6px 3px 0; background:var(--ink); color:#fff; border:none; border-radius:2px; font-size:12px; cursor:pointer; font-family:inherit; }
+.qcard-btn:hover{ background:var(--gold); }
+.qcard-rev{ display:none; margin-top:8px; padding:10px 14px; background:#fff; border:1px solid #e0d6bf; border-radius:2px; font-size:13px; line-height:1.8; color:var(--ink); }
+.qcard-rev.show{ display:block; }
+.qcard-rev-ans{ background:#f0f6ee; border-color:#a8c89c; border-left:3px solid var(--success); }
+
+.caption-note{ font-size:12.5px; color:var(--ink2,#5a5340); padding:8px 12px; background:#f5f1e4; border-left:3px solid var(--accent); border-radius:0 2px 2px 0; margin:8px 0 14px; line-height:1.7; }
+
+.exam-ref{ display:flex; align-items:center; gap:10px; padding:8px 14px; background:var(--ink); color:var(--gold); font-weight:600; font-size:13px; border-radius:2px; margin:14px 0 14px; }
+
+/* ====== 第10章以降 暗号・PKI 拡張 ====== */
+.crypto-pair{ display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:14px 0 20px; }
+.cp-side{ background:#fbf8f0; border:1px solid #d6c7a3; border-top:3px solid var(--gold); border-radius:2px; padding:14px 16px; }
+.cp-side h4{ display:flex; align-items:center; gap:8px; margin:0 0 8px; font-size:14px; color:var(--gold-dark,#8a6d27); }
+.cp-pri{ border-top-color:var(--danger); }
+.cp-pri h4{ color:var(--danger); }
+.cp-pub{ border-top-color:var(--accent); }
+.cp-pub h4{ color:var(--accent); }
+.cp-side ul{ font-size:12.5px; line-height:1.85; padding-left:18px; margin:6px 0; }
+
+/* ====== 第11章以降 クラウド / ZeroTrust ====== */
+.zt-pillars{ display:grid; grid-template-columns:repeat(5,1fr); gap:8px; margin:14px 0 20px; }
+.ztp{ background:#fbf8f0; border:1px solid #e0d6bf; border-top:3px solid var(--accent); border-radius:2px; padding:12px 10px; text-align:center; min-height:120px; }
+.ztp-i{ display:flex; justify-content:center; margin-bottom:6px; }
+.ztp-n{ font-weight:600; font-size:12.5px; color:var(--ink); margin-bottom:4px; }
+.ztp-c{ font-size:11px; color:var(--ink2,#5a5340); line-height:1.55; }
+
+/* ====== 第13章 ログ分析 ====== */
+.logbox{ background:#0e1422; color:#cdd2dd; padding:14px 16px; border-radius:2px; font-family:'JetBrains Mono',monospace; font-size:12px; line-height:1.85; overflow-x:auto; margin:10px 0 16px; }
+.logbox .lg-time{ color:#8a93a8; }
+.logbox .lg-warn{ color:#e6b86a; }
+.logbox .lg-err{ color:#e07d6f; }
+.logbox .lg-ok{ color:#7fc18a; }
+.logbox .lg-attack{ color:#ff6b8b; font-weight:600; }
+.logbox .lg-hl{ background:#3a3a1f; padding:0 3px; }
+
+/* ====== 第14章 ドリル ====== */
+.drill-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin:14px 0 20px; }
+.drill-tag{ display:inline-block; padding:2px 8px; background:var(--gold); color:#fff; font-size:11px; border-radius:2px; margin-right:6px; }
+
+/* ====== 試験形式の変遷（ch01） ====== */
+.format-history{ display:flex; flex-direction:column; gap:0; margin:14px 0 18px; }
+.fh-row{ display:flex; gap:18px; padding:14px 18px; border:1px solid var(--line); border-radius:2px; align-items:flex-start; }
+.fh-old{ background:#f6f7fa; border-left:3px solid #3d4860; }
+.fh-new{ background:#fbf3f1; border-left:3px solid var(--danger); }
+.fh-period{ flex:0 0 180px; font-weight:700; font-size:13px; color:var(--ink); display:flex; align-items:center; gap:8px; padding-top:2px; }
+.fh-detail{ flex:1; font-size:12.5px; color:var(--ink3); line-height:1.85; }
+.fh-arrow{ display:flex; align-items:center; justify-content:center; gap:8px; padding:8px; font-size:11px; color:var(--gold); font-family:var(--mono); letter-spacing:.08em; font-weight:700; }
+
+/* ====== 旧過去問より 歴史例ボックス ====== */
+.legacy-box{ background:linear-gradient(180deg, #f6f7fa 0%, #fbfbf8 100%); border:1px solid #c9cdd6; border-left:4px solid #3d4860; border-radius:2px; padding:16px 20px; margin:18px 0; position:relative; }
+.legacy-box::before{ content:'LEGACY'; position:absolute; top:8px; right:12px; font-family:var(--mono); font-size:9.5px; font-weight:700; letter-spacing:.18em; color:#3d4860; opacity:.7; }
+.legacy-h{ font-size:13.5px; font-weight:700; color:#1f2a3d; margin-bottom:8px; padding-bottom:6px; border-bottom:1px dashed #c9cdd6; display:flex; align-items:center; gap:8px; }
+.legacy-h .legacy-tag{ background:#3d4860; color:#fff; font-family:var(--mono); font-size:10px; font-weight:700; padding:2px 8px; border-radius:2px; letter-spacing:.06em; }
+.legacy-body{ font-size:12.5px; color:var(--ink3); line-height:1.85; }
+.legacy-body strong{ color:var(--ink); }
+.legacy-body em{ color:var(--gold); font-weight:600; }
+
+/* responsive overrides for new components */
+@media(max-width:880px){
+  .pipe-stages{ grid-template-columns:repeat(2,1fr); }
+  .crypto-pair{ grid-template-columns:1fr; }
+  .zt-pillars{ grid-template-columns:repeat(2,1fr); }
+  .summary-grid{ grid-template-columns:1fr; }
+  .drill-grid{ grid-template-columns:1fr; }
+  .ls-row{ grid-template-columns:90px 1fr 36px; }
+  .fh-row{ flex-direction:column; gap:8px; }
+  .fh-period{ flex:0 0 auto; }
+}
+
+/* responsibility model cells */
+.cmp-cust{ background:#fff4ec !important; color:#a85b2e; font-weight:600; text-align:center; }
+.cmp-prov{ background:#eef4fb !important; color:#2e5b8a; font-weight:600; text-align:center; }
+.cmp-shared{ background:#f5efe2 !important; color:#8a6d27; font-weight:600; text-align:center; }
+
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <svg class="cover-geo" viewBox="0 0 600 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="300" cy="300" r="260" stroke="#c9a557" stroke-width="1"/>
+    <circle cx="300" cy="300" r="200" stroke="#c9a557" stroke-width="1"/>
+    <circle cx="300" cy="300" r="140" stroke="#c9a557" stroke-width="1"/>
+    <circle cx="300" cy="300" r="80" stroke="#c9a557" stroke-width="1"/>
+    <line x1="300" y1="40" x2="300" y2="560" stroke="#c9a557" stroke-width="0.4"/>
+    <line x1="40" y1="300" x2="560" y2="300" stroke="#c9a557" stroke-width="0.4"/>
+    <line x1="116" y1="116" x2="484" y2="484" stroke="#c9a557" stroke-width="0.4"/>
+    <line x1="484" y1="116" x2="116" y2="484" stroke="#c9a557" stroke-width="0.4"/>
+  </svg>
+  <div class="cover-inner">
+    <p class="cover-kicker">CHAPTER 14 · COMPREHENSIVE PRACTICE</p>
+    <h1>記述で書ききる、<br><em>採点ポイントで決め切る。</em></h1>
+    <p class="cover-desc">過去20回（H27秋〜R7秋）の出題テーマから抽出した60問。新形式30問＋旧形式10問＋古典10問＋黎明期10問を完備し、記述力を本番レベルまで仕上げる。</p>
+    <div class="cover-tags">
+<span class="ctag">60問</span>
+<span class="ctag">10テーマ</span>
+<span class="ctag">新形式30+旧10+古典10+黎明10</span>
+<span class="ctag">記述模範解答</span>
+<span class="ctag">H27秋〜R7秋</span>
+    </div>
+<div class="cover-meta"><div class="cover-meta-i">問題数<strong>60問</strong></div><div class="cover-meta-i">カバー範囲<strong>過去20回 全主要テーマ</strong></div><div class="cover-meta-i">推奨周回<strong>3周</strong></div></div>
+  </div>
+</div>
+
+<div class="layout">
+
+<aside class="sidebar">
+  <div class="sidebar-title">本章の構成</div>
+  <nav>
+<a href="#s1"><span class="nav-num">CHAPTER 14 · §1</span>記述の20原則 — 採点者の視点</a>
+<a href="#s2"><span class="nav-num">CHAPTER 14 · §2</span>テーマA Web・APIセキュリティ（5問）</a>
+<a href="#s3"><span class="nav-num">CHAPTER 14 · §3</span>テーマB DNS・ドメイン（4問）</a>
+<a href="#s4"><span class="nav-num">CHAPTER 14 · §4</span>テーマC インシデントレスポンス（4問）</a>
+<a href="#s5"><span class="nav-num">CHAPTER 14 · §5</span>テーマD 脆弱性管理・サプライチェーン（4問）</a>
+<a href="#s6"><span class="nav-num">CHAPTER 14 · §6</span>テーマE 暗号・PKI・認証（4問）</a>
+<a href="#s7"><span class="nav-num">CHAPTER 14 · §7</span>テーマF クラウド・ゼロトラスト（4問）</a>
+<a href="#s8"><span class="nav-num">CHAPTER 14 · §8</span>テーマG モバイル・ネットワーク・ログ（5問）</a>
+<a href="#s9"><span class="nav-num">CHAPTER 14 · §9</span>テーマH 旧形式 経典過去問（10問）</a>
+<a href="#s10"><span class="nav-num">CHAPTER 14 · §10</span>テーマI 古典過去問 R2秋〜H30春（10問）</a>
+<a href="#s11"><span class="nav-num">CHAPTER 14 · §11</span>テーマJ 黎明期過去問 H29秋〜H27秋（10問）</a>
+<a href="#s12"><span class="nav-num">CHAPTER 14 · §12</span>記述添削チェックリスト</a>
+  </nav>
+  <div class="sidebar-meta">
+    <div class="sidebar-title" style="border:none;padding:0 0 10px;">他の章</div>
+    <a class="sb-other" href="SC_AFTERNOON_INDEX.html"><strong>目次</strong>全章一覧</a>
+<a class="sb-other" href="SC_AFTERNOON_01_GUIDE.html"><strong>Ch.01</strong>午後試験ガイド</a>
+<a class="sb-other" href="SC_AFTERNOON_02_READING.html"><strong>Ch.02</strong>シナリオ読解術</a>
+<a class="sb-other" href="SC_AFTERNOON_03_WEBAPI.html"><strong>Ch.03</strong>Web・APIセキュリティ</a>
+<a class="sb-other" href="SC_AFTERNOON_04_DNS.html"><strong>Ch.04</strong>DNS・ドメイン</a>
+<a class="sb-other" href="SC_AFTERNOON_05_INCIDENT.html"><strong>Ch.05</strong>インシデントレスポンス</a>
+<a class="sb-other" href="SC_AFTERNOON_06_VULN.html"><strong>Ch.06</strong>脆弱性管理</a>
+<a class="sb-other" href="SC_AFTERNOON_07_SUPPLY.html"><strong>Ch.07</strong>サプライチェーン</a>
+<a class="sb-other" href="SC_AFTERNOON_08_PAYMENT.html"><strong>Ch.08</strong>決済・PCI DSS</a>
+<a class="sb-other" href="SC_AFTERNOON_09_CICD.html"><strong>Ch.09</strong>CI/CD・DevSecOps</a>
+<a class="sb-other" href="SC_AFTERNOON_10_CRYPTO.html"><strong>Ch.10</strong>暗号・PKI・認証</a>
+<a class="sb-other" href="SC_AFTERNOON_11_CLOUD.html"><strong>Ch.11</strong>クラウド・ゼロトラスト</a>
+<a class="sb-other" href="SC_AFTERNOON_12_MOBILE.html"><strong>Ch.12</strong>モバイル・スマホアプリ</a>
+<a class="sb-other" href="SC_AFTERNOON_13_NETWORK.html"><strong>Ch.13</strong>ネットワーク・ログ分析</a>
+  </div>
+</aside>
+
+<main class="main">
+
+<section class="section" id="s1">
+  <div class="section-header"><span class="s-num">1</span><div><h2>記述の20原則 — 採点者の視点</h2></div></div>
+
+  <p>本章は過去20回（H27秋〜R7秋）の頻出テーマから抽出した60問。新形式30問＋旧形式10問＋古典10問＋黎明期10問の構成で、各問は<strong>シナリオ→設問→ヒント→模範解答→採点ポイント</strong>の構成。模範解答だけ覚えても点は取れない。<em>「なぜそう書くと点が入るのか」</em>を採点ポイント欄から逆算するのが本章の使い方。</p>
+
+  <div class="exam-ref"><svg style="color:var(--gold);" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4l11 4-11 4"/></svg> 採点者は「キーワード」と「論理構造」の2つを見ている。長文不要。短くても要素を漏らさないことが最優先。</div>
+
+  <h3>記述の3層構造</h3>
+  <div class="summary-grid">
+    <div class="sm-card"><div class="sm-h"><svg style="color:var(--gold);" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg> 第1層：直接答</div>問われたことに最初に答える。「攻撃名は？」→冒頭で名称を書く。前置きや背景説明を先に書かない。</div>
+    <div class="sm-card"><div class="sm-h"><svg style="color:var(--gold);" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1" fill="currentColor"/><circle cx="3.5" cy="12" r="1" fill="currentColor"/><circle cx="3.5" cy="18" r="1" fill="currentColor"/></svg> 第2層：要素列挙</div>採点キーワードを抜けなく列挙。「対策を述べよ」では1つの記述で2要素入れて加点を取りに行く。</div>
+    <div class="sm-card"><div class="sm-h"><svg style="color:var(--gold);" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg> 第3層：因果リンク</div>「〜のため」「〜により」で第1層と第2層を論理的に繋ぐ。これが採点者の「理解している」判定根拠。</div>
+    <div class="sm-card"><div class="sm-h"><svg style="color:var(--gold);" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg> 字数戦略</div>制限の70-90%を埋める。30字制限なら25字、50字制限なら40字を目安。短すぎは要素漏れを疑われる。</div>
+  </div>
+
+  <div class="caption-note">本章では各問題の採点ポイントに<strong style="color:var(--success);">①②③</strong>を付している。これが解答に含めるべき必須要素。3つ全て入れば満点、2つで部分点、1つで微小点という意識で取り組むこと。</div>
+</section>
+
+
+<section class="section" id="s2">
+  <div class="section-header"><span class="s-num">2</span><div><h2>テーマA Web・APIセキュリティ（5問）</h2></div></div>
+  <p>過去5回中、最も出題頻度が高い領域。<strong>XSS／SQLi／CSRF／SSRF／JWT／Log4Shell／ファイルアップロード／アクセス制御</strong>の8テーマから出題される。各問は新出題形式に合わせ、<em>古典攻撃をモダンな技術スタック（API+JWT、SaaS、クラウドストレージ）の文脈で問う</em>形となっている。</p>
+  
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">R7秋</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">問1 SaaS</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問1</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> SaaS型在庫管理サービスにおいて、商品画像のファイルアップロード機能で「拡張子をホワイトリストで.jpg/.pngのみ許可」していたが、攻撃が成立した。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> 拡張子チェックだけでは防げない攻撃手法を1つ挙げ、追加すべき検証を30字以内で述べよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q1-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q1-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q1-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> 拡張子は容易に偽装可能。ファイルの先頭バイトを確認するとよい。</div>
+  <div id="q1-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> ファイルのマジックナンバー（先頭数バイト）を検証して画像形式と一致するか確認する。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①「拡張子は偽装可能」を示唆 ②マジックナンバー/シグネチャ検証に言及 ③Content-Type信頼禁止という観点でも可
+    </div>
+  </div>
+</div>
+
+
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">R7秋</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">問1 SaaS</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問2</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> Webアプリにロールベースアクセス制御を実装したが、URLを直接入力することで権限のない管理者画面にアクセスできた。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> この脆弱性の名称と、サーバ側で実装すべき対策を40字以内で述べよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q2-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q2-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q2-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> OWASP Top10の「アクセス制御の不備」。クライアント側非表示だけでは無意味。</div>
+  <div id="q2-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> 不適切なアクセス制御。各リクエスト処理時にサーバ側でセッションのロールを確認し、権限がなければ拒否する。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①「サーバ側で都度確認」が核 ②「画面非表示だけでは不十分」 ③許可リスト方式（デフォルト拒否）でも可
+    </div>
+  </div>
+</div>
+
+
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">R6春</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">問1 API+JWT</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問3</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> REST APIで認証にJWTを使用していたが、攻撃者がヘッダの<code>alg</code>を<code>none</code>に書き換えたトークンで認証を突破した。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> この攻撃が成立した原因と、サーバ側で行うべき検証を50字以内で述べよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q3-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q3-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q3-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> 署名検証ライブラリの実装に依存する。期待するアルゴリズムを明示しないと危険。</div>
+  <div id="q3-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> サーバ側で許可するアルゴリズムを明示せずトークンのalg値に従って検証していたため、none指定で署名検証が省略された。サーバが想定するalg値（例：RS256）を固定して検証する。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①「alg値を信頼する実装が原因」 ②「サーバ側で許可algを固定」が必須 ③単に「none禁止」より「許可リスト方式」が高得点
+    </div>
+  </div>
+</div>
+
+
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">R6春</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">問1 Log4Shell</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問4</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> Log4j 2.xの脆弱性CVE-2021-44228（Log4Shell）により、ログに記録される文字列<code>${jndi:ldap://...}</code>からRCEが発生した。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> この脆弱性が「ログ出力」で発火する仕組みを80字以内で説明せよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q4-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q4-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q4-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> Log4j 2.xにはMessage Lookup Substitutionという機能があった。</div>
+  <div id="q4-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> Log4j 2.xはログメッセージ中の${...}記法を変数置換機能で展開し、jndiプレフィックスでLDAP/RMI参照を実行するため、外部から制御可能な文字列をログ出力するだけで任意のクラスをロードして実行されてしまう。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①「変数置換機能（Lookup）」 ②「JNDI/LDAPによる外部リソース取得」 ③「ログ出力のみで発火」3点が骨子
+    </div>
+  </div>
+</div>
+
+
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">R5秋</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">問1 Webアプリ</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問5</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> お問合せフォームからの入力をDBに保存し、管理画面で表示している。攻撃者が <code>&lt;script&gt;</code> を含む文字列を送信し、管理者のブラウザで悪意あるスクリプトが実行された。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> この攻撃の名称と、管理画面側で実装すべき対策を40字以内で述べよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q5-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q5-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q5-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> 保存されたデータが後で表示される時に発火するXSS。出力時のエスケープが基本。</div>
+  <div id="q5-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> 格納型クロスサイトスクリプティング（Stored XSS）。出力時にHTMLエスケープ処理（<,>,&,",'のエンコード）を行う。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①「格納型XSS」と特定 ②「出力時エスケープ」が必須（入力時サニタイズ単独はNG） ③CSP併用も加点要素
+    </div>
+  </div>
+</div>
+
+</section>
+
+
+<section class="section" id="s3">
+  <div class="section-header"><span class="s-num">3</span><div><h2>テーマB DNS・ドメイン（4問）</h2></div></div>
+  <p>R6秋・R7秋で連続して大問1問分の出題。重点は<strong>サブドメインテイクオーバー</strong>と<strong>DoH（DNS over HTTPS）</strong>。前者はクラウド利用拡大、後者はOS標準採用拡大が背景。</p>
+  
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">R6秋</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">問2 ドメイン</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問6</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> マーケティング部門がキャンペーン用に<code>campaign.example.com</code>をクラウドサービスCにCNAMEで指していた。キャンペーン終了後、Cの契約は解除したがDNSレコードは残置していた。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> このとき発生し得る攻撃の名称と、攻撃成立の手順を80字以内で述べよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q6-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q6-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q6-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> クラウドサービスでは識別名がfree-to-claimになることがある。</div>
+  <div id="q6-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> サブドメインテイクオーバー。攻撃者がクラウドサービスCで解放されたリソース名を再取得することで、残置されたCNAMEが攻撃者管理のサーバを指し、企業ドメインで偽サイトを公開できる。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①攻撃名称の特定 ②「dangling CNAMEを攻撃者が乗っ取る」流れ ③信頼ドメインで偽コンテンツ配信できる点に言及
+    </div>
+  </div>
+</div>
+
+
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">R6秋</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">問2 ドメイン</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問7</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> 前問の事象を防止するため、ドメイン管理プロセスを見直すことになった。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> 恒久対策として運用面・技術面それぞれ1つずつ、計2点を簡潔に述べよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q7-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q7-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q7-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> 運用面：レコードの棚卸し。技術面：DNS自動チェック。</div>
+  <div id="q7-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> 運用面：サービス契約解除時にDNSレコードも同時に削除する手順を策定し、定期的にDNSレコードと使用中サービスの突合を行う。技術面：dangling CNAME検出ツール（外部・内部）で定期スキャンを実施する。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①運用「契約解除時の連動削除＋棚卸し」 ②技術「自動検出ツール」 ③責任所在の明確化
+    </div>
+  </div>
+</div>
+
+
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">R7秋</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">問3 DNS</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問8</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> 社内クライアントPCでDNS over HTTPS（DoH）が有効化されており、社内DNSサーバを経由せず外部の公開DNSリゾルバを直接利用していた。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> DoHが社内のセキュリティ運用にもたらす問題点を2つ、各40字以内で述べよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q8-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q8-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q8-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> 監視と制御の観点。</div>
+  <div id="q8-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> ①社内プロキシやFWで悪性ドメインへのDNS問合せを検知・遮断できなくなる。②シャドーITやマルウェアのC2通信先解決をDNSログで監視できなくなる。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①「検知・遮断不能」 ②「ログ取得不能」 ③C2/マルウェア追跡困難の指摘でも可
+    </div>
+  </div>
+</div>
+
+
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">R7秋</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">問3 DNS</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問9</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> 前問の対策として、エンドポイントでDoHを無効化し、社内DNSサーバ経由の通常のDNSに統一する案が検討された。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> この案を補強するために併せて行うべき技術対策を1つ、30字以内で述べよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q9-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q9-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q9-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> 公開DoHサーバへの直接通信そのものを止めたい。</div>
+  <div id="q9-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> ファイアウォールで主要な公開DoHサーバのIP・ドメインへの送信を遮断する。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①FW/プロキシでの公開DoH接続遮断 ②TLS Inspection＋SNIフィルタでも可 ③DNSサーバの強制利用＋それ以外を53/UDP含めブロック
+    </div>
+  </div>
+</div>
+
+</section>
+
+
+<section class="section" id="s4">
+  <div class="section-header"><span class="s-num">4</span><div><h2>テーマC インシデントレスポンス（4問）</h2></div></div>
+  <p>初動対応とフォレンジック保全、CSIRT運用が中心。「<strong>電源を落とすか落とさないか</strong>」「<strong>論理隔離か物理隔離か</strong>」「<strong>報告書を誰宛に何を書くか</strong>」など、状況判断を問う形式が多い。</p>
+  
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">R6秋</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">問1 IR</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問10</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> 社内PCがランサムウェアに感染した疑いがあるとの一次報告を受けた。CSIRTメンバーが現場に駆けつけたが、現場担当者は「すぐ電源を落として再起動した」と申告した。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> この対応により失われた可能性のあるフォレンジック上の重要な証拠を2つ、各30字以内で述べよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q10-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q10-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q10-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> 電源を落とすと揮発性の情報が失われる。</div>
+  <div id="q10-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> ①メモリ上に存在するマルウェアプロセスや復号鍵などの揮発性情報。②現在確立中のネットワーク接続（C2サーバとの通信先IP）。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①メモリ／揮発性情報の喪失 ②現行接続/プロセス情報の喪失 ③一時ファイル・スワップでも加点
+    </div>
+  </div>
+</div>
+
+
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">R6秋</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">問1 IR</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問11</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> CSIRT手順書には「感染端末は速やかにネットワークから隔離する」とある。物理的にケーブルを抜くべきか、論理的にVLAN分離するべきか議論となった。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> 論理的隔離（封じ込めVLAN等）を推奨する場合の利点を50字以内で述べよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q11-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q11-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q11-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> 完全切断ではなく、観察可能な状態で隔離する。</div>
+  <div id="q11-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> C2通信や横展開を遮断しつつ、調査用通信や時刻同期を残せるためマルウェアの挙動観察と証拠収集を継続できる。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①「攻撃通信を遮断」と「調査通信を維持」の両立 ②挙動観察・ログ収集継続性 ③遠隔フォレンジック実行可
+    </div>
+  </div>
+</div>
+
+
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">R5秋</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">問2 IR</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問12</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> 侵害発覚から3週間後、外部CERTから「貴社からのスキャン通信を観測している」と連絡が入った。社内では「該当する事象は把握していない」状況であった。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> このギャップが生じた原因として考えられる運用上の問題を2つ挙げよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q12-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q12-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q12-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> 検知・通報の経路と時間軸の問題。</div>
+  <div id="q12-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> ①SIEM/IDSアラートの検知ルールが不十分か誤検知過多で実害アラートが見逃された。②社外からの通報窓口（CSIRT連絡先）が周知されておらず、ISP/JPCERTからの一次連絡が適切な担当者に届くまで時間を要した。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①検知系の見直し ②社外窓口の周知 ③24/7監視体制やエスカレーション基準も可
+    </div>
+  </div>
+</div>
+
+
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">R5秋</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">問2 IR</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問13</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> 事後分析のためインシデント対応報告書を作成する。経営層・監督官庁・取引先・社内の4方面に提出する必要がある。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> 報告書を「対象別に書き分ける」べき理由を、対象を1つ選んで具体的に50字以内で述べよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q13-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q13-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q13-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> 読み手の関心・専門性・必要情報が異なる。</div>
+  <div id="q13-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> 経営層向けは事業影響額・再発防止コスト・対外説明方針など意思決定に必要な情報を中心に技術詳細は概要に留めるべきで、技術詳細を求めるCSIRTレポートとは構成・粒度が異なるため。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①読者属性（関心領域）に応じた構成 ②情報粒度の調整 ③秘匿情報の取扱区分への配慮
+    </div>
+  </div>
+</div>
+
+</section>
+
+
+<section class="section" id="s5">
+  <div class="section-header"><span class="s-num">5</span><div><h2>テーマD 脆弱性管理・サプライチェーン（4問）</h2></div></div>
+  <p>R7春で大問2つを占めた領域。<strong>SBOM／KEV／CVSS環境値</strong>の三点セットは必出。サプライチェーンでは<strong>委託先のリポジトリ／ビルド環境</strong>の保護が問われる。</p>
+  
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">R7春</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">問4 IT資産</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問14</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> ソフトウェア構成情報（SBOM）を導入したが、検出されたCVE件数が過剰で対応の優先順位が判断できず、運用が形骸化していた。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> 優先順位付けに用いるべき主要な観点を2つ、各30字以内で述べよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q14-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q14-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q14-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> 悪用実績と環境的要因。</div>
+  <div id="q14-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> ①CISA KEVカタログに該当するか（既知の悪用が確認されているか）。②自社環境におけるEPSS／CVSS環境値・到達可能性・露出有無。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①KEVへの言及（最重要） ②CVSSベース＋環境値／EPSS ③攻撃面到達性・特権要否などコンテキスト
+    </div>
+  </div>
+</div>
+
+
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">R7春</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">問2 脆弱性</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問15</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> 毎週リリースされる脆弱性情報に対し、現状は「全件、各部署が個別判断」していた。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> 全社的に統一すべき脆弱性管理プロセスの要件を3つ挙げよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q15-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q15-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q15-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> 受付→評価→対応→検証の流れ。</div>
+  <div id="q15-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> ①情報源の一元化（NVD/JVN/ベンダー）と社内通知の統一窓口。②CVSS／KEV／環境到達性に基づく一律の重大度判定基準。③重大度別のSLA（例：Critical 7日／High 30日）と適用記録・是正検証の標準化。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①情報源・受付の一元化 ②評価基準の標準化 ③SLA/期限管理 ④検証・記録（PDCA）
+    </div>
+  </div>
+</div>
+
+
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">R7春</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">問1 サプライチェーン</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問16</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> 委託開発ベンダーのGitHubアカウントが侵害され、本番環境にデプロイされるコードに不審なコミットが混入した。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> ソースコードリポジトリ側で取り得る予防的対策を2つ、各40字以内で述べよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q16-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q16-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q16-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> 保護対象ブランチへの直接プッシュ防止と、コミット署名。</div>
+  <div id="q16-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> ①保護ブランチに対するレビュー必須化（最低2名のApprove）と直接プッシュ禁止。②開発者の署名付きコミット（GPG/SSH署名）必須化と検証ルール適用。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①ブランチ保護＋複数レビュー必須 ②コミット署名強制 ③MFA必須・OIDC化なども可
+    </div>
+  </div>
+</div>
+
+
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">R7春</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">問1 サプライチェーン</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問17</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> ベンダーから「契約に基づきSBOMを提供する」との回答があったが、提供形式が独自Excelで定義項目が不統一だった。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> 受領するSBOMに求めるべき仕様を、規格名を含めて30字以内で述べよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q17-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q17-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q17-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> 機械可読な国際標準フォーマットがある。</div>
+  <div id="q17-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> SPDXまたはCycloneDXなど機械可読な国際標準形式での提供を求める。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①SPDX／CycloneDXの規格名 ②機械可読（JSON/XML） ③コンポーネント識別子・バージョン・ライセンス必須
+    </div>
+  </div>
+</div>
+
+</section>
+
+
+<section class="section" id="s6">
+  <div class="section-header"><span class="s-num">6</span><div><h2>テーマE 暗号・PKI・認証（4問）</h2></div></div>
+  <p>古典的な「対称/非対称」「TLS設定」に加え、近年は<strong>サイドチャネル攻撃</strong>と<strong>OAuth2.0/OIDC/PKCE</strong>が重要。鍵管理ではHSM/KMSが標準解答となる。</p>
+  
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">R7秋</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">問2 鍵管理</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問18</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> 暗号鍵をアプリケーションサーバ上のファイル（パーミッション600）に平文で保管していた。サーバへの侵入で鍵が窃取される事案が発生した。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> 鍵管理の改善策として最も推奨される方式を1つ挙げ、その理由を50字以内で述べよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q18-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q18-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q18-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> HSMやKMSは耐タンパ性で鍵の取り出しを防ぐ。</div>
+  <div id="q18-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> HSM／KMSに鍵を格納し、暗号操作はAPI経由で実行させる方式。鍵そのものは外部に取り出せず、サーバ侵害時も鍵窃取が発生しないため。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①HSM/KMSの利用 ②「鍵が物理的/論理的に取り出せない」点 ③API経由でのみ署名/復号
+    </div>
+  </div>
+</div>
+
+
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">R7秋</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">問2 サイドチャネル</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問19</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> RSA署名処理に対し、消費電力波形から秘密鍵ビットを推定する電力解析攻撃が成立した。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> 対策として実装側で行うべき手法を1つ挙げ、その仕組みを60字以内で説明せよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q19-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q19-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q19-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> 「処理時間や消費電力を入力に依存させない」ようにする。</div>
+  <div id="q19-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> RSAブラインディング（乱数で平文をマスクしてから処理）。各処理ごとにランダム化されるため、消費電力波形と入力値の相関が崩れて鍵推定が困難になる。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①ブラインディング／コンスタントタイム実装 ②「乱数で攻撃者の相関を破壊」する原理 ③Window-method回避なども可
+    </div>
+  </div>
+</div>
+
+
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">R6春</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">問1 認証</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問20</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> OAuth2.0のAuthorization Code FlowでPKCEを実装していなかった。スマートフォンアプリのカスタムURLスキームを別アプリが横取りし、認可コードが奪取される恐れがあった。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> PKCEがこの攻撃を防ぐ仕組みを80字以内で説明せよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q20-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q20-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q20-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> code_verifierとcode_challengeの関係。</div>
+  <div id="q20-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> クライアントが乱数code_verifierとそのハッシュcode_challengeを生成。認可リクエスト時にchallengeを送り、トークン要求時にverifierを送る。verifierは攻撃者は知らないため、コードを横取りしてもトークン交換ができない。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①verifier/challenge＋ハッシュ関係 ②「コード奪取してもトークン化できない」結論 ③verifier送信が初回のみ
+    </div>
+  </div>
+</div>
+
+
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">R5秋</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">問4 暗号</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問21</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> SSL/TLS設定で、Webサーバが TLS1.0/1.1とTLS1.2/1.3を併用許可していた。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> TLS1.0/1.1の利用を停止すべき理由を2つ、各30字以内で述べよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q21-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q21-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q21-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> プロトコル自体の既知脆弱性と業界基準。</div>
+  <div id="q21-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> ①BEAST／POODLEなど既知の暗号スイート脆弱性が複数残存している。②PCI DSSなど主要セキュリティ基準で利用が禁止／非推奨とされている。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①既知脆弱性の具体名 ②業界基準（PCI DSS等） ③RFC 8996による正式な廃止
+    </div>
+  </div>
+</div>
+
+</section>
+
+
+<section class="section" id="s7">
+  <div class="section-header"><span class="s-num">7</span><div><h2>テーマF クラウド・ゼロトラスト（4問）</h2></div></div>
+  <p>クラウドサービス利用拡大により、<strong>責任共有モデル／IAM／CSPM／SASE</strong>が頻出。「VPN集約構成からゼロトラストへ」という移行論点は近年の決定打。</p>
+  
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">R7秋</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">問1 SaaS</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問22</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> IaaSクラウド上のオブジェクトストレージに営業部の機密ファイルを保存していたが、設定誤りで全世界公開状態になり情報漏えいが発生した。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> この事案がクラウドの責任共有モデル上、どちらの責任に該当するかを述べ、再発防止策を40字以内で述べよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q22-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q22-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q22-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> IaaSのデータ・設定責任は利用者側。</div>
+  <div id="q22-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> 利用者側の責任（データの分類・アクセス制御設定）。CSPM導入により公開設定を自動検出し、IaCのポリシー検査で公開バケットのデプロイを禁止する。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①「利用者責任」を明示 ②CSPM／公開設定自動検出 ③IaCポリシー（OPA/Sentinel等）
+    </div>
+  </div>
+</div>
+
+
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">R7秋</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">問1 SaaS</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問23</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> SaaSへのリモートアクセスについて、現状はVPN経由で社内NWに入ってからSaaSへ抜けていく構成（バックホール構成）になっていた。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> ゼロトラスト原則に基づく改善案を、構成と利点それぞれ40字以内で述べよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q23-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q23-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q23-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> ユーザー・端末を都度認証してSaaSに直接接続。</div>
+  <div id="q23-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> 構成：IDaaS／SASEを経由してユーザーと端末を都度認証・端末状態評価しSaaSに直接接続させる。利点：境界依存をなくし、VPN負荷とパフォーマンス低下を解消、横展開リスクも低減できる。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①「都度認証」「端末コンテキスト評価」 ②「直接接続でVPN不要」 ③横展開抑止
+    </div>
+  </div>
+</div>
+
+
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">R6春</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">問2 サイバー</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問24</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> IDaaSにより全SaaSをSSO化し、IdP側でMFA必須に統一した。一方、ある幹部からは「業務効率を落とすな」と要望があった。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> 利便性を保ちつつセキュリティを担保する仕組みを1つ挙げ、その動作を50字以内で述べよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q24-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q24-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q24-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> リスクベース認証（適応型認証）。</div>
+  <div id="q24-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> 適応型／リスクベース認証。IPアドレス・端末・時刻・直近の行動から信頼度を算出し、低リスク時はMFAを省略、高リスク時のみ追加認証を要求する。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①リスクベース／適応型認証の名称 ②動的判定の根拠（コンテキスト） ③段階的チャレンジ
+    </div>
+  </div>
+</div>
+
+
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">R7秋</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">問1 SaaS</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問25</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> SaaSの管理者ロールを部門長3名に付与していたが、実運用は1名しか実施していなかった。退職者がロールを保持したまま離脱し、後日不正ログインが試行された。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> 権限管理プロセスとして導入すべき仕組みを2つ挙げよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q25-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q25-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q25-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> 最小権限・定期棚卸し・JIT特権。</div>
+  <div id="q25-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> ①権限の定期棚卸し（四半期ごとレビュー）と人事連動の即時剥奪。②JITアクセス（必要時のみ申請ベースで時間限定付与）の導入。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①定期レビュー／HRシステム連動 ②JIT/PAM ③最小権限の原則
+    </div>
+  </div>
+</div>
+
+</section>
+
+
+<section class="section" id="s8">
+  <div class="section-header"><span class="s-num">8</span><div><h2>テーマG モバイル・ネットワーク・ログ（5問）</h2></div></div>
+  <p>モバイルでは<strong>証明書ピンニング</strong>と<strong>クライアント側防御の限界</strong>が必出。ネットワーク・ログでは<strong>C2通信の検知観点</strong>と<strong>時刻同期</strong>が定番。CDN保護は新傾向。</p>
+  
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">R7春</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">問3 スマホ</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問26</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> 決済機能を持つAndroidアプリで、サーバ証明書をシステムのトラストストアにのみ依存していた。組織発行の不正な中間CA証明書を使ったMITMでHTTPS通信が傍受された。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> 実装側で行うべき防御技法を1つ挙げ、その仕組みを50字以内で述べよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q26-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q26-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q26-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> アプリ側で許可する証明書を限定する。</div>
+  <div id="q26-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> 証明書ピンニング。アプリにサーバの公開鍵ハッシュを埋め込み、TLS確立時に提示証明書のハッシュと一致しなければ通信を中断する。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①ピンニング名称 ②「公開鍵/証明書のハッシュをアプリ内固定」 ③不一致時通信遮断
+    </div>
+  </div>
+</div>
+
+
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">R7春</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">問3 スマホ</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問27</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> アプリのリバースエンジニアリングを困難にする観点から、難読化やRoot/Jailbreak検知が議論されている。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> これらの対策の限界（過信してはならない理由）を50字以内で述べよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q27-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q27-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q27-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> クライアント側にある以上、最終的には突破されうる。</div>
+  <div id="q27-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> クライアント側の対策はFridaなどの動的計装ツールやパッチで突破可能であり、防御は遅延に過ぎない。サーバ側で重要な認可・検証を必ず実施する必要がある。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①「クライアント側対策の本質的限界」 ②「攻撃者は時間をかければ突破可能」 ③「サーバ側で必ず検証」
+    </div>
+  </div>
+</div>
+
+
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">R5秋</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">問2 NW</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問28</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> ファイアウォールのアウトバウンド通信を見直したところ、社内サーバから不審な外部IPへ443/TCPの定期通信が発生していた。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> これがC2通信である可能性を判断するための着眼点を2つ、各30字以内で述べよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q28-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q28-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q28-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> 宛先評価とビーコン特性。</div>
+  <div id="q28-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> ①宛先IP/ドメインのレピュテーション（脅威インテルでの分類）。②通信間隔の規則性（ビーコン特性）と1回当たりのデータ量の小ささ。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①レピュテーション照合（脅威インテル） ②ビーコン周期 ③通信量パターン・JA3シグネチャでも可
+    </div>
+  </div>
+</div>
+
+
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">R6秋</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">問1 IR</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問29</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> SIEMで複数アラートを統合分析する際、機器ごとに時刻がずれていると相関分析が破綻する。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> 時刻同期の運用要件を2つ、各30字以内で述べよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q29-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q29-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q29-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> 共通NTP源・タイムゾーン。</div>
+  <div id="q29-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> ①社内全機器を同一の信頼できるNTP源（社内NTPサーバ階層構造）に同期させる。②全ログをUTCまたは統一タイムゾーンで記録する。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①共通NTP源 ②UTC統一／TZ統一 ③NTP認証・stratum設計でも加点
+    </div>
+  </div>
+</div>
+
+
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">R7秋</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">問4 CDN</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問30</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> CDNを利用したサービスで、オリジンサーバのIPアドレスが攻撃者に判明し、CDNを迂回した直接攻撃（DDoS）が発生した。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> オリジンを保護するためのネットワーク設定を2つ、各40字以内で述べよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q30-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q30-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q30-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> オリジンFWでの送信元制限。CDNのみ受け付ける。</div>
+  <div id="q30-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> ①オリジンのファイアウォールでCDNプロバイダの公式IP帯のみインバウンド許可しそれ以外を遮断する。②CDN-オリジン間に共有シークレット（カスタムヘッダ等）を設定し未付与リクエストを拒否する。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①CDN IP帯のみ許可リスト ②共有秘密ヘッダ／mTLS ③オリジンドメイン非公開
+    </div>
+  </div>
+</div>
+
+</section>
+
+
+<section class="section" id="s9">
+  <div class="section-header"><span class="s-num">9</span><div><h2>テーマH 旧形式 経典過去問（10問）</h2></div></div>
+
+  <p>R5春以前は<strong>午後Ⅰ（3問選2）＋午後Ⅱ（2問選1）</strong>の旧形式で実施されていた。新形式（4問選2）に統合された後も、出題テーマと問い方は基本的に継承されている。<em>「形式は変われど採点ポイントは普遍」</em>—旧過去問は記述パターンの宝庫。</p>
+
+  <div class="exam-ref"><svg style="color:var(--gold);" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5a2 2 0 0 1 2-2h14v18H6a2 2 0 0 1-2-2z"/><path d="M4 19a2 2 0 0 1 2-2h14"/></svg> R3春〜R5春の旧形式から、現代でも頻出する10テーマを選定。新形式で再出題された場合の補強としても有効。</div>
+
+  <h3>旧形式のセッション一覧</h3>
+  <div class="cmp-table"><table>
+    <thead><tr><th>回</th><th>午後Ⅰ問1</th><th>午後Ⅰ問2</th><th>午後Ⅰ問3</th><th>午後Ⅱ問1</th><th>午後Ⅱ問2</th></tr></thead>
+    <tbody>
+      <tr><td>R5春(2023.04)</td><td>Webアプリ開発</td><td>セキュリティインシデント</td><td>クラウドサービス利用</td><td>Webセキュリティ</td><td>Webサイトのクラウド移行</td></tr>
+      <tr><td>R4秋(2022.10)</td><td>IoT製品の開発</td><td>脆弱性インシデント対応</td><td>オンラインゲーム IR</td><td>脅威情報調査</td><td>IRチーム</td></tr>
+      <tr><td>R4春(2022.04)</td><td>Webアプリ開発</td><td>インシデント対応</td><td>QRコード決済</td><td>Webサイトセキュリティ</td><td>クラウド移行</td></tr>
+      <tr><td>R3秋(2021.10)</td><td>セキュリティインシデント</td><td>開発での情報漏えい</td><td>PCのマルウェア対策</td><td>協力会社ファイル受渡し</td><td>マルウェア感染対処</td></tr>
+      <tr><td>R3春(2021.04)</td><td>認証システム開発</td><td>NWセキュリティ対策</td><td>セキュリティ運用</td><td>インシデント対応体制</td><td>クラウドセキュリティ</td></tr>
+    </tbody>
+  </table></div>
+  
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">R5春</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">PM1問1 Webアプリ</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問31</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> プロジェクト管理Webシステムで、URLのクエリ文字列<code>?id=N</code>を変更すれば自分が参加していないプロジェクトの情報まで閲覧できる脆弱性が見つかった。アクセス制御は「URL末尾のID」と「ログインユーザーID」の比較のみで行っていた。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> 対策として方式を変更する。「外部から指定できるパラメータをアクセス制御の判定材料にしない」具体的な実装方法を40字以内で述べよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q31-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q31-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q31-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> 参加プロジェクトのIDをセッションやサーバ側のDBから取得する。</div>
+  <div id="q31-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> プロジェクトIDをURLパラメータから取得せず、セッションに紐付くユーザの参加プロジェクト一覧から選択させる方式に変更する。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①「外部入力に依存しない」 ②「セッション/サーバ側保持の権限情報を使用」 ③参加リストの絞り込み（ホワイトリスト方式）
+    </div>
+  </div>
+</div>
+
+
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">R5春</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">PM2問1 Web</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問32</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> Webアプリで、ログイン後のCookieに<code>Secure</code>属性も<code>HttpOnly</code>属性も設定していなかった。XSS脆弱性も同居しており、複合攻撃でセッションが奪取された。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> Cookieに付与すべき属性を3つ挙げ、それぞれが防ぐ攻撃を簡潔に対応付けて述べよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q32-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q32-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q32-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> Secure＝平文通信防止、HttpOnly＝JSアクセス防止、SameSite＝CSRF対策。</div>
+  <div id="q32-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> ①Secure属性：HTTPでの送信を防ぎ盗聴を防止。②HttpOnly属性：document.cookie経由のJSアクセスを禁止しXSSによる窃取を緩和。③SameSite属性（Lax/Strict）：CSRFを抑止する。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①Secure＋盗聴防止 ②HttpOnly＋XSS窃取緩和 ③SameSite＋CSRF抑止 — 3点セット必須
+    </div>
+  </div>
+</div>
+
+
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">R4秋</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">PM1問1 IoT</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問33</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> IoT製品のファームウェアアップデート機能で、機器がDNSキャッシュサーバを経由してアップデートサーバの名前解決を行う。攻撃者が偽装DNS応答を送信し偽サーバへ誘導しようとしている。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> この攻撃手法の名称（カミンスキー攻撃の系統）と、製品側でこの影響を受けないために実装すべき要件を50字以内で述べよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q33-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q33-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q33-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> HTTPSのサーバ証明書検証を厳格に行えば、誘導先が偽サーバなら証明書検証で失敗する。</div>
+  <div id="q33-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> DNSキャッシュポイズニング。アップデートサーバとの通信でHTTPSを用い、サーバ証明書の検証（CN/SAN・有効期限・信頼チェーン）を厳格に行うこと。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①攻撃名「DNSキャッシュポイズニング」 ②HTTPS＋証明書検証で「DNS結果が偽でも検知できる」 ③ピンニングは加点
+    </div>
+  </div>
+</div>
+
+
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">R4秋</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">PM1問1 IoT</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問34</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> 前問のIoT製品にIPアドレス設定機能があり、ログイン状態のユーザを罠サイトに誘導することで、意図しない設定変更リクエストが送られて受理されてしまう脆弱性が発見された。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> この攻撃の名称と、対策として代表的な実装手法を50字以内で述べよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q34-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q34-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q34-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> CSRFトークン、SameSite Cookie、Refererチェックなど。</div>
+  <div id="q34-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> クロスサイトリクエストフォージェリ（CSRF）。設定変更リクエストにサーバが発行したCSRFトークンを必須化し、サーバ側で照合して不一致なら拒否する。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①CSRF特定 ②CSRFトークンの照合（サーバ側） ③SameSite=Strict／Origin・Refererチェックでも可
+    </div>
+  </div>
+</div>
+
+
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">R4秋</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">PM1問3 オンラインゲーム</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問35</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> オンラインゲームのサーバを動かすコンテナで、攻撃者がイメージに含まれない不審なプロセス<code>prog</code>が実行されていることが判明した。コンテナの中で外部から取得されたファイルが実行されていたと推測される。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> このような事象を恒久的に予防するためのコンテナ運用上の対策を2つ、各40字以内で述べよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q35-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q35-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q35-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> イメージ署名検証＋実行時の書き込み・実行制限。</div>
+  <div id="q35-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> ①コンテナイメージへの署名（cosign等）と、起動時に署名検証を必須化する仕組みの導入。②コンテナ内のファイルシステムを読取専用とし、不要なシェル・ダウンロードツールを排除する（最小化イメージ）。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①イメージ署名検証（サプライチェーン保護） ②runtime hardening：read-only FS／distrolessイメージ ③seccompやSELinuxによる実行制限
+    </div>
+  </div>
+</div>
+
+
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">R4春</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">PM1問3 QRコード決済</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問36</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> スマホ向けQRコード決済アプリで、ログイン状態を保持していたためスマホを盗まれた場合に他人が決済できてしまうリスクが指摘された。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> アプリ起動時の追加認証として実装すべき機能と、その目的を40字以内で述べよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q36-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q36-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q36-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> 所有要素（スマホ）に加え、知識要素（PINやパスワード）または生体要素を求める。</div>
+  <div id="q36-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> Qアプリの起動時にPINコードまたは生体認証で当人認証を行い、スマホ盗難時に他人が決済機能を利用できないようにする。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①起動時認証の実装 ②知識要素／生体要素 ③「画面ロックでは不十分」の文脈理解
+    </div>
+  </div>
+</div>
+
+
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">R4春</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">PM2問2 クラウド移行</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問37</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> オンプレミスのWebシステムをIaaSへ移行することになった。「OSパッチ適用は誰の責任か」「ロードバランサ設定は誰の責任か」「ネットワークACLは誰の責任か」が論点となった。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> IaaSにおける責任共有モデルに基づき、上記3項目それぞれの責任主体（クラウド事業者／利用者）を明示し、利用者責任となるものについて運用要件を1つ簡潔に述べよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q37-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q37-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q37-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> IaaSはOS以上が利用者責任。ハードウェア・ハイパーバイザは事業者責任。</div>
+  <div id="q37-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> OSパッチ＝利用者責任（脆弱性管理プロセスでパッチ適用基準とSLAを規定）。ロードバランサ設定＝利用者責任（IaaS提供のマネージドLB上の設定は利用者）。ネットワークACL＝利用者責任（セキュリティグループ等の設計）。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①IaaSは「OS以上が利用者」が原則 ②各項目の責任主体明示 ③具体的な運用要件（SLA／監査）
+    </div>
+  </div>
+</div>
+
+
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">R3秋</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">PM1問3 マルウェア対策</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問38</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> シグネチャ型のマルウェア対策ソフトを導入していたが、新種のファイルレスマルウェアによる感染を検知できなかった。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> シグネチャ型では検知できない攻撃に対応するために導入を検討すべき検知方式を1つ挙げ、その仕組みを50字以内で説明せよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q38-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q38-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q38-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> ふるまい検知（ヒューリスティック）／EDR。プロセスやAPI呼出しの異常を検出する。</div>
+  <div id="q38-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> ふるまい検知（ビヘイビア検知）／EDR。プロセスのAPI呼出し・ファイル操作・ネットワーク通信パターンを監視し、未知マルウェア特有の振る舞いを異常として検出する。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①「ふるまい検知」「EDR」の名称 ②シグネチャ非依存である理由（パターン未登録でも検出可） ③具体的な観測対象（プロセス／API／NW）
+    </div>
+  </div>
+</div>
+
+
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">R3秋</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">PM2問1 ファイル受渡し</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問39</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> 協力会社との大容量ファイル受渡しに、業務利用が認められていない外部のオンラインストレージを担当者が個人判断で利用していた（シャドーIT）。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> シャドーIT発生を防ぎつつ業務効率を維持する組織的・技術的な対策を2つ挙げ、各40字以内で述べよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q39-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q39-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q39-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> 組織側＝公式の代替手段提供。技術側＝CASBで利用可視化と統制。</div>
+  <div id="q39-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> ①組織が承認した安全なファイル授受サービスを公式手段として整備し利用ルールを周知する。②CASBやプロキシで未承認クラウドの利用を可視化・遮断する。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①公式代替の用意（運用面） ②CASB／プロキシ等の技術統制 ③利用申請ワークフロー
+    </div>
+  </div>
+</div>
+
+
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">R3春</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">PM1問1 認証</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問40</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> 複数のクラウドサービスを利用しており、各サービス独立のID/パスワード管理が運用負担となっている。SAMLによるSSO化を検討する。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> SAMLにおけるIdP（Identity Provider）とSP（Service Provider）の関係、およびSSOで認証情報をどのようにやり取りするかを80字以内で説明せよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q40-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q40-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q40-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> IdPは認証主体、SPはサービス提供者。SAMLアサーション（XML）に署名して受け渡す。</div>
+  <div id="q40-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> 利用者がSPにアクセスするとSPはIdPへ認証要求を転送し、IdPで認証された後、IdPはユーザ属性と認証結果を含むSAMLアサーション（XML）にデジタル署名して発行し、利用者経由でSPへ送信される。SPは署名検証によりアサーションを信頼してアクセスを許可する。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①IdP＝認証主体／SP＝サービス側 ②SAMLアサーション＋署名 ③ブラウザリダイレクトを介する流れ ④信頼関係の事前確立にも言及で加点
+    </div>
+  </div>
+</div>
+
+</section>
+
+
+<section class="section" id="s10">
+  <div class="section-header"><span class="s-num">10</span><div><h2>テーマI 古典過去問 R2秋〜H30春（10問）</h2></div></div>
+
+  <p>R2秋以前は<strong>同じ旧形式（午後Ⅰ＋午後Ⅱ）</strong>だが、出題傾向に明らかな違いがある。<strong>メール（DKIM/SPF）</strong>と<strong>IoT/工場OT</strong>がこの時期の主役で、後の形式変更とともに大問テーマからは姿を消した。<em>「往年の経典」</em>として、形式変更を超えて通用するエッセンスのみ抽出した10問。</p>
+
+  <div class="exam-ref"><svg style="color:var(--gold);" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5a2 2 0 0 1 2-2h14v18H6a2 2 0 0 1-2-2z"/><path d="M4 19a2 2 0 0 1 2-2h14"/></svg> R2秋〜H30春の5回25問から、現代でも記述パターンとして通用する10テーマを厳選。歴史を知ることは現在を理解すること。</div>
+
+  <h3>古典の5セッション一覧</h3>
+  <div class="cmp-table"><table>
+    <thead><tr><th>回</th><th>午後Ⅰ問1</th><th>午後Ⅰ問2</th><th>午後Ⅰ問3</th><th>午後Ⅱ問1</th><th>午後Ⅱ問2</th></tr></thead>
+    <tbody>
+      <tr><td>R2秋(2020.10)</td><td>スマホ決済</td><td>メール対策</td><td>Webセキュリティ診断</td><td>百貨店Web統合</td><td>テレワーク環境</td></tr>
+      <tr><td>R元秋(2019.10)</td><td>メール対策</td><td>インシデント情報活用</td><td>標的型攻撃対応</td><td>ソフトウェア開発</td><td>工場のセキュリティ</td></tr>
+      <tr><td>H31春(2019.04)</td><td>Webサイトセキュリティ</td><td>クラウドセキュリティ</td><td>IoT機器の開発</td><td>マルウェア感染対策</td><td>セキュリティ強化</td></tr>
+      <tr><td>H30秋(2018.10)</td><td>ソフトウェア開発</td><td>インシデント対応</td><td>ソフトウェア脆弱性対策</td><td>クラウドセキュリティ</td><td>インシデント対応</td></tr>
+      <tr><td>H30春(2018.04)</td><td>ソフトウェア脆弱性</td><td>セキュリティ対策強化</td><td>LAN分離</td><td>セキュリティ評価</td><td>Webサイトセキュリティ</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="caption-note" style="margin-bottom:18px;">
+    <strong>古典に特有のテーマ：</strong>① <strong>メール認証3兄弟（SPF/DKIM/DMARC）</strong>＝当時の頻出だが新形式では大問にならず。② <strong>IoT/OT・工場制御</strong>＝Purdueモデル時代の遺産。③ <strong>LAN分離・標的型対策</strong>＝「サンドボックス＋VDI」全盛期の論点。これらは知識として今も使える。
+  </div>
+  
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">R2秋</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">PM1問1 スマホ決済</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問41</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> スマートフォン決済サービスのアカウント作成時、攻撃者が他人になりすまして登録し銀行口座を紐付けようとする事案がある。本人確認方法として「身分証の画像のみアップロード」では脆弱だった。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> 画像悪用を防ぐため、本人確認時に追加すべき手続きを30字以内で述べよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q41-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q41-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q41-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> 事前に用意された画像が使われないよう、リアルタイム性を強制する。</div>
+  <div id="q41-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> ランダムな数字を紙に書き、その紙と一緒に容貌を撮影させる方法を加える。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①「リアルタイム性の強制」 ②「事前画像が使えないようにする」 ③固有のチャレンジ値を含める
+    </div>
+  </div>
+</div>
+
+
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">R2秋</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">PM1問2 メール対策</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問42</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> 送信メールの真正性を確認できる仕組みが必要となった。受信側がDNSにある送信ドメインの公開鍵を取得し、メールヘッダの署名を検証する方式を導入する。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> この方式の名称と、検証で確認できる項目を50字以内で述べよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q42-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q42-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q42-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> DKIM。メールに電子署名を付け、DNSで配布される公開鍵で検証する。</div>
+  <div id="q42-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> DKIM。メール本文と一部ヘッダの改ざんがないこと、および署名者が当該ドメインの正当な送信者であることが確認できる。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①「DKIM」名称 ②改ざん検知 ③送信ドメインの正当性確認 ④DNSのTXTレコード（DKIMセレクタ）でも加点
+    </div>
+  </div>
+</div>
+
+
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">R2秋</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">PM2問2 テレワーク</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問43</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> COVID-19を機にテレワーク環境を整備する企業が、社内システムへのVPN集約とSaaS直接接続を比較検討。VPN集約構成では帯域逼迫が問題化していた。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> SaaSへのトラフィックをVPN経由とせず直接接続する場合の必要なセキュリティ要件を、認証・端末・通信の3観点で述べよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q43-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q43-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q43-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> SaaS直接接続の代償として、認証強化・端末状態監視・通信暗号化が必要。</div>
+  <div id="q43-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> 認証＝IDaaSによる多要素認証＋条件付きアクセス。端末＝MDM/EDRで端末状態を継続評価し非準拠端末は遮断。通信＝TLS必須、可能ならCASBで通信内容の可視化と統制。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①認証強化（IDaaS+MFA） ②端末状態評価（MDM/EDR） ③通信統制（CASB/TLS） — 後のSASE/ZeroTrustの先駆け
+    </div>
+  </div>
+</div>
+
+
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">R元秋</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">PM1問3 標的型</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問44</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> 標的型攻撃メールから始まり、社内端末がマルウェア感染。攻撃者は端末から内部探索を行い、最終的に外部C2サーバへDNSクエリ経由で情報を流出させた（DNSトンネリング）。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> DNSトンネリングの検知ポイントを、ログ分析の観点から2つ挙げよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q44-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q44-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q44-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> 通常のDNSにはない特徴として、レコード長や問合せ頻度の異常がある。</div>
+  <div id="q44-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> ①同一2次ドメイン配下の長大なTXT/サブドメイン名への大量問合せ。②エンドポイントから直接外部DNSへの問合せが断続的に発生する非定常パターン。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①「ランダムサブドメイン+データ符号化」 ②「DNS問合せ頻度・サイズ異常」 ③社内DNSサーバ非経由の発見でも可
+    </div>
+  </div>
+</div>
+
+
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">R元秋</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">PM2問2 工場</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問45</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> 工場内のOT（制御系）ネットワークがOA（情報系）と分離不十分で、PCマルウェア感染が制御PCに横展開し生産停止が発生した。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> OT-OA分離の設計指針として代表的なモデルを1つ挙げ、必要な要素を50字以内で述べよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q45-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q45-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q45-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> Purdueモデル（ISA-95）。階層を明確化しゾーン間にFW/Conduitを置く。</div>
+  <div id="q45-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> Purdueモデル（階層化リファレンスアーキテクチャ）。OTを4-5階層に分割し、各階層境界にFW/IDSを配置して通信を限定し、必要時はDMZで一方向ファイル転送のみ許可する。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①Purdueモデル名称 ②階層化＋境界FW ③一方向ゲートウェイ／データダイオードでも可
+    </div>
+  </div>
+</div>
+
+
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">H31春</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">PM1問3 IoT</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問46</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> IoT機器の出荷後、攻撃者が機器を物理的に分解しデバッグポート（UART/JTAG）経由でファームウェアやデバイス内秘密鍵を抽出する懸念が指摘された。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> IoT機器に求められる物理的耐タンパ性の対策を2つ、各30字以内で述べよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q46-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q46-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q46-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> TPM/セキュアエレメント。デバッグポートの無効化。</div>
+  <div id="q46-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> ①TPMやセキュアエレメントなど耐タンパチップに鍵を格納し外部読出しを不可とする。②出荷時にデバッグポート（UART/JTAG）を無効化または封印する。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①TPM／SE活用 ②物理デバッグI/Fの無効化 ③エポキシ封止やセキュアブートでも可
+    </div>
+  </div>
+</div>
+
+
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">H31春</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">PM2問1 マルウェア</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問47</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> マルウェア感染端末に対して証拠保全を行う。「電源を抜く」「シャットダウンする」「ライブメモリを取得する」のどれを優先すべきか議論となった。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> ライブメモリ取得を電源切断より優先すべき理由を、2点に分けて述べよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q47-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q47-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q47-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> メモリにしか存在しない情報がある。それは電源切断で永久に失われる。</div>
+  <div id="q47-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> ①暗号化されたディスクの復号鍵やマルウェアプロセスの実体は揮発メモリ上にしか存在せず、電源切断で永久に失われるため。②現在確立中のC2接続情報・プロセス系統情報も同様にメモリにしかなく、攻撃の全容把握に必須のため。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①暗号鍵／プロセス実体の喪失 ②C2／NW接続情報の喪失 ③Order of Volatility原則
+    </div>
+  </div>
+</div>
+
+
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">H30秋</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">PM1問3 脆弱性</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問48</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> 開発したソフトウェアにオープンソースライブラリを多数組み込んでいる。リリース後にライブラリの脆弱性が判明したが、どのバージョンが含まれているか把握できず対応が遅れた。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> 開発時点で組み込むべき仕組みと、実行する作業を50字以内で述べよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q48-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q48-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q48-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> SCA（Software Composition Analysis）ツール。CIに組み込んで自動検出。</div>
+  <div id="q48-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> SCAツールをCIパイプラインに組み込み、依存ライブラリ一覧（SBOM）を自動生成・脆弱性DB照合し、検出時は自動アラートとビルド失敗で歯止めをかける。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①SCAツール名称 ②SBOM生成＋脆弱性照合 ③CI連携で自動化 — R7春KEV論点の前駆
+    </div>
+  </div>
+</div>
+
+
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">H30秋</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">PM2問1 クラウド</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問49</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> オンプレ社内サーバをIaaSへ移行する案件で、「OSの脆弱性管理は誰の責任か」「ハイパーバイザは誰の責任か」が議論となった。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> IaaSにおける責任共有モデルに基づき、上記2項目それぞれの責任主体を簡潔に明示せよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q49-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q49-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q49-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> IaaSはOS以上が利用者責任。ハイパーバイザ・物理は事業者。</div>
+  <div id="q49-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> OSの脆弱性管理＝利用者責任（パッチ適用基準を策定し定期適用すること）。ハイパーバイザ＝クラウド事業者責任（利用者は契約・SLAで品質を確認するのみ）。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①IaaSは「OS以上が利用者」原則 ②ハイパーバイザ・物理は事業者 ③SaaSとIaaSで境界が異なることに言及で加点
+    </div>
+  </div>
+</div>
+
+
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">H30春</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">PM1問3 LAN分離</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問50</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> インターネット接続用PCと業務用PCが同一LANに混在しており、Webからのマルウェア感染が業務サーバに波及するリスクが顕在化していた。インターネット分離（LAN分離）が検討された。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> LAN分離の代表的な実装方式を2つ挙げ、それぞれの仕組みを30字以内で述べよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q50-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q50-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q50-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> 物理的に分ける方式と、仮想化（VDI）で分ける方式がある。</div>
+  <div id="q50-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> ①物理分離方式：業務用とインターネット用で別NIC・別ネットワークを配備する。②VDI方式：業務PCではブラウザを仮想デスクトップ上で動作させ、画面転送のみで使用する。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①物理分離（2NIC／2PC） ②VDI／仮想ブラウザ方式 ③ファイル受渡しは無害化（CDR）
+    </div>
+  </div>
+</div>
+
+</section>
+
+
+<section class="section" id="s11">
+  <div class="section-header"><span class="s-num">11</span><div><h2>テーマJ 黎明期過去問 H29秋〜H27秋（10問）</h2></div></div>
+
+  <p>本シリーズが扱う最古の5回。<strong>H29春に試験名が「情報セキュリティスペシャリスト試験」から「情報処理安全確保支援士試験」へ変更</strong>された境界を含む期間で、出題の主役は<em>ICカード認証・IPsec/IKE・SSL/TLS暗号スイート・シンクライアント・公衆無線LAN・ランサムウェア</em>など、<strong>古典の経典そのもの</strong>。形式は変わってもこれらの記述パターンは現代でも通用する。</p>
+
+  <div class="exam-ref"><svg style="color:var(--gold);" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5a2 2 0 0 1 2-2h14v18H6a2 2 0 0 1-2-2z"/><path d="M4 19a2 2 0 0 1 2-2h14"/></svg> H27秋〜H29秋の5回25問から、現代でも記述パターンとして通用する10問を厳選。試験名変更を跨ぐ歴史的価値も併せて学べる。</div>
+
+  <h3>黎明期の5セッション一覧</h3>
+  <div class="cmp-table"><table>
+    <thead><tr><th>回</th><th>名称</th><th>午後Ⅰ問1</th><th>午後Ⅰ問2</th><th>午後Ⅰ問3</th><th>午後Ⅱ問1</th><th>午後Ⅱ問2</th></tr></thead>
+    <tbody>
+      <tr><td>H29秋(2017.10)</td><td>支援士</td><td>ランサム対策</td><td>Webアプリ開発</td><td>SSL/TLS運用</td><td>IoTシステム</td><td>データ暗号化</td></tr>
+      <tr><td>H29春(2017.04)</td><td>支援士・初回</td><td>社内インシデント</td><td>Webサイト対策</td><td>クラウド認証連携</td><td>マルウェア解析</td><td>社内システム強化</td></tr>
+      <tr style="background:#f5f0eb;"><td>H28秋(2016.10)</td><td>セキスペ</td><td>組込み機器IPsec</td><td>ソフト開発脆弱性</td><td>プロキシマルウェア</td><td>ICカード認証</td><td>脆弱性WAF</td></tr>
+      <tr style="background:#f5f0eb;"><td>H28春(2016.04)</td><td>セキスペ</td><td>ICカード/SQLi</td><td>メールDKIM</td><td>公衆無線LAN</td><td>A社IRT体制</td><td>標的型攻撃</td></tr>
+      <tr style="background:#f5f0eb;"><td>H27秋(2015.10)</td><td>セキスペ</td><td>公開Webサイト診断</td><td>—</td><td>—</td><td>シンクライアント</td><td>クラウドサービス</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="caption-note" style="margin-bottom:18px;">
+    <strong>黎明期に特有のテーマ：</strong>① <strong>ランサムウェア／3-2-1ルール</strong>＝WannaCry前後の出題、② <strong>IPsec/IKEv1モード判別</strong>＝古典NWの最頻出論点、③ <strong>SSL/TLS脆弱暗号スイート＋HSTS</strong>＝POODLE/BEAST時代の対策、④ <strong>シンクライアント／VDI</strong>＝LAN分離以前の情報漏えい対策、⑤ <strong>OAuth2.0／JWT検証</strong>＝認証連携時代の幕開け。<em>過去20回中の最古層は、現代の「基本知識」の源流である</em>。
+  </div>
+  
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">H29秋</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">PM1問1 ランサム</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問51</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> 社内PCがランサムウェアに感染し、ファイルサーバの共有フォルダ内のファイルまで暗号化されてしまった。バックアップは取得していたが、同じファイルサーバ上に置いていたため一緒に暗号化された。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> ランサムウェアの被害を最小化するバックアップ運用の原則を1つ挙げ、その理由を50字以内で述べよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q51-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q51-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q51-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> 3-2-1ルール（3つのコピー／2つの異なる媒体／1つはオフサイト）。</div>
+  <div id="q51-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> 3-2-1ルール（コピー3つ／媒体2種以上／1つは隔離保管）。常時オンラインのバックアップは感染時に同時暗号化されるため、オフライン媒体やイミュータブル領域への保管が必須。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①「3-2-1ルール」 ②オフライン／隔離保管の必要性 ③イミュータブルストレージ／WORMでも可
+    </div>
+  </div>
+</div>
+
+
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">H29秋</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">PM1問3 SSL/TLS</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問52</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> Webサーバの設定診断で、TLSで脆弱な暗号スイート（RC4, 3DES）が有効化されており、HTTPでアクセスされた場合にHTTPSへ自動転送する仕組みのみで、初回HTTPアクセスが盗聴され得る状態だった。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> Webサーバ側で行うべき2つの設定改善を、各40字以内で述べよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q52-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q52-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q52-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> ①脆弱な暗号スイートの無効化、②HSTS（HTTP Strict Transport Security）の有効化。</div>
+  <div id="q52-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> ①TLSの設定からRC4・3DESなどの脆弱な暗号スイートを無効化し、AES-GCM等の強い暗号のみ許可する。②HSTSヘッダを返却して、ブラウザに以降のアクセスを必ずHTTPSで行わせる。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①脆弱暗号の無効化 ②HSTSヘッダ ③max-age・includeSubDomains指定で加点 ④HSTSプリロードリスト登録でも加点
+    </div>
+  </div>
+</div>
+
+
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">H29秋</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">PM2問1 IoT</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問53</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> IoTデバイスを大量出荷する際、各デバイスにユニークな証明書と秘密鍵を埋め込む必要があるが、製造ラインで秘密鍵を生成する場合、製造業者が鍵を保持できてしまうリスクがある。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> デバイス自身が秘密鍵を生成し外部に出さない仕組みを30字以内で述べよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q53-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q53-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q53-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> デバイス内のセキュアエレメントで鍵生成し、CSRのみを外部に送信する。</div>
+  <div id="q53-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> デバイス内の耐タンパチップで秘密鍵を生成し、CSRのみを送って証明書発行を受ける。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①「デバイス内鍵生成」 ②「秘密鍵を外部に出さない」 ③CSR送信＋CA署名 ④TPM／SEでも可
+    </div>
+  </div>
+</div>
+
+
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">H29秋</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">PM2問2 暗号</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問54</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> 大量のデータを暗号化保管するシステムで、データ暗号化鍵（DEK）を直接アプリで管理すると鍵漏えい時の影響が大きい。鍵階層を導入してKEK/DEK構成に変更する。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> KEK／DEK構成による鍵階層の利点を、運用面・セキュリティ面の両方から60字以内で述べよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q54-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q54-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q54-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> DEKはデータ毎、KEKはマスター鍵。KEKでDEKを暗号化保管。</div>
+  <div id="q54-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> 大量データのDEK更新が不要でKEKのみ守れば良く運用コストが下がる。またKEKをHSMで保護すれば、DEKがDB漏えいしても復号不能で安全。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①「鍵階層（KEK/DEK）」 ②運用効率（DEK大量更新不要） ③HSM／鍵保管庫の活用 ④鍵ローテーションへの言及
+    </div>
+  </div>
+</div>
+
+
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">H29春</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">PM1問1 IR</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問55</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> 社内インシデントの初動報告フローが整備されておらず、現場担当が「経営層への報告か」「IRTへの通報か」を迷い対応が遅れた。発見時刻から経営層報告まで6時間を要した。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> 初動報告の責任分界を明確化する仕組みを2つ、各30字以内で述べよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q55-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q55-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q55-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> トリアージとエスカレーションパスの定義、24/7対応窓口の設置。</div>
+  <div id="q55-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> ①影響度トリアージ基準を文書化し誰でも判断できるようにする。②IRT直通の24/7対応窓口を設置し発見即通報の単一ルートを作る。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①トリアージ基準の文書化 ②単一窓口（IRT直通） ③24/7対応 ④経営層自動エスカレーション基準への言及
+    </div>
+  </div>
+</div>
+
+
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">H29春</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">PM1問3 OAuth</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問56</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> クラウドサービス間でユーザ認証連携を行うにあたり、OAuth 2.0でアクセストークンを発行するが、リソースサーバ側でトークンの有効性をどのように検証するかが課題。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> アクセストークンの2つの代表的な検証方式を述べ、それぞれの長所・短所を簡潔に対比せよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q56-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q56-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q56-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> イントロスペクション（認可サーバ問合せ）と JWT 自己完結型。</div>
+  <div id="q56-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> ①イントロスペクション方式：認可サーバへ毎回問合せて検証。常に最新の失効状態を反映できるが認可サーバ負荷が大きい。②JWT自己完結型：JWT署名を検証して即可否判断。スケールしやすいが失効反映が遅延する。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①イントロスペクション ②JWT自己完結 ③失効性 vs 性能のトレードオフ ④短い有効期限＋リフレッシュトークンへの言及
+    </div>
+  </div>
+</div>
+
+
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">H29春</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">PM2問1 マルウェア</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問57</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> 不審な実行ファイルを発見したため、隔離環境（サンドボックス）で動作観察し、IoC（Indicator of Compromise）を抽出して社内全PCのEDRに展開する手順を整備したい。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> サンドボックス解析で抽出すべきIoCを3つ挙げよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q57-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q57-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q57-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> ハッシュ値、通信先、レジストリ／ファイル変更パターン。</div>
+  <div id="q57-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> ①ファイルのハッシュ値（SHA-256）。②C2サーバのドメイン名・IPアドレス。③作成・変更されるレジストリキーやファイルパス。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①ハッシュ値 ②通信先（IP/FQDN） ③ファイル／レジストリ変更パターン ④User-AgentやMutex名でも可
+    </div>
+  </div>
+</div>
+
+
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">H28秋</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">PM1問1 IPsec</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問58</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> 工場LTEルータ間でIPsecトンネルを構築するが、片側のIPアドレスが動的に変わる環境のため、IKEv1のメインモードが使えずアグレッシブモードを採用した。さらにルータと管理端末間にSSHで接続する設計だが、ホスト鍵が他のルータと同一だと中間者攻撃を受け得る。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> IKEv1アグレッシブモードを使う必要性と、SSHホスト鍵が共有されている場合のリスクを各40字以内で述べよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q58-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q58-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q58-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> アグレッシブ＝動的IP対応／メイン＝IPアドレス認証必要。SSHホスト鍵共有＝中間者攻撃可能。</div>
+  <div id="q58-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> ①一方のIPが動的のためメインモードが使えずアグレッシブを採用するが、IDが平文で流れるため強固な事前共有鍵で補う必要がある。②同一ホスト鍵の他ルータが介在すると中間者攻撃で通信が盗聴・改ざんされ得る。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①動的IP対応のためアグレッシブ採用 ②事前共有鍵強度 ③SSHホスト鍵共有＝中間者攻撃可能性 ④機器毎ユニーク鍵の必要性
+    </div>
+  </div>
+</div>
+
+
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">H28春</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">PM1問3 公衆無線LAN</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問59</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> 出張中の従業員が空港の公衆無線LANに接続したところ、攻撃者が同一SSID＋同一暗号化方式＋同一事前共有鍵で偽AP（Evil Twin）を立てており、知らずに接続してしまうリスクが指摘された。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> Evil Twin攻撃に対する根本対策と、運用面の補強策を各40字以内で述べよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q59-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q59-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q59-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> 公衆無線LANはVPNで通信秘匿。証明書ベース認証（EAP-TLS）はSSIDだけでは騙せない。</div>
+  <div id="q59-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> ①社内システム接続時はVPNを必須化し、AP偽装によるトラフィック改ざんを防ぐ。②証明書ベース認証（EAP-TLS）採用や信頼できる接続先のみホワイトリスト化する。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①VPN必須化 ②証明書認証（EAP-TLS）／SSL-VPN ③公衆Wi-Fi接続禁止ポリシーでも可 ④HSTSとの併用
+    </div>
+  </div>
+</div>
+
+
+<div class="qcard">
+  <div class="qcard-h">
+    <span class="year-badge">H27秋</span>
+    <span style="font-size:11px;color:var(--ink2);font-family:var(--mono);margin-left:4px;">PM2問1 シンクライアント</span>
+    <span style="float:right;font-size:11px;color:var(--ink2);">問60</span>
+  </div>
+  <div style="font-size:12.5px;color:var(--ink2);background:#f5f1e4;padding:10px 14px;border-radius:2px;line-height:1.8;margin-bottom:10px;">
+    <strong style="color:var(--gold-dark,#8a6d27);">[シナリオ]</strong> マルウェア感染による情報漏えい対策として、業務用PCをシンクライアント化することを検討。社内データはサーバ側に集約し、PCには画面転送のみが流れる構成とする。
+  </div>
+  <div class="qcard-q"><strong>[設問]</strong> シンクライアント方式が情報漏えい対策として有効な理由を2つ、各30字以内で述べよ。</div>
+  <button class="qcard-btn" onclick="showReveal('q60-h')">ヒントを見る</button>
+  <button class="qcard-btn" onclick="showReveal('q60-a')" style="background:var(--success);">模範解答を見る</button>
+  <div id="q60-h" class="qcard-rev"><strong style="color:var(--accent);">[ヒント]</strong> 端末側にデータが残らない／集中管理で監査が容易。</div>
+  <div id="q60-a" class="qcard-rev qcard-rev-ans">
+    <strong>[模範解答]</strong> ①PC側にデータを保持しないため、PCがマルウェア感染しても外部に漏えいするデータが存在しない。②サーバ側で一元的に通信ログ・操作ログを記録でき、監査と不正検知が容易。
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed #c4d4bc;font-size:12px;color:var(--ink2);">
+      <strong style="color:var(--success);">採点ポイント：</strong>①「端末にデータを置かない」 ②集中監査・ログ管理の容易さ ③更新・パッチ管理一元化でも加点 ④画面転送のキャプチャ防止策への言及
+    </div>
+  </div>
+</div>
+
+</section>
+
+
+<section class="section" id="s12">
+  <div class="section-header"><span class="s-num">12</span><div><h2>記述添削チェックリスト</h2></div></div>
+
+  <p>60問を解いた後、自分の解答を以下の10項目で自己採点せよ。<strong>7項目以上クリア</strong>で本番合格レベル。</p>
+
+  <div class="point-list">
+    <div class="pl-item"><span class="pl-n">1</span><div><strong>冒頭で直接答えているか</strong>。「攻撃名」「対策名」を最初の20字以内に出せているか。前置きが長いと採点者は核を探せない。</div></div>
+    <div class="pl-item"><span class="pl-n">2</span><div><strong>キーワードが含まれているか</strong>。シナリオに「JWT」「OAuth」「SBOM」など固有名詞があれば、解答にも対応する技術名（ピンニング／PKCE／CycloneDXなど）を必ず入れる。</div></div>
+    <div class="pl-item"><span class="pl-n">3</span><div><strong>「サーバ側」「クライアント側」を明示しているか</strong>。攻撃検証や対策の実装場所を曖昧にしない。「サーバ側でアクセス制御を確認」のように主体を明記する。</div></div>
+    <div class="pl-item"><span class="pl-n">4</span><div><strong>原因と対策を分けて書いているか</strong>。「原因と対策を述べよ」型で「対策のみ書いて原因不在」は減点。論理を可視化する。</div></div>
+    <div class="pl-item"><span class="pl-n">5</span><div><strong>否定形だけで終わっていないか</strong>。「〜してはならない」だけでなく、代替策（「〜の代わりに〜する」）を書く。</div></div>
+    <div class="pl-item"><span class="pl-n">6</span><div><strong>字数の70-90%を使っているか</strong>。30字制限で15字しか書いていなければ要素漏れを疑え。短いとプロには見えない。</div></div>
+    <div class="pl-item"><span class="pl-n">7</span><div><strong>主語・目的語が明示されているか</strong>。「検証する」だけでは何を検証するか不明。「公開鍵ハッシュを検証する」と具体的に。</div></div>
+    <div class="pl-item"><span class="pl-n">8</span><div><strong>業界用語の正確な綴り</strong>。「ファイヤーウォール」ではなく「ファイアウォール」、「DNS Sec」ではなく「DNSSEC」など。</div></div>
+    <div class="pl-item"><span class="pl-n">9</span><div><strong>例示で逃げていないか</strong>。「例えばXSSなど」のような例示は1つに留め、本論を例示で薄めない。</div></div>
+    <div class="pl-item"><span class="pl-n">10</span><div><strong>余計な感想・所見を書いていないか</strong>。「〜と思われる」「〜が望ましい」は不要。事実と対策のみ。試験は意見表明の場ではない。</div></div>
+  </div>
+
+  <h3>本シリーズ全体のおさらい</h3>
+  <div class="summary-grid">
+    <div class="sm-card"><div class="sm-h"><svg style="color:var(--gold);" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5a2 2 0 0 1 2-2h14v18H6a2 2 0 0 1-2-2z"/><path d="M4 19a2 2 0 0 1 2-2h14"/></svg> 第1-2章で読解力</div>試験の制度とシナリオ読解術。「何が問われていて何を答えればよいか」を瞬時に判定する基礎。</div>
+    <div class="sm-card"><div class="sm-h"><svg style="color:var(--gold);" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L4 6v6c0 5 3.5 9 8 10 4.5-1 8-5 8-10V6l-8-4z"/></svg> 第3-8章で技術知識</div>Web/DNS/IR/脆弱性/サプライ/決済の主要6領域。1領域あたり過去20回で5-15問は必ず出題されている。</div>
+    <div class="sm-card"><div class="sm-h"><svg style="color:var(--gold);" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v3M12 20v3M4 12H1M23 12h-3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg> 第9-13章で運用知識</div>CI/CD・暗号・クラウド・モバイル・NWの応用5領域。最近のトレンドはここに集中している。</div>
+    <div class="sm-card"><div class="sm-h"><svg style="color:var(--gold);" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2l8 8L8 24H0v-8z" transform="scale(0.85) translate(2,1)"/></svg> 第14章で記述力</div>知っているだけでは1点も入らない。本章の60問を3周し、模範解答の論理を「自分の言葉」で再現できるまで定着させること。</div>
+  </div>
+
+  <div class="caption-note" style="margin-top:24px;">
+    <strong>最終チェック：</strong>本番では時間配分が命綱。150分で2問選択するため、1問あたり<strong>シナリオ読解20分＋設問解答50分＋見直し5分</strong>を目安に。記述問題は<em>「キーワードが入っているかセルフチェック」してから次へ</em>。健闘を祈る。
+  </div>
+</section>
+
+</main>
+</div>
+
+<footer>
+  <p>情報処理安全確保支援士 午後試験 完全対策 — 過去問分析シリーズ</p>
+  <p>シラバス Ver.2.1 準拠 / 過去問出典：IPA 公開資料 / 解説参照：sc-siken.com</p>
+  <p><a href="SC_AFTERNOON_INDEX.html">▲ 全章目次へ戻る</a></p>
+</footer>
+
+
+<script>
+/* sidebar active scroll-spy */
+const sections=document.querySelectorAll('section.section');
+const navLinks=document.querySelectorAll('.sidebar nav a');
+window.addEventListener('scroll',()=>{
+  let c='';
+  sections.forEach(s=>{ if(window.scrollY>=s.offsetTop-100) c=s.id; });
+  navLinks.forEach(l=>{ l.classList.toggle('active', l.getAttribute('href')==='#'+c); });
+}, {passive:true});
+
+/* Quiz */
+function answerQ(qid, sel, cor){
+  const q=document.getElementById(qid);
+  if(!q) return;
+  const opts=q.querySelectorAll('.quiz-opt');
+  const exp=document.getElementById(qid+'-exp');
+  const labels=['a','b','c','d','e'];
+  opts.forEach((o,i)=>{
+    o.disabled=true;
+    const lab=labels[i];
+    if(lab===cor) o.classList.add('correct');
+    else if(lab===sel) o.classList.add('wrong');
+    else o.classList.add('reveal');
+  });
+  if(exp) exp.classList.add('show');
+}
+
+/* Accordion */
+function toggleAcc(btn){
+  const c=btn.nextElementSibling;
+  const open=btn.classList.toggle('open');
+  c.classList.toggle('open',open);
+}
+
+/* Tabs */
+function switchTab(btn,pid){
+  const wrap=btn.closest('.tab-wrap');
+  wrap.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  wrap.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  const panel=document.getElementById(pid);
+  if(panel) panel.classList.add('active');
+}
+
+/* Q-card hint/answer reveal */
+function showReveal(id){
+  const el=document.getElementById(id);
+  if(el) el.classList.toggle('show');
+}
+
+/* Phase player */
+function setPhase(group, idx){
+  const stages=document.querySelectorAll('[data-phase-group="'+group+'"]');
+  const contents=document.querySelectorAll('[data-phase-content="'+group+'"]');
+  stages.forEach((s,i)=>{ s.classList.toggle('act', i===idx); });
+  contents.forEach((c,i)=>{ c.classList.toggle('act', i===idx); });
+}
+
+/* Log filter */
+function filterLog(group, kind){
+  const wrap=document.querySelector('[data-log-group="'+group+'"]');
+  if(!wrap) return;
+  wrap.querySelectorAll('.lf-btn').forEach(b=>b.classList.remove('act'));
+  const btn=wrap.querySelector('.lf-btn[data-kind="'+kind+'"]');
+  if(btn) btn.classList.add('act');
+  wrap.querySelectorAll('[data-log-line]').forEach(line=>{
+    if(kind==='all') line.style.display='block';
+    else line.style.display = line.dataset.logLine.includes(kind) ? 'block' : 'none';
+  });
+}
+</script>
+
+</body>
+</html>
