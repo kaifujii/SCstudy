@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AZ-305 試験当日カンニングペーパー</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=JetBrains+Mono:wght@500;700&family=Bricolage+Grotesque:wght@700;800;900&display=swap');
+
+:root {
+  --ink: #0A0E1A;
+  --paper: #FBF7EE;
+  --paper-2: #F4ECDB;
+  --paper-3: #E8DCC0;
+  --line: #2A2620;
+  --accent: #D63838;
+  --accent-2: #1B5E20;
+  --accent-3: #1565C0;
+  --accent-4: #B8860B;
+  --accent-5: #6A1B9A;
+  --highlight: #FFE066;
+  --highlight-2: #B6E5A8;
+  --highlight-3: #FFB3B3;
+  --muted: #5A554A;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Noto Sans JP', sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 13px;
+  line-height: 1.55;
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(10,14,26,0.05) 1px, transparent 0);
+  background-size: 12px 12px;
+}
+
+.page {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 24px 28px 60px;
+  position: relative;
+}
+
+.masthead {
+  border-top: 6px solid var(--ink);
+  border-bottom: 2px solid var(--ink);
+  padding: 14px 0 10px;
+  margin-bottom: 18px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 18px;
+  align-items: center;
+}
+.masthead-stamp {
+  background: var(--accent);
+  color: var(--paper);
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 900;
+  font-size: 10px;
+  letter-spacing: 3px;
+  padding: 5px 11px;
+  text-transform: uppercase;
+  transform: rotate(-2deg);
+  border: 2px solid var(--ink);
+  box-shadow: 3px 3px 0 var(--ink);
+}
+.masthead-title {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 900;
+  font-size: 36px;
+  line-height: 1;
+  letter-spacing: -1.5px;
+  font-style: italic;
+}
+.masthead-title .colon {
+  color: var(--accent);
+  font-style: normal;
+  margin: 0 4px;
+}
+.masthead-meta {
+  text-align: right;
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  font-weight: 700;
+  line-height: 1.5;
+}
+.masthead-meta strong { color: var(--ink); font-size: 11px; }
+
+.tagline {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-style: italic;
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 18px;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.tagline::before, .tagline::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: repeating-linear-gradient(90deg, var(--ink) 0 4px, transparent 4px 8px);
+}
+
+.sect {
+  margin-bottom: 22px;
+  break-inside: avoid;
+}
+.sect-h {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+  padding-bottom: 4px;
+  border-bottom: 2px solid var(--ink);
+}
+.sect-num {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 900;
+  font-size: 26px;
+  color: var(--paper);
+  background: var(--ink);
+  padding: 0 10px;
+  line-height: 1.1;
+  display: inline-flex;
+  align-items: center;
+  height: 32px;
+}
+.sect-title {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 900;
+  font-size: 17px;
+  letter-spacing: -0.3px;
+}
+.sect-tag {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  border-left: 2px solid var(--accent);
+  padding-left: 8px;
+}
+
+.kw-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 7px 12px;
+}
+.kw-grid.three { grid-template-columns: repeat(3, 1fr); }
+.kw-row {
+  display: grid;
+  grid-template-columns: 1fr auto 1.1fr;
+  gap: 6px;
+  align-items: baseline;
+  padding: 5px 9px;
+  background: var(--paper-2);
+  border-left: 3px solid var(--ink);
+  font-size: 12px;
+  line-height: 1.4;
+}
+.kw-row.hot { border-left-color: var(--accent); background: #FFF1EE; }
+.kw-row.win { border-left-color: var(--accent-2); background: #EDF7E8; }
+.kw-row.cool { border-left-color: var(--accent-3); background: #E8F0F9; }
+.kw-row.gold { border-left-color: var(--accent-4); background: #FBF4DC; }
+.kw-row.purple { border-left-color: var(--accent-5); background: #F2E8F7; }
+
+.kw-trigger {
+  font-weight: 500;
+  color: var(--ink);
+}
+.kw-trigger b {
+  background: var(--highlight);
+  padding: 0 3px;
+  font-weight: 700;
+}
+.kw-arrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  color: var(--accent);
+  font-size: 13px;
+}
+.kw-answer {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  font-size: 12px;
+  color: var(--ink);
+}
+
+.fact-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+.fact {
+  padding: 10px 12px;
+  background: var(--paper-2);
+  border: 1.5px solid var(--ink);
+}
+.fact-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+.fact-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  font-size: 17px;
+  color: var(--ink);
+  line-height: 1.1;
+}
+.fact-detail {
+  font-size: 10.5px;
+  color: var(--muted);
+  margin-top: 4px;
+  line-height: 1.4;
+}
+.fact.hot .fact-value { color: var(--accent); }
+.fact.win .fact-value { color: var(--accent-2); }
+.fact.cool .fact-value { color: var(--accent-3); }
+.fact.gold .fact-value { color: var(--accent-4); }
+
+.trap-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.trap {
+  background: #FFF1EE;
+  border: 1.5px dashed var(--accent);
+  padding: 9px 12px 9px 12px;
+  font-size: 11.5px;
+  line-height: 1.55;
+  position: relative;
+  margin-top: 8px;
+}
+.trap::before {
+  content: 'TRAP';
+  position: absolute;
+  top: -8px;
+  left: 9px;
+  background: var(--accent);
+  color: var(--paper);
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  padding: 1px 6px;
+}
+.trap b { color: var(--accent); font-weight: 700; }
+.trap .answer {
+  display: block;
+  margin-top: 4px;
+  padding-top: 4px;
+  border-top: 1px solid rgba(214, 56, 56, 0.3);
+  color: var(--accent-2);
+  font-weight: 600;
+}
+
+.cols-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+}
+
+.cmp {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+  background: var(--paper-2);
+  border: 1.5px solid var(--ink);
+}
+.cmp th {
+  background: var(--ink);
+  color: var(--paper);
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 700;
+  font-size: 10.5px;
+  letter-spacing: 0.5px;
+  text-align: left;
+  padding: 6px 8px;
+}
+.cmp td {
+  padding: 5px 8px;
+  border-top: 1px solid rgba(10,14,26,0.15);
+  vertical-align: top;
+  line-height: 1.45;
+}
+.cmp td:first-child {
+  font-weight: 700;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.cmp .ok { color: var(--accent-2); font-weight: 700; }
+.cmp .ng { color: var(--accent); font-weight: 700; }
+.cmp .ml { color: var(--accent-4); font-weight: 700; }
+.cmp .hi { background: rgba(255, 224, 102, 0.4); }
+
+.checklist {
+  background: linear-gradient(135deg, #FFF8DC 0%, #FFE4B5 100%);
+  border: 2px solid var(--ink);
+  padding: 18px 18px 14px;
+  position: relative;
+  margin-top: 8px;
+}
+.checklist::before {
+  content: '前夜・当日';
+  position: absolute;
+  top: -10px;
+  left: 16px;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  padding: 2px 10px;
+}
+.checklist ul {
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px 18px;
+}
+.checklist li {
+  font-size: 11.5px;
+  padding-left: 22px;
+  position: relative;
+  line-height: 1.6;
+}
+.checklist li::before {
+  content: '☐';
+  position: absolute;
+  left: 4px;
+  font-size: 14px;
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.mnemonic {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 16px 16px 12px;
+  margin: 14px 0 6px;
+  position: relative;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+}
+.mnemonic::before {
+  content: '★ 暗記法';
+  position: absolute;
+  top: -9px;
+  left: 12px;
+  background: var(--highlight);
+  color: var(--ink);
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  padding: 2px 8px;
+}
+.mnemonic b { color: var(--highlight); }
+
+.callout {
+  background: var(--accent);
+  color: var(--paper);
+  padding: 12px 18px;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.3px;
+  line-height: 1.5;
+  margin: 14px 0;
+  border-left: 6px solid var(--ink);
+  position: relative;
+}
+.callout::after {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border: 1px solid rgba(255,255,255,0.3);
+  pointer-events: none;
+}
+.callout b { background: var(--highlight); color: var(--ink); padding: 0 4px; }
+
+.footer {
+  margin-top: 30px;
+  border-top: 4px double var(--ink);
+  padding-top: 14px;
+  font-size: 10px;
+  color: var(--muted);
+  text-align: center;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+.footer-quote {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-style: italic;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink);
+  text-transform: none;
+  letter-spacing: -0.2px;
+  margin-bottom: 6px;
+}
+
+@media print {
+  body { background: white; font-size: 10.5px; }
+  .page { padding: 0 8px; max-width: none; }
+  .sect { break-inside: avoid; }
+  .masthead { padding-top: 4px; }
+}
+
+@media (max-width: 760px) {
+  .cols-2 { grid-template-columns: 1fr; }
+  .kw-grid, .kw-grid.three { grid-template-columns: 1fr; }
+  .fact-grid { grid-template-columns: repeat(2, 1fr); }
+  .trap-list { grid-template-columns: 1fr; }
+  .checklist ul { grid-template-columns: 1fr; }
+  .masthead { grid-template-columns: 1fr; gap: 8px; }
+  .masthead-meta { text-align: left; }
+  .masthead-title { font-size: 28px; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="masthead">
+  <div class="masthead-stamp">FINAL · 試験前夜</div>
+  <h1 class="masthead-title">AZ-305<span class="colon">·</span><em>カンニングペーパー</em></h1>
+  <div class="masthead-meta">
+    <strong>Designing Azure Infra Solutions</strong><br>
+    Domain Map: 1.25-30% / 2.20-25% / 3.15-20% / 4.30-35%<br>
+    合格ライン: 700/1000 · 試験時間: 100分
+  </div>
+</div>
+
+<div class="tagline">「迷ったらキーワード→1サービス即決」 ・ 全12ドメインを30秒で復習</div>
+
+<div class="sect">
+  <div class="sect-h">
+    <span class="sect-num">00</span>
+    <span class="sect-title">試験当日の解き方 — 戦略レベル</span>
+    <span class="sect-tag">META</span>
+  </div>
+
+  <div class="callout">
+    迷ったら<b>「キーワード一致 + 制約条件」で1秒判定</b>。深く考えるな。AZ-305は<b>消去法</b>でほぼ解ける。「最小コスト」「最小工数」「最小ダウンタイム」のうちどれかを必ずチェック。
+  </div>
+
+  <div class="cols-2">
+    <div>
+      <div class="mnemonic">
+        <b>4つの「最小」キーワード →</b> 1番大事な制約<br>
+        ・<b>最小コスト</b> = サーバーレス / Standard tier / 安いSKU<br>
+        ・<b>最小工数</b> = マネージド / コード不要 / 既存維持<br>
+        ・<b>最小ダウンタイム</b> = オンライン移行 / 同期レプリ<br>
+        ・<b>最小権限</b> = リソーストークン / 専用ロール
+      </div>
+    </div>
+    <div>
+      <div class="mnemonic">
+        <b>「絶対不可」キーワード →</b> 即除外<br>
+        ・<b>キー/シークレット共有</b> = アンチパターン<br>
+        ・<b>VM内部にパスワード保存</b> = MI使え<br>
+        ・<b>パブリックエンドポイント開放</b> = Private Endpoint<br>
+        ・<b>マスターキー全権付与</b> = 最小権限違反
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="sect">
+  <div class="sect-h">
+    <span class="sect-num">01</span>
+    <span class="sect-title">ID・認証 即答表 — 最頻出</span>
+    <span class="sect-tag">25-30%</span>
+  </div>
+
+  <div class="kw-grid">
+    <div class="kw-row hot"><span class="kw-trigger"><b>包括的ガバナンス</b>「アクセスのライフサイクル」</span><span class="kw-arrow">→</span><span class="kw-answer">Identity Governance</span></div>
+    <div class="kw-row hot"><span class="kw-trigger"><b>毎月レビュー</b> + 「不要なら削除」+ Auto-apply</span><span class="kw-arrow">→</span><span class="kw-answer">Access Reviews</span></div>
+    <div class="kw-row hot"><span class="kw-trigger"><b>申請→承認→期限付与</b>(新規アクセス)</span><span class="kw-arrow">→</span><span class="kw-answer">Entitlement Management</span></div>
+    <div class="kw-row hot"><span class="kw-trigger"><b>特権ロール JIT</b> + 承認 + MFA + 時間制限</span><span class="kw-arrow">→</span><span class="kw-answer">PIM</span></div>
+    <div class="kw-row hot"><span class="kw-trigger"><b>リスクベース</b>「漏えい認証」「異常サインイン」</span><span class="kw-arrow">→</span><span class="kw-answer">Identity Protection</span></div>
+    <div class="kw-row hot"><span class="kw-trigger"><b>条件付きアクセス + MFA要求</b>を既存に追加</span><span class="kw-arrow">→</span><span class="kw-answer">既存CAにMFA追加(新規CAではない)</span></div>
+    <div class="kw-row win"><span class="kw-trigger"><b>MFA「登録」</b>させる(MFA要求ではない)</span><span class="kw-arrow">→</span><span class="kw-answer">Identity Protection MFA登録ポリシー</span></div>
+    <div class="kw-row win"><span class="kw-trigger">アプリ → Azure リソース<b>(Secretレス)</b></span><span class="kw-arrow">→</span><span class="kw-answer">Managed Identity</span></div>
+    <div class="kw-row win"><span class="kw-trigger">アプリ <b>1つ</b>専用 + ライフサイクル連動</span><span class="kw-arrow">→</span><span class="kw-answer">System-Assigned MI</span></div>
+    <div class="kw-row win"><span class="kw-trigger">VMSS / DINE Policy / <b>複数リソース共有</b></span><span class="kw-arrow">→</span><span class="kw-answer">User-Assigned MI</span></div>
+    <div class="kw-row cool"><span class="kw-trigger"><b>オンプレアプリ</b>を Entra ID 認証で外部公開</span><span class="kw-arrow">→</span><span class="kw-answer">Application Proxy → Enterprise App</span></div>
+    <div class="kw-row cool"><span class="kw-trigger">既存ドメイン名で <b>Kerberos / NTLM</b> 認証</span><span class="kw-arrow">→</span><span class="kw-answer">Azure VM上のDC(AAD DSではない)</span></div>
+    <div class="kw-row gold"><span class="kw-trigger"><b>外部MSP</b>がテナント切替なしで顧客管理</span><span class="kw-arrow">→</span><span class="kw-answer">Azure Lighthouse</span></div>
+    <div class="kw-row gold"><span class="kw-trigger"><b>コンシューマー(B2C)</b>「Google/Facebook ログイン」</span><span class="kw-arrow">→</span><span class="kw-answer">Entra External ID(B2C)</span></div>
+    <div class="kw-row purple"><span class="kw-trigger"><b>FIPS 140-3 Level 3</b> + シングルテナントHSM</span><span class="kw-arrow">→</span><span class="kw-answer">Key Vault Managed HSM</span></div>
+    <div class="kw-row purple"><span class="kw-trigger">Key Vault フェイルオーバー先</span><span class="kw-arrow">→</span><span class="kw-answer">ペアリージョン(同ジオグラフィ内)</span></div>
+  </div>
+
+  <div class="trap-list">
+    <div class="trap">
+      「Fabrikam 開発者(<b>外部</b>)に毎月のアクセス再確認」 → PIM <b>不可</b>(社内特権ロール用)
+      <span class="answer">→ 正解: Access Reviews(B2Bユーザーも対象可)</span>
+    </div>
+    <div class="trap">
+      「<b>既存CA + セキュリティ既定値群</b>を有効化」 → <b>併用不可</b>
+      <span class="answer">→ 正解: 既存CAをそのまま使用 / 既定値群は無効化</span>
+    </div>
+  </div>
+</div>
+
+<div class="sect">
+  <div class="sect-h">
+    <span class="sect-num">02</span>
+    <span class="sect-title">ガバナンス + ログ/監視 即答表</span>
+    <span class="sect-tag">SCOPE & POLICY</span>
+  </div>
+
+  <div class="cols-2">
+    <div>
+      <div class="kw-grid" style="grid-template-columns: 1fr;">
+        <div class="kw-row"><span class="kw-trigger">Policy <b>新規プロパティ自動付与</b>(TDE有効化等)</span><span class="kw-arrow">→</span><span class="kw-answer">DeployIfNotExists</span></div>
+        <div class="kw-row"><span class="kw-trigger">Policy <b>既存タグ修正</b></span><span class="kw-arrow">→</span><span class="kw-answer">Modify</span></div>
+        <div class="kw-row"><span class="kw-trigger">Policy <b>違反作成を完全拒否</b></span><span class="kw-arrow">→</span><span class="kw-answer">Deny</span></div>
+        <div class="kw-row hot"><span class="kw-trigger">DINE/Modify を <b>既存リソース</b>に適用</span><span class="kw-arrow">→</span><span class="kw-answer">修復タスク(Remediation)</span></div>
+        <div class="kw-row cool"><span class="kw-trigger"><b>複数Storage</b>に Policy 一貫展開</span><span class="kw-arrow">→</span><span class="kw-answer">ARM Template / Bicep(CLI不可)</span></div>
+        <div class="kw-row cool"><span class="kw-trigger"><b>プロジェクト別コスト追跡</b>(最小工数)</span><span class="kw-arrow">→</span><span class="kw-answer">Tags + Budget(2つ選択)</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="kw-grid" style="grid-template-columns: 1fr;">
+        <div class="kw-row hot"><span class="kw-trigger"><b>ACI</b>(Container Instances)監視</span><span class="kw-arrow">→</span><span class="kw-answer">App Insights(Container Insightsではない)</span></div>
+        <div class="kw-row hot"><span class="kw-trigger"><b>AKS</b>監視</span><span class="kw-arrow">→</span><span class="kw-answer">Container Insights</span></div>
+        <div class="kw-row"><span class="kw-trigger"><b>Web/API</b>合成トランザクション</span><span class="kw-arrow">→</span><span class="kw-answer">Application Insights</span></div>
+        <div class="kw-row win"><span class="kw-trigger"><b>1000台VM</b>のログをプライベート化</span><span class="kw-arrow">→</span><span class="kw-answer">AMPLS(Private Link Scope)</span></div>
+        <div class="kw-row win"><span class="kw-trigger">Network Watcher / IP Flow Verify</span><span class="kw-arrow">→</span><span class="kw-answer">診断のみ・<b>ブロック不可</b></span></div>
+        <div class="kw-row gold"><span class="kw-trigger">Entra Connect <b>同期エラー監視</b></span><span class="kw-arrow">→</span><span class="kw-answer">Entra Connect Health(P1必須)</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mnemonic">
+    <b>管理グループ階層ルール:</b> Policy 割当先の<b>配下のみ</b>適用 / Tenant Root → 全継承 / Sub単独配置あり / 最大6階層 + 10000 MGs / Tenant Root 削除不可
+  </div>
+</div>
+
+<div class="sect">
+  <div class="sect-h">
+    <span class="sect-num">03</span>
+    <span class="sect-title">データストレージ 即答表</span>
+    <span class="sect-tag">20-25%</span>
+  </div>
+
+  <div class="cols-2">
+    <div>
+      <div class="kw-grid" style="grid-template-columns: 1fr;">
+        <div class="kw-row hot"><span class="kw-trigger"><b>License Mobility / AHB / SA</b></span><span class="kw-arrow">→</span><span class="kw-answer">vCore モデル一択(DTU不可)</span></div>
+        <div class="kw-row hot"><span class="kw-trigger"><b>Business Critical</b>+ <b>最小ダウンタイム</b>+ フェイルバック</span><span class="kw-arrow">→</span><span class="kw-answer">MI Link(SQL2022) / DMS不可</span></div>
+        <div class="kw-row"><span class="kw-trigger"><b>50DB マルチテナントSaaS</b>+ コスト最適化</span><span class="kw-arrow">→</span><span class="kw-answer">Elastic Pool</span></div>
+        <div class="kw-row"><span class="kw-trigger"><b>不定期</b>+ 自動スケール + 秒課金</span><span class="kw-arrow">→</span><span class="kw-answer">SQL DB Serverless</span></div>
+        <div class="kw-row"><span class="kw-trigger"><b>100TB級</b> VLDB</span><span class="kw-arrow">→</span><span class="kw-answer">SQL Hyperscale</span></div>
+        <div class="kw-row win"><span class="kw-trigger"><b>3部構成参照</b> / SQL Agent / CLR</span><span class="kw-arrow">→</span><span class="kw-answer">SQL Managed Instance</span></div>
+        <div class="kw-row win"><span class="kw-trigger"><b>DBAも見えない</b>列暗号化</span><span class="kw-arrow">→</span><span class="kw-answer">Always Encrypted(TDE不可)</span></div>
+        <div class="kw-row gold"><span class="kw-trigger">SQL監査 + ストレージ <b>同一リージョン</b></span><span class="kw-arrow">→</span><span class="kw-answer">必須(別リージョン不可)</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="kw-grid" style="grid-template-columns: 1fr;">
+        <div class="kw-row hot"><span class="kw-trigger"><b>POSIX ACL</b> / Hadoop / Spark / HNS</span><span class="kw-arrow">→</span><span class="kw-answer">ADLS Gen2(Standard 汎用v2)</span></div>
+        <div class="kw-row hot"><span class="kw-trigger"><b>3年間 変更・削除不可</b>(規制)</span><span class="kw-arrow">→</span><span class="kw-answer">Time-Based Retention Policy</span></div>
+        <div class="kw-row"><span class="kw-trigger">上書き時に<b>旧バージョン保持</b></span><span class="kw-arrow">→</span><span class="kw-answer">BLOB Versioning</span></div>
+        <div class="kw-row"><span class="kw-trigger">5TB ファイル + 24h以内取得 + 最安</span><span class="kw-arrow">→</span><span class="kw-answer">Archive層(rehydration max15h)</span></div>
+        <div class="kw-row win"><span class="kw-trigger">Cosmos <b>Multi-region write + 自分の書込即読</b></span><span class="kw-arrow">→</span><span class="kw-answer">Session 整合性</span></div>
+        <div class="kw-row win"><span class="kw-trigger">Cosmos アクセス制御(最小権限)</span><span class="kw-arrow">→</span><span class="kw-answer">IAM Role + リソーストークン</span></div>
+        <div class="kw-row cool"><span class="kw-trigger"><b>毎秒10万件</b> テレメトリのリアルタイム集計</span><span class="kw-arrow">→</span><span class="kw-answer">Stream Analytics</span></div>
+        <div class="kw-row cool"><span class="kw-trigger"><b>Synapse内</b>でデータ統合・変換</span><span class="kw-arrow">→</span><span class="kw-answer">Synapse パイプライン</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout">
+    Cosmos DB <b>Strong + Multi-region write は両立不可</b>。試験で両方が要件にあれば誤答選択肢。<br>
+    Cosmos パーティションキーは「<b>高カーディナリティ</b>+<b>主クエリWHERE一致</b>+<b>書込分散</b>」の3条件。
+  </div>
+</div>
+
+<div class="sect">
+  <div class="sect-h">
+    <span class="sect-num">04</span>
+    <span class="sect-title">バックアップ・DR・HA 即答表</span>
+    <span class="sect-tag">15-20%</span>
+  </div>
+
+  <div class="cols-2">
+    <div>
+      <div class="kw-grid" style="grid-template-columns: 1fr;">
+        <div class="kw-row hot"><span class="kw-trigger">Sub1のVMバックアップ + Sub2に保護分離</span><span class="kw-arrow">→</span><span class="kw-answer">RSV(Sub1) + Resource Guard(Sub2) MUA</span></div>
+        <div class="kw-row hot"><span class="kw-trigger">Azure VM バックアップ</span><span class="kw-arrow">→</span><span class="kw-answer">Recovery Services Vault(Backup Vaultではない)</span></div>
+        <div class="kw-row"><span class="kw-trigger">Disks/Blob/PostgreSQL/AKS</span><span class="kw-arrow">→</span><span class="kw-answer">Backup Vault(新)</span></div>
+        <div class="kw-row"><span class="kw-trigger">バックアップ最大復元期間</span><span class="kw-arrow">→</span><span class="kw-answer">日週月年のうち<b>最長</b>のもの</span></div>
+        <div class="kw-row win"><span class="kw-trigger"><b>セカンダリ拠点フェイルオーバー</b>のみ</span><span class="kw-arrow">→</span><span class="kw-answer">ASR のみ</span></div>
+        <div class="kw-row win"><span class="kw-trigger">DR + <b>7年保持</b></span><span class="kw-arrow">→</span><span class="kw-answer">ASR + Azure Backup 両方</span></div>
+        <div class="kw-row win"><span class="kw-trigger">日次PITR + RTO 8h(レポート)</span><span class="kw-arrow">→</span><span class="kw-answer">Azure Backup のみ</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="kw-grid" style="grid-template-columns: 1fr;">
+        <div class="kw-row hot"><span class="kw-trigger"><b>SQL DB 99.995%</b> + ゾーン冗長 + リスナー</span><span class="kw-arrow">→</span><span class="kw-answer">BC tier + ZR + Auto-Failover Group</span></div>
+        <div class="kw-row hot"><span class="kw-trigger"><b>WSFC / SQL FCI</b> + AZ障害耐性</span><span class="kw-arrow">→</span><span class="kw-answer">AZ + Azure Shared Disks</span></div>
+        <div class="kw-row"><span class="kw-trigger">マルチ拠点 + ローカルキャッシュ</span><span class="kw-arrow">→</span><span class="kw-answer">Azure Files + File Sync</span></div>
+        <div class="kw-row"><span class="kw-trigger">マルチリージョンDR の3点セット</span><span class="kw-arrow">→</span><span class="kw-answer">FrontDoor + Auto-FailoverGroup + KV ペア</span></div>
+        <div class="kw-row gold"><span class="kw-trigger">カスタムCOM + 高可用性 + 自動スケール</span><span class="kw-arrow">→</span><span class="kw-answer">複数AZ × VMSS + LB(PaaS不可)</span></div>
+        <div class="kw-row gold"><span class="kw-trigger">Availability Set vs Zone</span><span class="kw-arrow">→</span><span class="kw-answer">新規は<b>必ずAZ</b>(SetはDC内のみ)</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fact-grid" style="margin-top:12px;">
+    <div class="fact hot">
+      <div class="fact-label">単一VM SLA</div>
+      <div class="fact-value">99.9%</div>
+      <div class="fact-detail">Premium SSD</div>
+    </div>
+    <div class="fact gold">
+      <div class="fact-label">Avail.Set SLA</div>
+      <div class="fact-value">99.95%</div>
+      <div class="fact-detail">DC内ラック分離(レガシー)</div>
+    </div>
+    <div class="fact win">
+      <div class="fact-label">AZ (2+VM) SLA</div>
+      <div class="fact-value">99.99%</div>
+      <div class="fact-detail">DC障害対応 ★新規推奨</div>
+    </div>
+    <div class="fact win">
+      <div class="fact-label">SQL DB BC ZR SLA</div>
+      <div class="fact-value">99.995%</div>
+      <div class="fact-detail">BC + Zone-redundant 最高</div>
+    </div>
+  </div>
+</div>
+
+<div class="sect">
+  <div class="sect-h">
+    <span class="sect-num">05</span>
+    <span class="sect-title">ロードバランサー 4種 — 完全マスター</span>
+    <span class="sect-tag">最頻出</span>
+  </div>
+
+  <table class="cmp">
+    <thead>
+      <tr><th>サービス</th><th>スコープ</th><th>レイヤ</th><th>WAF</th><th>Private Link</th><th>典型キーワード</th></tr>
+    </thead>
+    <tbody>
+      <tr class="hi"><td>Front Door <b>Premium</b></td><td>グローバル</td><td>L7</td><td class="ok">✓</td><td class="ok">✓</td><td><b>「異リージョン + プライベートIPバックエンド」</b></td></tr>
+      <tr><td>Front Door Standard</td><td>グローバル</td><td>L7</td><td class="ok">✓</td><td class="ng">✗</td><td>グローバル + WAF + 公開IP</td></tr>
+      <tr><td>Application Gateway v2</td><td>リージョン内</td><td>L7</td><td class="ok">✓</td><td class="ng">✗</td><td>単一リージョン + WAF + URL Path</td></tr>
+      <tr><td>Traffic Manager</td><td>グローバル</td><td><b>DNS</b></td><td class="ng">✗</td><td class="ng">✗</td><td>非HTTP(SMTP等) / 1グローバル</td></tr>
+      <tr><td>Standard LB</td><td>リージョン</td><td>L4</td><td class="ng">✗</td><td class="ng">✗</td><td>VM内部TCP負荷分散</td></tr>
+      <tr><td>Cross-Region LB</td><td>グローバル</td><td>L4</td><td class="ng">✗</td><td class="ng">✗</td><td>グローバルTCP・WAF不要</td></tr>
+      <tr class="hi"><td><b>Gateway LB(GLB)</b></td><td>リージョン</td><td>L4</td><td class="ng">✗</td><td class="ng">✗</td><td><b>「NVA透過挿入」一択</b></td></tr>
+    </tbody>
+  </table>
+
+  <div class="mnemonic">
+    <b>3リージョン + WAF + DNS問題:</b> Traffic Manager <b>×1</b>(グローバル) + Application Gateway <b>×3</b>(リージョン×N) — TM:6, AG:3 などは罠
+  </div>
+</div>
+
+<div class="sect">
+  <div class="sect-h">
+    <span class="sect-num">06</span>
+    <span class="sect-title">ネットワーク 即答表</span>
+    <span class="sect-tag">30-35%</span>
+  </div>
+
+  <div class="cols-2">
+    <div>
+      <div class="kw-grid" style="grid-template-columns: 1fr;">
+        <div class="kw-row hot"><span class="kw-trigger"><b>Storage/SQL DB パブリック完全閉鎖</b></span><span class="kw-arrow">→</span><span class="kw-answer">Private Endpoint(Service EP不可)</span></div>
+        <div class="kw-row hot"><span class="kw-trigger">複数オンプレ拠点 + 1ER回線で相互接続</span><span class="kw-arrow">→</span><span class="kw-answer">ExpressRoute Global Reach</span></div>
+        <div class="kw-row hot"><span class="kw-trigger">4拠点 / <b>3リージョン</b>の Virtual WAN ハブ数</span><span class="kw-arrow">→</span><span class="kw-answer">3(リージョン数 = ハブ数)</span></div>
+        <div class="kw-row"><span class="kw-trigger">SQLインジェクション + L7</span><span class="kw-arrow">→</span><span class="kw-answer">Application Gateway WAF</span></div>
+        <div class="kw-row win"><span class="kw-trigger">VMへ管理アクセス(RDP/SSH)安全公開</span><span class="kw-arrow">→</span><span class="kw-answer">Azure Bastion</span></div>
+        <div class="kw-row win"><span class="kw-trigger"><b>DDoS L3/L4</b> + SLA + コスト保護</span><span class="kw-arrow">→</span><span class="kw-answer">DDoS Network Protection + WAF</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="kw-grid" style="grid-template-columns: 1fr;">
+        <div class="kw-row gold"><span class="kw-trigger">「100Gbps 超高速」</span><span class="kw-arrow">→</span><span class="kw-answer">ExpressRoute Direct</span></div>
+        <div class="kw-row gold"><span class="kw-trigger">「全Azureリージョン到達(ER)」</span><span class="kw-arrow">→</span><span class="kw-answer">ExpressRoute Premium</span></div>
+        <div class="kw-row cool"><span class="kw-trigger">グローバル動画配信 + WAF + マネージドTLS</span><span class="kw-arrow">→</span><span class="kw-answer">Front Door(CDN Classic廃止)</span></div>
+        <div class="kw-row cool"><span class="kw-trigger">ER 障害時のフェイルオーバー</span><span class="kw-arrow">→</span><span class="kw-answer">2本ER冗長 + S2S VPN バックアップ</span></div>
+        <div class="kw-row purple"><span class="kw-trigger">NSGの<b>レート制限ルール</b></span><span class="kw-arrow">→</span><span class="kw-answer"><b>存在しない</b>(罠選択肢)</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mnemonic">
+    <b>Service Endpoint vs Private Endpoint:</b><br>
+    Service EP = サービスはまだパブリックIP / 無料 / シンプル<br>
+    Private EP = サービスにVNet内 IP 割当 / 有料 / オンプレ・他テナントからもアクセス可
+  </div>
+</div>
+
+<div class="sect">
+  <div class="sect-h">
+    <span class="sect-num">07</span>
+    <span class="sect-title">コンピュートサービス 決定木</span>
+    <span class="sect-tag">CRITICAL</span>
+  </div>
+
+  <table class="cmp">
+    <thead>
+      <tr><th>キーワード</th><th>正解</th><th>理由</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Java/.NET <b>コードそのまま</b> + 自動スケール</td><td class="ok">App Service</td><td>コンテナ化不要</td></tr>
+      <tr class="hi"><td><b>完全VNet分離</b> + Isolated v2</td><td class="ok">App Service Environment v3</td><td>専用VNet・規制対応</td></tr>
+      <tr><td>VNet統合 + デプロイスロット</td><td class="ok">App Service Premium v3</td><td>標準高機能</td></tr>
+      <tr class="hi"><td><b>カスタムCOM</b>・古いミドルウェア</td><td class="ml">VMSS + LB</td><td>PaaS不可、IaaSのみ</td></tr>
+      <tr><td>マイクロサービス + Kubernetes</td><td class="ok">AKS</td><td>本格コンテナオーケストレーション</td></tr>
+      <tr><td>シンプルコンテナ + KEDAスケール</td><td class="ok">Container Apps</td><td>K8s不要</td></tr>
+      <tr><td>単発コンテナ 1〜数台</td><td class="ok">Container Instances(ACI)</td><td>最シンプル</td></tr>
+      <tr><td>サーバーレス + イベントトリガー + 短時間</td><td class="ok">Functions Consumption</td><td>従量課金</td></tr>
+      <tr class="hi"><td><b>コールドスタート不可</b> + VNet統合 + Functions</td><td class="ok">Functions Premium Plan</td><td>事前ウォーム</td></tr>
+      <tr class="hi"><td>サーバーレス <b>長期ワークフロー</b>(人間承認待ち)</td><td class="ok">Durable Functions</td><td>ステートフル</td></tr>
+      <tr><td>HPC・MPI・大規模並列</td><td class="ok">Azure Batch</td><td>専用</td></tr>
+      <tr class="hi"><td>Batch <b>開発環境 + Spot + AHB</b></td><td class="ok">User Subscription Mode + Spot VM</td><td>本番MPIは Dedicated</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="sect">
+  <div class="sect-h">
+    <span class="sect-num">08</span>
+    <span class="sect-title">メッセージング・連携 即答表</span>
+    <span class="sect-tag">FAN-OUT vs ORDER</span>
+  </div>
+
+  <div class="cols-2">
+    <div>
+      <div class="kw-grid" style="grid-template-columns: 1fr;">
+        <div class="kw-row hot"><span class="kw-trigger"><b>厳密FIFO / 順序保証</b></span><span class="kw-arrow">→</span><span class="kw-answer">Service Bus + <b>Sessions有効</b></span></div>
+        <div class="kw-row"><span class="kw-trigger">1イベント → 複数サブスクライバー(<b>Pub/Sub</b>)</span><span class="kw-arrow">→</span><span class="kw-answer">Event Grid</span></div>
+        <div class="kw-row"><span class="kw-trigger"><b>百万イベント/秒</b> 大規模ストリーム</span><span class="kw-arrow">→</span><span class="kw-answer">Event Hubs</span></div>
+        <div class="kw-row win"><span class="kw-trigger">シンプル・低コストキュー</span><span class="kw-arrow">→</span><span class="kw-answer">Storage Queue(64KB制限)</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="kw-grid" style="grid-template-columns: 1fr;">
+        <div class="kw-row hot"><span class="kw-trigger">Web → API <b>JWT検証 + ブロック</b></span><span class="kw-arrow">→</span><span class="kw-answer">APIM validate-jwt(EntraIDがトークン発行)</span></div>
+        <div class="kw-row hot"><span class="kw-trigger">Logic Apps → <b>オンプレSQL</b></span><span class="kw-arrow">→</span><span class="kw-answer">接続ゲートウェイリソース</span></div>
+        <div class="kw-row gold"><span class="kw-trigger">ADF → <b>オンプレOracle</b></span><span class="kw-arrow">→</span><span class="kw-answer">SHIR(Self-Hosted IR)</span></div>
+        <div class="kw-row gold"><span class="kw-trigger">Redis <b>VNet統合 + 永続化</b></span><span class="kw-arrow">→</span><span class="kw-answer">Cache for Redis Premium 以上</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <b>SHIR と オンプレデータゲートウェイは別物!</b> SHIR = ADF/Synapse 用 / オンプレデータゲートウェイ = Logic Apps/Power Apps/Power BI 用
+  </div>
+</div>
+
+<div class="sect">
+  <div class="sect-h">
+    <span class="sect-num">09</span>
+    <span class="sect-title">移行・データ転送 即答表</span>
+    <span class="sect-tag">MIGRATION</span>
+  </div>
+
+  <div class="cols-2">
+    <div>
+      <div class="kw-grid" style="grid-template-columns: 1fr;">
+        <div class="kw-row hot"><span class="kw-trigger">VMware 100台 移行 — <b>最初</b></span><span class="kw-arrow">→</span><span class="kw-answer">Azure Migrate プロジェクト作成</span></div>
+        <div class="kw-row hot"><span class="kw-trigger">VMware <b>vMotion</b>でそのまま</span><span class="kw-arrow">→</span><span class="kw-answer">AVS(Azure VMware Solution)</span></div>
+        <div class="kw-row"><span class="kw-trigger">SQL → Azure SQL DB/MI(オンライン)</span><span class="kw-arrow">→</span><span class="kw-answer">DMS(General Purposeのみ)</span></div>
+        <div class="kw-row win"><span class="kw-trigger"><b>Oracle → SQL Server</b> スキーマ変換</span><span class="kw-arrow">→</span><span class="kw-answer">SSMA</span></div>
+        <div class="kw-row win"><span class="kw-trigger">SQL Server → Azure SQL <b>評価</b></span><span class="kw-arrow">→</span><span class="kw-answer">DMA</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="kw-grid" style="grid-template-columns: 1fr;">
+        <div class="kw-row gold"><span class="kw-trigger">数100GB〜TB / ネット経由</span><span class="kw-arrow">→</span><span class="kw-answer">AzCopy</span></div>
+        <div class="kw-row gold"><span class="kw-trigger">100TB / 帯域不足</span><span class="kw-arrow">→</span><span class="kw-answer">Azure Data Box(80TB)</span></div>
+        <div class="kw-row cool"><span class="kw-trigger"><b>Win Server ファイル → 廃止 + GUI</b></span><span class="kw-arrow">→</span><span class="kw-answer">Storage Migration Service</span></div>
+        <div class="kw-row cool"><span class="kw-trigger">Blob → SQL DB <b>毎月スケジュール</b></span><span class="kw-arrow">→</span><span class="kw-answer">Azure Data Factory</span></div>
+        <div class="kw-row purple"><span class="kw-trigger">Arc非対応VM + マシン構成 = グループ数判定</span><span class="kw-arrow">→</span><span class="kw-answer">アドオン無 + Arc非対応の合計</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="sect">
+  <div class="sect-h">
+    <span class="sect-num">10</span>
+    <span class="sect-title">覚えておく数値・SLA・制限値</span>
+    <span class="sect-tag">NUMBERS</span>
+  </div>
+
+  <div class="fact-grid">
+    <div class="fact hot">
+      <div class="fact-label">Archive Rehydration</div>
+      <div class="fact-value">15h / 1h</div>
+      <div class="fact-detail">Standard / High Priority</div>
+    </div>
+    <div class="fact hot">
+      <div class="fact-label">Archive 最小保持</div>
+      <div class="fact-value">180日</div>
+      <div class="fact-detail">早期削除でフル料金</div>
+    </div>
+    <div class="fact gold">
+      <div class="fact-label">Cool / Cold 最小</div>
+      <div class="fact-value">30 / 90日</div>
+      <div class="fact-detail">それぞれ早期削除制限</div>
+    </div>
+    <div class="fact win">
+      <div class="fact-label">RU 1KB読み</div>
+      <div class="fact-value">1 RU</div>
+      <div class="fact-detail">書込は5 RU</div>
+    </div>
+    <div class="fact cool">
+      <div class="fact-label">SQL DB Hyperscale</div>
+      <div class="fact-value">100 TB</div>
+      <div class="fact-detail">最大4読み取りレプリカ</div>
+    </div>
+    <div class="fact cool">
+      <div class="fact-label">SQL DB BC max</div>
+      <div class="fact-value">4 TB</div>
+      <div class="fact-detail">DTU Basic は 2GB のみ</div>
+    </div>
+    <div class="fact gold">
+      <div class="fact-label">管理グループ階層</div>
+      <div class="fact-value">最大6</div>
+      <div class="fact-detail">+ Tenant Root / 10000 MGs</div>
+    </div>
+    <div class="fact gold">
+      <div class="fact-label">Functions最大実行</div>
+      <div class="fact-value">10/60min</div>
+      <div class="fact-detail">Consumption/Premium</div>
+    </div>
+    <div class="fact win">
+      <div class="fact-label">App Service Plan</div>
+      <div class="fact-value">無制限</div>
+      <div class="fact-detail">Functions Dedicated</div>
+    </div>
+    <div class="fact win">
+      <div class="fact-label">Cosmos partition</div>
+      <div class="fact-value">20 GB</div>
+      <div class="fact-detail">論理パーティション上限</div>
+    </div>
+    <div class="fact hot">
+      <div class="fact-label">Service Bus msg</div>
+      <div class="fact-value">256KB / 1MB</div>
+      <div class="fact-detail">Standard / Premium</div>
+    </div>
+    <div class="fact hot">
+      <div class="fact-label">File Sync Server EP</div>
+      <div class="fact-value">最大30</div>
+      <div class="fact-detail">/ Sync Group</div>
+    </div>
+  </div>
+</div>
+
+<div class="sect">
+  <div class="sect-h">
+    <span class="sect-num">11</span>
+    <span class="sect-title">超頻出の罠 — これだけは落とすな</span>
+    <span class="sect-tag">DEADLY</span>
+  </div>
+
+  <div class="trap-list">
+    <div class="trap">
+      「<b>SQL Server → SQL MI Business Critical</b> をオンライン移行」 → DMSは<b>BC tier非対応</b>
+      <span class="answer">→ 正解: MI Link(SQL2022)一択</span>
+    </div>
+    <div class="trap">
+      「<b>Multi-region write + Strong整合性</b>」 → <b>両立不可</b>
+      <span class="answer">→ Sessionにする / 単一書き込みリージョンでStrong</span>
+    </div>
+    <div class="trap">
+      「<b>ACI コンテナの監視</b>」 → Container Insightsは<b>ACI非対応</b>
+      <span class="answer">→ 正解: Application Insights</span>
+    </div>
+    <div class="trap">
+      「<b>Network Watcher で攻撃をブロック</b>」 → 診断のみ・ブロック不可
+      <span class="answer">→ 正解: NSG / Azure Firewall / DDoS Protection</span>
+    </div>
+    <div class="trap">
+      「<b>外部開発者にPIM</b>」 → PIMは<b>社内特権ロール用</b>のみ
+      <span class="answer">→ 正解: Access Reviews(B2Bユーザー対象)</span>
+    </div>
+    <div class="trap">
+      「<b>異なるVNetのプライベートIPバックエンド + クロスリージョン</b>」 → AGv2 / TM / X-Region LBは不可
+      <span class="answer">→ 正解: Front Door <b>Premium</b>(Private Link対応)</span>
+    </div>
+    <div class="trap">
+      「<b>セキュリティの既定値群 + 既存CA</b>」 → <b>同時利用不可</b>
+      <span class="answer">→ 既定値群を無効化 / 既存CAに条件追加で対応</span>
+    </div>
+    <div class="trap">
+      「<b>Logic Apps の SHIR でオンプレSQL</b>」 → SHIRは<b>ADF専用</b>
+      <span class="answer">→ 正解: 接続ゲートウェイリソース(オンプレデータゲートウェイ)</span>
+    </div>
+    <div class="trap">
+      「<b>Premium ページBLOB / Premium ファイル</b>でADLS Gen2」 → 両方<b>非対応</b>
+      <span class="answer">→ 正解: Standard 汎用 v2 + HNS 有効化</span>
+    </div>
+    <div class="trap">
+      「<b>Multi-tenant App Registration</b>でコンシューマーログイン」 → ビジネスユーザー間用
+      <span class="answer">→ 正解: Entra External ID(Azure AD B2C)</span>
+    </div>
+  </div>
+</div>
+
+<div class="sect">
+  <div class="sect-h">
+    <span class="sect-num">12</span>
+    <span class="sect-title">試験当日チェックリスト</span>
+    <span class="sect-tag">DAY OF</span>
+  </div>
+
+  <div class="checklist">
+    <ul>
+      <li>身分証明書 2点(写真付き必須)を確認</li>
+      <li>会場 30分前到着 / オンライン15分前ログイン</li>
+      <li>水・軽食 + 上着 / 試験中は飲食不可</li>
+      <li>試験前に <b>section 11(超罠)</b> をもう一度</li>
+      <li>1問1分平均(全60問+ケース) / 時間配分意識</li>
+      <li>迷ったら<b>マーク</b>して次へ・最後に戻る</li>
+      <li>ケーススタディは<b>「要件タブ」最優先</b>で読む</li>
+      <li>Yes/Noシリーズは<b>独立評価</b>(後ろから戻れない)</li>
+      <li>Drag&Drop問題は<b>順序を慎重に</b>(部分点なし)</li>
+      <li>残り時間で<b>マーク問題</b>を再検討</li>
+      <li>合格ライン700点 = <b>約70%正解</b>で合格</li>
+      <li>結果は試験終了後すぐ画面表示</li>
+    </ul>
+  </div>
+</div>
+
+<div class="footer">
+  <div class="footer-quote">"You don't have to know everything. You have to recognize the pattern."</div>
+  AZ-305 · Designing Azure Infrastructure Solutions · Final Cheat Sheet · 2026
+</div>
+
+</div>
+</body>
+</html>
