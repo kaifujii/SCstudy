@@ -294,6 +294,74 @@ main {
 .sc-opt span { flex: 1; }
 .sc-opt-label { font-size: 0.62rem; font-weight: 500; color: inherit; opacity: 0.65; }
 
+/* ===== TABS ===== */
+.tab-bar {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 20px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 4px;
+}
+.tab-btn {
+  flex: 1;
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  padding: 9px 12px;
+  border: none; background: none; cursor: pointer;
+  border-radius: 5px;
+  font-family: 'DM Sans', 'Noto Sans JP', sans-serif;
+  font-size: 0.78rem; font-weight: 700;
+  color: var(--muted);
+  transition: background 0.15s, color 0.15s;
+  letter-spacing: -0.01em;
+}
+.tab-btn:hover { color: var(--text); background: var(--bg); }
+.tab-btn.active {
+  background: var(--accent);
+  color: #fff;
+}
+#tab-done.active { background: #2d7a4f; }
+.tab-count {
+  font-size: 0.6rem; font-weight: 700;
+  background: rgba(255,255,255,0.2);
+  border-radius: 99px;
+  padding: 1px 6px;
+  letter-spacing: 0;
+}
+.tab-btn:not(.active) .tab-count {
+  background: var(--border);
+  color: var(--muted);
+}
+
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* ===== COMPLETED CARD ===== */
+.course-card.completed {
+  border-left-color: #2d7a4f;
+}
+.course-card.completed .course-badge {
+  background: #e8f5ee;
+  color: #2d7a4f;
+  border-color: rgba(45,122,79,0.2);
+}
+.course-card.completed .course-cta { color: #2d7a4f; }
+.course-card.completed::before {
+  background: radial-gradient(ellipse at top right, rgba(45,122,79,0.06) 0%, transparent 70%);
+}
+.done-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.58rem; font-weight: 700; letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #2d7a4f;
+  background: #e8f5ee;
+  border: 1px solid rgba(45,122,79,0.25);
+  border-radius: 3px;
+  padding: 2px 7px;
+}
+
 /* ===== DARK MODE ===== */
 [data-dark] {
   --bg:        #0a0a0a;
@@ -355,52 +423,99 @@ main {
     <p class="hero-sub">試験範囲を単語帳形式で効率よく学習。<br>スキマ時間にスマホで、確実に知識を定着させる。</p>
   </div>
 
-  <div class="section-label">学習コース</div>
-  <div class="course-grid">
+  <!-- タブ -->
+  <div class="tab-bar">
+    <button class="tab-btn active" id="tab-active" onclick="switchTab('active')">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      学習中
+      <span class="tab-count" id="count-active">1</span>
+    </button>
+    <button class="tab-btn done-tab" id="tab-done" onclick="switchTab('done')">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      完了済み
+      <span class="tab-count" id="count-done">1</span>
+    </button>
+  </div>
 
-    <div class="course-card sc-card" id="sc-card" onclick="toggleSC(event)">
-      <div class="sc-card-front">
-        <span class="course-badge">SC</span>
-        <div class="course-name">情報処理<br>安全確保支援士</div>
-        <div class="course-desc">暗号技術・認証・ネットワークセキュリティ・攻撃手法・法律など全範囲を網羅</div>
-        <div class="course-meta">
-          <span class="course-count">全 9章 · 単語帳</span>
-          <span class="course-cta">学習する →</span>
+  <!-- 学習中パネル -->
+  <div class="tab-panel active" id="panel-active">
+    <div class="course-grid">
+
+      <div class="course-card sc-card" id="sc-card" onclick="toggleSC(event)">
+        <div class="sc-card-front">
+          <span class="course-badge">SC</span>
+          <div class="course-name">情報処理<br>安全確保支援士</div>
+          <div class="course-desc">暗号技術・認証・ネットワークセキュリティ・攻撃手法・法律など全範囲を網羅</div>
+          <div class="course-meta">
+            <span class="course-count">全 9章 · 単語帳</span>
+            <span class="course-cta">学習する →</span>
+          </div>
+        </div>
+        <div class="sc-options">
+          <a href="sc/descriptions/" class="sc-opt sc-opt-read" onclick="event.stopPropagation()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            <span>解説書を読む</span>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </a>
+          <a href="sc/flashcard.html" class="sc-opt sc-opt-card" onclick="event.stopPropagation()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+            <span>カードで覚える</span>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </a>
+          <a href="sc/gogo/SC_AFTERNOON_INDEX.html" class="sc-opt sc-opt-gogo" onclick="event.stopPropagation()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            <span>午後試験対策</span>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </a>
         </div>
       </div>
-      <div class="sc-options">
-        <a href="sc/descriptions/" class="sc-opt sc-opt-read" onclick="event.stopPropagation()">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-          <span>解説書を読む</span>
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-        </a>
-        <a href="sc/flashcard.html" class="sc-opt sc-opt-card" onclick="event.stopPropagation()">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
-          <span>カードで覚える</span>
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-        </a>
-        <a href="sc/gogo/SC_AFTERNOON_INDEX.html" class="sc-opt sc-opt-gogo" onclick="event.stopPropagation()">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-          <span>午後試験対策</span>
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-        </a>
-      </div>
     </div>
-
-    <a href="az305/" class="course-card">
-      <span class="course-badge">AZ-305</span>
-      <div class="course-name">Microsoft Azure<br>Solutions Architect</div>
-      <div class="course-desc">インフラ設計・ガバナンス・データ・継続性の全ドメインを網羅した演習問題集</div>
-      <div class="course-meta">
-        <span class="course-count">全 271問 · 5ボリューム</span>
-        <span class="course-cta">学習する →</span>
-      </div>
-    </a>
-
   </div>
+
+  <!-- 完了済みパネル -->
+  <div class="tab-panel" id="panel-done">
+    <div class="course-grid">
+
+      <a href="az305/" class="course-card completed">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
+          <span class="course-badge">AZ-305</span>
+          <span class="done-badge">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            合格済み
+          </span>
+        </div>
+        <div class="course-name">Microsoft Azure<br>Solutions Architect</div>
+        <div class="course-desc">インフラ設計・ガバナンス・データ・継続性の全ドメインを網羅した演習問題集</div>
+        <div class="course-meta">
+          <span class="course-count">全 271問 · 5ボリューム</span>
+          <span class="course-cta">復習する →</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
 </main>
 
 <script>
+function switchTab(tab) {
+  const panels = ['active', 'done'];
+  panels.forEach(p => {
+    document.getElementById('panel-' + p).classList.toggle('active', p === tab);
+    const btn = document.getElementById('tab-' + p);
+    btn.classList.toggle('active', p === tab);
+    if (p === 'done') btn.classList.toggle('done-tab', true); // keep style class
+  });
+  // done-tab style は常に維持、activeクラスで色を上書き
+  localStorage.setItem('studydeck-tab', tab);
+}
+
+// タブ状態復元
+(function() {
+  const saved = localStorage.getItem('studydeck-tab');
+  if (saved === 'done') switchTab('done');
+})();
+
 function toggleSC(e) {
   const card = document.getElementById('sc-card');
   card.classList.toggle('expanded');
