@@ -200,6 +200,82 @@ main { max-width: 720px; margin: 0 auto; padding: 40px 16px 80px; }
 }
 .ap-card:hover .desc-arrow { color: var(--ap-accent); }
 .ap-card:hover { box-shadow: 0 4px 16px rgba(11,107,94,0.12); }
+
+/* ── Search ── */
+.search-wrap {
+  position: relative;
+  margin-bottom: 32px;
+}
+.search-input {
+  width: 100%;
+  height: 48px;
+  padding: 0 16px 0 44px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  background: var(--card-bg);
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 0.9rem;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  -webkit-appearance: none;
+}
+.search-input:focus {
+  border-color: var(--accent2);
+  box-shadow: 0 0 0 3px rgba(21,112,184,0.12);
+}
+.search-input::placeholder { color: var(--muted); font-size: 0.84rem; }
+.search-icon-wrap {
+  position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+  color: var(--muted); pointer-events: none;
+}
+.search-clear {
+  position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+  width: 24px; height: 24px; border-radius: 50%;
+  background: var(--border); border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--muted); transition: background 0.15s;
+  display: none;
+}
+.search-clear.visible { display: flex; }
+.search-clear:hover { background: #c0cad9; }
+.search-status {
+  font-size: 0.7rem; color: var(--muted);
+  margin-top: 7px; min-height: 16px; padding-left: 2px;
+}
+.search-status em { color: var(--accent2); font-style: normal; font-weight: 700; }
+
+/* ── Search results ── */
+.search-results { display: none; flex-direction: column; gap: 8px; }
+.search-results.active { display: flex; }
+
+.search-jump-bar {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 16px;
+  background: var(--accent-lt);
+  border: 1.5px solid var(--accent2);
+  border-radius: 8px;
+  font-size: 0.8rem; color: var(--accent); font-weight: 700;
+  margin-bottom: 4px;
+}
+.search-jump-bar svg { flex-shrink: 0; }
+.search-jump-dots { display: inline-flex; gap: 3px; margin-left: 4px; }
+.search-jump-dots span {
+  width: 4px; height: 4px; border-radius: 50%; background: var(--accent2);
+  animation: dotBlink 1.2s infinite;
+}
+.search-jump-dots span:nth-child(2) { animation-delay: 0.2s; }
+.search-jump-dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes dotBlink { 0%,80%,100%{opacity:.2} 40%{opacity:1} }
+
+.search-empty {
+  padding: 32px 20px; text-align: center;
+  color: var(--muted); font-size: 0.84rem; line-height: 1.8;
+  background: var(--card-bg); border: 1px solid var(--border);
+  border-radius: 10px;
+}
+.search-empty strong { color: var(--text); }
 </style>
 </head>
 <body>
@@ -221,9 +297,23 @@ main { max-width: 720px; margin: 0 auto; padding: 40px 16px 80px; }
     <h1 class="hero-title">SC 試験対策<br>技術解説書一覧</h1>
     <p class="hero-sub">各技術領域の仕組みを体系的にまとめた解説書です。<br>単語帳と組み合わせて理解を深めましょう。</p>
 
+    <div class="search-wrap">
+      <div class="search-icon-wrap">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </div>
+      <input type="search" id="search-input" class="search-input" placeholder="キーワードで検索… (例: SAML, XSS, TLS, FIDO)" autocomplete="off" spellcheck="false">
+      <button id="search-clear" class="search-clear" aria-label="クリア">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <div id="search-status" class="search-status"></div>
+    </div>
+
+    <!-- 検索結果 (JS で制御) -->
+    <div id="search-results" class="search-results"></div>
   </div>
 
   <!-- ══════════ SC グループ ══════════ -->
+  <div id="main-content">
   <div class="group-panel sc-panel">
     <div class="group-header">
       <span class="group-badge">SC</span>
@@ -486,7 +576,122 @@ main { max-width: 720px; margin: 0 auto; padding: 40px 16px 80px; }
 
     </div>
   </div><!-- /.ap-panel -->
+  </div><!-- /#main-content -->
 
 </main>
+
+<script>
+(function () {
+  const input   = document.getElementById('search-input');
+  const clearBtn = document.getElementById('search-clear');
+  const statusEl = document.getElementById('search-status');
+  const resultsEl = document.getElementById('search-results');
+  const mainContent = document.getElementById('main-content');
+
+  /* ── Build index from DOM ── */
+  const index = Array.from(document.querySelectorAll('#main-content .desc-card')).map(el => {
+    const title = el.querySelector('.desc-title')?.textContent ?? '';
+    const sub   = el.querySelector('.desc-sub')?.textContent   ?? '';
+    const tags  = Array.from(el.querySelectorAll('.dtag')).map(t => t.textContent).join(' ');
+    return {
+      href: el.getAttribute('href'),
+      title,
+      sub,
+      isAp: el.classList.contains('ap-card'),
+      html: el.outerHTML,
+      needle: [title, sub, tags].join(' ').toLowerCase()
+    };
+  });
+
+  /* ── Highlight matched keywords in result HTML ── */
+  function highlight(html, words) {
+    words.forEach(w => {
+      if (!w) return;
+      html = html.replace(new RegExp('(' + w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + ')', 'gi'),
+        '<mark style="background:#d4eaff;color:var(--accent);border-radius:2px;padding:0 2px">$1</mark>');
+    });
+    return html;
+  }
+
+  /* ── Render results ── */
+  let jumpTimer = null;
+
+  function search(q) {
+    clearTimeout(jumpTimer);
+    const raw = q.trim();
+
+    clearBtn.classList.toggle('visible', raw.length > 0);
+
+    if (!raw) {
+      resetView(); return;
+    }
+
+    const words = raw.toLowerCase().split(/\s+/).filter(Boolean);
+    const matched = index.filter(c => words.every(w => c.needle.includes(w)));
+
+    /* hide main list, show results panel */
+    mainContent.style.display = 'none';
+    resultsEl.classList.add('active');
+
+    if (matched.length === 0) {
+      resultsEl.innerHTML =
+        `<div class="search-empty">「<strong>${escHtml(raw)}</strong>」に一致する解説書が見つかりませんでした。<br>別のキーワードをお試しください。</div>`;
+      statusEl.innerHTML = '0件';
+      return;
+    }
+
+    /* Build result cards */
+    const fragment = document.createDocumentFragment();
+
+    if (matched.length === 1) {
+      /* jump bar */
+      const bar = document.createElement('div');
+      bar.className = 'search-jump-bar';
+      bar.innerHTML =
+        `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+         1件一致 — 解説書に移動します<span class="search-jump-dots"><span></span><span></span><span></span></span>`;
+      fragment.appendChild(bar);
+      statusEl.innerHTML = '<em>1件</em> — 自動移動中…';
+      jumpTimer = setTimeout(() => { window.location.href = matched[0].href; }, 900);
+    } else {
+      statusEl.innerHTML = `<em>${matched.length}件</em> 一致`;
+    }
+
+    matched.forEach(c => {
+      const wrap = document.createElement('div');
+      wrap.innerHTML = highlight(c.html, words);
+      fragment.appendChild(wrap.firstElementChild);
+    });
+
+    resultsEl.innerHTML = '';
+    resultsEl.appendChild(fragment);
+  }
+
+  function resetView() {
+    clearTimeout(jumpTimer);
+    mainContent.style.display = '';
+    resultsEl.classList.remove('active');
+    resultsEl.innerHTML = '';
+    statusEl.innerHTML = '';
+    clearBtn.classList.remove('visible');
+  }
+
+  function escHtml(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  input.addEventListener('input',  () => search(input.value));
+  clearBtn.addEventListener('click', () => { input.value = ''; input.focus(); resetView(); });
+
+  /* keyboard shortcut: / to focus */
+  document.addEventListener('keydown', e => {
+    if (e.key === '/' && document.activeElement !== input) {
+      e.preventDefault(); input.focus();
+    }
+    if (e.key === 'Escape') { input.blur(); resetView(); }
+  });
+})();
+</script>
+
 </body>
 </html>
