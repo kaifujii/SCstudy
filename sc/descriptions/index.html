@@ -202,10 +202,8 @@ main { max-width: 720px; margin: 0 auto; padding: 40px 16px 80px; }
 .ap-card:hover { box-shadow: 0 4px 16px rgba(11,107,94,0.12); }
 
 /* ── Search ── */
-.search-wrap {
-  position: relative;
-  margin-bottom: 32px;
-}
+.search-wrap { margin-bottom: 32px; }
+.search-field { position: relative; }
 .search-input {
   width: 100%;
   height: 48px;
@@ -234,7 +232,7 @@ main { max-width: 720px; margin: 0 auto; padding: 40px 16px 80px; }
   position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
   width: 24px; height: 24px; border-radius: 50%;
   background: var(--border); border: none; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
+  align-items: center; justify-content: center;
   color: var(--muted); transition: background 0.15s;
   display: none;
 }
@@ -249,25 +247,6 @@ main { max-width: 720px; margin: 0 auto; padding: 40px 16px 80px; }
 /* ── Search results ── */
 .search-results { display: none; flex-direction: column; gap: 8px; }
 .search-results.active { display: flex; }
-
-.search-jump-bar {
-  display: flex; align-items: center; gap: 10px;
-  padding: 12px 16px;
-  background: var(--accent-lt);
-  border: 1.5px solid var(--accent2);
-  border-radius: 8px;
-  font-size: 0.8rem; color: var(--accent); font-weight: 700;
-  margin-bottom: 4px;
-}
-.search-jump-bar svg { flex-shrink: 0; }
-.search-jump-dots { display: inline-flex; gap: 3px; margin-left: 4px; }
-.search-jump-dots span {
-  width: 4px; height: 4px; border-radius: 50%; background: var(--accent2);
-  animation: dotBlink 1.2s infinite;
-}
-.search-jump-dots span:nth-child(2) { animation-delay: 0.2s; }
-.search-jump-dots span:nth-child(3) { animation-delay: 0.4s; }
-@keyframes dotBlink { 0%,80%,100%{opacity:.2} 40%{opacity:1} }
 
 .search-empty {
   padding: 32px 20px; text-align: center;
@@ -298,13 +277,15 @@ main { max-width: 720px; margin: 0 auto; padding: 40px 16px 80px; }
     <p class="hero-sub">各技術領域の仕組みを体系的にまとめた解説書です。<br>単語帳と組み合わせて理解を深めましょう。</p>
 
     <div class="search-wrap">
-      <div class="search-icon-wrap">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <div class="search-field">
+        <div class="search-icon-wrap">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </div>
+        <input type="search" id="search-input" class="search-input" placeholder="キーワードで検索… (例: SAML, XSS, TLS, FIDO)" autocomplete="off" spellcheck="false">
+        <button id="search-clear" class="search-clear" aria-label="クリア">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
       </div>
-      <input type="search" id="search-input" class="search-input" placeholder="キーワードで検索… (例: SAML, XSS, TLS, FIDO)" autocomplete="off" spellcheck="false">
-      <button id="search-clear" class="search-clear" aria-label="クリア">
-        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
       <div id="search-status" class="search-status"></div>
     </div>
 
@@ -582,10 +563,10 @@ main { max-width: 720px; margin: 0 auto; padding: 40px 16px 80px; }
 
 <script>
 (function () {
-  const input   = document.getElementById('search-input');
-  const clearBtn = document.getElementById('search-clear');
-  const statusEl = document.getElementById('search-status');
-  const resultsEl = document.getElementById('search-results');
+  const input      = document.getElementById('search-input');
+  const clearBtn   = document.getElementById('search-clear');
+  const statusEl   = document.getElementById('search-status');
+  const resultsEl  = document.getElementById('search-results');
   const mainContent = document.getElementById('main-content');
 
   /* ── Build index from DOM ── */
@@ -594,42 +575,55 @@ main { max-width: 720px; margin: 0 auto; padding: 40px 16px 80px; }
     const sub   = el.querySelector('.desc-sub')?.textContent   ?? '';
     const tags  = Array.from(el.querySelectorAll('.dtag')).map(t => t.textContent).join(' ');
     return {
+      el,
       href: el.getAttribute('href'),
-      title,
-      sub,
-      isAp: el.classList.contains('ap-card'),
-      html: el.outerHTML,
       needle: [title, sub, tags].join(' ').toLowerCase()
     };
   });
 
-  /* ── Highlight matched keywords in result HTML ── */
-  function highlight(html, words) {
-    words.forEach(w => {
-      if (!w) return;
-      html = html.replace(new RegExp('(' + w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + ')', 'gi'),
+  /* ── Async: enrich needle with full document text ── */
+  index.forEach(entry => {
+    fetch(entry.href)
+      .then(r => r.ok ? r.text() : null)
+      .then(html => {
+        if (!html) return;
+        const doc = new DOMParser().parseFromString(html, 'text/html');
+        doc.querySelectorAll('script, style').forEach(e => e.remove());
+        entry.needle += ' ' + (doc.body?.textContent ?? '').toLowerCase().replace(/\s+/g, ' ');
+      })
+      .catch(() => {});
+  });
+
+  /* ── DOM-safe highlight: text nodes only, never touches attributes ── */
+  function cloneAndHighlight(sourceEl, words) {
+    const clone = sourceEl.cloneNode(true);
+    if (!words.length) return clone;
+    const pattern = words.map(w => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
+    const re = new RegExp('(' + pattern + ')', 'gi');
+    const walker = document.createTreeWalker(clone, NodeFilter.SHOW_TEXT, null, false);
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+    nodes.forEach(node => {
+      if (!re.test(node.textContent)) { re.lastIndex = 0; return; }
+      re.lastIndex = 0;
+      const span = document.createElement('span');
+      span.innerHTML = node.textContent.replace(re,
         '<mark style="background:#d4eaff;color:var(--accent);border-radius:2px;padding:0 2px">$1</mark>');
+      node.replaceWith(span);
     });
-    return html;
+    return clone;
   }
 
   /* ── Render results ── */
-  let jumpTimer = null;
-
   function search(q) {
-    clearTimeout(jumpTimer);
     const raw = q.trim();
-
     clearBtn.classList.toggle('visible', raw.length > 0);
 
-    if (!raw) {
-      resetView(); return;
-    }
+    if (!raw) { resetView(); return; }
 
     const words = raw.toLowerCase().split(/\s+/).filter(Boolean);
     const matched = index.filter(c => words.every(w => c.needle.includes(w)));
 
-    /* hide main list, show results panel */
     mainContent.style.display = 'none';
     resultsEl.classList.add('active');
 
@@ -640,35 +634,20 @@ main { max-width: 720px; margin: 0 auto; padding: 40px 16px 80px; }
       return;
     }
 
-    /* Build result cards */
-    const fragment = document.createDocumentFragment();
-
     if (matched.length === 1) {
-      /* jump bar */
-      const bar = document.createElement('div');
-      bar.className = 'search-jump-bar';
-      bar.innerHTML =
-        `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-         1件一致 — 解説書に移動します<span class="search-jump-dots"><span></span><span></span><span></span></span>`;
-      fragment.appendChild(bar);
-      statusEl.innerHTML = '<em>1件</em> — 自動移動中…';
-      jumpTimer = setTimeout(() => { window.location.href = matched[0].href; }, 900);
-    } else {
-      statusEl.innerHTML = `<em>${matched.length}件</em> 一致`;
+      window.location.href = matched[0].href;
+      return;
     }
 
-    matched.forEach(c => {
-      const wrap = document.createElement('div');
-      wrap.innerHTML = highlight(c.html, words);
-      fragment.appendChild(wrap.firstElementChild);
-    });
+    statusEl.innerHTML = `<em>${matched.length}件</em> 一致`;
 
+    const fragment = document.createDocumentFragment();
+    matched.forEach(c => fragment.appendChild(cloneAndHighlight(c.el, words)));
     resultsEl.innerHTML = '';
     resultsEl.appendChild(fragment);
   }
 
   function resetView() {
-    clearTimeout(jumpTimer);
     mainContent.style.display = '';
     resultsEl.classList.remove('active');
     resultsEl.innerHTML = '';
@@ -677,13 +656,12 @@ main { max-width: 720px; margin: 0 auto; padding: 40px 16px 80px; }
   }
 
   function escHtml(s) {
-    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
 
-  input.addEventListener('input',  () => search(input.value));
+  input.addEventListener('input', () => search(input.value));
   clearBtn.addEventListener('click', () => { input.value = ''; input.focus(); resetView(); });
 
-  /* keyboard shortcut: / to focus */
   document.addEventListener('keydown', e => {
     if (e.key === '/' && document.activeElement !== input) {
       e.preventDefault(); input.focus();
