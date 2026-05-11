@@ -255,6 +255,15 @@ main { max-width: 720px; margin: 0 auto; padding: 40px 16px 80px; }
   border-radius: 10px;
 }
 .search-empty strong { color: var(--text); }
+
+.search-snippet {
+  font-size: 0.67rem;
+  color: var(--muted);
+  line-height: 1.65;
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px dashed var(--border);
+}
 </style>
 </head>
 <body>
@@ -563,10 +572,10 @@ main { max-width: 720px; margin: 0 auto; padding: 40px 16px 80px; }
 
 <script>
 (function () {
-  const input      = document.getElementById('search-input');
-  const clearBtn   = document.getElementById('search-clear');
-  const statusEl   = document.getElementById('search-status');
-  const resultsEl  = document.getElementById('search-results');
+  const input       = document.getElementById('search-input');
+  const clearBtn    = document.getElementById('search-clear');
+  const statusEl    = document.getElementById('search-status');
+  const resultsEl   = document.getElementById('search-results');
   const mainContent = document.getElementById('main-content');
 
   /* ── Build index from DOM ── */
@@ -577,24 +586,27 @@ main { max-width: 720px; margin: 0 auto; padding: 40px 16px 80px; }
     return {
       el,
       href: el.getAttribute('href'),
+      bodyText: null,
       needle: [title, sub, tags].join(' ').toLowerCase()
     };
   });
 
-  /* ── Async: enrich needle with full document text ── */
+  /* ── Async: fetch each document, store body text for snippet + full-text search ── */
   index.forEach(entry => {
     fetch(entry.href)
       .then(r => r.ok ? r.text() : null)
       .then(html => {
         if (!html) return;
         const doc = new DOMParser().parseFromString(html, 'text/html');
-        doc.querySelectorAll('script, style').forEach(e => e.remove());
-        entry.needle += ' ' + (doc.body?.textContent ?? '').toLowerCase().replace(/\s+/g, ' ');
+        doc.querySelectorAll('script, style, nav, header, footer').forEach(e => e.remove());
+        const raw = (doc.body?.textContent ?? '').replace(/\s+/g, ' ').trim();
+        entry.bodyText = raw;
+        entry.needle  += ' ' + raw.toLowerCase();
       })
       .catch(() => {});
   });
 
-  /* ── DOM-safe highlight: text nodes only, never touches attributes ── */
+  /* ── DOM-safe highlight: text nodes only ── */
   function cloneAndHighlight(sourceEl, words) {
     const clone = sourceEl.cloneNode(true);
     if (!words.length) return clone;
@@ -612,6 +624,33 @@ main { max-width: 720px; margin: 0 auto; padding: 40px 16px 80px; }
       node.replaceWith(span);
     });
     return clone;
+  }
+
+  /* ── Extract text snippet around first keyword match ── */
+  function buildSnippet(entry, words) {
+    const text = entry.bodyText;
+    if (!text) return null;
+    const lower = text.toLowerCase();
+    let bestPos = -1;
+    for (const w of words) {
+      const idx = lower.indexOf(w);
+      if (idx !== -1 && (bestPos === -1 || idx < bestPos)) bestPos = idx;
+    }
+    if (bestPos === -1) return null;
+    const start = Math.max(0, bestPos - 50);
+    const end   = Math.min(text.length, bestPos + 130);
+    const raw   = (start > 0 ? '…' : '') + text.slice(start, end).trim() + (end < text.length ? '…' : '');
+    const pattern = words.map(w => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
+    return escHtml(raw).replace(
+      new RegExp('(' + pattern + ')', 'gi'),
+      '<mark style="background:#fff3cd;color:#8a6200;border-radius:2px;padding:0 2px">$1</mark>'
+    );
+  }
+
+  /* ── CSS Text Fragment for jump-to-word ── */
+  function textFrag(words) {
+    if (!words.length) return '';
+    return '#:~:text=' + words.map(w => encodeURIComponent(w)).join('&text=');
   }
 
   /* ── Render results ── */
@@ -635,14 +674,28 @@ main { max-width: 720px; margin: 0 auto; padding: 40px 16px 80px; }
     }
 
     if (matched.length === 1) {
-      window.location.href = matched[0].href;
+      window.location.href = matched[0].href + textFrag(words);
       return;
     }
 
     statusEl.innerHTML = `<em>${matched.length}件</em> 一致`;
 
     const fragment = document.createDocumentFragment();
-    matched.forEach(c => fragment.appendChild(cloneAndHighlight(c.el, words)));
+    matched.forEach(c => {
+      const clone = cloneAndHighlight(c.el, words);
+      clone.setAttribute('href', (clone.getAttribute('href') || '') + textFrag(words));
+      const snippet = buildSnippet(c, words);
+      if (snippet) {
+        const body = clone.querySelector('.desc-body');
+        if (body) {
+          const div = document.createElement('div');
+          div.className = 'search-snippet';
+          div.innerHTML = snippet;
+          body.appendChild(div);
+        }
+      }
+      fragment.appendChild(clone);
+    });
     resultsEl.innerHTML = '';
     resultsEl.appendChild(fragment);
   }
@@ -651,7 +704,7 @@ main { max-width: 720px; margin: 0 auto; padding: 40px 16px 80px; }
     mainContent.style.display = '';
     resultsEl.classList.remove('active');
     resultsEl.innerHTML = '';
-    statusEl.innerHTML = '';
+    statusEl.innerHTML  = '';
     clearBtn.classList.remove('visible');
   }
 
