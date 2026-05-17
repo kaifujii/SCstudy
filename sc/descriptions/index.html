@@ -896,7 +896,6 @@ main { max-width: 720px; margin: 0 auto; padding: 40px 16px 80px; }
   function runSearch(q) {
     const raw = q.trim();
     if (!raw) { resetResults(); return; }
-    saveHistory(raw);
 
     const words = raw.toLowerCase().split(/\s+/).filter(Boolean);
 
@@ -942,8 +941,8 @@ main { max-width: 720px; margin: 0 auto; padding: 40px 16px 80px; }
         <div class="modal-result-title">${escHtml(sectionLabel || doc.title)}</div>
         <div class="modal-result-snippet">${snippet}</div>`;
 
-      // クリック → ページ遷移
-      div.addEventListener('click', () => { window.location.href = href; });
+      // クリック → 履歴保存 & ページ遷移
+      div.addEventListener('click', () => { saveHistory(raw); window.location.href = href; });
 
       // ホバー → プレビュー更新 (150ms debounce)
       div.addEventListener('mouseenter', () => {
