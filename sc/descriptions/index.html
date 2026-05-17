@@ -984,7 +984,20 @@ main { max-width: 720px; margin: 0 auto; padding: 40px 16px 80px; }
     return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
 
-  input.addEventListener('input', () => runSearch(input.value));
+  /* ── 入力中はリセットのみ。Enter or 入力停止500msで検索実行 ── */
+  let searchTimer = null;
+  input.addEventListener('input', () => {
+    clearTimeout(searchTimer);
+    const raw = input.value.trim();
+    if (!raw) { resetResults(); return; }
+    searchTimer = setTimeout(() => runSearch(input.value), 500);
+  });
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      clearTimeout(searchTimer);
+      runSearch(input.value);
+    }
+  });
 
   document.addEventListener('keydown', e => {
     if (e.key === '/' && !overlay.classList.contains('open') && document.activeElement.tagName !== 'INPUT') {
