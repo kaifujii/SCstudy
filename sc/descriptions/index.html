@@ -201,69 +201,149 @@ main { max-width: 720px; margin: 0 auto; padding: 40px 16px 80px; }
 .ap-card:hover .desc-arrow { color: var(--ap-accent); }
 .ap-card:hover { box-shadow: 0 4px 16px rgba(11,107,94,0.12); }
 
-/* ── Search ── */
-.search-wrap { margin-bottom: 32px; }
-.search-field { position: relative; }
-.search-input {
-  width: 100%;
-  height: 48px;
-  padding: 0 16px 0 44px;
-  border: 1.5px solid var(--border);
-  border-radius: 10px;
-  background: var(--card-bg);
+/* ── Search button in header ── */
+.search-btn {
+  display: flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px; border-radius: 6px;
+  background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.6); cursor: pointer;
+  transition: background 0.15s, color 0.15s; flex-shrink: 0;
+}
+.search-btn:hover { background: rgba(255,255,255,0.13); color: #fff; }
+
+/* ── Modal overlay ── */
+.search-modal-overlay {
+  display: none; position: fixed; inset: 0; z-index: 400;
+  background: rgba(10,15,28,0.6); backdrop-filter: blur(4px);
+  align-items: flex-start; justify-content: center;
+  padding: 72px 16px 40px;
+}
+.search-modal-overlay.open { display: flex; }
+
+/* ── Modal panel ── */
+.search-modal {
+  width: 100%; max-width: 720px;
+  background: #fff; border-radius: 12px;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.22), 0 4px 16px rgba(0,0,0,0.12);
+  overflow: hidden; display: flex; flex-direction: column;
+  max-height: calc(100vh - 120px);
+  animation: modalIn .18s ease-out;
+}
+@keyframes modalIn {
+  from { opacity: 0; transform: translateY(-10px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ── Modal search bar ── */
+.modal-search-bar {
+  display: flex; align-items: center; gap: 12px;
+  padding: 0 18px; border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.modal-search-bar svg { color: var(--muted); flex-shrink: 0; }
+.modal-search-input {
+  flex: 1; height: 54px; border: none; outline: none;
   font-family: 'Noto Sans JP', sans-serif;
-  font-size: 0.9rem;
-  color: var(--text);
-  outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  font-size: 0.95rem; color: var(--text); background: transparent;
   -webkit-appearance: none;
 }
-.search-input:focus {
-  border-color: var(--accent2);
-  box-shadow: 0 0 0 3px rgba(21,112,184,0.12);
+.modal-search-input::placeholder { color: var(--muted); }
+.modal-esc-hint {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem; color: var(--muted);
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 4px; padding: 2px 7px; flex-shrink: 0;
 }
-.search-input::placeholder { color: var(--muted); font-size: 0.84rem; }
-.search-icon-wrap {
-  position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
-  color: var(--muted); pointer-events: none;
-}
-.search-clear {
-  position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
-  width: 24px; height: 24px; border-radius: 50%;
-  background: var(--border); border: none; cursor: pointer;
-  align-items: center; justify-content: center;
-  color: var(--muted); transition: background 0.15s;
-  display: none;
-}
-.search-clear.visible { display: flex; }
-.search-clear:hover { background: #c0cad9; }
-.search-status {
-  font-size: 0.7rem; color: var(--muted);
-  margin-top: 7px; min-height: 16px; padding-left: 2px;
-}
-.search-status em { color: var(--accent2); font-style: normal; font-weight: 700; }
 
-/* ── Search results ── */
-.search-results { display: none; flex-direction: column; gap: 8px; }
-.search-results.active { display: flex; }
+/* ── Modal body ── */
+.modal-body { overflow-y: auto; flex: 1; }
 
-.search-empty {
-  padding: 32px 20px; text-align: center;
-  color: var(--muted); font-size: 0.84rem; line-height: 1.8;
-  background: var(--card-bg); border: 1px solid var(--border);
-  border-radius: 10px;
+/* Status bar */
+.modal-status {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 18px 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem; font-weight: 600; letter-spacing: .05em;
+  color: var(--muted); text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
 }
-.search-empty strong { color: var(--text); }
+.modal-status em { color: var(--accent2); font-style: normal; }
 
-.search-snippet {
-  font-size: 0.67rem;
-  color: var(--muted);
-  line-height: 1.65;
-  margin-top: 6px;
-  padding-top: 6px;
-  border-top: 1px dashed var(--border);
+/* Result item */
+.modal-result {
+  display: flex; align-items: stretch;
+  text-decoration: none; color: inherit;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.12s;
+  min-height: 72px;
 }
+.modal-result:last-child { border-bottom: none; }
+.modal-result:hover { background: var(--accent-lt); }
+
+.modal-result-left {
+  flex: 1; min-width: 0; padding: 14px 16px 14px 18px;
+  display: flex; flex-direction: column; gap: 4px; justify-content: center;
+}
+.modal-result-title {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 0.88rem; font-weight: 700; color: var(--accent2);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.modal-result-snippet {
+  font-size: 0.68rem; color: var(--muted); line-height: 1.6;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.modal-result-snippet mark {
+  background: #fff3cd; color: #7a5500; border-radius: 2px; padding: 0 2px;
+}
+
+.modal-result-right {
+  width: 200px; flex-shrink: 0;
+  border-left: 1px solid var(--border);
+  padding: 12px 16px;
+  display: flex; flex-direction: column; gap: 5px; justify-content: center;
+  background: var(--surface);
+}
+.modal-result-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.55rem; font-weight: 700; letter-spacing: .12em;
+  text-transform: uppercase; padding: 2px 7px; border-radius: 3px;
+  display: inline-block; align-self: flex-start;
+}
+.modal-result-badge.sc { background: var(--accent-lt); color: var(--accent); border: 1px solid rgba(11,74,130,0.2); }
+.modal-result-badge.ap { background: var(--ap-accent-lt); color: var(--ap-accent); border: 1px solid rgba(11,107,94,0.25); }
+.modal-result-page {
+  font-size: 0.72rem; font-weight: 700; color: var(--text); line-height: 1.35;
+}
+.modal-result-section {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.58rem; color: var(--muted); letter-spacing: .04em;
+}
+
+/* Empty state */
+.modal-empty {
+  padding: 48px 24px; text-align: center;
+  color: var(--muted); font-size: 0.84rem; line-height: 1.9;
+}
+.modal-empty strong { color: var(--text); }
+
+/* Initial hint (before typing) */
+.modal-hint {
+  padding: 20px 18px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.modal-hint-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.58rem; font-weight: 700; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--muted); margin-bottom: 4px;
+}
+.modal-hint-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 0.72rem; color: var(--accent2); cursor: pointer;
+  padding: 4px 0;
+}
+.modal-hint-chip:hover { text-decoration: underline; }
 </style>
 </head>
 <body>
@@ -276,6 +356,9 @@ main { max-width: 720px; margin: 0 auto; padding: 40px 16px 80px; }
     <div class="logo-sub">情報処理安全確保支援士</div>
     <div class="logo-main">技術解説書</div>
   </div>
+  <button class="search-btn" id="search-open-btn" title="検索 (/)">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+  </button>
   <div class="header-badge">15 docs</div>
 </header>
 
@@ -285,21 +368,6 @@ main { max-width: 720px; margin: 0 auto; padding: 40px 16px 80px; }
     <h1 class="hero-title">SC 試験対策<br>技術解説書一覧</h1>
     <p class="hero-sub">各技術領域の仕組みを体系的にまとめた解説書です。<br>単語帳と組み合わせて理解を深めましょう。</p>
 
-    <div class="search-wrap">
-      <div class="search-field">
-        <div class="search-icon-wrap">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        </div>
-        <input type="search" id="search-input" class="search-input" placeholder="キーワードで検索… (例: SAML, XSS, TLS, FIDO)" autocomplete="off" spellcheck="false">
-        <button id="search-clear" class="search-clear" aria-label="クリア">
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        </button>
-      </div>
-      <div id="search-status" class="search-status"></div>
-    </div>
-
-    <!-- 検索結果 (JS で制御) -->
-    <div id="search-results" class="search-results"></div>
   </div>
 
   <!-- ══════════ SC グループ ══════════ -->
@@ -570,28 +638,75 @@ main { max-width: 720px; margin: 0 auto; padding: 40px 16px 80px; }
 
 </main>
 
+<!-- ── Search Modal ── -->
+<div class="search-modal-overlay" id="search-overlay">
+  <div class="search-modal" id="search-modal" role="dialog" aria-modal="true" aria-label="検索">
+    <div class="modal-search-bar">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="search" id="modal-search-input" class="modal-search-input"
+        placeholder="キーワードで検索… (例: SAML, XSS, TLS, FIDO)"
+        autocomplete="off" spellcheck="false" aria-label="検索キーワード">
+      <span class="modal-esc-hint">ESC</span>
+    </div>
+    <div class="modal-body" id="modal-body">
+      <div class="modal-hint" id="modal-hint">
+        <div class="modal-hint-label">よく検索されるキーワード</div>
+        <span class="modal-hint-chip" onclick="fillSearch('SAML')">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>SAML
+        </span>
+        <span class="modal-hint-chip" onclick="fillSearch('TLS')">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>TLS
+        </span>
+        <span class="modal-hint-chip" onclick="fillSearch('XSS')">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>XSS
+        </span>
+        <span class="modal-hint-chip" onclick="fillSearch('FIDO')">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>FIDO
+        </span>
+        <span class="modal-hint-chip" onclick="fillSearch('証明書')">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>証明書
+        </span>
+        <span class="modal-hint-chip" onclick="fillSearch('OAuth')">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>OAuth
+        </span>
+      </div>
+      <div id="modal-status" class="modal-status" style="display:none;"></div>
+      <div id="modal-results"></div>
+    </div>
+  </div>
+</div>
+
 <script>
 (function () {
-  const input       = document.getElementById('search-input');
-  const clearBtn    = document.getElementById('search-clear');
-  const statusEl    = document.getElementById('search-status');
-  const resultsEl   = document.getElementById('search-results');
+  const overlay     = document.getElementById('search-overlay');
+  const modal       = document.getElementById('search-modal');
+  const input       = document.getElementById('modal-search-input');
+  const hintEl      = document.getElementById('modal-hint');
+  const statusEl    = document.getElementById('modal-status');
+  const resultsEl   = document.getElementById('modal-results');
+  const openBtn     = document.getElementById('search-open-btn');
   const mainContent = document.getElementById('main-content');
 
   /* ── Build index from DOM ── */
   const index = Array.from(document.querySelectorAll('#main-content .desc-card')).map(el => {
-    const title = el.querySelector('.desc-title')?.textContent ?? '';
-    const sub   = el.querySelector('.desc-sub')?.textContent   ?? '';
-    const tags  = Array.from(el.querySelectorAll('.dtag')).map(t => t.textContent).join(' ');
+    const title   = el.querySelector('.desc-title')?.textContent ?? '';
+    const sub     = el.querySelector('.desc-sub')?.textContent   ?? '';
+    const tags    = Array.from(el.querySelectorAll('.dtag')).map(t => t.textContent).join(' ');
+    const isAP    = el.classList.contains('ap-card');
+    // Find nearest section-label
+    let section = '';
+    let prev = el.closest('.card-list')?.previousElementSibling;
+    if (prev && prev.classList.contains('section-label')) section = prev.textContent.trim();
     return {
-      el,
       href: el.getAttribute('href'),
+      title, sub, tags,
+      isAP, section,
       bodyText: null,
       needle: [title, sub, tags].join(' ').toLowerCase()
     };
   });
 
-  /* ── Async: fetch each document, store body text for snippet + full-text search ── */
+  /* ── Async full-text fetch ── */
   index.forEach(entry => {
     fetch(entry.href)
       .then(r => r.ok ? r.text() : null)
@@ -606,120 +721,118 @@ main { max-width: 720px; margin: 0 auto; padding: 40px 16px 80px; }
       .catch(() => {});
   });
 
-  /* ── DOM-safe highlight: text nodes only ── */
-  function cloneAndHighlight(sourceEl, words) {
-    const clone = sourceEl.cloneNode(true);
-    if (!words.length) return clone;
-    const pattern = words.map(w => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
-    const re = new RegExp('(' + pattern + ')', 'gi');
-    const walker = document.createTreeWalker(clone, NodeFilter.SHOW_TEXT, null, false);
-    const nodes = [];
-    while (walker.nextNode()) nodes.push(walker.currentNode);
-    nodes.forEach(node => {
-      if (!re.test(node.textContent)) { re.lastIndex = 0; return; }
-      re.lastIndex = 0;
-      const span = document.createElement('span');
-      span.innerHTML = node.textContent.replace(re,
-        '<mark style="background:#d4eaff;color:var(--accent);border-radius:2px;padding:0 2px">$1</mark>');
-      node.replaceWith(span);
-    });
-    return clone;
+  /* ── Open / Close modal ── */
+  function openModal() {
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    requestAnimationFrame(() => input.focus());
+  }
+  function closeModal() {
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+    input.value = '';
+    resetResults();
   }
 
-  /* ── Extract text snippet around first keyword match ── */
+  openBtn.addEventListener('click', openModal);
+  overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+
+  /* ── fillSearch (hint chips) ── */
+  window.fillSearch = function(kw) {
+    input.value = kw;
+    input.focus();
+    runSearch(kw);
+  };
+
+  /* ── Snippet builder ── */
   function buildSnippet(entry, words) {
     const text = entry.bodyText;
-    if (!text) return null;
+    if (!text) return entry.sub || '';
     const lower = text.toLowerCase();
     let bestPos = -1;
     for (const w of words) {
       const idx = lower.indexOf(w);
       if (idx !== -1 && (bestPos === -1 || idx < bestPos)) bestPos = idx;
     }
-    if (bestPos === -1) return null;
-    const start = Math.max(0, bestPos - 50);
-    const end   = Math.min(text.length, bestPos + 130);
-    const raw   = (start > 0 ? '…' : '') + text.slice(start, end).trim() + (end < text.length ? '…' : '');
+    const src = bestPos !== -1 ? text : (entry.bodyText || entry.sub);
+    const pos = bestPos !== -1 ? bestPos : 0;
+    const start = Math.max(0, pos - 40);
+    const end   = Math.min(src.length, pos + 120);
+    const raw   = (start > 0 ? '…' : '') + src.slice(start, end).trim() + (end < src.length ? '…' : '');
     const pattern = words.map(w => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
     return escHtml(raw).replace(
       new RegExp('(' + pattern + ')', 'gi'),
-      '<mark style="background:#fff3cd;color:#8a6200;border-radius:2px;padding:0 2px">$1</mark>'
+      '<mark>$1</mark>'
     );
   }
 
-  /* ── CSS Text Fragment for jump-to-word ── */
   function textFrag(words) {
     if (!words.length) return '';
     return '#:~:text=' + words.map(w => encodeURIComponent(w)).join('&text=');
   }
 
   /* ── Render results ── */
-  function search(q) {
+  function runSearch(q) {
     const raw = q.trim();
-    clearBtn.classList.toggle('visible', raw.length > 0);
-
-    if (!raw) { resetView(); return; }
+    if (!raw) { resetResults(); return; }
 
     const words = raw.toLowerCase().split(/\s+/).filter(Boolean);
     const matched = index.filter(c => words.every(w => c.needle.includes(w)));
 
-    mainContent.style.display = 'none';
-    resultsEl.classList.add('active');
+    hintEl.style.display   = 'none';
+    statusEl.style.display = 'flex';
 
     if (matched.length === 0) {
-      resultsEl.innerHTML =
-        `<div class="search-empty">「<strong>${escHtml(raw)}</strong>」に一致する解説書が見つかりませんでした。<br>別のキーワードをお試しください。</div>`;
-      statusEl.innerHTML = '0件';
+      statusEl.innerHTML = `<em>0件</em> — 検索結果なし`;
+      resultsEl.innerHTML = `<div class="modal-empty">「<strong>${escHtml(raw)}</strong>」に一致する解説書が見つかりませんでした。<br>別のキーワードをお試しください。</div>`;
       return;
     }
 
-    if (matched.length === 1) {
-      window.location.href = matched[0].href + textFrag(words);
-      return;
-    }
+    statusEl.innerHTML = `<span>検索結果</span><em>${matched.length}件</em>`;
 
-    statusEl.innerHTML = `<em>${matched.length}件</em> 一致`;
-
-    const fragment = document.createDocumentFragment();
+    const frag = document.createDocumentFragment();
     matched.forEach(c => {
-      const clone = cloneAndHighlight(c.el, words);
-      clone.setAttribute('href', (clone.getAttribute('href') || '') + textFrag(words));
+      const href    = (c.href || '') + textFrag(words);
       const snippet = buildSnippet(c, words);
-      if (snippet) {
-        const body = clone.querySelector('.desc-body');
-        if (body) {
-          const div = document.createElement('div');
-          div.className = 'search-snippet';
-          div.innerHTML = snippet;
-          body.appendChild(div);
-        }
-      }
-      fragment.appendChild(clone);
+      const badge   = c.isAP ? 'ap' : 'sc';
+      const badgeTxt= c.isAP ? 'AP' : 'SC';
+
+      const a = document.createElement('a');
+      a.className = 'modal-result';
+      a.href = href;
+      a.innerHTML = `
+        <div class="modal-result-left">
+          <div class="modal-result-title">${escHtml(c.title)}</div>
+          <div class="modal-result-snippet">${snippet}</div>
+        </div>
+        <div class="modal-result-right">
+          <span class="modal-result-badge ${badge}">${badgeTxt}</span>
+          <div class="modal-result-page">${escHtml(c.title)}</div>
+          <div class="modal-result-section">${escHtml(c.section)}</div>
+        </div>`;
+      frag.appendChild(a);
     });
     resultsEl.innerHTML = '';
-    resultsEl.appendChild(fragment);
+    resultsEl.appendChild(frag);
   }
 
-  function resetView() {
-    mainContent.style.display = '';
-    resultsEl.classList.remove('active');
-    resultsEl.innerHTML = '';
-    statusEl.innerHTML  = '';
-    clearBtn.classList.remove('visible');
+  function resetResults() {
+    hintEl.style.display   = '';
+    statusEl.style.display = 'none';
+    resultsEl.innerHTML    = '';
   }
 
   function escHtml(s) {
     return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
 
-  input.addEventListener('input', () => search(input.value));
-  clearBtn.addEventListener('click', () => { input.value = ''; input.focus(); resetView(); });
+  input.addEventListener('input', () => runSearch(input.value));
 
   document.addEventListener('keydown', e => {
-    if (e.key === '/' && document.activeElement !== input) {
-      e.preventDefault(); input.focus();
+    if (e.key === '/' && !overlay.classList.contains('open') && document.activeElement.tagName !== 'INPUT') {
+      e.preventDefault(); openModal();
     }
-    if (e.key === 'Escape') { input.blur(); resetView(); }
+    if (e.key === 'Escape') closeModal();
   });
 })();
 </script>
