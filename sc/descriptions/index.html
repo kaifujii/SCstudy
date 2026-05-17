@@ -369,14 +369,29 @@ main { max-width: 720px; margin: 0 auto; padding: 40px 16px 80px; }
 .modal-hint-label {
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.56rem; font-weight: 700; letter-spacing: .12em;
-  text-transform: uppercase; color: var(--muted); margin-bottom: 4px;
+  text-transform: uppercase; color: var(--muted);
+  flex: 1;
 }
 .modal-hint-chip {
-  display: inline-flex; align-items: center; gap: 6px;
+  display: inline-flex; align-items: center; gap: 5px;
   font-size: 0.72rem; color: var(--accent2); cursor: pointer;
-  padding: 3px 0;
+  padding: 4px 8px; border-radius: 4px;
+  background: var(--accent-lt); border: 1px solid rgba(21,112,184,0.18);
+  transition: background 0.12s;
 }
-.modal-hint-chip:hover { text-decoration: underline; }
+.modal-hint-chip:hover { background: #d4e8f8; }
+.modal-hint-empty {
+  font-size: 0.75rem; color: var(--muted); font-style: italic;
+}
+.modal-hint-clear {
+  margin-left: auto; font-size: 0.67rem; color: var(--muted);
+  cursor: pointer; background: none; border: none; padding: 2px 4px;
+  border-radius: 3px; font-family: inherit;
+}
+.modal-hint-clear:hover { color: #c0392b; background: #fdecea; }
+.modal-hint-header {
+  display: flex; align-items: center; margin-bottom: 8px;
+}
 </style>
 </head>
 <body>
@@ -690,13 +705,11 @@ main { max-width: 720px; margin: 0 auto; padding: 40px 16px 80px; }
       <!-- 左: 結果リスト -->
       <div class="modal-list-panel" id="modal-list-panel">
         <div class="modal-hint" id="modal-hint">
-          <div class="modal-hint-label">よく検索されるキーワード</div>
-          <span class="modal-hint-chip" onclick="fillSearch('SAML')"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>SAML</span>
-          <span class="modal-hint-chip" onclick="fillSearch('TLS')"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>TLS</span>
-          <span class="modal-hint-chip" onclick="fillSearch('XSS')"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>XSS</span>
-          <span class="modal-hint-chip" onclick="fillSearch('FIDO')"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>FIDO</span>
-          <span class="modal-hint-chip" onclick="fillSearch('証明書')"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>証明書</span>
-          <span class="modal-hint-chip" onclick="fillSearch('OAuth')"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>OAuth</span>
+          <div class="modal-hint-header">
+            <div class="modal-hint-label">検索履歴</div>
+            <button class="modal-hint-clear" id="modal-hint-clear" title="履歴をすべて削除">クリア</button>
+          </div>
+          <div id="modal-hint-chips"></div>
         </div>
         <div id="modal-status" class="modal-status" style="display:none;"></div>
         <div id="modal-results"></div>
@@ -799,10 +812,52 @@ main { max-width: 720px; margin: 0 auto; padding: 40px 16px 80px; }
       .catch(() => {});
   });
 
+  /* ── 検索履歴 ── */
+  const HISTORY_KEY = 'sc_search_history';
+  const MAX_HISTORY = 10;
+  const hintChipsEl = document.getElementById('modal-hint-chips');
+  const hintClearBtn = document.getElementById('modal-hint-clear');
+
+  function loadHistory() {
+    try { return JSON.parse(localStorage.getItem(HISTORY_KEY)) || []; }
+    catch { return []; }
+  }
+  function saveHistory(q) {
+    const trimmed = q.trim();
+    if (!trimmed) return;
+    let hist = loadHistory().filter(h => h !== trimmed);
+    hist.unshift(trimmed);
+    hist = hist.slice(0, MAX_HISTORY);
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(hist));
+  }
+  function renderHistory() {
+    const hist = loadHistory();
+    hintClearBtn.style.display = hist.length ? '' : 'none';
+    if (hist.length === 0) {
+      hintChipsEl.innerHTML = '<span class="modal-hint-empty">検索履歴はありません</span>';
+      return;
+    }
+    hintChipsEl.innerHTML = '';
+    hist.forEach(kw => {
+      const chip = document.createElement('span');
+      chip.className = 'modal-hint-chip';
+      chip.innerHTML = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>${escHtml(kw)}`;
+      chip.style.marginRight = '6px';
+      chip.style.marginBottom = '6px';
+      chip.addEventListener('click', () => fillSearch(kw));
+      hintChipsEl.appendChild(chip);
+    });
+  }
+  hintClearBtn.addEventListener('click', () => {
+    localStorage.removeItem(HISTORY_KEY);
+    renderHistory();
+  });
+
   /* ── Open / Close ── */
   function openModal() {
     overlay.classList.add('open');
     document.body.style.overflow = 'hidden';
+    renderHistory();
     requestAnimationFrame(() => input.focus());
   }
   function closeModal() {
@@ -841,6 +896,7 @@ main { max-width: 720px; margin: 0 auto; padding: 40px 16px 80px; }
   function runSearch(q) {
     const raw = q.trim();
     if (!raw) { resetResults(); return; }
+    saveHistory(raw);
 
     const words = raw.toLowerCase().split(/\s+/).filter(Boolean);
 
