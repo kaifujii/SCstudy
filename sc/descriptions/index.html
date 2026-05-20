@@ -6,34 +6,39 @@
 <title>SC 技術解説書 — StudyDeck</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700;9..40,800;9..40,900&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg:        #edf1f8;
-  --card-bg:   #ffffff;
-  --text:      #141824;
-  --sub:       #1e2d4a;
-  --muted:     #6b7a99;
-  --border:    #cdd7e6;
-  --accent:    #0b4a82;
-  --accent2:   #1570b8;
-  --accent-lt: #e8f3fd;
-  --gold:      #b5821e;
-  --surface:   #f3f6fb;
-  --header:    #141824;
-
-  --ap-accent:    #0b6b5e;
-  --ap-accent-lt: #e6f4f1;
-  --ap-border:    #9ecec7;
-  --ap-surface:   #f0faf8;
-  --ap-bg:        #e8f5f2;
-}
+/* ================================================================
+   SC 技術解説書 — Dark Bold Typography (index.html と統一)
+   ================================================================ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:       #0c1018;
+  --surface:  #111827;
+  --surface2: #161e2e;
+  --border:   rgba(255,255,255,0.07);
+  --border2:  rgba(255,255,255,0.12);
+  --text:     #f1f5f9;
+  --muted:    rgba(255,255,255,0.38);
+  --muted2:   rgba(255,255,255,0.55);
+  --sc:       #3f52c4;
+  --sc-lt:    rgba(63,82,196,0.15);
+  --sc-text:  #8b9ef8;
+  --sc-border:rgba(63,82,196,0.3);
+  --ap:       #0b6b5e;
+  --ap-lt:    rgba(11,107,94,0.15);
+  --ap-text:  #4ecdc4;
+  --ap-border:rgba(11,107,94,0.35);
+}
+
+html { scroll-behavior: smooth; }
 body {
   font-family: 'Noto Sans JP', -apple-system, sans-serif;
   background: var(--bg);
-  background-image: radial-gradient(circle, #c4cedf 1px, transparent 1px);
-  background-size: 24px 24px;
+  background-image:
+    radial-gradient(ellipse at 20% 0%, rgba(63,82,196,0.1) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 100%, rgba(11,107,94,0.06) 0%, transparent 50%);
   color: var(--text);
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
@@ -41,190 +46,182 @@ body {
 
 /* ── Header ── */
 header {
-  background: var(--header);
-  background-image:
-    linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
-  background-size: 36px 36px;
   height: 54px; padding: 0 20px;
   display: flex; align-items: center; gap: 10px;
   position: sticky; top: 0; z-index: 100;
+  background: rgba(12,16,24,0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
 }
 .back-link {
   display: flex; align-items: center; justify-content: center;
   width: 28px; height: 28px; border-radius: 5px;
-  text-decoration: none; transition: background 0.15s; flex-shrink: 0;
+  color: var(--muted); text-decoration: none;
+  transition: background 0.15s, color 0.15s; flex-shrink: 0;
 }
-.back-link:hover { background: rgba(255,255,255,0.1); }
+.back-link:hover { background: rgba(255,255,255,0.08); color: var(--text); }
 .logo-text { display: flex; flex-direction: column; gap: 1px; }
-.logo-sub  { font-family: 'JetBrains Mono', monospace; font-size: 0.48rem; color: rgba(255,255,255,0.32); letter-spacing: 3px; text-transform: uppercase; font-weight: 500; }
-.logo-main { font-family: 'Noto Sans JP', sans-serif; font-size: 1rem; font-weight: 700; color: #fff; letter-spacing: -0.5px; }
-.header-badge { margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(181,130,30,0.9); background: rgba(181,130,30,0.12); border: 1px solid rgba(181,130,30,0.3); border-radius: 3px; padding: 3px 9px; }
+.logo-sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.46rem; color: var(--muted); letter-spacing: 3px;
+  text-transform: uppercase; font-weight: 500;
+}
+.logo-main {
+  font-family: 'DM Sans', 'Noto Sans JP', sans-serif;
+  font-size: 0.95rem; font-weight: 900; color: var(--text); letter-spacing: -0.5px;
+}
+.header-right { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+.search-btn {
+  display: flex; align-items: center; justify-content: center;
+  width: 30px; height: 30px; border-radius: 6px;
+  background: rgba(255,255,255,0.06); border: 1px solid var(--border);
+  color: var(--muted); cursor: pointer; transition: background 0.15s, color 0.15s;
+}
+.search-btn:hover { background: rgba(255,255,255,0.1); color: var(--text); }
+.header-badge {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.56rem; font-weight: 700;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--sc-text); background: var(--sc-lt);
+  border: 1px solid var(--sc-border); border-radius: 3px; padding: 3px 9px;
+}
 
 /* ── Main ── */
-main { max-width: 720px; margin: 0 auto; padding: 40px 16px 80px; }
+main { max-width: 680px; margin: 0 auto; padding: 44px 16px 80px; }
 
 /* ── Hero ── */
-.hero { margin-bottom: 36px; }
-.hero-kicker {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.56rem; font-weight: 700; letter-spacing: .2em;
-  text-transform: uppercase; color: var(--gold);
-  display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+.hero { margin-bottom: 40px; }
+.hero-eyebrow {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.55rem; font-weight: 700; letter-spacing: 4px;
+  text-transform: uppercase; color: var(--sc-text);
+  display: flex; align-items: center; gap: 8px; margin-bottom: 12px;
 }
-.hero-kicker::before { content: ''; display: block; width: 22px; height: 1px; background: var(--gold); flex-shrink: 0; }
-.hero-title { font-family: 'Noto Serif JP', serif; font-size: 1.9rem; font-weight: 600; color: var(--text); line-height: 1.25; margin-bottom: 10px; letter-spacing: -0.01em; }
+.hero-eyebrow::before {
+  content: ''; display: block; width: 18px; height: 1.5px;
+  background: var(--sc-text); flex-shrink: 0;
+}
+.hero-title {
+  font-family: 'DM Sans', 'Noto Sans JP', sans-serif;
+  font-size: 2rem; font-weight: 900; color: var(--text);
+  letter-spacing: -0.04em; line-height: 1.15; margin-bottom: 10px;
+}
 .hero-sub { font-size: 0.84rem; color: var(--muted); line-height: 1.75; }
 
 /* ── Group panel ── */
 .group-panel {
-  border-radius: 12px;
-  padding: 24px 20px 20px;
-  margin-bottom: 28px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+  border-radius: 12px; border: 1px solid var(--border);
+  margin-bottom: 16px; overflow: hidden;
 }
-.group-panel.sc-panel {
-  background: #f8fafd;
-  border: 1px solid var(--border);
-}
-.group-panel.ap-panel {
-  background: var(--ap-bg);
-  border: 1px solid var(--ap-border);
-  box-shadow: 0 2px 12px rgba(11,107,94,0.07);
-}
+.sc-panel { background: var(--surface); border-color: var(--border2); }
+.ap-panel { background: var(--surface); border-color: rgba(11,107,94,0.25); }
 
 /* ── Group header ── */
 .group-header {
   display: flex; align-items: center; gap: 10px;
-  margin-bottom: 22px;
-  padding-bottom: 14px;
+  padding: 18px 20px 14px; border-bottom: 1px solid var(--border);
 }
-.sc-panel .group-header { border-bottom: 1px solid var(--border); }
-.ap-panel .group-header { border-bottom: 1px solid var(--ap-border); }
+.ap-panel .group-header { border-bottom-color: rgba(11,107,94,0.2); }
 
 .group-badge {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 0.6rem; font-weight: 700; letter-spacing: .14em;
-  text-transform: uppercase; padding: 3px 10px; border-radius: 4px;
+  font-size: 0.58rem; font-weight: 700; letter-spacing: .14em;
+  text-transform: uppercase; padding: 3px 9px; border-radius: 4px;
 }
 .sc-panel .group-badge {
-  color: var(--accent); background: var(--accent-lt);
-  border: 1px solid rgba(11,74,130,0.2);
+  color: var(--sc-text); background: var(--sc-lt); border: 1px solid var(--sc-border);
 }
 .ap-panel .group-badge {
-  color: var(--ap-accent); background: var(--ap-accent-lt);
-  border: 1px solid rgba(11,107,94,0.25);
+  color: var(--ap-text); background: var(--ap-lt); border: 1px solid var(--ap-border);
 }
 .group-title {
-  font-family: 'Noto Sans JP', sans-serif;
-  font-size: 0.78rem; font-weight: 700; color: var(--text);
+  font-family: 'DM Sans', 'Noto Sans JP', sans-serif;
+  font-size: 0.82rem; font-weight: 700; color: var(--text);
 }
 .group-count {
-  margin-left: auto;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.56rem; color: var(--muted);
-  letter-spacing: .04em;
+  margin-left: auto; font-family: 'JetBrains Mono', monospace;
+  font-size: 0.54rem; color: var(--muted); letter-spacing: .04em;
 }
 
 /* ── Section label ── */
 .section-label {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 9px; font-weight: 700; letter-spacing: .18em;
-  text-transform: uppercase;
+  font-size: 9px; font-weight: 700; letter-spacing: .22em; text-transform: uppercase;
   display: flex; align-items: center; gap: 10px;
-  margin-bottom: 10px;
-  margin-top: 18px;
+  padding: 14px 20px 8px;
 }
-.section-label:first-of-type { margin-top: 0; }
 .section-label::after { content: ''; flex: 1; height: 1px; }
-
-.sc-panel .section-label { color: var(--accent); }
-.sc-panel .section-label::after { background: var(--border); }
-.ap-panel .section-label { color: var(--ap-accent); }
-.ap-panel .section-label::after { background: var(--ap-border); }
+.sc-panel .section-label { color: var(--sc-text); }
+.sc-panel .section-label::after { background: rgba(63,82,196,0.2); }
+.ap-panel .section-label { color: var(--ap-text); }
+.ap-panel .section-label::after { background: rgba(11,107,94,0.2); }
 
 /* ── Card list ── */
-.card-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 4px; }
+.card-list { display: flex; flex-direction: column; gap: 2px; padding: 0 10px 12px; }
 
-/* ── SC cards ── */
+/* ── Desc card ── */
 .desc-card {
-  background: var(--card-bg);
-  border: 1px solid var(--border);
-  border-left: 3px solid var(--accent);
+  background: rgba(255,255,255,0.03);
+  border: 1px solid transparent;
+  border-left: 2px solid transparent;
   border-radius: 8px;
-  padding: 14px 16px 12px;
+  padding: 13px 14px 12px;
   text-decoration: none; color: inherit;
   display: flex; align-items: flex-start; gap: 12px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-  transition: box-shadow 0.18s, transform 0.18s;
+  transition: background 0.15s, border-color 0.15s, transform 0.15s;
 }
-.desc-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.09); transform: translateX(3px); }
+.desc-card:hover {
+  background: rgba(255,255,255,0.05);
+  border-color: var(--border2);
+  transform: translateX(2px);
+}
+.sc-panel .desc-card:hover { border-left-color: var(--sc); }
+.ap-panel .desc-card:hover { border-left-color: var(--ap); }
 
 .desc-icon {
-  flex-shrink: 0; width: 34px; height: 34px; border-radius: 6px;
-  background: var(--accent-lt);
-  display: flex; align-items: center; justify-content: center;
-  color: var(--accent); margin-top: 1px;
+  flex-shrink: 0; width: 32px; height: 32px; border-radius: 6px;
+  display: flex; align-items: center; justify-content: center; margin-top: 1px;
 }
+.sc-panel .desc-icon { background: var(--sc-lt); color: var(--sc-text); }
+.ap-panel .desc-icon { background: var(--ap-lt); color: var(--ap-text); }
+
 .desc-body { flex: 1; min-width: 0; }
-.desc-title { font-family: 'Noto Sans JP', sans-serif; font-size: 0.88rem; font-weight: 700; color: var(--text); margin-bottom: 3px; }
-.desc-sub { font-size: 0.7rem; color: var(--muted); line-height: 1.6; margin-bottom: 7px; }
+.desc-title {
+  font-family: 'DM Sans', 'Noto Sans JP', sans-serif;
+  font-size: 0.88rem; font-weight: 700; color: var(--text);
+  margin-bottom: 3px; letter-spacing: -0.01em; line-height: 1.4;
+}
+.desc-sub {
+  font-size: 0.7rem; color: var(--muted); line-height: 1.6; margin-bottom: 7px;
+}
 .desc-tags { display: flex; flex-wrap: wrap; gap: 4px; }
 .dtag {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 9px; font-weight: 500;
-  padding: 2px 7px; border-radius: 3px;
-  background: var(--surface);
-  color: var(--muted);
-  border: 1px solid var(--border);
-  white-space: nowrap;
-  letter-spacing: .02em;
+  font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 500;
+  padding: 2px 6px; border-radius: 3px;
+  background: rgba(255,255,255,0.05); color: var(--muted);
+  border: 1px solid var(--border); white-space: nowrap; letter-spacing: .02em;
 }
-.desc-arrow { color: var(--border); flex-shrink: 0; margin-top: 7px; transition: color 0.15s, transform 0.15s; }
-.desc-card:hover .desc-arrow { color: var(--accent); transform: translateX(2px); }
+.desc-arrow {
+  color: var(--border2); flex-shrink: 0; margin-top: 7px;
+  transition: color 0.15s, transform 0.15s;
+}
+.desc-card:hover .desc-arrow { transform: translateX(2px); }
+.sc-panel .desc-card:hover .desc-arrow { color: var(--sc-text); }
+.ap-panel .desc-card:hover .desc-arrow { color: var(--ap-text); }
 
-/* ── AP cards ── */
-.ap-card {
-  background: var(--ap-surface);
-  border-color: var(--ap-border);
-  border-left-color: var(--ap-accent);
-}
-.ap-card .desc-icon {
-  background: var(--ap-accent-lt);
-  color: var(--ap-accent);
-}
-.ap-card .dtag {
-  background: #e6f4f1;
-  border-color: var(--ap-border);
-  color: #2a6b60;
-}
-.ap-card:hover .desc-arrow { color: var(--ap-accent); }
-.ap-card:hover { box-shadow: 0 4px 16px rgba(11,107,94,0.12); }
-
-/* ── Search button in header ── */
-.search-btn {
-  display: flex; align-items: center; justify-content: center;
-  width: 32px; height: 32px; border-radius: 6px;
-  background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1);
-  color: rgba(255,255,255,0.6); cursor: pointer;
-  transition: background 0.15s, color 0.15s; flex-shrink: 0;
-}
-.search-btn:hover { background: rgba(255,255,255,0.13); color: #fff; }
-
-/* ── Modal overlay ── */
+/* ── Search modal overlay ── */
 .search-modal-overlay {
   display: none; position: fixed; inset: 0; z-index: 400;
-  background: rgba(10,15,28,0.6); backdrop-filter: blur(4px);
+  background: rgba(0,0,0,0.72); backdrop-filter: blur(6px);
   align-items: flex-start; justify-content: center;
   padding: 56px 16px 32px;
 }
 .search-modal-overlay.open { display: flex; }
 
-/* ── Modal panel ── */
 .search-modal {
   width: 100%; max-width: 960px;
-  background: #fff; border-radius: 12px;
-  box-shadow: 0 24px 64px rgba(0,0,0,0.22), 0 4px 16px rgba(0,0,0,0.12);
+  background: var(--surface2); border: 1px solid var(--border2);
+  border-radius: 12px;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.6), 0 4px 16px rgba(0,0,0,0.4);
   overflow: hidden; display: flex; flex-direction: column;
   height: calc(100vh - 100px); max-height: 700px;
   animation: modalIn .18s ease-out;
@@ -234,11 +231,10 @@ main { max-width: 720px; margin: 0 auto; padding: 40px 16px 80px; }
   to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-/* ── Modal search bar ── */
 .modal-search-bar {
   display: flex; align-items: center; gap: 12px;
   padding: 0 18px; border-bottom: 1px solid var(--border);
-  flex-shrink: 0;
+  flex-shrink: 0; background: var(--surface2);
 }
 .modal-search-bar svg { color: var(--muted); flex-shrink: 0; }
 .modal-search-input {
@@ -249,22 +245,18 @@ main { max-width: 720px; margin: 0 auto; padding: 40px 16px 80px; }
 }
 .modal-search-input::placeholder { color: var(--muted); }
 .modal-esc-hint {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.6rem; color: var(--muted);
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 4px; padding: 2px 7px; flex-shrink: 0;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.58rem;
+  color: var(--muted); background: rgba(255,255,255,0.07);
+  border: 1px solid var(--border); border-radius: 4px; padding: 2px 7px; flex-shrink: 0;
 }
 
-/* ── Split layout ── */
-.modal-split {
-  display: flex; flex: 1; overflow: hidden; min-height: 0;
-}
+.modal-split { display: flex; flex: 1; overflow: hidden; min-height: 0; }
 
-/* ── Left: result list ── */
 .modal-list-panel {
   width: 360px; flex-shrink: 0;
   border-right: 1px solid var(--border);
   overflow-y: auto; display: flex; flex-direction: column;
+  background: var(--surface2);
 }
 @media (max-width: 600px) {
   .modal-list-panel { width: 100%; }
@@ -272,154 +264,129 @@ main { max-width: 720px; margin: 0 auto; padding: 40px 16px 80px; }
   .search-modal { max-width: 100%; }
 }
 
-/* Status bar */
 .modal-status {
   display: flex; align-items: center; justify-content: space-between;
   padding: 8px 16px 6px; flex-shrink: 0;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 0.58rem; font-weight: 600; letter-spacing: .05em;
+  font-size: 0.56rem; font-weight: 600; letter-spacing: .05em;
   color: var(--muted); text-transform: uppercase;
   border-bottom: 1px solid var(--border);
 }
-.modal-status em { color: var(--accent2); font-style: normal; }
+.modal-status em { color: var(--sc-text); font-style: normal; }
 
-/* Result item */
 .modal-result {
   display: flex; flex-direction: column; gap: 3px;
   text-decoration: none; color: inherit;
-  padding: 12px 16px;
-  border-bottom: 1px solid var(--border);
-  cursor: pointer;
-  transition: background 0.1s;
-  flex-shrink: 0;
+  padding: 12px 16px; border-bottom: 1px solid var(--border);
+  cursor: pointer; transition: background 0.1s; flex-shrink: 0;
 }
 .modal-result:last-child { border-bottom: none; }
-.modal-result:hover,
-.modal-result.active { background: var(--accent-lt); }
-.modal-result.active .modal-result-title { color: var(--accent); }
+.modal-result:hover, .modal-result.active { background: rgba(63,82,196,0.1); }
+.modal-result.active .modal-result-title { color: var(--sc-text); }
 
-.modal-result-meta {
-  display: flex; align-items: center; gap: 6px; margin-bottom: 1px;
-}
+.modal-result-meta { display: flex; align-items: center; gap: 6px; margin-bottom: 1px; }
 .modal-result-badge {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.5rem; font-weight: 700; letter-spacing: .1em;
-  text-transform: uppercase; padding: 1px 5px; border-radius: 2px;
-  flex-shrink: 0;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.5rem; font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase; padding: 1px 5px; border-radius: 2px; flex-shrink: 0;
 }
-.modal-result-badge.sc { background: var(--accent-lt); color: var(--accent); border: 1px solid rgba(11,74,130,0.2); }
-.modal-result-badge.ap { background: var(--ap-accent-lt); color: var(--ap-accent); border: 1px solid rgba(11,107,94,0.25); }
+.modal-result-badge.sc { background: var(--sc-lt); color: var(--sc-text); border: 1px solid var(--sc-border); }
+.modal-result-badge.ap { background: var(--ap-lt); color: var(--ap-text); border: 1px solid var(--ap-border); }
 .modal-result-docname {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.55rem; color: var(--muted); letter-spacing: .03em;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.53rem;
+  color: var(--muted); letter-spacing: .03em;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .modal-result-title {
-  font-family: 'Noto Sans JP', sans-serif;
   font-size: 0.84rem; font-weight: 700; color: var(--text);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .modal-result-snippet {
   font-size: 0.67rem; color: var(--muted); line-height: 1.6;
-  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
-  overflow: hidden;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
 }
 .modal-result-snippet mark {
-  background: #fff3cd; color: #7a5500; border-radius: 2px; padding: 0 2px;
-  font-style: normal;
+  background: rgba(245,158,11,0.25); color: #fbbf24; border-radius: 2px;
+  padding: 0 2px; font-style: normal;
 }
 
-/* ── Right: page preview ── */
 .modal-preview-panel {
   flex: 1; overflow: hidden; position: relative;
-  background: var(--surface);
+  background: #fff;
 }
 .preview-placeholder {
   position: absolute; inset: 0;
   display: flex; flex-direction: column;
   align-items: center; justify-content: center; gap: 12px;
-  color: var(--muted);
+  color: var(--muted); background: var(--surface);
 }
 .preview-placeholder svg { opacity: 0.3; }
-.preview-placeholder p {
-  font-size: 0.78rem; color: var(--muted); text-align: center; line-height: 1.7;
-}
-/* iframe scale-to-fit trick */
+.preview-placeholder p { font-size: 0.78rem; color: var(--muted); text-align: center; line-height: 1.7; }
 #preview-frame {
   position: absolute; top: 0; left: 0;
-  width: 150%; height: 150%;
-  border: none;
+  width: 150%; height: 150%; border: none;
   transform: scale(0.667); transform-origin: top left;
-  pointer-events: none;
-  background: #fff;
+  pointer-events: none; background: #fff;
 }
 
-/* Empty state */
 .modal-empty {
   padding: 48px 20px; text-align: center;
   color: var(--muted); font-size: 0.82rem; line-height: 1.9;
 }
 .modal-empty strong { color: var(--text); }
 
-/* Initial hint (before typing) */
 .modal-hint {
-  padding: 16px 16px;
-  display: flex; flex-direction: column; gap: 6px; flex: 1;
+  padding: 16px; display: flex; flex-direction: column; gap: 6px; flex: 1;
 }
 .modal-hint-label {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.56rem; font-weight: 700; letter-spacing: .12em;
-  text-transform: uppercase; color: var(--muted);
-  flex: 1;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.54rem; font-weight: 700;
+  letter-spacing: .12em; text-transform: uppercase; color: var(--muted); flex: 1;
 }
 .modal-hint-chip {
   display: inline-flex; align-items: center; gap: 5px;
-  font-size: 0.72rem; color: var(--accent2); cursor: pointer;
+  font-size: 0.72rem; color: var(--sc-text); cursor: pointer;
   padding: 4px 8px; border-radius: 4px;
-  background: var(--accent-lt); border: 1px solid rgba(21,112,184,0.18);
-  transition: background 0.12s;
+  background: var(--sc-lt); border: 1px solid var(--sc-border);
+  transition: background 0.12s; margin-right: 6px; margin-bottom: 6px;
 }
-.modal-hint-chip:hover { background: #d4e8f8; }
-.modal-hint-empty {
-  font-size: 0.75rem; color: var(--muted); font-style: italic;
-}
+.modal-hint-chip:hover { background: rgba(63,82,196,0.25); }
+.modal-hint-empty { font-size: 0.75rem; color: var(--muted); font-style: italic; }
 .modal-hint-clear {
-  margin-left: auto; font-size: 0.67rem; color: var(--muted);
+  margin-left: auto; font-size: 0.65rem; color: var(--muted);
   cursor: pointer; background: none; border: none; padding: 2px 4px;
   border-radius: 3px; font-family: inherit;
 }
-.modal-hint-clear:hover { color: #c0392b; background: #fdecea; }
-.modal-hint-header {
-  display: flex; align-items: center; margin-bottom: 8px;
-}
+.modal-hint-clear:hover { color: #f87171; background: rgba(248,113,113,0.1); }
+.modal-hint-header { display: flex; align-items: center; margin-bottom: 8px; }
 </style>
 </head>
 <body>
 
 <header>
   <a href="../../index.html" class="back-link" title="ホームへ">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
   </a>
   <div class="logo-text">
     <div class="logo-sub">情報処理安全確保支援士</div>
     <div class="logo-main">技術解説書</div>
   </div>
-  <button class="search-btn" id="search-open-btn" title="検索 (/)">
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-  </button>
-  <div class="header-badge">15 docs</div>
+  <div class="header-right">
+    <button class="search-btn" id="search-open-btn" title="検索 (/)">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </button>
+    <span class="header-badge">15 docs</span>
+  </div>
 </header>
 
 <main>
   <div class="hero">
-    <div class="hero-kicker">Technical Reference</div>
-    <h1 class="hero-title">SC 試験対策<br>技術解説書一覧</h1>
+    <div class="hero-eyebrow">Technical Reference</div>
+    <h1 class="hero-title">SC 技術解説書</h1>
     <p class="hero-sub">各技術領域の仕組みを体系的にまとめた解説書です。<br>単語帳と組み合わせて理解を深めましょう。</p>
-
   </div>
 
-  <!-- ══════════ SC グループ ══════════ -->
   <div id="main-content">
+
+  <!-- ══════════ SC グループ ══════════ -->
   <div class="group-panel sc-panel">
     <div class="group-header">
       <span class="group-badge">SC</span>
@@ -690,7 +657,6 @@ main { max-width: 720px; margin: 0 auto; padding: 40px 16px 80px; }
 <div class="search-modal-overlay" id="search-overlay">
   <div class="search-modal" id="search-modal" role="dialog" aria-modal="true" aria-label="検索">
 
-    <!-- 検索バー -->
     <div class="modal-search-bar">
       <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       <input type="search" id="modal-search-input" class="modal-search-input"
@@ -699,10 +665,7 @@ main { max-width: 720px; margin: 0 auto; padding: 40px 16px 80px; }
       <span class="modal-esc-hint">ESC</span>
     </div>
 
-    <!-- 左右分割 -->
     <div class="modal-split">
-
-      <!-- 左: 結果リスト -->
       <div class="modal-list-panel" id="modal-list-panel">
         <div class="modal-hint" id="modal-hint">
           <div class="modal-hint-header">
@@ -715,7 +678,6 @@ main { max-width: 720px; margin: 0 auto; padding: 40px 16px 80px; }
         <div id="modal-results"></div>
       </div>
 
-      <!-- 右: ページプレビュー -->
       <div class="modal-preview-panel" id="modal-preview-panel">
         <div class="preview-placeholder" id="preview-placeholder">
           <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
@@ -723,8 +685,7 @@ main { max-width: 720px; margin: 0 auto; padding: 40px 16px 80px; }
         </div>
         <iframe id="preview-frame" sandbox="allow-same-origin allow-scripts" style="display:none;"></iframe>
       </div>
-
-    </div><!-- /.modal-split -->
+    </div>
   </div>
 </div>
 
@@ -742,21 +703,12 @@ main { max-width: 720px; margin: 0 auto; padding: 40px 16px 80px; }
   const previewPH    = document.getElementById('preview-placeholder');
   let previewTimer   = null;
 
-  /* ──────────────────────────────────────────────────
-     カードリストから解説書のメタ情報だけを取得
-     実際の本文インデックスは各ファイルをfetchして構築
-  ────────────────────────────────────────────────── */
   const docList = Array.from(document.querySelectorAll('#main-content .desc-card')).map(el => {
     const title = el.querySelector('.desc-title')?.textContent ?? '';
     const isAP  = el.classList.contains('ap-card');
-    return {
-      href: el.getAttribute('href'),
-      title, isAP,
-      sections: []   // { id, h2, h3, text, anchorWord }
-    };
+    return { href: el.getAttribute('href'), title, isAP, sections: [] };
   });
 
-  /* ── fetch → section-level index (cover・sidebar・h2/h3見出し自体を除外) ── */
   function stripRE(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
 
   docList.forEach(doc => {
@@ -765,29 +717,20 @@ main { max-width: 720px; margin: 0 auto; padding: 40px 16px 80px; }
       .then(html => {
         if (!html) return;
         const d = new DOMParser().parseFromString(html, 'text/html');
-
-        // 除外: cover, sidebar, script, style, header の先頭site-header, nav
         d.querySelectorAll('.cover, .sidebar, aside, script, style, .site-header, nav').forEach(e => e.remove());
-
-        // section 単位でインデックス化
         const sections = d.querySelectorAll('section.section, .section');
         if (sections.length > 0) {
           sections.forEach(sec => {
             const id  = sec.id || '';
             const h2El = sec.querySelector('h2');
             const h2  = h2El ? h2El.textContent.trim() : '';
-
-            // h2, h3 テキスト要素自体を除外してから本文テキスト取得
             const clone = sec.cloneNode(true);
             clone.querySelectorAll('h2, h3, .section-header').forEach(e => e.remove());
             const text = (clone.textContent ?? '').replace(/\s+/g, ' ').trim();
-
-            // h3ごとにさらに細分化
             const h3s = sec.querySelectorAll('h3');
             if (h3s.length > 0) {
               h3s.forEach(h3el => {
                 const h3 = h3el.textContent.trim();
-                // h3以降の兄弟要素テキストを収集
                 let sibText = '';
                 let sib = h3el.nextElementSibling;
                 while (sib && sib.tagName !== 'H3') {
@@ -795,16 +738,13 @@ main { max-width: 720px; margin: 0 auto; padding: 40px 16px 80px; }
                   sib = sib.nextElementSibling;
                 }
                 sibText = sibText.replace(/\s+/g, ' ').trim();
-                if (sibText.length > 10) {
-                  doc.sections.push({ id, h2, h3, text: sibText, anchorWord: h3 });
-                }
+                if (sibText.length > 10) doc.sections.push({ id, h2, h3, text: sibText, anchorWord: h3 });
               });
             } else if (text.length > 10) {
               doc.sections.push({ id, h2, h3: '', text, anchorWord: h2 });
             }
           });
         } else {
-          // section タグがない場合はフォールバック: body全体
           const text = (d.body?.textContent ?? '').replace(/\s+/g, ' ').trim();
           doc.sections.push({ id: '', h2: doc.title, h3: '', text, anchorWord: '' });
         }
@@ -812,115 +752,74 @@ main { max-width: 720px; margin: 0 auto; padding: 40px 16px 80px; }
       .catch(() => {});
   });
 
-  /* ── 検索履歴 ── */
   const HISTORY_KEY = 'sc_search_history';
   const MAX_HISTORY = 10;
-  const hintChipsEl = document.getElementById('modal-hint-chips');
+  const hintChipsEl  = document.getElementById('modal-hint-chips');
   const hintClearBtn = document.getElementById('modal-hint-clear');
 
-  function loadHistory() {
-    try { return JSON.parse(localStorage.getItem(HISTORY_KEY)) || []; }
-    catch { return []; }
-  }
+  function loadHistory() { try { return JSON.parse(localStorage.getItem(HISTORY_KEY)) || []; } catch { return []; } }
   function saveHistory(q) {
-    const trimmed = q.trim();
-    if (!trimmed) return;
+    const trimmed = q.trim(); if (!trimmed) return;
     let hist = loadHistory().filter(h => h !== trimmed);
-    hist.unshift(trimmed);
-    hist = hist.slice(0, MAX_HISTORY);
+    hist.unshift(trimmed); hist = hist.slice(0, MAX_HISTORY);
     localStorage.setItem(HISTORY_KEY, JSON.stringify(hist));
   }
   function renderHistory() {
     const hist = loadHistory();
     hintClearBtn.style.display = hist.length ? '' : 'none';
-    if (hist.length === 0) {
-      hintChipsEl.innerHTML = '<span class="modal-hint-empty">検索履歴はありません</span>';
-      return;
-    }
+    if (hist.length === 0) { hintChipsEl.innerHTML = '<span class="modal-hint-empty">検索履歴はありません</span>'; return; }
     hintChipsEl.innerHTML = '';
     hist.forEach(kw => {
       const chip = document.createElement('span');
       chip.className = 'modal-hint-chip';
       chip.innerHTML = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>${escHtml(kw)}`;
-      chip.style.marginRight = '6px';
-      chip.style.marginBottom = '6px';
+      chip.style.marginRight = '6px'; chip.style.marginBottom = '6px';
       chip.addEventListener('click', () => fillSearch(kw));
       hintChipsEl.appendChild(chip);
     });
   }
-  hintClearBtn.addEventListener('click', () => {
-    localStorage.removeItem(HISTORY_KEY);
-    renderHistory();
-  });
+  hintClearBtn.addEventListener('click', () => { localStorage.removeItem(HISTORY_KEY); renderHistory(); });
 
-  /* ── Open / Close ── */
   function openModal() {
-    overlay.classList.add('open');
-    document.body.style.overflow = 'hidden';
-    renderHistory();
-    requestAnimationFrame(() => input.focus());
+    overlay.classList.add('open'); document.body.style.overflow = 'hidden';
+    renderHistory(); requestAnimationFrame(() => input.focus());
   }
   function closeModal() {
-    overlay.classList.remove('open');
-    document.body.style.overflow = '';
-    input.value = '';
-    resetResults();
+    overlay.classList.remove('open'); document.body.style.overflow = '';
+    input.value = ''; resetResults();
   }
   openBtn.addEventListener('click', openModal);
   overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
-
   window.fillSearch = function(kw) { input.value = kw; input.focus(); runSearch(kw); };
 
-  /* ── スニペット生成 (ヒット周辺のテキスト) ── */
   function buildSnippet(text, words) {
-    const lower = text.toLowerCase();
-    let bestPos = -1;
-    for (const w of words) {
-      const idx = lower.indexOf(w);
-      if (idx !== -1 && (bestPos === -1 || idx < bestPos)) bestPos = idx;
-    }
+    const lower = text.toLowerCase(); let bestPos = -1;
+    for (const w of words) { const idx = lower.indexOf(w); if (idx !== -1 && (bestPos === -1 || idx < bestPos)) bestPos = idx; }
     if (bestPos === -1) return '';
-    const start = Math.max(0, bestPos - 45);
-    const end   = Math.min(text.length, bestPos + 130);
-    const raw   = (start > 0 ? '…' : '') + text.slice(start, end).trim() + (end < text.length ? '…' : '');
-    const pat   = words.map(stripRE).join('|');
+    const start = Math.max(0, bestPos - 45), end = Math.min(text.length, bestPos + 130);
+    const raw = (start > 0 ? '…' : '') + text.slice(start, end).trim() + (end < text.length ? '…' : '');
+    const pat = words.map(stripRE).join('|');
     return escHtml(raw).replace(new RegExp('(' + pat + ')', 'gi'), '<mark>$1</mark>');
   }
+  function textFrag(word) { return word ? '#:~:text=' + encodeURIComponent(word) : ''; }
 
-  /* ── Text Fragment URL ── */
-  function textFrag(word) {
-    return word ? '#:~:text=' + encodeURIComponent(word) : '';
-  }
-
-  /* ── 検索実行: section単位でヒット列挙 ── */
   function runSearch(q) {
-    const raw = q.trim();
-    if (!raw) { resetResults(); return; }
-
+    const raw = q.trim(); if (!raw) { resetResults(); return; }
     const words = raw.toLowerCase().split(/\s+/).filter(Boolean);
-
-    // 各ドキュメント × 各セクションをチェック
     const hits = [];
     docList.forEach(doc => {
       doc.sections.forEach(sec => {
         const needle = sec.text.toLowerCase();
-        if (words.every(w => needle.includes(w))) {
-          hits.push({ doc, sec });
-        }
+        if (words.every(w => needle.includes(w))) hits.push({ doc, sec });
       });
     });
-
-    hintEl.style.display   = 'none';
-    statusEl.style.display = 'flex';
-
+    hintEl.style.display = 'none'; statusEl.style.display = 'flex';
     if (hits.length === 0) {
       statusEl.innerHTML  = `<em>0件</em> — 検索結果なし`;
       resultsEl.innerHTML = `<div class="modal-empty">「<strong>${escHtml(raw)}</strong>」に一致する箇所が見つかりませんでした。<br>別のキーワードをお試しください。</div>`;
       return;
     }
-
     statusEl.innerHTML = `<span>検索結果</span><em>${hits.length}件</em>`;
-
     const frag = document.createDocumentFragment();
     hits.forEach(({ doc, sec }, i) => {
       const snippet      = buildSnippet(sec.text, words);
@@ -929,7 +828,6 @@ main { max-width: 720px; margin: 0 auto; padding: 40px 16px 80px; }
       const jumpWord     = sec.h3 || sec.h2 || words[0];
       const href         = doc.href + textFrag(jumpWord);
       const sectionLabel = [sec.h2, sec.h3].filter(Boolean).join(' › ');
-
       const div = document.createElement('div');
       div.className = 'modal-result' + (i === 0 ? ' active' : '');
       div.dataset.href = href;
@@ -940,24 +838,17 @@ main { max-width: 720px; margin: 0 auto; padding: 40px 16px 80px; }
         </div>
         <div class="modal-result-title">${escHtml(sectionLabel || doc.title)}</div>
         <div class="modal-result-snippet">${snippet}</div>`;
-
-      // クリック → 履歴保存 & ページ遷移
       div.addEventListener('click', () => { saveHistory(raw); window.location.href = href; });
-
-      // ホバー → プレビュー更新 (150ms debounce)
       div.addEventListener('mouseenter', () => {
         document.querySelectorAll('.modal-result').forEach(r => r.classList.remove('active'));
         div.classList.add('active');
         clearTimeout(previewTimer);
         previewTimer = setTimeout(() => showPreview(href), 150);
       });
-
       frag.appendChild(div);
     });
     resultsEl.innerHTML = '';
     resultsEl.appendChild(frag);
-
-    // 最初の結果をプレビュー表示
     if (hits.length > 0) {
       const firstHref = hits[0].doc.href + textFrag(hits[0].sec.h3 || hits[0].sec.h2 || words[0]);
       showPreview(firstHref);
@@ -965,25 +856,22 @@ main { max-width: 720px; margin: 0 auto; padding: 40px 16px 80px; }
   }
 
   function showPreview(href) {
-    previewPH.style.display   = 'none';
+    previewPH.style.display    = 'none';
     previewFrame.style.display = 'block';
     if (previewFrame.src !== href) previewFrame.src = href;
   }
-
   function resetResults() {
-    hintEl.style.display       = '';
-    statusEl.style.display     = 'none';
-    resultsEl.innerHTML        = '';
-    previewFrame.style.display = 'none';
-    previewFrame.src           = '';
-    previewPH.style.display    = '';
+    hintEl.style.display        = '';
+    statusEl.style.display      = 'none';
+    resultsEl.innerHTML         = '';
+    previewFrame.style.display  = 'none';
+    previewFrame.src            = '';
+    previewPH.style.display     = '';
   }
-
   function escHtml(s) {
     return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
 
-  /* ── 入力中はリセットのみ。Enter or 入力停止500msで検索実行 ── */
   let searchTimer = null;
   input.addEventListener('input', () => {
     clearTimeout(searchTimer);
@@ -992,12 +880,8 @@ main { max-width: 720px; margin: 0 auto; padding: 40px 16px 80px; }
     searchTimer = setTimeout(() => runSearch(input.value), 500);
   });
   input.addEventListener('keydown', e => {
-    if (e.key === 'Enter') {
-      clearTimeout(searchTimer);
-      runSearch(input.value);
-    }
+    if (e.key === 'Enter') { clearTimeout(searchTimer); runSearch(input.value); }
   });
-
   document.addEventListener('keydown', e => {
     if (e.key === '/' && !overlay.classList.contains('open') && document.activeElement.tagName !== 'INPUT') {
       e.preventDefault(); openModal();
